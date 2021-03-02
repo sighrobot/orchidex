@@ -5,11 +5,31 @@ body {
   font-family: 'IBM Plex Mono', monospace;
 }
 
+body {
+  padding: 0 10px;
+  background: cornflowerblue;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul {
+  margin: 0;
+}
+
 a {
   color: inherit;
   text-decoration: none;
 }
 
-* {
-  box-sizing: border-box;
+.genus {
+  font-style: italic;
 }
