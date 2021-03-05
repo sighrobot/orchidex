@@ -17,7 +17,7 @@ export default function Index() {
     genus: query.g2 || "",
     epithet: query.e2 || "",
   });
-  const [results, setResults] = React.useState([]);
+  const [results, setResults] = React.useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -74,10 +74,34 @@ export default function Index() {
     setValue2((v) => ({ ...v, [e.target.name]: e.target.value }));
   };
 
+  const exp = (
+    <>
+      <em>{value.genus}</em> {value.epithet}{" "}
+      {(value2.genus || value2.epithet) &&
+        (value.genus || value.epithet) &&
+        "×"}{" "}
+      <em>{value2.genus}</em> {value2.epithet}
+    </>
+  );
+
+  const stuff1 = [value.genus, value.epithet].filter((s) => s);
+  const stuff2 = [value2.genus, value2.epithet].filter((s) => s);
+
+  const strArr = [...stuff1];
+
+  if (stuff1.length > 0 && stuff2.length > 0) {
+    strArr.push("×");
+  }
+
+  strArr.push(...stuff2);
+
   return (
     <Container>
       <Head>
-        <title>Search | Orchidex</title>
+        <title>
+          {strArr.length > 0 ? `${strArr.join(" ")} | Search` : "Search"} |
+          Orchidex
+        </title>
       </Head>
 
       <h2>Search</h2>
@@ -145,10 +169,12 @@ export default function Index() {
       </form>
 
       <section>
-        <h3>
-          Results ({results.length.toLocaleString()}
-          {results.length === 1000 ? "+" : ""})
-        </h3>
+        {results !== null && (
+          <h3>
+            Results for {exp} ({results.length.toLocaleString()}
+            {results.length === 1000 ? "+" : ""})
+          </h3>
+        )}
 
         {orderBy(
           results,

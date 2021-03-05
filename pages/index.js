@@ -32,11 +32,11 @@ export default function Index() {
                   {new Date(`${d}T00:00:00`).toString().slice(0, 15)} (
                   {grouped[d].length.toLocaleString()})
                 </summary>
-                <p>
+                <div>
                   {orderBy(grouped[d], ["genus", "epithet"]).map((r) => {
                     return <Grex key={r.id} grex={r} hideDate />;
                   })}
-                </p>
+                </div>
               </details>
             </section>
           );

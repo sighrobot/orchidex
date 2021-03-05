@@ -51,7 +51,7 @@ export const Grex = () => {
       <section>
         <details>
           <summary>Progeny ({descendants.length.toLocaleString()})</summary>
-          <p>
+          <div>
             {orderBy(
               descendants.filter((d) => d.synonym_flag.includes("not")),
               ["date_of_registration", "genus", "epithet"],
@@ -59,7 +59,7 @@ export const Grex = () => {
             ).map((grexOnDate) => {
               return <G key={grexOnDate.id} grex={grexOnDate} />;
             })}
-          </p>
+          </div>
         </details>
       </section>
 

@@ -29,7 +29,7 @@ export const RegisteredOnDate = () => {
                 <summary>
                   <em>{genus}</em> ({grouped[genus].length.toLocaleString()})
                 </summary>
-                <p>
+                <div>
                   {orderBy(grouped[genus], ["genus", "epithet"]).map(
                     (grexOnDate) => {
                       return (
@@ -37,7 +37,7 @@ export const RegisteredOnDate = () => {
                       );
                     }
                   )}
-                </p>
+                </div>
               </details>
             </section>
           );
