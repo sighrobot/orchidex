@@ -76,16 +76,14 @@ export default function Index() {
 
   const exp = (
     <>
-      <em>{value.genus}</em> {value.epithet}{" "}
-      {(value2.genus || value2.epithet) &&
-        (value.genus || value.epithet) &&
-        "×"}{" "}
-      <em>{value2.genus}</em> {value2.epithet}
+      <em>{query.g1}</em> {query.e1}{" "}
+      {(query.g2 || query.e2) && (query.g1 || query.e1) && "×"}{" "}
+      <em>{query.g2}</em> {query.e2}
     </>
   );
 
-  const stuff1 = [value.genus, value.epithet].filter((s) => s);
-  const stuff2 = [value2.genus, value2.epithet].filter((s) => s);
+  const stuff1 = [query.g1, query.e1].filter((s) => s);
+  const stuff2 = [query.g2, query.e2].filter((s) => s);
 
   const strArr = [...stuff1];
 
@@ -122,6 +120,7 @@ export default function Index() {
               style={{ fontStyle: "italic" }}
               type="search"
               value={value.genus}
+              spellCheck={false}
             />
             <br />
             <input
@@ -131,6 +130,7 @@ export default function Index() {
               placeholder="epithet 1"
               type="search"
               value={value.epithet}
+              spellCheck={false}
             />
           </span>
           <span>&times;</span>
@@ -144,6 +144,7 @@ export default function Index() {
               style={{ fontStyle: "italic" }}
               value={value2.genus}
               type="search"
+              spellCheck={false}
             />
             <br />
             <input
@@ -154,6 +155,7 @@ export default function Index() {
               placeholder="epithet 2"
               type="search"
               value={value2.epithet}
+              spellCheck={false}
             />
           </span>
         </div>
