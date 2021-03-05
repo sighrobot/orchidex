@@ -7,8 +7,8 @@ body {
 
 body {
   padding: 0 10px;
-  background: lightskyblue;
-  font-size: 17px;
+  background: lightblue;
+  font-size: 16px;
 }
 
 * {
@@ -31,6 +31,11 @@ ul {
 mark {
   background: rgba(0, 255, 0, 0.25);
   color: white;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 1020px;
 }
 
 .container header {
@@ -62,7 +67,7 @@ section {
 }
 
 section + section {
-  margin-top: 30px;
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .container main {
@@ -89,6 +94,11 @@ em {
   opacity: 0.5;
 }
 
+a.date {
+  color: darkcyan;
+  font-weight: bold;
+}
+
 article {
   padding: 20px 0;
 }
@@ -98,15 +108,19 @@ article + article {
 }
 
 article:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 article .parentage {
-  font-size: 75%;
+  font-size: 80%;
 }
 
-details summary {
+details summary > * {
   display: inline-block;
+}
+details summary {
+  font-weight: bold;
+  width: auto;
   cursor: pointer;
   padding: 10px 0;
   user-select: none;

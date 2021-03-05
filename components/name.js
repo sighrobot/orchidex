@@ -8,8 +8,7 @@ export const Name = ({ grex, link = true, linkAsSearch = false }) => {
 
     const content = (
       <>
-        {!grex.epithet && "Unknown "}
-        <em>{grex.genus}</em> {grex.epithet}
+        <em>{grex.genus}</em> {grex.epithet || "(?)"}
       </>
     );
     return (

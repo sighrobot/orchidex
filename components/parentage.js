@@ -2,6 +2,10 @@ import { Name } from "components/name";
 
 export const Parentage = ({ grex }) => {
   if (grex) {
+    if (grex.registrant_name.includes("natural hybrid")) {
+      return <span className="parentage">Natural hybrid</span>;
+    }
+
     const {
       seed_parent_genus,
       seed_parent_epithet,
@@ -34,5 +38,5 @@ export const Parentage = ({ grex }) => {
     }
   }
 
-  return null;
+  return <span className="parentage">Unknown parentage</span>;
 };

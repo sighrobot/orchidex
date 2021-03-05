@@ -1,11 +1,23 @@
+import Link from "next/link";
+
 export const Reg = ({ grex }) => {
   if (grex) {
+    if (grex.registrant_name.includes("natural hybrid")) {
+      return null;
+    }
+
     const dateStr = grex.date_of_registration
-      ? new Date(grex.date_of_registration).toUTCString().split("00:00:00")[0]
-      : "unknown date";
+      ? new Date(`${grex.date_of_registration} 00:00:00`)
+          .toString()
+          .slice(3, 15)
+      : "on unknown date";
     return (
       <span className="reg">
-        Registered on <strong>{dateStr}</strong>
+        Registered{" "}
+        <Link href={`/date/${grex.date_of_registration}`}>
+          <a className="date">{dateStr}</a>
+        </Link>{" "}
+        by {grex.registrant_name} ({grex.originator_name})
       </span>
     );
   }

@@ -9,6 +9,8 @@ import { useDate } from "lib/hooks/useDate";
 export default function Index() {
   const recent = useDate();
   const grouped = groupBy(recent, "date_of_registration");
+  const now = new Date(`${new Date().toISOString().slice(0, 10)} 00:00:00`);
+  console.log(now);
 
   return (
     <Container>
@@ -18,29 +20,39 @@ export default function Index() {
 
       <h2>Recently registered</h2>
 
-      {Object.keys(grouped).map((d) => {
-        return (
-          <section>
-            <h3>
-              {new Date(d).toUTCString().split("00:00:00")[0].trim()} (
-              {grouped[d].length.toLocaleString()})
-            </h3>
-
-            {orderBy(grouped[d], ["genus", "epithet"]).map((r) => {
-              return (
-                <article key={r.id}>
-                  <div>
-                    <Name grex={r} />
-                  </div>
-                  <div>
-                    <Parentage grex={r} />
-                  </div>
-                </article>
-              );
-            })}
-          </section>
-        );
-      })}
+      {Object.keys(grouped)
+        .filter(
+          (d, _, arr) =>
+            new Date(`${arr[0]} 00:00:00`).getTime() -
+              new Date(`${d} 00:00:00`).getTime() <=
+            7 * 24 * 60 * 60 * 1000
+        )
+        .map((d, idx) => {
+          return (
+            <section>
+              <details open={idx === 0}>
+                <summary>
+                  {new Date(`${d} 00:00:00`).toString().slice(0, 15)} (
+                  {grouped[d].length.toLocaleString()})
+                </summary>
+                <p>
+                  {orderBy(grouped[d], ["genus", "epithet"]).map((r) => {
+                    return (
+                      <article key={r.id}>
+                        <div>
+                          <Name grex={r} />
+                        </div>
+                        <div>
+                          <Parentage grex={r} />
+                        </div>
+                      </article>
+                    );
+                  })}
+                </p>
+              </details>
+            </section>
+          );
+        })}
     </Container>
   );
 }

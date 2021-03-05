@@ -23,9 +23,7 @@ export const Grex = () => {
     <Container>
       <section>
         <h2>
-          <mark>
-            <Name link={false} grex={grex} />
-          </mark>
+          <Name link={false} grex={grex} />
         </h2>
 
         <h3>
@@ -38,7 +36,8 @@ export const Grex = () => {
       <section>
         <details>
           <summary>
-            Same-Date Registrations ({(onDate.length - 1).toLocaleString()})
+            Same-Date Registrations (
+            {(onDate.length > 1 ? onDate.length - 1 : 0).toLocaleString()})
           </summary>
           <p>
             {orderBy(
@@ -78,62 +77,63 @@ export const Grex = () => {
         <section>
           <details>
             <summary>Raw Data ({grexKeys.length.toLocaleString()})</summary>
-            <table>
-              <tbody>
-                {grexKeys.map((k) => {
-                  const field = grex[k];
-                  let href;
-                  let rel;
-                  let target;
+            <article>
+              <table>
+                <tbody>
+                  {grexKeys.map((k) => {
+                    const field = grex[k];
+                    let href;
+                    let rel;
+                    let target;
 
-                  switch (k) {
-                    case "id":
-                      href = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${field}`;
-                      rel = "noopener noreferrer";
-                      target = "_blank";
-                      break;
-                    case "genus":
-                      href = `/search?g1=${field}`;
-                      break;
-                    case "epithet":
-                      href = `/search?e1=${field}`;
-                      break;
-                    case "seed_parent_genus":
-                      href = `/search?g1=${field}`;
-                      break;
-                    case "seed_parent_epithet":
-                      href = `/search?e1=${field}`;
-                      break;
-                    case "pollen_parent_genus":
-                      href = `/search?g1=${field}`;
-                      break;
-                    case "pollen_parent_epithet":
-                      href = `/search?e1=${field}`;
-                      break;
-                    default:
-                      break;
-                  }
+                    switch (k) {
+                      case "id":
+                        href = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${field}`;
+                        rel = "noopener noreferrer";
+                        target = "_blank";
+                        break;
+                      case "genus":
+                        href = `/search?g1=${field}`;
+                        break;
+                      case "epithet":
+                        href = `/search?e1=${field}`;
+                        break;
+                      case "seed_parent_genus":
+                        href = `/search?g1=${field}`;
+                        break;
+                      case "seed_parent_epithet":
+                        href = `/search?e1=${field}`;
+                        break;
+                      case "pollen_parent_genus":
+                        href = `/search?g1=${field}`;
+                        break;
+                      case "pollen_parent_epithet":
+                        href = `/search?e1=${field}`;
+                        break;
+                      default:
+                        break;
+                    }
 
-                  console.log({ k, href, rel });
-                  return (
-                    <tr key={k}>
-                      <th>{k.replace(/_/g, " ")}:</th>
-                      <td>
-                        {href ? (
-                          <Link href={href}>
-                            <a target={target} rel={rel}>
-                              {grex[k]}
-                            </a>
-                          </Link>
-                        ) : (
-                          grex[k]
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                    return (
+                      <tr key={k}>
+                        <th>{k.replace(/_/g, " ")}:</th>
+                        <td>
+                          {href ? (
+                            <Link href={href}>
+                              <a target={target} rel={rel}>
+                                {grex[k]}
+                              </a>
+                            </Link>
+                          ) : (
+                            grex[k]
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </article>
           </details>
         </section>
       )}
