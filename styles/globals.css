@@ -177,11 +177,11 @@ form > div > span:not(:nth-child(2)) {
 }
 
 form > div > span:nth-child(2) {
-  margin: 0 5px;
+  margin: 0 10px;
 }
 
 form > *:not(:first-child) {
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 input[type="search"] {
@@ -192,14 +192,24 @@ input[type="search"] {
 }
 
 input[type="search"]:first-child {
-  margin-bottom: 5px;
+  margin-bottom: 2.5px;
+}
+
+form > div > span:first-child input[type="search"] {
+  border: 1px solid crimson;
+}
+
+form > div > span:last-child input[type="search"] {
+  border: 1px solid black;
 }
 
 button[type="submit"] {
-  border: 1px solid gray;
+  border: 1px solid black;
   width: 100%;
   padding: 5px;
-  background: lightsalmon;
+  background: crimson;
+  color: white;
+  cursor: pointer;
 }
 input[type="search"][disabled],
 button[type="submit"][disabled] {
