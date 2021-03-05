@@ -27,7 +27,7 @@ export default function Index() {
         )
         .map((d, idx) => {
           return (
-            <section>
+            <section key={d}>
               <details open={idx === 0}>
                 <summary>
                   {new Date(`${d} 00:00:00`).toString().slice(0, 15)} (
