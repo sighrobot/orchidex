@@ -3,7 +3,7 @@ import { S3_SELECT_PARAMS } from "lib/constants";
 const AWS = require("aws-sdk");
 const S3 = require("aws-sdk/clients/s3");
 
-AWS.config.loadFromPath("./aws.json");
+AWS.config.update(AWS_CONFIG);
 
 export default async (req, res) => {
   const { genus, epithet } = req.query;
