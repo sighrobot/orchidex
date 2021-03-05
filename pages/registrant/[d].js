@@ -8,7 +8,7 @@ import { useDate } from "lib/hooks/useDate";
 
 export const Grex = () => {
   const router = useRouter();
-  const { r = "" } = router.query;
+  const { d = "" } = router.query;
 
   const onDate = useDate({ d });
   const grouped = groupBy(onDate, "genus");
