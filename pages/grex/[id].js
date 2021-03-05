@@ -71,7 +71,7 @@ export const Grex = () => {
               <strong>{grex?.registrant_name}</strong> (
               {byRegistrant.length.toLocaleString()})
             </summary>
-            <p>
+            <div>
               {orderBy(byRegistrant, ["genus", "epithet"]).map(
                 (grexOnDate, idx) => {
                   return (
@@ -83,7 +83,7 @@ export const Grex = () => {
                   );
                 }
               )}
-            </p>
+            </div>
           </details>
         </section>
       )}

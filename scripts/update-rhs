@@ -1,5 +1,8 @@
 #!/bin/bash
 
+PATH=/path/1:/path/2
+PATH=/sbin:/usr/sbin/:/usr/local/sbin:/bin:/usr/local/bin
+
 prev=`tail -n1 /root/rhs/up-to-date.tsv  | tr '\t' '\n' | head -n1`
 next=$((prev+1))
 echo $prev $next
