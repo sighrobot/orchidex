@@ -3,7 +3,11 @@ import { S3_SELECT_PARAMS } from "lib/constants";
 const AWS = require("aws-sdk");
 const S3 = require("aws-sdk/clients/s3");
 
-AWS.config.update(AWS_CONFIG);
+if (process.env.NODE_ENV === "development") {
+  AWS.config.loadFromPath("./aws.json");
+} else {
+  AWS.config.update(AWS_CONFIG);
+}
 
 export default async (req, res) => {
   const { id } = req.query;
@@ -18,7 +22,6 @@ export default async (req, res) => {
   };
 
   let str = "";
-  console.log("str", { str });
 
   const d = await new Promise((resolve) => {
     s3.selectObjectContent(params, (err, data) => {
