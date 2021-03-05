@@ -84,7 +84,9 @@ export default function Index() {
 
       <form onSubmit={handleSubmit}>
         <p>
-          <em>To search, fill out at least one box.</em>
+          <em style={{ fontSize: "90%" }}>
+            To search, fill out at least one box.
+          </em>
         </p>
         <div>
           <span>
