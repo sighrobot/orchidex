@@ -6,8 +6,9 @@ import { Parentage } from "components/parentage";
 import { useRouter } from "next/router";
 import { useDate } from "lib/hooks/useDate";
 import Head from "next/head";
+import { Grex } from "components/grex";
 
-export const Grex = () => {
+export const RegisteredOnDate = () => {
   const router = useRouter();
   const { d = "" } = router.query;
 
@@ -34,11 +35,7 @@ export const Grex = () => {
                   {orderBy(grouped[genus], ["genus", "epithet"]).map(
                     (grexOnDate) => {
                       return (
-                        <article key={grexOnDate.id}>
-                          <Name grex={grexOnDate} />
-                          <br />
-                          <Parentage grex={grexOnDate} />
-                        </article>
+                        <Grex key={grexOnDate.id} grex={grexOnDate} hideDate />
                       );
                     }
                   )}
@@ -52,4 +49,4 @@ export const Grex = () => {
   );
 };
 
-export default Grex;
+export default RegisteredOnDate;

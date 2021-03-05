@@ -6,6 +6,7 @@ import Head from "next/head";
 import { Container } from "components/container";
 import { Name } from "components/name";
 import { Parentage } from "components/parentage";
+import { Grex } from "components/grex";
 
 export default function Index() {
   const router = useRouter();
@@ -138,17 +139,12 @@ export default function Index() {
           {results.length === 1000 ? "+" : ""})
         </h3>
 
-        {orderBy(results, ["genus", "epithet"]).map((r) => {
-          return (
-            <article key={r.id}>
-              <div>
-                <Name grex={r} />
-              </div>
-              <div>
-                <Parentage grex={r} />
-              </div>
-            </article>
-          );
+        {orderBy(
+          results,
+          ["date_of_registration", "genus", "epithet"],
+          ["desc"]
+        ).map((r) => {
+          return <Grex key={r.id} grex={r} />;
         })}
       </section>
     </Container>

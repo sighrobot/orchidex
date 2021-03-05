@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export const Reg = ({ grex }) => {
+export const Reg = ({ grex, hideDate }) => {
   if (grex) {
     if (
       !grex.date_of_registration ||
@@ -17,9 +17,11 @@ export const Reg = ({ grex }) => {
     return (
       <span className="reg">
         Registered{" "}
-        <Link href={`/date/${grex.date_of_registration}`}>
-          <a className="date">{dateStr}</a>
-        </Link>{" "}
+        {!hideDate && (
+          <Link href={`/date/${grex.date_of_registration}`}>
+            <a className="date">{dateStr}</a>
+          </Link>
+        )}{" "}
         by {grex.registrant_name} ({grex.originator_name})
       </span>
     );

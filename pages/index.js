@@ -2,10 +2,8 @@ import { groupBy, orderBy } from "lodash";
 import Head from "next/head";
 
 import { Container } from "components/container";
-import { Name } from "components/name";
-import { Parentage } from "components/parentage";
 import { useDate } from "lib/hooks/useDate";
-import { Reg } from "components/reg";
+import { Grex } from "components/grex";
 
 export default function Index() {
   const recent = useDate();
@@ -36,15 +34,7 @@ export default function Index() {
                 </summary>
                 <p>
                   {orderBy(grouped[d], ["genus", "epithet"]).map((r) => {
-                    return (
-                      <article key={r.id}>
-                        <Name grex={r} />
-                        <br />
-                        <Parentage grex={r} />
-                        <br />
-                        <Reg grex={r} />
-                      </article>
-                    );
+                    return <Grex key={r.id} grex={r} hideDate />;
                   })}
                 </p>
               </details>

@@ -4,6 +4,7 @@ import { Reg } from "components/reg";
 import { Container } from "components/container";
 import { Name } from "components/name";
 import { Parentage } from "components/parentage";
+import { Grex as G } from "components/grex";
 import { useGrex } from "lib/hooks/useGrex";
 import { useDescendants } from "lib/hooks/useDescendants";
 import { useRouter } from "next/router";
@@ -56,41 +57,36 @@ export const Grex = () => {
               ["date_of_registration", "genus", "epithet"],
               ["desc"]
             ).map((grexOnDate) => {
-              return (
-                <article key={grexOnDate.id}>
-                  <Name grex={grexOnDate} />
-                  <br />
-                  <Parentage grex={grexOnDate} />
-                  <br />
-                  <Reg grex={grexOnDate} />
-                </article>
-              );
+              return <G key={grexOnDate.id} grex={grexOnDate} />;
             })}
           </p>
         </details>
       </section>
 
-      <section>
-        <details>
-          <summary>
-            Same-Date Registrations by {grex?.registrant_name} (
-            {byRegistrant.length.toLocaleString()})
-          </summary>
-          <p>
-            {orderBy(byRegistrant, ["genus", "epithet"]).map(
-              (grexOnDate, idx) => {
-                return (
-                  <article key={`${idx}-${grexOnDate.id}`}>
-                    <Name grex={grexOnDate} />
-                    <br />
-                    <Parentage grex={grexOnDate} />
-                  </article>
-                );
-              }
-            )}
-          </p>
-        </details>
-      </section>
+      {grex?.date_of_registration && (
+        <section>
+          <details>
+            <summary>
+              Same-Date Registrations by{" "}
+              <strong>{grex?.registrant_name}</strong> (
+              {byRegistrant.length.toLocaleString()})
+            </summary>
+            <p>
+              {orderBy(byRegistrant, ["genus", "epithet"]).map(
+                (grexOnDate, idx) => {
+                  return (
+                    <G
+                      key={`${idx}-${grexOnDate.id}`}
+                      grex={grexOnDate}
+                      hideReg
+                    />
+                  );
+                }
+              )}
+            </p>
+          </details>
+        </section>
+      )}
 
       <table>
         <tbody>
