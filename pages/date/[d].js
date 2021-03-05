@@ -1,8 +1,6 @@
 import { orderBy, groupBy } from "lodash";
 
 import { Container } from "components/container";
-import { Name } from "components/name";
-import { Parentage } from "components/parentage";
 import { useRouter } from "next/router";
 import { useDate } from "lib/hooks/useDate";
 import Head from "next/head";

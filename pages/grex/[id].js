@@ -50,7 +50,7 @@ export const Grex = () => {
 
       <section>
         <details>
-          <summary>Descendants ({descendants.length.toLocaleString()})</summary>
+          <summary>Progeny ({descendants.length.toLocaleString()})</summary>
           <p>
             {orderBy(
               descendants.filter((d) => d.synonym_flag.includes("not")),

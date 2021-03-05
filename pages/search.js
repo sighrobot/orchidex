@@ -1,11 +1,9 @@
 import React from "react";
 import Router, { useRouter } from "next/router";
-import { groupBy, orderBy } from "lodash";
+import { orderBy } from "lodash";
 import Head from "next/head";
 
 import { Container } from "components/container";
-import { Name } from "components/name";
-import { Parentage } from "components/parentage";
 import { Grex } from "components/grex";
 
 export default function Index() {
@@ -86,12 +84,11 @@ export default function Index() {
 
       <form onSubmit={handleSubmit}>
         <div>
-          Grex 1{" "}
           <input
             autoComplete="off"
             name="genus"
             onChange={handleChange}
-            placeholder="Genus"
+            placeholder="Genus 1"
             style={{ fontStyle: "italic" }}
             type="search"
             value={value.genus}
@@ -100,34 +97,32 @@ export default function Index() {
             autoComplete="off"
             name="epithet"
             onChange={handleChange}
-            placeholder="epithet"
+            placeholder="epithet 1"
             type="search"
             value={value.epithet}
           />
         </div>
-        <br />
         <div>
-          Grex 2{" "}
           <input
             autoComplete="off"
             name="genus"
+            disabled={!value.genus && !value.epithet}
             onChange={handleChange2}
-            placeholder="Genus"
+            placeholder="Genus 2"
             style={{ fontStyle: "italic" }}
             value={value2.genus}
             type="search"
           />
           <input
             autoComplete="off"
+            disabled={!value.genus && !value.epithet}
             name="epithet"
             onChange={handleChange2}
-            placeholder="epithet"
+            placeholder="epithet 2"
             type="search"
             value={value2.epithet}
           />
-          (optional)
         </div>
-        <br />
         <button disabled={!value.genus && !value.epithet} type="submit">
           Search
         </button>
