@@ -15,7 +15,7 @@ export const Grex = () => {
 
   return (
     <Container>
-      <h2>{r}</h2>
+      <h2>{d}</h2>
       <section>
         {orderBy(Object.keys(grouped)).map((genus) => {
           return (
