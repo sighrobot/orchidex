@@ -12,7 +12,6 @@ if (process.env.NODE_ENV === "development") {
 export default async (req, res) => {
   const { genus, epithet: e } = req.query;
   const epithet = e.replace(/'/g, "''");
-  console.log({ epithet });
 
   const s3 = new S3({
     region: "us-east-1",

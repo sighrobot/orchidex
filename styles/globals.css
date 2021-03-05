@@ -38,23 +38,32 @@ mark {
   max-width: 1020px;
 }
 
+nav {
+  text-transform: uppercase;
+}
+
+nav a {
+  margin-right: 10px;
+}
+
 .container header {
   display: flex;
   align-items: center;
-  padding: 10px 0;
+  padding: 20px 0;
 }
 
 .container header h1 {
   margin-right: 20px;
+  font-size: 120%;
 }
 
 h1 {
-  font-size: 32px;
+  text-transform: uppercase;
 }
 
 h2 {
   font-size: 26px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 h3 {
@@ -111,8 +120,13 @@ article:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-article .parentage {
+article .parentage,
+article .reg {
   font-size: 80%;
+}
+
+article .reg {
+  opacity: 0.7;
 }
 
 details summary > * {
@@ -154,4 +168,28 @@ th {
 th {
   padding-right: 10px;
   text-align: left;
+}
+
+table {
+  margin-top: 30px;
+  font-size: 80%;
+  opacity: 0.5;
+}
+
+.container > main > div:first-child {
+  margin-bottom: 30px;
+}
+
+h1 {
+  position: relative;
+  display: inline-block;
+}
+
+sup {
+  position: absolute;
+  top: -10px;
+  right: 0;
+  font-size: 10px;
+  color: gray;
+  text-transform: none;
 }

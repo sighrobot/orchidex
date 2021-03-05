@@ -5,23 +5,17 @@ import { Name } from "components/name";
 import { Parentage } from "components/parentage";
 import { useRouter } from "next/router";
 import { useDate } from "lib/hooks/useDate";
-import Head from "next/head";
 
 export const Grex = () => {
   const router = useRouter();
-  const { d = "" } = router.query;
-
-  const dateStr = new Date(`${d}T00:00:00`).toString().slice(3, 15);
+  const { r = "" } = router.query;
 
   const onDate = useDate({ d });
   const grouped = groupBy(onDate, "genus");
 
   return (
     <Container>
-      <Head>
-        <title>Registrations on {dateStr} | Orchidex</title>
-      </Head>
-      <h2>Registered {dateStr}</h2>
+      <h2>{r}</h2>
       <section>
         {orderBy(Object.keys(grouped)).map((genus) => {
           return (

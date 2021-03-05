@@ -10,7 +10,9 @@ if (process.env.NODE_ENV === "development") {
 }
 
 export default async (req, res) => {
-  const { g1, e1, g2, e2 } = req.query;
+  const { g1, e1: e1raw = "", g2, e2: e2raw = "" } = req.query;
+  const e1 = e1raw.replace(/'/g, "''");
+  const e2 = e2raw.replace(/'/g, "''");
 
   const s3 = new S3({
     region: "us-east-1",

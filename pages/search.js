@@ -81,7 +81,7 @@ export default function Index() {
         <title>Search | Orchidex</title>
       </Head>
 
-      <h1>Search</h1>
+      <h2>Search</h2>
 
       <form onSubmit={handleSubmit}>
         <div>

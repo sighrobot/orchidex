@@ -2,7 +2,10 @@ import Link from "next/link";
 
 export const Reg = ({ grex }) => {
   if (grex) {
-    if (grex.registrant_name.includes("natural hybrid")) {
+    if (
+      !grex.date_of_registration ||
+      grex.registrant_name.includes("natural hybrid")
+    ) {
       return null;
     }
 

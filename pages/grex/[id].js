@@ -9,6 +9,7 @@ import { useDescendants } from "lib/hooks/useDescendants";
 import { useRouter } from "next/router";
 import { useDate } from "lib/hooks/useDate";
 import Link from "next/link";
+import Head from "next/head";
 
 export const Grex = () => {
   const router = useRouter();
@@ -19,9 +20,22 @@ export const Grex = () => {
   const descendants = useDescendants(grex);
   const grexKeys = grex ? Object.keys(grex) : [];
 
+  const byRegistrant = onDate.filter(
+    (f) => f.id !== id && f.registrant_name === grex?.registrant_name
+  );
+
+  if (!grex) {
+    return <Container>loading&hellip;</Container>;
+  }
+
   return (
     <Container>
-      <section>
+      <Head>
+        <title>
+          {grex.genus} {grex.epithet} | Orchidex
+        </title>
+      </Head>
+      <div>
         <h2>
           <Name link={false} grex={grex} />
         </h2>
@@ -31,24 +45,24 @@ export const Grex = () => {
         </h3>
 
         {grex && <Reg grex={grex} />}
-      </section>
+      </div>
 
       <section>
         <details>
-          <summary>
-            Same-Date Registrations (
-            {(onDate.length > 1 ? onDate.length - 1 : 0).toLocaleString()})
-          </summary>
+          <summary>Descendants ({descendants.length.toLocaleString()})</summary>
           <p>
             {orderBy(
-              onDate.filter((f) => f.id !== id),
-              ["genus", "epithet"]
+              descendants.filter((d) => d.synonym_flag.includes("not")),
+              ["date_of_registration", "genus", "epithet"],
+              ["desc"]
             ).map((grexOnDate) => {
               return (
                 <article key={grexOnDate.id}>
                   <Name grex={grexOnDate} />
                   <br />
                   <Parentage grex={grexOnDate} />
+                  <br />
+                  <Reg grex={grexOnDate} />
                 </article>
               );
             })}
@@ -58,85 +72,84 @@ export const Grex = () => {
 
       <section>
         <details>
-          <summary>Descendants ({descendants.length.toLocaleString()})</summary>
+          <summary>
+            Same-Date Registrations by {grex?.registrant_name} (
+            {byRegistrant.length.toLocaleString()})
+          </summary>
           <p>
-            {orderBy(descendants, ["genus", "epithet"]).map((grexOnDate) => {
-              return (
-                <article key={grexOnDate.id}>
-                  <Name grex={grexOnDate} />
-                  <br />
-                  <Parentage grex={grexOnDate} />
-                </article>
-              );
-            })}
+            {orderBy(byRegistrant, ["genus", "epithet"]).map(
+              (grexOnDate, idx) => {
+                return (
+                  <article key={`${idx}-${grexOnDate.id}`}>
+                    <Name grex={grexOnDate} />
+                    <br />
+                    <Parentage grex={grexOnDate} />
+                  </article>
+                );
+              }
+            )}
           </p>
         </details>
       </section>
 
-      {grex && (
-        <section>
-          <details>
-            <summary>Raw Data ({grexKeys.length.toLocaleString()})</summary>
-            <article>
-              <table>
-                <tbody>
-                  {grexKeys.map((k) => {
-                    const field = grex[k];
-                    let href;
-                    let rel;
-                    let target;
+      <table>
+        <tbody>
+          {grexKeys.map((k) => {
+            const field = grex[k];
+            let href;
+            let rel;
+            let target;
 
-                    switch (k) {
-                      case "id":
-                        href = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${field}`;
-                        rel = "noopener noreferrer";
-                        target = "_blank";
-                        break;
-                      case "genus":
-                        href = `/search?g1=${field}`;
-                        break;
-                      case "epithet":
-                        href = `/search?e1=${field}`;
-                        break;
-                      case "seed_parent_genus":
-                        href = `/search?g1=${field}`;
-                        break;
-                      case "seed_parent_epithet":
-                        href = `/search?e1=${field}`;
-                        break;
-                      case "pollen_parent_genus":
-                        href = `/search?g1=${field}`;
-                        break;
-                      case "pollen_parent_epithet":
-                        href = `/search?e1=${field}`;
-                        break;
-                      default:
-                        break;
-                    }
+            switch (k) {
+              case "id":
+                href = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${field}`;
+                rel = "noopener noreferrer";
+                target = "_blank";
+                break;
+              case "genus":
+                href = `/search?g1=${field}`;
+                break;
+              case "epithet":
+                href = `/search?e1=${field}`;
+                break;
+              case "date_of_registration":
+                href = `/date/${field}`;
+                break;
+              case "seed_parent_genus":
+                href = `/search?g1=${field}`;
+                break;
+              case "seed_parent_epithet":
+                href = `/search?e1=${field}`;
+                break;
+              case "pollen_parent_genus":
+                href = `/search?g1=${field}`;
+                break;
+              case "pollen_parent_epithet":
+                href = `/search?e1=${field}`;
+                break;
+              default:
+                break;
+            }
 
-                    return (
-                      <tr key={k}>
-                        <th>{k.replace(/_/g, " ")}:</th>
-                        <td>
-                          {href ? (
-                            <Link href={href}>
-                              <a target={target} rel={rel}>
-                                {grex[k]}
-                              </a>
-                            </Link>
-                          ) : (
-                            grex[k]
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </article>
-          </details>
-        </section>
-      )}
+            return (
+              <tr key={k}>
+                <th>{k.replace(/_/g, " ")}:</th>
+                <td>
+                  {href ? (
+                    <Link href={href}>
+                      <a target={target} rel={rel}>
+                        {grex[k]}
+                      </a>
+                    </Link>
+                  ) : (
+                    grex[k]
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
     </Container>
   );
 };

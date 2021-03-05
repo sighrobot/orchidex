@@ -5,6 +5,7 @@ import { Container } from "components/container";
 import { Name } from "components/name";
 import { Parentage } from "components/parentage";
 import { useDate } from "lib/hooks/useDate";
+import { Reg } from "components/reg";
 
 export default function Index() {
   const recent = useDate();
@@ -37,12 +38,11 @@ export default function Index() {
                   {orderBy(grouped[d], ["genus", "epithet"]).map((r) => {
                     return (
                       <article key={r.id}>
-                        <div>
-                          <Name grex={r} />
-                        </div>
-                        <div>
-                          <Parentage grex={r} />
-                        </div>
+                        <Name grex={r} />
+                        <br />
+                        <Parentage grex={r} />
+                        <br />
+                        <Reg grex={r} />
                       </article>
                     );
                   })}
