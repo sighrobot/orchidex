@@ -1,56 +1,46 @@
-import { Container } from 'components/container';
-import Head from 'next/head';
-import styles from '../styles/Home.module.css';
+import { groupBy, orderBy } from "lodash";
+import Head from "next/head";
 
-export default function Home() {
+import { Container } from "components/container";
+import { Name } from "components/name";
+import { Parentage } from "components/parentage";
+import { useDate } from "lib/hooks/useDate";
+
+export default function Index() {
+  const recent = useDate();
+  const grouped = groupBy(recent, "date_of_registration");
+
   return (
     <Container>
-      <div className={styles.container}>
-        <Head>
-          <title>Create Next App</title>
-        </Head>
+      <Head>
+        <title>Home | Orchidex</title>
+      </Head>
 
-        <main className={styles.main}>
-          <h1 className={styles.title}>
-            Welcome to <a href="https://nextjs.org">Next.js!</a>
-          </h1>
+      <h2>Recently registered</h2>
 
-          <p className={styles.description}>
-            Get started by editing{' '}
-            <code className={styles.code}>pages/index.js</code>
-          </p>
+      {Object.keys(grouped).map((d) => {
+        return (
+          <section>
+            <h3>
+              {new Date(d).toUTCString().split("00:00:00")[0].trim()} (
+              {grouped[d].length.toLocaleString()})
+            </h3>
 
-          <div className={styles.grid}>
-            <a href="https://nextjs.org/docs" className={styles.card}>
-              <h3>Documentation &rarr;</h3>
-              <p>Find in-depth information about Next.js features and API.</p>
-            </a>
-
-            <a href="https://nextjs.org/learn" className={styles.card}>
-              <h3>Learn &rarr;</h3>
-              <p>Learn about Next.js in an interactive course with quizzes!</p>
-            </a>
-
-            <a
-              href="https://github.com/vercel/next.js/tree/master/examples"
-              className={styles.card}
-            >
-              <h3>Examples &rarr;</h3>
-              <p>Discover and deploy boilerplate example Next.js projects.</p>
-            </a>
-
-            <a
-              href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              className={styles.card}
-            >
-              <h3>Deploy &rarr;</h3>
-              <p>
-                Instantly deploy your Next.js site to a public URL with Vercel.
-              </p>
-            </a>
-          </div>
-        </main>
-      </div>
+            {orderBy(grouped[d], ["genus", "epithet"]).map((r) => {
+              return (
+                <article key={r.id}>
+                  <div>
+                    <Name grex={r} />
+                  </div>
+                  <div>
+                    <Parentage grex={r} />
+                  </div>
+                </article>
+              );
+            })}
+          </section>
+        );
+      })}
     </Container>
   );
 }

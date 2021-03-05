@@ -2,16 +2,19 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'IBM Plex Mono', monospace;
+  font-family: "IBM Plex Mono", monospace;
 }
 
 body {
   padding: 0 10px;
-  background: cornflowerblue;
+  background: lightskyblue;
+  font-size: 17px;
 }
 
 * {
   box-sizing: border-box;
+  font-family: inherit;
+  font-size: inherit;
 }
 
 h1,
@@ -25,11 +28,116 @@ ul {
   margin: 0;
 }
 
+mark {
+  background: rgba(0, 255, 0, 0.25);
+  color: white;
+}
+
+.container header {
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+}
+
+.container header h1 {
+  margin-right: 20px;
+}
+
+h1 {
+  font-size: 32px;
+}
+
+h2 {
+  font-size: 26px;
+  margin-bottom: 20px;
+}
+
+h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+section {
+  padding: 20px 0;
+}
+
+section + section {
+  margin-top: 30px;
+}
+
+.container main {
+  padding: 20px 0;
+}
+
 a {
-  color: inherit;
-  text-decoration: none;
+  color: darkblue;
+}
+
+em {
+  opacity: 0.7;
+}
+
+.parentage a {
+  color: purple;
 }
 
 .genus {
   font-style: italic;
+}
+
+.parentage {
+  opacity: 0.5;
+}
+
+article {
+  padding: 20px 0;
+}
+
+article + article {
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+article:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+article .parentage {
+  font-size: 75%;
+}
+
+details summary {
+  display: inline-block;
+  cursor: pointer;
+  padding: 10px 0;
+  user-select: none;
+  outline: 0;
+}
+
+form {
+  display: inline-block;
+}
+
+input[type="search"] {
+  width: auto;
+  margin-right: 10px;
+}
+
+button[type="submit"] {
+  width: 100%;
+  padding: 10px;
+  background: lightsalmon;
+}
+button[type="submit"][disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+td,
+th {
+  padding: 5px 0;
+}
+
+th {
+  padding-right: 10px;
+  text-align: left;
 }
