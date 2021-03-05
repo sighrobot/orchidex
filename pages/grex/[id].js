@@ -30,7 +30,7 @@ export const Grex = () => {
           <Parentage grex={grex} />
         </h3>
 
-        <Reg grex={grex} />
+        {grex && <Reg grex={grex} />}
       </section>
 
       <section>

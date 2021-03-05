@@ -9,8 +9,6 @@ import { useDate } from "lib/hooks/useDate";
 export default function Index() {
   const recent = useDate();
   const grouped = groupBy(recent, "date_of_registration");
-  const now = new Date(`${new Date().toISOString().slice(0, 10)} 00:00:00`);
-  console.log(now);
 
   return (
     <Container>
