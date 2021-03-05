@@ -84,44 +84,49 @@ export default function Index() {
 
       <form onSubmit={handleSubmit}>
         <div>
-          <input
-            autoComplete="off"
-            name="genus"
-            onChange={handleChange}
-            placeholder="Genus 1"
-            style={{ fontStyle: "italic" }}
-            type="search"
-            value={value.genus}
-          />
-          <input
-            autoComplete="off"
-            name="epithet"
-            onChange={handleChange}
-            placeholder="epithet 1"
-            type="search"
-            value={value.epithet}
-          />
-        </div>
-        <div>
-          <input
-            autoComplete="off"
-            name="genus"
-            disabled={!value.genus && !value.epithet}
-            onChange={handleChange2}
-            placeholder="Genus 2"
-            style={{ fontStyle: "italic" }}
-            value={value2.genus}
-            type="search"
-          />
-          <input
-            autoComplete="off"
-            disabled={!value.genus && !value.epithet}
-            name="epithet"
-            onChange={handleChange2}
-            placeholder="epithet 2"
-            type="search"
-            value={value2.epithet}
-          />
+          <span>
+            <input
+              autoComplete="off"
+              name="genus"
+              onChange={handleChange}
+              placeholder="Genus 1"
+              style={{ fontStyle: "italic" }}
+              type="search"
+              value={value.genus}
+            />
+            <br />
+            <input
+              autoComplete="off"
+              name="epithet"
+              onChange={handleChange}
+              placeholder="epithet 1"
+              type="search"
+              value={value.epithet}
+            />
+          </span>
+          <span>&times;</span>
+          <span>
+            <input
+              autoComplete="off"
+              name="genus"
+              disabled={!value.genus && !value.epithet}
+              onChange={handleChange2}
+              placeholder="Genus 2"
+              style={{ fontStyle: "italic" }}
+              value={value2.genus}
+              type="search"
+            />
+            <br />
+            <input
+              autoComplete="off"
+              disabled={!value.genus && !value.epithet}
+              name="epithet"
+              onChange={handleChange2}
+              placeholder="epithet 2"
+              type="search"
+              value={value2.epithet}
+            />
+          </span>
         </div>
         <button disabled={!value.genus && !value.epithet} type="submit">
           Search

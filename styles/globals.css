@@ -6,9 +6,12 @@ body {
 }
 
 body {
-  padding: 0 10px;
   background: lightblue;
   font-size: 16px;
+  width: 100vw;
+}
+
+#__next {
   width: 100vw;
 }
 
@@ -37,6 +40,7 @@ mark {
 .container {
   margin: 0 auto;
   max-width: 1020px;
+  padding: 0 10px;
 }
 
 nav {
@@ -157,26 +161,44 @@ details summary {
 }
 
 form {
-  display: inline-block;
   margin: 30px 0;
+  max-width: 600px;
 }
 
 form > div {
   display: flex;
+  /* width: calc(100% - 50px); */
+  /* justify-content: space-between; */
+  align-items: center;
+}
+
+form > div > span:not(:nth-child(2)) {
+  flex-grow: 1;
+}
+
+form > div > span:nth-child(2) {
+  margin: 0 5px;
+}
+
+form > *:not(:first-child) {
+  margin-top: 10px;
 }
 
 input[type="search"] {
   appearance: none;
   border: 1px solid gray;
-  width: auto;
-  margin-right: 5px;
   padding: 5px;
+  width: 100%;
+}
+
+input[type="search"]:first-child {
+  margin-bottom: 5px;
 }
 
 button[type="submit"] {
   border: 1px solid gray;
   width: 100%;
-  padding: 10px;
+  padding: 5px;
   background: lightsalmon;
 }
 input[type="search"][disabled],
