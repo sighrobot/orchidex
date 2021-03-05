@@ -15,7 +15,7 @@ export const Grex = () => {
 
   return (
     <Container>
-      <h2>Registered {new Date(`${d} 00:00:00`).toString().slice(3, 15)}</h2>
+      <h2>Registered {new Date(`${d}T00:00:00`).toString().slice(3, 15)}</h2>
       <section>
         {orderBy(Object.keys(grouped)).map((genus) => {
           return (

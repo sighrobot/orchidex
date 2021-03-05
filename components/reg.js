@@ -7,7 +7,7 @@ export const Reg = ({ grex }) => {
     }
 
     const dateStr = grex.date_of_registration
-      ? new Date(`${grex.date_of_registration} 00:00:00`)
+      ? new Date(`${grex.date_of_registration}T00:00:00`)
           .toString()
           .slice(3, 15)
       : "on unknown date";
