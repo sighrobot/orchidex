@@ -1,4 +1,4 @@
-import { S3_SELECT_PARAMS } from "lib/constants";
+import { AWS_CONFIG, S3_SELECT_PARAMS } from "lib/constants";
 
 const AWS = require("aws-sdk");
 const S3 = require("aws-sdk/clients/s3");
