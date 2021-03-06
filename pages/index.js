@@ -102,18 +102,10 @@ export default function Index() {
         </title>
       </Head>
 
-      <h2>Search</h2>
-
       <form onSubmit={handleSubmit}>
-        <p>
-          <em style={{ fontSize: "90%" }}>
-            To search, fill out at least one box.
-          </em>
-        </p>
         <div>
           <span>
             <input
-              autoComplete="off"
               name="genus"
               onChange={handleChange}
               placeholder="Genus 1"
@@ -124,7 +116,6 @@ export default function Index() {
             />
             <br />
             <input
-              autoComplete="off"
               name="epithet"
               onChange={handleChange}
               placeholder="epithet 1"
@@ -136,7 +127,6 @@ export default function Index() {
           <span>&times;</span>
           <span>
             <input
-              autoComplete="off"
               name="genus"
               // disabled={!value.genus && !value.epithet}
               onChange={handleChange2}
@@ -148,7 +138,6 @@ export default function Index() {
             />
             <br />
             <input
-              autoComplete="off"
               // disabled={!value.genus && !value.epithet}
               name="epithet"
               onChange={handleChange2}

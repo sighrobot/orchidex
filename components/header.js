@@ -10,22 +10,21 @@ export const Header = () => {
       <h1>
         <Link href="/">
           <a>
-            <em style={{ color: "crimson" }}>Orchi</em>dex
+            <em style={{ color: "#a5abfb" }}>Orchi</em>dex
             <sup>v{p.version}</sup>
           </a>
         </Link>
       </h1>
 
       <nav>
+        <Link href="/viz">
+          <a className={router.pathname === "/viz" ? "active" : undefined}>
+            Treemap
+          </a>
+        </Link>
         <Link href="/recent">
           <a className={router.pathname === "/recent" ? "active" : undefined}>
             Recent
-          </a>
-        </Link>
-
-        <Link href="/viz">
-          <a className={router.pathname === "/viz" ? "active" : undefined}>
-            Viz
           </a>
         </Link>
       </nav>

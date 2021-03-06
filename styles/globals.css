@@ -2,11 +2,11 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: "Courier New", Courier, monospace;
 }
 
 body {
-  background: lightblue;
+  background: #bcebfb;
   font-size: 16px;
   width: 100vw;
 }
@@ -43,13 +43,10 @@ mark {
   padding: 0 10px;
 }
 
-nav {
-  text-transform: uppercase;
-}
-
 nav a {
   margin-right: 10px;
   color: inherit;
+  text-transform: lowercase;
 }
 
 a.active {
@@ -68,7 +65,7 @@ small {
 
 .container header h1 {
   margin-right: 20px;
-  font-size: 120%;
+  font-size: 150%;
 }
 
 .container header h1 a {
@@ -81,7 +78,7 @@ h1 {
 }
 
 h2 {
-  font-size: 26px;
+  font-size: 24px;
   margin-bottom: 10px;
 }
 
@@ -103,28 +100,21 @@ section + section {
 }
 
 a {
-  color: darkblue;
-}
-
-em {
-  opacity: 0.7;
+  color: black;
 }
 
 .parentage a {
-  color: purple;
+  /* color: #a44cf5; */
+  /* color: #6d04ce; */
+  color: #8c94ff;
 }
 
 .genus {
   font-style: italic;
 }
 
-.parentage {
-  opacity: 0.5;
-}
-
 a.date {
-  color: darkcyan;
-  font-weight: bold;
+  /* color: black; */
 }
 
 article {
@@ -144,10 +134,6 @@ article .reg {
   font-size: 80%;
 }
 
-article .reg {
-  opacity: 0.7;
-}
-
 details summary > * {
   display: inline-block;
 }
@@ -161,7 +147,7 @@ details summary {
 }
 
 form {
-  margin: 30px 0;
+  margin-bottom: 30px;
   max-width: 600px;
 }
 
@@ -181,7 +167,7 @@ form > div > span:nth-child(2) {
 }
 
 form > *:not(:first-child) {
-  margin-top: 20px;
+  margin-top: 30px;
 }
 
 input[type="search"] {
@@ -192,11 +178,11 @@ input[type="search"] {
 }
 
 input[type="search"]:first-child {
-  margin-bottom: 2.5px;
+  margin-bottom: 5px;
 }
 
 form > div > span:first-child input[type="search"] {
-  border: 1px solid crimson;
+  border: 1px solid #a44cf5;
 }
 
 form > div > span:last-child input[type="search"] {
@@ -207,13 +193,15 @@ button[type="submit"] {
   border: 1px solid black;
   width: 100%;
   padding: 5px;
-  background: crimson;
+  /* background: #b78dfb;
+  background: rgb(186, 190, 247); */
+  background: #a5abfb;
   color: white;
   cursor: pointer;
 }
 input[type="search"][disabled],
 button[type="submit"][disabled] {
-  opacity: 0.5;
+  /* opacity: 0.5; */
   cursor: not-allowed;
 }
 
