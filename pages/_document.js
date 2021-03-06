@@ -18,7 +18,7 @@ class MyDocument extends Document {
           />
 
           <link rel="icon" href="/favicon.ico" />
-          <link rel="apple-touch-icon" href="/kitsuneflower.png" />
+          <link rel="apple-touch-icon" href="/kitsunelogo.png" />
         </Head>
         <body>
           <Main />
