@@ -5,12 +5,14 @@ import { Name } from "components/name";
 import { Parentage } from "components/parentage";
 import { useRouter } from "next/router";
 import { useDate } from "lib/hooks/useDate";
+import { useRegistrant } from "lib/hooks/useRegistrant";
+import { Grex } from "components/grex";
 
-export const Grex = () => {
+export const Registrant = () => {
   const router = useRouter();
   const { d = "" } = router.query;
 
-  const onDate = useDate({ d });
+  const onDate = useRegistrant({ name: d });
   const grouped = groupBy(onDate, "genus");
 
   return (
@@ -24,19 +26,13 @@ export const Grex = () => {
                 <summary>
                   <em>{genus}</em> ({grouped[genus].length.toLocaleString()})
                 </summary>
-                <p>
+                <div>
                   {orderBy(grouped[genus], ["genus", "epithet"]).map(
                     (grexOnDate) => {
-                      return (
-                        <article key={grexOnDate.id}>
-                          <Name grex={grexOnDate} />
-                          <br />
-                          <Parentage grex={grexOnDate} />
-                        </article>
-                      );
+                      return <Grex key={grexOnDate.id} grex={grexOnDate} />;
                     }
                   )}
-                </p>
+                </div>
               </details>
             </section>
           );
@@ -46,4 +42,4 @@ export const Grex = () => {
   );
 };
 
-export default Grex;
+export default Registrant;

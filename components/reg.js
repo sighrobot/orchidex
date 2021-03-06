@@ -22,7 +22,10 @@ export const Reg = ({ grex, hideDate }) => {
             <a className="date">{dateStr}</a>
           </Link>
         )}{" "}
-        by {grex.registrant_name}{" "}
+        by{" "}
+        <Link href={`/registrant/${grex.registrant_name}`}>
+          <a>{grex.registrant_name}</a>
+        </Link>{" "}
         {grex.originator_name !== grex.registrant_name &&
           `(${grex.originator_name})`}
       </span>
