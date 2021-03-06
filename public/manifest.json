@@ -1,7 +1,7 @@
 {
   "name": "Orchidex",
   "short_name": "Orchidex",
-  "start_url": "/search",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#fff",
   "description": "Orchidex",

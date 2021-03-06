@@ -17,9 +17,15 @@ export const Header = () => {
       </h1>
 
       <nav>
-        <Link href="/search">
-          <a className={router.pathname === "/search" ? "active" : undefined}>
-            Search
+        <Link href="/recents">
+          <a className={router.pathname === "/recents" ? "active" : undefined}>
+            Recents
+          </a>
+        </Link>
+
+        <Link href="/viz">
+          <a className={router.pathname === "/viz" ? "active" : undefined}>
+            Viz
           </a>
         </Link>
       </nav>
