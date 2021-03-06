@@ -106,6 +106,8 @@ export default function Index() {
         <div>
           <span>
             <input
+              autoCorrect="off"
+              autoCapitalize="off"
               name="genus"
               onChange={handleChange}
               placeholder="Genus 1"
@@ -116,6 +118,8 @@ export default function Index() {
             />
             <br />
             <input
+              autoCorrect="off"
+              autoCapitalize="off"
               name="epithet"
               onChange={handleChange}
               placeholder="epithet 1"
@@ -127,6 +131,8 @@ export default function Index() {
           <span>&times;</span>
           <span>
             <input
+              autoCorrect="off"
+              autoCapitalize="off"
               name="genus"
               // disabled={!value.genus && !value.epithet}
               onChange={handleChange2}
@@ -138,6 +144,8 @@ export default function Index() {
             />
             <br />
             <input
+              autoCorrect="off"
+              autoCapitalize="off"
               // disabled={!value.genus && !value.epithet}
               name="epithet"
               onChange={handleChange2}
