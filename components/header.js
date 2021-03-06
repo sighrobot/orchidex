@@ -17,9 +17,9 @@ export const Header = () => {
       </h1>
 
       <nav>
-        <Link href="/recents">
-          <a className={router.pathname === "/recents" ? "active" : undefined}>
-            Recents
+        <Link href="/recent">
+          <a className={router.pathname === "/recent" ? "active" : undefined}>
+            Recent
           </a>
         </Link>
 

@@ -22,7 +22,7 @@ export default function Index() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    let url = "/search";
+    let url = "/";
 
     const params = [];
 

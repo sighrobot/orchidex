@@ -103,25 +103,25 @@ export const Grex = () => {
                 target = "_blank";
                 break;
               case "genus":
-                href = `/search?g1=${field}`;
+                href = `/?g1=${field}`;
                 break;
               case "epithet":
-                href = `/search?e1=${field}`;
+                href = `/?e1=${field}`;
                 break;
               case "date_of_registration":
                 href = `/date/${field}`;
                 break;
               case "seed_parent_genus":
-                href = `/search?g1=${field}`;
+                href = `/?g1=${field}`;
                 break;
               case "seed_parent_epithet":
-                href = `/search?e1=${field}`;
+                href = `/?e1=${field}`;
                 break;
               case "pollen_parent_genus":
-                href = `/search?g1=${field}`;
+                href = `/?g1=${field}`;
                 break;
               case "pollen_parent_epithet":
-                href = `/search?e1=${field}`;
+                href = `/?e1=${field}`;
                 break;
               default:
                 break;
