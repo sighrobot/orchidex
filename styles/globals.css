@@ -41,7 +41,41 @@ mark {
 .container {
   margin: 0 auto;
   max-width: 1020px;
+
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.container > div {
+  /* height: 90%; */
+  overflow: hidden;
+  overflow-y: auto;
   padding: 0 10px;
+  flex-grow: 1;
+}
+
+footer {
+  font-size: 12px;
+  height: 40px;
+  background: white;
+  flex-shrink: 0;
+  padding: 0 10px;
+  display: flex;
+  align-items: center;
+}
+
+footer button {
+  background: none;
+  border: none;
+  font-size: 30px;
+  padding: 0 10px;
+  margin-right: 20px;
+  position: relative;
+  top: -3px;
+  /* background: gray; */
 }
 
 nav a {
@@ -238,9 +272,4 @@ sup {
   font-size: 10px;
   color: gray;
   text-transform: none;
-}
-
-footer {
-  font-size: 12px;
-  padding: 50px 0;
 }

@@ -10,7 +10,12 @@ export const Footer = () => {
   }, []);
 
   if (show) {
-    return <footer>pwa</footer>;
+    return (
+      <footer>
+        <button onClick={() => history.back()}>&larr;</button>
+        <button onClick={() => history.forward()}>&rarr;</button>
+      </footer>
+    );
   }
 
   return null;
