@@ -22,6 +22,12 @@ const FIELDS = [
 
 const args = process.argv.slice(2);
 
+if (!args[0]) {
+  throw new Error("no start index");
+}
+
+console.log({ args });
+
 const get = async (id) => {
   const { text } = await request(`${URL}?ID=${id}`);
   const {
@@ -102,12 +108,12 @@ const startArg = parseInt(args[0], 10);
 let i = startArg ? startArg : 1;
 i = i - 1;
 
-const END_AFTER = 100;
+const END_AFTER = 50;
 let nullsInARow = 0;
 
 const skip = [169023, 900000];
 
-const stream = fs.createWriteStream("up-to-date.tsv", {
+const stream = fs.createWriteStream("/root/rhs/stable.tsv", {
   flags: startArg ? "a" : "w",
 });
 

@@ -1,11 +1,11 @@
 #!/bin/bash
 
-PATH=/path/1:/path/2
-PATH=/sbin:/usr/sbin/:/usr/local/sbin:/bin:/usr/local/bin
+PATH=/bin:/usr/bin:/usr/local/bin
 
-prev=`tail -n1 /root/rhs/up-to-date.tsv  | tr '\t' '\n' | head -n1`
+prev=`tail -n1 /root/rhs/stable.tsv  | tr '\t' '\n' | head -n1`
 next=$((prev+1))
 echo $prev $next
 node /root/rhs/update.js $next
-(head -n1 /root/rhs/up-to-date.tsv && tail -n+2 /root/rhs/up-to-date.tsv | sort -t$'\t' -r -n -k7 ) > /root/rhs/data.tsv
-aws s3api put-object --bucket orchidex --key data.tsv --body /root/rhs/data.tsv
+(head -n1 /root/rhs/stable.tsv && tail -n+2 /root/rhs/stable.tsv | sort -t$'\t' -r -n -k7 ) > /root/rhs/temp2.tsv
+aws s3api put-object --bucket orchidex --key data.tsv --body /root/rhs/temp2.tsv
+rm /root/rhs/temp2.tsv
