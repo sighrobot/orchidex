@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# https://askubuntu.com/a/39732
+# located in /etc/cron.hourly
+
 PATH=/bin:/usr/bin:/usr/local/bin
 
 prev=`tail -n1 /root/rhs/stable.tsv  | tr '\t' '\n' | head -n1`
