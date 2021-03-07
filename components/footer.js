@@ -12,8 +12,12 @@ export const Footer = () => {
   if (show) {
     return (
       <footer>
-        <button onClick={() => history.back()}>&larr;</button>
-        <button onClick={() => history.forward()}>&rarr;</button>
+        <button onClick={() => history.back()}>
+          <div>&larr;</div>
+        </button>
+        <button onClick={() => history.forward()}>
+          <div>&rarr;</div>
+        </button>
       </footer>
     );
   }

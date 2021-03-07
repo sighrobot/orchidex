@@ -62,21 +62,28 @@ footer {
   background: white;
   flex-shrink: 0;
   padding: 0 10px;
-  padding-bottom: 40px;
+  padding-bottom: 36px;
   display: flex;
   align-items: center;
 }
 
 footer button {
   height: 40px;
+  width: 40px;
   background: none;
   border: none;
-  font-size: 36px;
-  padding: 0 10px;
+  font-size: 40px;
+  padding: 0;
   margin-right: 20px;
-  position: relative;
-  top: -3px;
   /* background: gray; */
+  position: relative;
+}
+
+footer button div {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: -10px;
 }
 
 nav a {
