@@ -78,6 +78,7 @@ footer button {
   margin-right: 20px;
   /* background: gray; */
   position: relative;
+  user-select: none;
 }
 
 footer button div {
