@@ -39,9 +39,6 @@ mark {
 }
 
 .container {
-  margin: 0 auto;
-  max-width: 1020px;
-
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -55,6 +52,11 @@ mark {
   overflow-y: auto;
   padding: 0 10px;
   flex-grow: 1;
+}
+
+.container > div > div {
+  margin: 0 auto;
+  max-width: 1020px;
 }
 
 footer {

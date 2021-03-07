@@ -5,8 +5,10 @@ export const Container = ({ children }) => {
   return (
     <div className="container">
       <div>
-        <Header />
-        <main>{children}</main>
+        <div>
+          <Header />
+          <main>{children}</main>
+        </div>
       </div>
       <Footer />
     </div>
