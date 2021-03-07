@@ -191,6 +191,10 @@ details summary {
   outline: 0;
 }
 
+.reg {
+  opacity: 0.5;
+}
+
 form {
   margin-bottom: 30px;
   max-width: 600px;
