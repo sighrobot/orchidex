@@ -59,18 +59,19 @@ mark {
 
 footer {
   font-size: 12px;
-  height: 40px;
   background: white;
   flex-shrink: 0;
   padding: 0 10px;
+  padding-bottom: 40px;
   display: flex;
   align-items: center;
 }
 
 footer button {
+  height: 40px;
   background: none;
   border: none;
-  font-size: 30px;
+  font-size: 36px;
   padding: 0 10px;
   margin-right: 20px;
   position: relative;
