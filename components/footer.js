@@ -1,5 +1,17 @@
-export const Footer = () => (
-  <footer>
-    <em>Data is updated every hour but may not change with that frequency.</em>
-  </footer>
-);
+import React from "react";
+
+export const Footer = () => {
+  const [show, setShow] = React.useState(false);
+
+  React.useEffect(() => {
+    if (window.matchMedia("(display-mode: standalone)").matches) {
+      setShow(true);
+    }
+  }, []);
+
+  if (show) {
+    return <footer>pwa</footer>;
+  }
+
+  return null;
+};
