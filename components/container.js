@@ -6,7 +6,7 @@ export const Container = ({ children }) => {
     <div className="container">
       <Header />
       <main>{children}</main>
-      {/* <Footer /> */}
+      <Footer />
     </div>
   );
 };
