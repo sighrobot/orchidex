@@ -68,6 +68,7 @@ footer {
   padding-top: 5px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 footer button {
@@ -75,10 +76,8 @@ footer button {
   width: 40px;
   background: none;
   border: none;
-  font-size: 40px;
+  font-size: 25px;
   padding: 0;
-  margin-right: 20px;
-  /* background: gray; */
   position: relative;
   user-select: none;
   text-align: center;
@@ -86,10 +85,11 @@ footer button {
 }
 
 footer button div {
+  opacity: 0.85;
   height: 100%;
   width: 100%;
   position: absolute;
-  top: -10px;
+  top: 3px;
 }
 
 footer button img {

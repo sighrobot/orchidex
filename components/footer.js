@@ -22,14 +22,16 @@ export const Footer = () => {
     return (
       <footer>
         <button onClick={() => history.back()}>
-          <div>&larr;</div>
+          <div>&#5130;</div>
         </button>
         <button onClick={() => history.forward()}>
-          <div>&rarr;</div>
+          <div>&#5125;</div>
         </button>
         <button id="share" onClick={handleShare}>
           <img src="https://raw.githubusercontent.com/leungwensen/svg-icon/master/dist/svg/zero/share.svg" />
         </button>
+        <button disabled></button>
+        <button disabled></button>
       </footer>
     );
   }
