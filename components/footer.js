@@ -1,8 +1,6 @@
-import { useRouter } from "next/router";
 import React from "react";
 
 export const Footer = () => {
-  const router = useRouter();
   const [show, setShow] = React.useState(false);
 
   React.useEffect(() => {
@@ -14,9 +12,8 @@ export const Footer = () => {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: "Orchidex",
-        text: "Orchidex!",
-        url: router.href,
+        title: document.title,
+        url: window.location.href,
       });
     }
   };
