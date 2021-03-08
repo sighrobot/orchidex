@@ -1,5 +1,4 @@
 import { groupBy, orderBy } from "lodash";
-import Head from "next/head";
 
 import { Container } from "components/container";
 import { useDate } from "lib/hooks/useDate";
@@ -10,11 +9,7 @@ export default function Index() {
   const grouped = groupBy(recent, "date_of_registration");
 
   return (
-    <Container>
-      <Head>
-        <title>Recents | Orchidex</title>
-      </Head>
-
+    <Container title="Recents | Orchidex">
       <h2>Recently registered</h2>
 
       {Object.keys(grouped)

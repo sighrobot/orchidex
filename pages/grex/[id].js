@@ -10,7 +10,6 @@ import { useDescendants } from "lib/hooks/useDescendants";
 import { useRouter } from "next/router";
 import { useDate } from "lib/hooks/useDate";
 import Link from "next/link";
-import Head from "next/head";
 
 export const Grex = () => {
   const router = useRouter();
@@ -30,12 +29,7 @@ export const Grex = () => {
   }
 
   return (
-    <Container>
-      <Head>
-        <title>
-          {grex.genus} {grex.epithet} | Orchidex
-        </title>
-      </Head>
+    <Container title={`${grex.genus} ${grex.epithet} | Orchidex`}>
       <div>
         <h2>
           <Name link={false} grex={grex} />

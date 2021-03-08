@@ -1,7 +1,6 @@
 import React from "react";
 import Router, { useRouter } from "next/router";
 import { orderBy } from "lodash";
-import Head from "next/head";
 
 import { Container } from "components/container";
 import { Grex } from "components/grex";
@@ -93,15 +92,13 @@ export default function Index() {
 
   strArr.push(...stuff2);
 
-  return (
-    <Container>
-      <Head>
-        <title>
-          {strArr.length > 0 ? `${strArr.join(" ")} | Search` : "Search"} |
-          Orchidex
-        </title>
-      </Head>
+  const title = `${
+    strArr.length > 0 ? `${strArr.join(" ")} | Search` : "Search"
+  } |
+  Orchidex`;
 
+  return (
+    <Container title={title}>
       <form onSubmit={handleSubmit}>
         <div>
           <span>

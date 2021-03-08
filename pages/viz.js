@@ -25,7 +25,7 @@ const Viz = () => {
   }, []);
 
   return (
-    <Container>
+    <Container title="Treemap | Orchidex">
       <div
         className="tableauPlaceholder"
         id="viz1615064721059"

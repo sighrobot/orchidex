@@ -16,7 +16,7 @@ export const Registrant = () => {
   const grouped = groupBy(onDate, "genus");
 
   return (
-    <Container>
+    <Container title={`${d} | Orchidex`}>
       <h2>{d}</h2>
       <section>
         {orderBy(Object.keys(grouped)).map((genus) => {

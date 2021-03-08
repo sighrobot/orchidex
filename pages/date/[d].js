@@ -3,7 +3,6 @@ import { orderBy, groupBy } from "lodash";
 import { Container } from "components/container";
 import { useRouter } from "next/router";
 import { useDate } from "lib/hooks/useDate";
-import Head from "next/head";
 import { Grex } from "components/grex";
 
 export const RegisteredOnDate = () => {
@@ -16,10 +15,7 @@ export const RegisteredOnDate = () => {
   const grouped = groupBy(onDate, "genus");
 
   return (
-    <Container>
-      <Head>
-        <title>Registrations on {dateStr} | Orchidex</title>
-      </Head>
+    <Container title={`Registrations on ${dateStr} | Orchidex`}>
       <h2>Registered {dateStr}</h2>
       <section>
         {orderBy(Object.keys(grouped)).map((genus) => {
