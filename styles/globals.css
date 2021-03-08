@@ -81,6 +81,8 @@ footer button {
   /* background: gray; */
   position: relative;
   user-select: none;
+  text-align: center;
+  cursor: pointer;
 }
 
 footer button div {
@@ -88,6 +90,14 @@ footer button div {
   width: 100%;
   position: absolute;
   top: -10px;
+}
+
+footer button img {
+  height: 25px;
+  width: 25px;
+  position: absolute;
+  top: 6px;
+  left: 6.5px;
 }
 
 nav a {
