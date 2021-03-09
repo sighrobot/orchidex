@@ -9,7 +9,7 @@ export default function Index() {
   const grouped = groupBy(recent, "date_of_registration");
 
   return (
-    <Container title="Recents | Orchidex">
+    <Container title="Recent | Orchidex">
       <h2>Recently registered</h2>
 
       {Object.keys(grouped)
