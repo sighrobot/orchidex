@@ -5,23 +5,35 @@ import { Container } from "components/container";
 import { Name } from "components/name";
 import { Parentage } from "components/parentage";
 import { Grex as G } from "components/grex";
-import { useGrex } from "lib/hooks/useGrex";
+import { fetchGrex } from "lib/hooks/useGrex";
 import { useDescendants } from "lib/hooks/useDescendants";
 import { useRouter } from "next/router";
 import { useDate } from "lib/hooks/useDate";
 import Link from "next/link";
 
-export const Grex = () => {
-  const router = useRouter();
-  const { id = "" } = router.query;
+export async function getServerSideProps(context) {
+  const data = await fetchGrex(context.query.id);
 
-  const grex = useGrex({ id });
+  if (!data) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: { grex: data }, // will be passed to the page component as props
+  };
+}
+
+export const Grex = ({ grex }) => {
+  const router = useRouter();
+
   const onDate = useDate({ d: grex?.date_of_registration });
   const descendants = useDescendants(grex);
   const grexKeys = grex ? Object.keys(grex) : [];
 
   const byRegistrant = onDate.filter(
-    (f) => f.id !== id && f.registrant_name === grex?.registrant_name
+    (f) => f.id !== grex.id && f.registrant_name === grex?.registrant_name
   );
 
   if (!grex) {

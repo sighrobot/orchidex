@@ -14,7 +14,7 @@ export const Container = ({ title, children }) => {
           <main>{children}</main>
         </div>
       </div>
-      <Footer title={title} />
+      <Footer />
     </div>
   );
 };

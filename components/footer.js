@@ -1,6 +1,6 @@
 import React from "react";
 
-export const Footer = ({ title = "" }) => {
+export const Footer = () => {
   const [show, setShow] = React.useState(false);
 
   React.useEffect(() => {
@@ -12,7 +12,7 @@ export const Footer = ({ title = "" }) => {
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: title || document.title,
+        title: document.title,
         url: window.location.href,
       });
     }
