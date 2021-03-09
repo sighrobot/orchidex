@@ -3,7 +3,7 @@ import Link from "next/link";
 export const Name = ({ grex, link = true, linkAsSearch = false }) => {
   if (grex) {
     const href = linkAsSearch
-      ? `/?g1=${grex.genus}&e1=${grex.epithet}`
+      ? `/?genus=${grex.genus}&epithet=${grex.epithet}`
       : `/grex/${grex.id}`;
 
     const content = (
