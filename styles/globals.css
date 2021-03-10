@@ -153,7 +153,7 @@ section + section {
 }
 
 .container main {
-  padding: 20px 0;
+  padding: 10px 0;
 }
 
 a {
@@ -227,6 +227,7 @@ button.simple {
   text-decoration: underline;
   opacity: 0.5;
   margin-left: auto;
+  padding: 0;
 }
 
 input[type="search"] {
@@ -237,7 +238,7 @@ input[type="search"] {
 }
 
 input[type="search"]:not(:first-child) {
-  margin-top: 5px;
+  margin-top: 2.5px;
 }
 
 form.search input[type="search"] {
@@ -247,7 +248,7 @@ form.search input[type="search"] {
 button[type="submit"] {
   border: 1px solid black;
   width: 100%;
-  margin-top: 40px;
+  margin-top: 50px;
   padding: 5px;
   background: #a5abfb;
   color: white;

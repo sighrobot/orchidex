@@ -114,6 +114,9 @@ export const Grex = ({ grex }) => {
               case "epithet":
                 href = `/?e1=${field}`;
                 break;
+              case "registrant_name":
+                href = `/?registrant_name=${field}`;
+                break;
               case "date_of_registration":
                 href = `/date/${field}`;
                 break;
