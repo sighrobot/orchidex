@@ -1,7 +1,7 @@
 import React from "react";
 import { capitalize } from "lodash";
 
-import { SEARCH_FIELDS } from "lib/constants";
+import { NAME, SEARCH_FIELDS } from "lib/constants";
 import { useRouter } from "next/router";
 
 export const SearchGrex = ({
@@ -29,7 +29,7 @@ export const SearchGrex = ({
               key={f}
               autoCorrect="off"
               autoCapitalize="off"
-              name={f}
+              name={f.replace("name", NAME)}
               onChange={onChange}
               placeholder={capitalize(f.replace(/_/g, " "))}
               type="search"

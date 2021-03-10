@@ -4,7 +4,7 @@ import { orderBy } from "lodash";
 
 import { Container } from "components/container";
 import { Grex } from "components/grex";
-import { APP_URL, CROSS_FIELDS, SEARCH_FIELDS } from "lib/constants";
+import { APP_URL, CROSS_FIELDS, NAME, SEARCH_FIELDS } from "lib/constants";
 import { SearchParentage } from "components/search/parentage";
 import { SearchGrex } from "components/search/grex";
 
@@ -33,7 +33,10 @@ export default function Index({ initialState = {}, initialSimple = true }) {
   const [results, setResults] = React.useState(null);
 
   const handleChange = (e) =>
-    setState((s) => ({ ...s, [e.target.name]: e.target.value }));
+    setState((s) => ({
+      ...s,
+      [e.target.name.replace(NAME, "name")]: e.target.value,
+    }));
 
   const handleSubmit = (s) => {
     let url = "/";
