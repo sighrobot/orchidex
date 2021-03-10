@@ -129,7 +129,7 @@ export default function Index({ initialState = {}, initialSimple = true }) {
           type="button"
           onClick={() => setSimple((s) => !s)}
         >
-          {!simple ? "search parentage" : "search grex"}
+          {!simple ? "search by parentage" : "search by grex"}
         </button>
       </div>
 

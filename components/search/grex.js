@@ -48,7 +48,7 @@ export const SearchGrex = ({
           type="button"
           onClick={() => setExpanded((e) => !e)}
         >
-          {expanded ? "show less" : "show more"}
+          {expanded ? "show fewer" : "show more"}
         </button>
       </div>
 
