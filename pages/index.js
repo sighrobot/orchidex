@@ -19,7 +19,8 @@ export async function getServerSideProps(context) {
   return {
     props: {
       initialState: query,
-      initialSimple: CROSS_FIELDS.some((f) => query[f]),
+      initialSimple:
+        CROSS_FIELDS.some((f) => query[f]) || Object.keys(query).length === 0,
     },
   };
 }
@@ -69,25 +70,31 @@ export default function Index({ initialState = {}, initialSimple = true }) {
   };
 
   React.useEffect(() => {
-    const nextState = {};
-    const params = [];
-    const nextSimple = CROSS_FIELDS.some((f) => query[f]);
+    if (Object.keys(query).length > 0) {
+      const nextState = {};
+      const params = [];
+      const nextSimple = CROSS_FIELDS.some((f) => query[f]);
 
-    (nextSimple ? CROSS_FIELDS : SEARCH_FIELDS).forEach((f) => {
-      if (query[f]) {
-        params.push(`${f}=${query[f]}`);
-        nextState[f] = query[f];
-      }
-    });
+      (nextSimple ? CROSS_FIELDS : SEARCH_FIELDS).forEach((f) => {
+        if (query[f]) {
+          params.push(`${f}=${query[f]}`);
+          nextState[f] = query[f];
+        }
+      });
 
-    setState(nextState);
-    setSimple(nextSimple);
+      setState(nextState);
+      setSimple(nextSimple);
 
-    (async () => {
-      const data = await fetchSearch(params);
+      (async () => {
+        const data = await fetchSearch(params);
 
-      setResults(data);
-    })();
+        setResults(data);
+      })();
+    } else {
+      setResults(null);
+      setState({});
+      setSimple(true);
+    }
   }, [query]);
 
   const exp = (

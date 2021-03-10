@@ -33,7 +33,7 @@ export const SearchGrex = ({
               onChange={onChange}
               placeholder={capitalize(f.replace(/_/g, " "))}
               type="search"
-              value={state[f]}
+              value={state[f] || ""}
               spellCheck={false}
               style={{ fontStyle: f.includes("genus") ? "italic" : "normal" }}
             />
