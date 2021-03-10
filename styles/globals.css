@@ -170,10 +170,6 @@ a {
   font-style: italic;
 }
 
-a.date {
-  /* color: black; */
-}
-
 article {
   padding: 20px 0;
 }
@@ -207,28 +203,30 @@ details summary {
   opacity: 0.5;
 }
 
-form {
+form.search {
   margin-bottom: 30px;
-  max-width: 600px;
+  max-width: 400px;
 }
 
-form > div {
+form.search > div {
   display: flex;
-  /* width: calc(100% - 50px); */
-  /* justify-content: space-between; */
   align-items: center;
 }
 
-form > div > span:not(:nth-child(2)) {
-  flex-grow: 1;
-}
-
-form > div > span:nth-child(2) {
+form.search .cross-icon {
   margin: 0 10px;
 }
 
-form > *:not(:first-child) {
-  margin-top: 30px;
+button.simple {
+  background: none;
+  border: none;
+  user-select: none;
+  outline: 0;
+  cursor: pointer;
+  font-size: 12px;
+  text-decoration: underline;
+  opacity: 0.5;
+  margin-left: auto;
 }
 
 input[type="search"] {
@@ -238,31 +236,25 @@ input[type="search"] {
   width: 100%;
 }
 
-input[type="search"]:first-child {
-  margin-bottom: 5px;
+input[type="search"]:not(:first-child) {
+  margin-top: 5px;
 }
 
-form > div > span:first-child input[type="search"] {
+form.search input[type="search"] {
   border: 1px solid #a44cf5;
-}
-
-form > div > span:last-child input[type="search"] {
-  border: 1px solid black;
 }
 
 button[type="submit"] {
   border: 1px solid black;
   width: 100%;
+  margin-top: 40px;
   padding: 5px;
-  /* background: #b78dfb;
-  background: rgb(186, 190, 247); */
   background: #a5abfb;
   color: white;
   cursor: pointer;
 }
 input[type="search"][disabled],
 button[type="submit"][disabled] {
-  /* opacity: 0.5; */
   cursor: not-allowed;
 }
 
