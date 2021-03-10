@@ -16,43 +16,20 @@ async function fetchSearch(params = []) {
 export async function getServerSideProps(context) {
   const { query } = context;
 
-  if (Object.keys(query).length === 0) {
-    return { props: { results: null } };
-  }
-
-  const state = {};
-  const params = [];
-  const simple = CROSS_FIELDS.some((f) => query[f]);
-
-  (simple ? CROSS_FIELDS : SEARCH_FIELDS).forEach((f) => {
-    if (query[f]) {
-      params.push(`${f}=${query[f]}`);
-      state[f] = query[f];
-    }
-  });
-
-  const data = await fetchSearch(params);
-
-  if (!data) {
-    return {
-      notFound: true,
-    };
-  }
-
   return {
-    props: { results: data, state, simple },
+    props: {
+      initialState: query,
+      initialSimple: CROSS_FIELDS.some((f) => query[f]),
+    },
   };
 }
 
-export default function Index({
-  results = [],
-  state: initialState = {},
-  simple: initialSimple = true,
-}) {
+export default function Index({ initialState = {}, initialSimple = true }) {
   const router = useRouter();
   const { query } = router;
   const [simple, setSimple] = React.useState(initialSimple);
   const [state, setState] = React.useState(initialState);
+  const [results, setResults] = React.useState(null);
 
   const handleChange = (e) =>
     setState((s) => ({ ...s, [e.target.name]: e.target.value }));
@@ -90,6 +67,28 @@ export default function Index({
       Router.replace(url);
     }
   };
+
+  React.useEffect(() => {
+    const nextState = {};
+    const params = [];
+    const nextSimple = CROSS_FIELDS.some((f) => query[f]);
+
+    (nextSimple ? CROSS_FIELDS : SEARCH_FIELDS).forEach((f) => {
+      if (query[f]) {
+        params.push(`${f}=${query[f]}`);
+        nextState[f] = query[f];
+      }
+    });
+
+    setState(nextState);
+    setSimple(nextSimple);
+
+    (async () => {
+      const data = await fetchSearch(params);
+
+      setResults(data);
+    })();
+  }, [query]);
 
   const exp = (
     <>
