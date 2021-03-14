@@ -2,10 +2,16 @@ import { Name } from "./name";
 import { Parentage } from "./parentage";
 import { Reg } from "./reg";
 
-export const Grex = ({ grex, hideDate, hideReg }) => {
+export const Grex = ({
+  grex,
+  hideDate,
+  hideReg,
+  hideLink,
+  heading = false,
+}) => {
   return (
-    <article>
-      <Name grex={grex} />
+    <article className={heading ? "heading" : undefined}>
+      <Name link={!hideLink} grex={grex} />
       <br />
       <Parentage grex={grex} />
       <br />

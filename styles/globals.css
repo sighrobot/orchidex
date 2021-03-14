@@ -33,6 +33,10 @@ ul {
   margin: 0;
 }
 
+svg text {
+  font-family: inherit !important;
+}
+
 mark {
   background: rgba(0, 255, 0, 0.25);
   color: white;
@@ -56,7 +60,7 @@ mark {
 
 .container > div > div {
   margin: 0 auto;
-  max-width: 1020px;
+  max-width: 1220px;
 }
 
 footer {
@@ -187,11 +191,18 @@ article .reg {
   font-size: 80%;
 }
 
+article.heading:hover {
+  background: none;
+}
+
+article.heading .name {
+  font-size: 110%;
+}
+
 details summary > * {
   display: inline-block;
 }
 details summary {
-  font-weight: bold;
   width: auto;
   cursor: pointer;
   padding: 10px 0;
@@ -291,4 +302,51 @@ sup {
   font-size: 10px;
   color: gray;
   text-transform: none;
+}
+
+#chart_div,
+.google-visualization-orgchart-node {
+  transform: rotate(180deg);
+}
+
+.google-visualization-orgchart-node {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  font-family: inherit !important;
+  cursor: pointer !important;
+  padding: 0px !important;
+}
+
+.seed,
+.pollen,
+.root {
+  color: white;
+  padding: 5px !important;
+  font-size: 12px;
+}
+
+.root {
+  background: #a44cf5;
+}
+
+.seed {
+  background: #4ea765;
+}
+
+.pollen {
+  background: #f3af16;
+}
+
+.google-visualization-orgchart-linenode {
+  border-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.chart-wrap {
+  overflow-x: auto;
+}
+
+#chart_div {
+  width: 100%;
+  min-width: 600px;
 }

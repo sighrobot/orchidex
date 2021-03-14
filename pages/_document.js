@@ -19,6 +19,7 @@ class MyDocument extends Document {
 
           <link rel="icon" href="/favicon.ico" />
           <link rel="apple-touch-icon" href="/kitsunelogo.png" />
+          <script src="https://www.gstatic.com/charts/loader.js"></script>
         </Head>
         <body>
           <Main />

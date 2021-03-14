@@ -436,6 +436,11 @@ bytes@3.1.0:
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.1.0.tgz#f6cf7933a360e0588fa9fde85651cdc7f805d1f6"
   integrity sha512-zauLjrfCG+xvoyaqLoV8bLVXXNGC4JqlxFCutSDWA6fJrTo2ZuvLYTqZ7aHBLZSMOopbzwv8f+wZcVzfVTI2Dg==
 
+cache-lru@1.1.11:
+  version "1.1.11"
+  resolved "https://registry.yarnpkg.com/cache-lru/-/cache-lru-1.1.11.tgz#39d76aff2b0330cfac173a173b5a137fdd4acd32"
+  integrity sha512-Eczyf7U6aaBsvwqEq3k18lDSRIgxFPw6iYvfPHluTr2zOmg/1sIPmooLPDIa2YQP3SEvogSPZfpa6wScXKwFOg==
+
 caniuse-lite@^1.0.30001173, caniuse-lite@^1.0.30001179:
   version "1.0.30001192"
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001192.tgz#b848ebc0ab230cf313d194a4775a30155d50ae40"

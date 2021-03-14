@@ -1,15 +1,16 @@
-import { orderBy } from "lodash";
+import { renderToString } from "react-dom/server";
+import React from "react";
+import { find, orderBy, sortBy } from "lodash";
 
-import { Reg } from "components/reg";
 import { Container } from "components/container";
-import { Name } from "components/name";
-import { Parentage } from "components/parentage";
 import { Grex as G } from "components/grex";
 import { fetchGrex } from "lib/hooks/useGrex";
 import { useDescendants } from "lib/hooks/useDescendants";
 import { useRouter } from "next/router";
 import { useDate } from "lib/hooks/useDate";
 import Link from "next/link";
+import { useAncestry } from "lib/hooks/useAncestry";
+import { abbreviateName } from "lib/utils";
 
 export async function getServerSideProps(context) {
   const data = await fetchGrex(context.query.id);
@@ -28,9 +29,9 @@ export async function getServerSideProps(context) {
 export const Grex = ({ grex }) => {
   const router = useRouter();
 
+  const ancestry = useAncestry(grex, 4);
   const onDate = useDate({ d: grex?.date_of_registration });
   const descendants = useDescendants(grex);
-  const grexKeys = grex ? Object.keys(grex) : [];
 
   const byRegistrant = onDate.filter(
     (f) => f.id !== grex.id && f.registrant_name === grex?.registrant_name
@@ -40,19 +41,63 @@ export const Grex = ({ grex }) => {
     return <Container>loading&hellip;</Container>;
   }
 
+  React.useEffect(() => {
+    let data;
+    function drawChart() {
+      data = new google.visualization.DataTable();
+      data.addColumn("string", "name");
+      data.addColumn("string", "parent");
+      data.addColumn("string", "toolTip");
+
+      const rows = [
+        [
+          {
+            v: ancestry.nodes[0]?.id,
+            f: renderToString(
+              <div className="root">{abbreviateName(ancestry.nodes[0])}</div>
+            ),
+          },
+          "",
+          "",
+        ],
+        ...sortBy(ancestry.links, "type").map((l) => {
+          const n = find(ancestry.nodes, { id: l.source });
+          return [
+            {
+              v: l.source,
+              f: renderToString(
+                <div className={l.type}>{abbreviateName(n)}</div>
+              ),
+            },
+            l.target,
+            "",
+          ];
+        }),
+      ];
+
+      // For each orgchart box, provide the name, manager, and tooltip to show.
+      data.addRows(rows);
+
+      // Create the chart.
+      var chart = new google.visualization.OrgChart(
+        document.getElementById("chart_div")
+      );
+      // Draw the chart, setting the allowHtml option to true for the tooltips.
+      chart.draw(data, { allowHtml: true });
+      google.visualization.events.addListener(chart, "select", (e) => {
+        const id = rows[chart.getSelection()[0].row][0].v.split("-")[0];
+
+        router.push(`/grex/${id}`);
+      });
+    }
+
+    google.charts.load("current", { packages: ["orgchart"] });
+    google.charts.setOnLoadCallback(drawChart);
+  }, [ancestry]);
+
   return (
     <Container title={`${grex.genus} ${grex.epithet} | Orchidex`}>
-      <div>
-        <h2>
-          <Name link={false} grex={grex} />
-        </h2>
-
-        <h3>
-          <Parentage grex={grex} />
-        </h3>
-
-        {grex && <Reg grex={grex} />}
-      </div>
+      <G heading grex={grex} hideLink />
 
       <section>
         <details>
@@ -65,6 +110,17 @@ export const Grex = ({ grex }) => {
             ).map((grexOnDate) => {
               return <G key={grexOnDate.id} grex={grexOnDate} />;
             })}
+          </div>
+        </details>
+      </section>
+
+      <section>
+        <details>
+          <summary>Ancestry</summary>
+          <div>
+            <div className="chart-wrap">
+              <div id="chart_div" />
+            </div>
           </div>
         </details>
       </section>
@@ -94,67 +150,74 @@ export const Grex = ({ grex }) => {
         </section>
       )}
 
-      <table>
-        <tbody>
-          {grexKeys.map((k) => {
-            const field = grex[k];
-            let href;
-            let rel;
-            let target;
+      <section>
+        <details>
+          <summary>Raw Data</summary>
+          <div>
+            <table>
+              <tbody>
+                {Object.keys(grex).map((k) => {
+                  const field = grex[k];
+                  let href;
+                  let rel;
+                  let target;
 
-            switch (k) {
-              case "id":
-                href = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${field}`;
-                rel = "noopener noreferrer";
-                target = "_blank";
-                break;
-              case "genus":
-                href = `/?g1=${field}`;
-                break;
-              case "epithet":
-                href = `/?e1=${field}`;
-                break;
-              case "registrant_name":
-                href = `/?registrant_name=${field}`;
-                break;
-              case "date_of_registration":
-                href = `/date/${field}`;
-                break;
-              case "seed_parent_genus":
-                href = `/?g1=${field}`;
-                break;
-              case "seed_parent_epithet":
-                href = `/?e1=${field}`;
-                break;
-              case "pollen_parent_genus":
-                href = `/?g1=${field}`;
-                break;
-              case "pollen_parent_epithet":
-                href = `/?e1=${field}`;
-                break;
-              default:
-                break;
-            }
+                  switch (k) {
+                    case "id":
+                      href = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${field}`;
+                      rel = "noopener noreferrer";
+                      target = "_blank";
+                      break;
+                    case "genus":
+                      href = `/?genus="${field}"`;
+                      break;
+                    case "epithet":
+                      href = `/?epithet="${field}"`;
+                      break;
+                    case "registrant_name":
+                      href = `/?registrant_name="${field}"`;
+                      break;
+                    case "date_of_registration":
+                      href = `/date/${field}`;
+                      break;
+                    case "seed_parent_genus":
+                      href = `/?seed_parent_genus="${field}"`;
+                      break;
+                    case "seed_parent_epithet":
+                      href = `/?seed_parent_epithet="${field}"`;
+                      break;
+                    case "pollen_parent_genus":
+                      href = `/?pollen_parent_genus="${field}"`;
+                      break;
+                    case "pollen_parent_epithet":
+                      href = `/?pollen_parent_epithet="${field}"`;
+                      break;
+                    default:
+                      break;
+                  }
 
-            return (
-              <tr key={k}>
-                <th>{k.replace(/_/g, " ")}:</th>
-                <td>
-                  {href ? (
-                    <Link href={href}>
-                      <a target={target} rel={rel}>
-                        {grex[k]}
-                      </a>
-                    </Link>
-                  ) : (
-                    grex[k]
-                  )}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                  return (
+                    <tr key={k}>
+                      <th>{k.replace(/_/g, " ")}:</th>
+                      <td>
+                        {href ? (
+                          <Link href={href}>
+                            <a target={target} rel={rel}>
+                              {grex[k]}
+                            </a>
+                          </Link>
+                        ) : (
+                          grex[k]
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </section>
     </Container>
   );
 };

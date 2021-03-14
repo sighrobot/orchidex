@@ -1,6 +1,6 @@
 import { Name } from "components/name";
 
-export const Parentage = ({ grex }) => {
+export const Parentage = ({ grex, shouldAbbreviateParentage = true }) => {
   if (grex) {
     if (grex.registrant_name.includes("natural hybrid")) {
       return <span className="parentage">Natural hybrid</span>;
@@ -22,11 +22,13 @@ export const Parentage = ({ grex }) => {
       return (
         <span className="parentage">
           <Name
+            shouldAbbreviate={shouldAbbreviateParentage}
             linkAsSearch
             grex={{ genus: seed_parent_genus, epithet: seed_parent_epithet }}
           />{" "}
           &times;{" "}
           <Name
+            shouldAbbreviate={shouldAbbreviateParentage}
             linkAsSearch
             grex={{
               genus: pollen_parent_genus,
