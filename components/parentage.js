@@ -1,6 +1,6 @@
 import { Name } from "components/name";
 
-export const Parentage = ({ grex, shouldAbbreviateParentage = false }) => {
+export const Parentage = ({ grex, shouldAbbreviateParentage = true }) => {
   if (grex) {
     if (grex.registrant_name.includes("natural hybrid")) {
       return <span className="parentage">Natural hybrid</span>;

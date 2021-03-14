@@ -191,11 +191,18 @@ article .reg {
   font-size: 80%;
 }
 
+article.heading:hover {
+  background: none;
+}
+
+article.heading .name {
+  font-size: 110%;
+}
+
 details summary > * {
   display: inline-block;
 }
 details summary {
-  font-weight: bold;
   width: auto;
   cursor: pointer;
   padding: 10px 0;

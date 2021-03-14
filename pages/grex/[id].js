@@ -10,11 +10,7 @@ import { useRouter } from "next/router";
 import { useDate } from "lib/hooks/useDate";
 import Link from "next/link";
 import { useAncestry } from "lib/hooks/useAncestry";
-import { abbreviate } from "lib/utils";
-import Head from "next/head";
-
-const name = (grex = {}) =>
-  `${abbreviate(grex.genus)} ${grex.epithet?.replace("Memoria ", "Mem. ")}`;
+import { abbreviateName } from "lib/utils";
 
 export async function getServerSideProps(context) {
   const data = await fetchGrex(context.query.id);
@@ -58,7 +54,7 @@ export const Grex = ({ grex }) => {
           {
             v: ancestry.nodes[0]?.id,
             f: renderToString(
-              <div className="root">{name(ancestry.nodes[0])}</div>
+              <div className="root">{abbreviateName(ancestry.nodes[0])}</div>
             ),
           },
           "",
@@ -69,7 +65,9 @@ export const Grex = ({ grex }) => {
           return [
             {
               v: l.source,
-              f: renderToString(<div className={l.type}>{name(n)}</div>),
+              f: renderToString(
+                <div className={l.type}>{abbreviateName(n)}</div>
+              ),
             },
             l.target,
             "",
@@ -99,11 +97,7 @@ export const Grex = ({ grex }) => {
 
   return (
     <Container title={`${grex.genus} ${grex.epithet} | Orchidex`}>
-      <G grex={grex} hideLink />
-
-      <Head>
-        <script src="https://www.gstatic.com/charts/loader.js"></script>
-      </Head>
+      <G heading grex={grex} hideLink />
 
       <section>
         <details>
