@@ -1,4 +1,4 @@
-import { abbreviateGenus, abbreviateName } from "lib/utils";
+import { abbreviateGenus, abbreviateName, processEpithet } from "lib/utils";
 import Link from "next/link";
 
 export const Name = ({
@@ -8,16 +8,17 @@ export const Name = ({
   shouldAbbreviate = false,
 }) => {
   if (grex) {
+    const epithet = processEpithet(grex.epithet);
+
     const href = linkAsSearch
-      ? `/?genus=${grex.genus}&epithet=${grex.epithet}`
+      ? `/?genus=${grex.genus}&epithet=${epithet}`
       : `/grex/${grex.id}`;
 
     const content = (
       <>
         <em>{shouldAbbreviate ? abbreviateGenus(grex.genus) : grex.genus}</em>{" "}
-        {(shouldAbbreviate
-          ? grex.epithet.replace("Memoria ", "Mem. ")
-          : grex.epithet) || "(?)"}
+        {(shouldAbbreviate ? epithet.replace("Memoria ", "Mem. ") : epithet) ||
+          "(?)"}
       </>
     );
     return (
