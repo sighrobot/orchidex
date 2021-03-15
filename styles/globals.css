@@ -191,6 +191,10 @@ article .reg {
   font-size: 80%;
 }
 
+article.heading {
+  padding: 0;
+}
+
 article.heading:hover {
   background: none;
 }
@@ -349,4 +353,41 @@ sup {
 #chart_div {
   width: 100%;
   min-width: 600px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.resources {
+  display: flex;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.resources li {
+  margin-right: 10px;
+}
+
+.resources a {
+  font-weight: bold;
+  padding: 5px 0;
+  font-size: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  text-decoration: none;
+  border-radius: 20px;
+  width: 110px;
+  text-align: center;
+  display: inline-block;
+  transition: 200ms ease all;
+}
+
+.resources a:hover {
+  border-color: black;
+}
+
+.resources a:active {
+  background: black;
+  color: white;
 }

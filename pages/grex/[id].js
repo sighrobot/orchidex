@@ -11,6 +11,7 @@ import { useDate } from "lib/hooks/useDate";
 import Link from "next/link";
 import { useAncestry } from "lib/hooks/useAncestry";
 import { abbreviateName } from "lib/utils";
+import { Resources } from "components/resources";
 
 export async function getServerSideProps(context) {
   const data = await fetchGrex(context.query.id);
@@ -98,6 +99,8 @@ export const Grex = ({ grex }) => {
   return (
     <Container title={`${grex.genus} ${grex.epithet} | Orchidex`}>
       <G heading grex={grex} hideLink />
+
+      <Resources grex={grex} />
 
       <section>
         <details>
