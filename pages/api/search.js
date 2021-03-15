@@ -1,23 +1,6 @@
-import {
-  SEARCH_FIELDS,
-  AWS_CONFIG,
-  S3_SELECT_PARAMS,
-  CROSS_FIELDS,
-} from "lib/constants";
-import { formatClause, makeCrossQuery, massageQueryTerm } from "lib/utils";
-
-const AWS = require("aws-sdk");
-const S3 = require("aws-sdk/clients/s3");
-
-if (process.env.NODE_ENV === "development") {
-  AWS.config.loadFromPath("./aws.json");
-} else {
-  AWS.config.update(AWS_CONFIG);
-}
-
-const s3 = new S3({
-  region: "us-east-1",
-});
+import { s3 } from "lib/aws";
+import { SEARCH_FIELDS, S3_SELECT_PARAMS, CROSS_FIELDS } from "lib/constants";
+import { formatClause, makeCrossQuery } from "lib/utils";
 
 export default async (req, res) => {
   const { query } = req;
