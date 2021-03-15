@@ -1,21 +1,9 @@
-import { AWS_CONFIG, S3_SELECT_PARAMS } from "lib/constants";
-
-const AWS = require("aws-sdk");
-const S3 = require("aws-sdk/clients/s3");
-
-if (process.env.NODE_ENV === "development") {
-  AWS.config.loadFromPath("./aws.json");
-} else {
-  AWS.config.update(AWS_CONFIG);
-}
+import { s3 } from "lib/aws";
+import { S3_SELECT_PARAMS } from "lib/constants";
 
 export default async (req, res) => {
   const { genus, epithet: e } = req.query;
   const epithet = e.replace(/'/g, "''");
-
-  const s3 = new S3({
-    region: "us-east-1",
-  });
 
   const params = {
     ...S3_SELECT_PARAMS,

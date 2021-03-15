@@ -1,29 +1,15 @@
-import { AWS_CONFIG, S3_SELECT_PARAMS } from "lib/constants";
-
-const AWS = require("aws-sdk");
-const S3 = require("aws-sdk/clients/s3");
-
-if (process.env.NODE_ENV === "development") {
-  AWS.config.loadFromPath("./aws.json");
-} else {
-  AWS.config.update(AWS_CONFIG);
-}
+import { s3 } from "lib/aws";
+import { S3_SELECT_PARAMS } from "lib/constants";
 
 export default async (req, res) => {
-  const s3 = new S3({
-    region: "us-east-1",
-  });
-
-  let Expression = `SELECT *, foo FROM S3Object limit 1 where foo is 1`;
-
   const params = {
     ...S3_SELECT_PARAMS,
-    Expression,
+    Expression: `SELECT count(*) as numRecords FROM S3Object`,
   };
 
   let str = "";
 
-  const d = await new Promise((resolve) => {
+  const countResponse = await new Promise((resolve) => {
     s3.selectObjectContent(params, (err, data) => {
       if (err) {
         // Handle error
@@ -64,5 +50,5 @@ export default async (req, res) => {
     });
   });
 
-  res.status(200).json(d);
+  res.status(200).json(countResponse[0]);
 };

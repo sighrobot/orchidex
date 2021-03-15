@@ -5,7 +5,7 @@ import { find, orderBy, sortBy } from "lodash";
 import { Container } from "components/container";
 import { Grex as G } from "components/grex";
 import { fetchGrex } from "lib/hooks/useGrex";
-import { useDescendants } from "lib/hooks/useDescendants";
+import { useProgeny } from "lib/hooks/useProgeny";
 import { useRouter } from "next/router";
 import { useDate } from "lib/hooks/useDate";
 import Link from "next/link";
@@ -31,7 +31,7 @@ export const Grex = ({ grex }) => {
 
   const ancestry = useAncestry(grex, 4);
   const onDate = useDate({ d: grex?.date_of_registration });
-  const descendants = useDescendants(grex);
+  const progeny = useProgeny(grex);
 
   const byRegistrant = onDate.filter(
     (f) => f.id !== grex.id && f.registrant_name === grex?.registrant_name
@@ -101,10 +101,10 @@ export const Grex = ({ grex }) => {
 
       <section>
         <details>
-          <summary>Progeny ({descendants.length.toLocaleString()})</summary>
+          <summary>Progeny ({progeny.length.toLocaleString()})</summary>
           <div>
             {orderBy(
-              descendants.filter((d) => d.synonym_flag.includes("not")),
+              progeny.filter((d) => d.synonym_flag.includes("not")),
               ["date_of_registration", "genus", "epithet"],
               ["desc"]
             ).map((grexOnDate) => {
