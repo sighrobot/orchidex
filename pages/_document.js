@@ -10,7 +10,6 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <link rel="manifest" href="/manifest.json" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link
             href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital@0;1&display=swap"
@@ -18,7 +17,16 @@ class MyDocument extends Document {
           />
 
           <link rel="icon" href="/favicon.ico" />
+          <link rel="manifest" href="/manifest.json" />
+
+          <meta name="apple-mobile-web-app-capable" content="yes" />
+          <meta name="apple-mobile-web-app-title" content="Orchidex" />
+          <meta
+            name="apple-mobile-web-app-status-bar-style"
+            content="default"
+          />
           <link rel="apple-touch-icon" href="/kitsunelogo.png" />
+
           <script src="https://www.gstatic.com/charts/loader.js"></script>
         </Head>
         <body>

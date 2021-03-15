@@ -381,6 +381,7 @@ ul {
   text-align: center;
   display: inline-block;
   transition: 200ms ease all;
+  user-select: none;
 }
 
 .resources a:hover {
