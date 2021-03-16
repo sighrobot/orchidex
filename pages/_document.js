@@ -21,10 +21,7 @@ class MyDocument extends Document {
 
           <meta name="apple-mobile-web-app-capable" content="yes" />
           <meta name="apple-mobile-web-app-title" content="Orchidex" />
-          <meta
-            name="apple-mobile-web-app-status-bar-style"
-            content="default"
-          />
+
           <link rel="apple-touch-icon" href="/kitsunelogo.png" />
 
           <script src="https://www.gstatic.com/charts/loader.js"></script>
