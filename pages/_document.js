@@ -23,8 +23,6 @@ class MyDocument extends Document {
           <meta name="apple-mobile-web-app-title" content="Orchidex" />
 
           <link rel="apple-touch-icon" href="/kitsunelogo.png" />
-
-          <script src="https://www.gstatic.com/charts/loader.js"></script>
         </Head>
         <body>
           <Main />

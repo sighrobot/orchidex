@@ -45,6 +45,10 @@ export const Grex = ({ grex }) => {
   }
 
   React.useEffect(() => {
+    if (typeof google === "undefined") {
+      return;
+    }
+
     let data;
     function drawChart() {
       data = new google.visualization.DataTable();
@@ -104,6 +108,8 @@ export const Grex = ({ grex }) => {
         {description(grex) && (
           <meta property="og:description" content={description(grex)} />
         )}
+
+        <script src="//www.gstatic.com/charts/loader.js" />
       </Head>
 
       <G heading grex={grex} hideLink />
