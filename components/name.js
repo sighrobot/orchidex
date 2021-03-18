@@ -1,5 +1,8 @@
-import { UNKNOWN_CHAR } from "lib/constants";
-import { abbreviateGenus, abbreviateName, processEpithet } from "lib/utils";
+import {
+  formatName,
+  repairMalformedNaturalHybridEpithet,
+  UNKNOWN_CHAR,
+} from "lib/string";
 import Link from "next/link";
 
 export const Name = ({
@@ -9,7 +12,7 @@ export const Name = ({
   shouldAbbreviate = false,
 }) => {
   if (grex) {
-    const epithet = processEpithet(grex.epithet);
+    const epithet = repairMalformedNaturalHybridEpithet(grex);
 
     const href = linkAsSearch
       ? `/?genus=${grex.genus}&epithet=${epithet.replace(
@@ -18,11 +21,14 @@ export const Name = ({
         )}`
       : `/grex/${grex.id}`;
 
+    const formattedName = formatName(grex, {
+      shortenGenus: shouldAbbreviate,
+      shortenEpithet: shouldAbbreviate,
+    });
+
     const content = (
       <>
-        <em>{shouldAbbreviate ? abbreviateGenus(grex.genus) : grex.genus}</em>{" "}
-        {(shouldAbbreviate ? epithet.replace("Memoria ", "Mem. ") : epithet) ||
-          "(?)"}
+        <em>{formattedName.genus}</em> {formattedName.epithet || "(?)"}
       </>
     );
     return (

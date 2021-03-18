@@ -1,7 +1,8 @@
 import React from "react";
 import { capitalize } from "lodash";
 
-import { INPUT_NAME_SUFFIX, SEARCH_FIELDS } from "lib/constants";
+import { SEARCH_FIELDS } from "lib/constants";
+import { INPUT_NAME_SUFFIX } from "lib/string";
 import { useRouter } from "next/router";
 
 export const SearchGrex = ({

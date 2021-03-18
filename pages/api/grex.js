@@ -1,5 +1,4 @@
-import { s3 } from "lib/aws";
-import { S3_SELECT_PARAMS } from "lib/constants";
+import { s3, S3_SELECT_PARAMS } from "lib/aws";
 
 export default async (req, res) => {
   const { id } = req.query;

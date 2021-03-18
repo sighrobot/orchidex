@@ -5,7 +5,11 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import sortBy from "lodash.sortby";
 import { find } from "lodash";
-import { abbreviateName } from "lib/utils";
+import {
+  abbreviateGenus,
+  formatName,
+  repairMalformedNaturalHybridEpithet,
+} from "lib/string";
 
 export const AncestryViz = ({ grex }) => {
   const router = useRouter();
@@ -23,12 +27,20 @@ export const AncestryViz = ({ grex }) => {
       data.addColumn("string", "parent");
       data.addColumn("string", "toolTip");
 
+      const formattedRoot = formatName(ancestry.nodes[0], {
+        shortenGenus: true,
+        shortenEpithet: true,
+      });
+
       const rows = [
         [
           {
             v: ancestry.nodes[0]?.id,
             f: renderToString(
-              <div className="root">{abbreviateName(ancestry.nodes[0])}</div>
+              <div className="root">
+                <em>{formattedRoot.genus}</em>{" "}
+                {repairMalformedNaturalHybridEpithet(formattedRoot)}
+              </div>
             ),
           },
           "",
@@ -36,11 +48,18 @@ export const AncestryViz = ({ grex }) => {
         ],
         ...sortBy(ancestry.links, "type").map((l) => {
           const n = find(ancestry.nodes, { id: l.source });
+          const formatted = formatName(n, {
+            shortenGenus: true,
+            shortenEpithet: true,
+          });
           return [
             {
               v: l.source,
               f: renderToString(
-                <div className={l.type}>{abbreviateName(n)}</div>
+                <div className={l.type}>
+                  <em>{formatted.genus}</em>{" "}
+                  {repairMalformedNaturalHybridEpithet(formatted)}
+                </div>
               ),
             },
             l.target,

@@ -1,5 +1,5 @@
-import { s3 } from "lib/aws";
-import { SEARCH_FIELDS, S3_SELECT_PARAMS, CROSS_FIELDS } from "lib/constants";
+import { s3, S3_SELECT_PARAMS } from "lib/aws";
+import { SEARCH_FIELDS, CROSS_FIELDS } from "lib/constants";
 import { formatClause, makeCrossQuery } from "lib/utils";
 
 export default async (req, res) => {
