@@ -326,8 +326,8 @@ sup {
 .pollen,
 .root {
   color: white;
-  padding: 5px !important;
-  font-size: 12px;
+  padding: 3px !important;
+  font-size: 14px;
 }
 
 .root {
@@ -352,7 +352,7 @@ sup {
 
 #chart_div {
   width: 100%;
-  min-width: 600px;
+  /* min-width: 600px; */
 }
 
 ul {
@@ -391,4 +391,12 @@ ul {
 .resources a:active {
   background: black;
   color: white;
+}
+
+@media (max-width: 500px) {
+  .seed,
+  .pollen,
+  .root {
+    font-size: 10px;
+  }
 }
