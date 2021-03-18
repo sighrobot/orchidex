@@ -12,30 +12,32 @@ export default function Index() {
     <Container title="Recent | Orchidex">
       <h2>Recently registered</h2>
 
-      {Object.keys(grouped)
-        .filter(
+      {orderBy(
+        Object.keys(grouped).filter(
           (d, _, arr) =>
             new Date(`${arr[0]}T00:00:00`).getTime() -
               new Date(`${d}T00:00:00`).getTime() <=
             7 * 24 * 60 * 60 * 1000
-        )
-        .map((d, idx) => {
-          return (
-            <section key={d}>
-              <details open={idx === 0}>
-                <summary>
-                  {new Date(`${d}T00:00:00`).toString().slice(0, 15)} (
-                  {grouped[d].length.toLocaleString()})
-                </summary>
-                <div>
-                  {orderBy(grouped[d], ["genus", "epithet"]).map((r) => {
-                    return <Grex key={r.id} grex={r} hideDate />;
-                  })}
-                </div>
-              </details>
-            </section>
-          );
-        })}
+        ),
+        (d) => d,
+        "desc"
+      ).map((d, idx) => {
+        return (
+          <section key={d}>
+            <details open={idx === 0}>
+              <summary>
+                {new Date(`${d}T00:00:00`).toString().slice(0, 15)} (
+                {grouped[d].length.toLocaleString()})
+              </summary>
+              <div>
+                {orderBy(grouped[d], ["genus", "epithet"]).map((r) => {
+                  return <Grex key={r.id} grex={r} hideDate />;
+                })}
+              </div>
+            </details>
+          </section>
+        );
+      })}
     </Container>
   );
 }
