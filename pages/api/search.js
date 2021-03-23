@@ -1,4 +1,4 @@
-import { s3, S3_SELECT_PARAMS } from "lib/aws";
+import { query as q } from "lib/aws";
 import { SEARCH_FIELDS, CROSS_FIELDS } from "lib/constants";
 import { formatClause, makeCrossQuery } from "lib/utils";
 
@@ -16,55 +16,7 @@ export default async (req, res) => {
         .filter((c) => c)
         .join(" and ");
 
-  const Expression = `SELECT * FROM S3Object WHERE ${condx} limit 1000`;
-
-  const params = {
-    ...S3_SELECT_PARAMS,
-    Expression,
-  };
-
-  let str = "";
-
-  const d = await new Promise((resolve) => {
-    s3.selectObjectContent(params, (err, data) => {
-      if (err) {
-        // Handle error
-        console.error(err);
-        return;
-      }
-
-      // data.Payload is a Readable Stream
-      const eventStream = data.Payload;
-
-      // Read events as they are available
-      eventStream.on("data", (event) => {
-        if (event.Records) {
-          // event.Records.Payload is a buffer containing
-          // a single record, partial records, or multiple records
-
-          str += event.Records.Payload.toString();
-        } else if (event.Stats) {
-          console.log(`Processed ${event.Stats.Details.BytesProcessed} bytes`);
-        } else if (event.End) {
-          console.log("SelectObjectContent completed");
-
-          try {
-            return resolve(
-              str
-                .split("\n")
-                .filter((f) => f)
-                .map((d) => {
-                  return JSON.parse(d);
-                })
-            );
-          } catch (e) {
-            console.error(e);
-            return resolve([]);
-          }
-        }
-      });
-    });
-  });
+  const d = await q(`SELECT * FROM S3Object WHERE ${condx} limit 1000`);
 
   res.status(200).json(d);
 };
