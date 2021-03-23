@@ -4,13 +4,13 @@ import { orderBy } from "lodash";
 
 import { Container } from "components/container";
 import { Grex } from "components/grex";
-import { APP_URL, CROSS_FIELDS, SEARCH_FIELDS } from "lib/constants";
+import { CROSS_FIELDS, SEARCH_FIELDS } from "lib/constants";
 import { INPUT_NAME_SUFFIX } from "lib/string";
 import { SearchParentage } from "components/search/parentage";
 import { SearchGrex } from "components/search/grex";
 
 async function fetchSearch(params = []) {
-  const fetched = await fetch(`${APP_URL}/api/search?${params.join("&")}`);
+  const fetched = await fetch(`/api/search?${params.join("&")}`);
   return fetched.json();
 }
 
