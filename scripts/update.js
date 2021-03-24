@@ -4,13 +4,20 @@ const request = require("superagent");
 
 const { JSDOM } = jsdom;
 
-const MAX = 1042000; // 1000008;
+const normalize = (s = "") =>
+  s
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
+
 const URL = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp`;
 const FIELDS = [
   "ID",
   "Genus",
   "Epithet",
   "Synonym Flag",
+  "Synonym Genus Name",
+  "Synonym Epithet Name",
   "Registrant Name",
   "Originator Name",
   "Date of registration",
@@ -22,11 +29,25 @@ const FIELDS = [
 
 const args = process.argv.slice(2);
 
-if (!args[0]) {
-  throw new Error("no start index");
+const startIndex = parseInt(args[0], 10);
+const outFilename = args[1];
+
+if (!startIndex) {
+  console.error(`Error: bad start index '${args[0]}'`);
+  return;
 }
 
-console.log({ args });
+if (!outFilename) {
+  console.error("Error: no out file specified");
+  return;
+}
+
+console.log(
+  "\nStarting at",
+  startIndex,
+  "and writing to",
+  `${outFilename}...\n`
+);
 
 const get = async (id) => {
   const { text } = await request(`${URL}?ID=${id}`);
@@ -47,7 +68,7 @@ const get = async (id) => {
 
     const textContent = row.querySelector("td:last-of-type").textContent;
 
-    if (fieldIdx === 6) {
+    if (fieldIdx === 8) {
       // date
       const [d, m, y] = textContent.split("/");
       data[fieldIdx] = `${y}-${m}-${d}`;
@@ -100,36 +121,51 @@ const get = async (id) => {
     return null;
   }
 
+  data.push(normalize(data[2]));
+  data.push(normalize(data[6]));
+  data.push(normalize(data[7]));
+  data.push(normalize(data[10]));
+  data.push(normalize(data[12]));
+
   return data.join("\t");
 };
 
-const startArg = parseInt(args[0], 10);
-
-let i = startArg ? startArg : 1;
+let i = startIndex;
 i = i - 1;
 
-const END_AFTER = 50;
+const END_AFTER = 100;
 let nullsInARow = 0;
 
 const skip = [169023, 900000];
 
-const stream = fs.createWriteStream("/root/rhs/stable.tsv", {
-  flags: startArg ? "a" : "w",
-});
+const stream = fs.createWriteStream(outFilename, { flags: "w" });
 
-if (!startArg) {
-  stream.write(
-    `${FIELDS.map((f) => f.toLowerCase().split(" ").join("_")).join("\t")}\n`
-  );
-}
+const EXT_FIELDS = [
+  "epithet_normalized",
+  "registrant_name_normalized",
+  "originator_name_normalized",
+  "seed_parent_epithet_normalized",
+  "pollen_parent_epithet_normalized",
+];
+
+stream.write(
+  `${FIELDS.concat(EXT_FIELDS)
+    .map((f) => f.toLowerCase().split(" ").join("_"))
+    .join("\t")}\n`
+);
 
 const interval = setInterval(async () => {
   i++;
   if (i <= skip[0] || i >= skip[1]) {
     try {
       const got = await get(i);
+      const split = got.split("\t");
 
-      console.log(got);
+      // console.log(got);
+      process.stdout.clearLine();
+      process.stdout.cursorTo(0);
+      process.stdout.write(`${split.slice(0, 3).join(" ")}`);
+
       if (got !== null) {
         stream.write(`${got}\n`);
         nullsInARow = 0;
@@ -137,10 +173,11 @@ const interval = setInterval(async () => {
         nullsInARow++;
       }
     } catch {
-      console.log(`could not fetch ${i}`);
+      // console.log(`\ncould not fetch ${i}`);
+      process.stdout.write(`\ncould not fetch ${i}`);
     }
 
-    if ((!startArg && i > MAX) || (startArg && nullsInARow >= END_AFTER)) {
+    if (nullsInARow >= END_AFTER) {
       clearInterval(interval);
       stream.end();
     }
