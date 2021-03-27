@@ -5,11 +5,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import sortBy from "lodash.sortby";
 import { find } from "lodash";
-import {
-  abbreviateGenus,
-  formatName,
-  repairMalformedNaturalHybridEpithet,
-} from "lib/string";
+import { formatName, repairMalformedNaturalHybridEpithet } from "lib/string";
 
 export const AncestryViz = ({ grex }) => {
   const router = useRouter();

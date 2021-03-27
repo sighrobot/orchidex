@@ -253,7 +253,7 @@ input[type="search"] {
 }
 
 input[type="search"]:not(:first-child) {
-  margin-top: 2.5px;
+  margin-top: 5px;
 }
 
 form.search input[type="search"] {
