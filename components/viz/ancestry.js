@@ -32,6 +32,13 @@ export const AncestryViz = ({ grex }) => {
         shortenEpithet: true,
       });
 
+      const isSpecies =
+        formattedRoot.epithet &&
+        formattedRoot.epithet[0] === formattedRoot.epithet[0].toLowerCase();
+      const repairedEpithet = repairMalformedNaturalHybridEpithet(
+        formattedRoot
+      );
+
       const rows = [
         [
           {
@@ -39,7 +46,7 @@ export const AncestryViz = ({ grex }) => {
             f: renderToString(
               <div className="root">
                 <em>{formattedRoot.genus}</em>{" "}
-                {repairMalformedNaturalHybridEpithet(formattedRoot)}
+                {isSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
               </div>
             ),
           },
@@ -52,13 +59,19 @@ export const AncestryViz = ({ grex }) => {
             shortenGenus: true,
             shortenEpithet: true,
           });
+          const isSpecies =
+            formatted.epithet &&
+            formatted.epithet[0] === formatted.epithet[0].toLowerCase();
+          const repairedEpithet = repairMalformedNaturalHybridEpithet(
+            formatted
+          );
           return [
             {
               v: l.source,
               f: renderToString(
                 <div className={l.type}>
                   <em>{formatted.genus}</em>{" "}
-                  {repairMalformedNaturalHybridEpithet(formatted)}
+                  {isSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
                 </div>
               ),
             },

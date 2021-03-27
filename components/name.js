@@ -26,9 +26,18 @@ export const Name = ({
       shortenEpithet: shouldAbbreviate,
     });
 
+    const isSpecies =
+      formattedName.epithet &&
+      formattedName.epithet[0] === formattedName.epithet[0].toLowerCase();
+
     const content = (
       <>
-        <em>{formattedName.genus}</em> {formattedName.epithet || "(?)"}
+        <em>{formattedName.genus}</em>{" "}
+        {isSpecies ? (
+          <em>{formattedName.epithet}</em>
+        ) : (
+          formattedName.epithet || "(?)"
+        )}
       </>
     );
     return (
