@@ -161,20 +161,21 @@ const interval = setInterval(async () => {
       const got = await get(i);
       const split = got.split("\t");
 
-      // console.log(got);
       process.stdout.clearLine();
       process.stdout.cursorTo(0);
-      process.stdout.write(`${split.slice(0, 3).join(" ")}`);
 
       if (got !== null) {
+        process.stdout.write(`${split.slice(0, 3).join(" ")}`);
         stream.write(`${got}\n`);
         nullsInARow = 0;
       } else {
         nullsInARow++;
       }
-    } catch {
-      // console.log(`\ncould not fetch ${i}`);
-      process.stdout.write(`\ncould not fetch ${i}`);
+    } catch (e) {
+      process.stdout.clearLine();
+      process.stdout.cursorTo(0);
+      process.stdout.write(`${i} could not fetch`);
+      nullsInARow++;
     }
 
     if (nullsInARow >= END_AFTER) {
