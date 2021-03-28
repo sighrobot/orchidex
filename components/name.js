@@ -15,10 +15,10 @@ export const Name = ({
     const epithet = repairMalformedNaturalHybridEpithet(grex);
 
     const href = linkAsSearch
-      ? `/?genus=${grex.genus}&epithet=${epithet.replace(
+      ? `/?genus="${grex.genus}"&epithet="${epithet.replace(
           new RegExp(UNKNOWN_CHAR, "g"),
           "_"
-        )}`
+        )}"`
       : `/grex/${grex.id}`;
 
     const formattedName = formatName(grex, {
