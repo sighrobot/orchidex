@@ -400,3 +400,21 @@ ul {
     font-size: 10px;
   }
 }
+
+.node-label {
+  position: absolute;
+  pointer-events: none;
+  color: black;
+  font-size: 10px;
+  z-index: 10;
+}
+
+canvas {
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  margin: 0;
+  overflow: hidden;
+}
