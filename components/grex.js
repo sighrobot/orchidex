@@ -1,6 +1,7 @@
-import { Name } from "./name";
-import { Parentage } from "./parentage";
-import { Reg } from "./reg";
+import { Name } from "components/name";
+import { Parentage } from "components/parentage";
+import { Pills } from "components/pills";
+import { Reg } from "components/reg";
 
 export const Grex = ({
   grex,
@@ -11,6 +12,7 @@ export const Grex = ({
 }) => {
   return (
     <article className={heading ? "heading" : undefined}>
+      <Pills grex={grex} />
       <Name link={!hideLink} grex={grex} />
       <br />
       <Parentage grex={grex} />

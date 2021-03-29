@@ -400,3 +400,21 @@ ul {
     font-size: 10px;
   }
 }
+
+.pill {
+  padding: 2px 3px;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.pill.intergeneric {
+  background: pink;
+}
+
+.pill.primary {
+  background: yellow;
+}
+
+.pills {
+  margin-bottom: 2.5px;
+}
