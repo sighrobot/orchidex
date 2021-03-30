@@ -415,6 +415,14 @@ ul {
   background: yellow;
 }
 
+.pill.natural {
+  background: lightgreen;
+}
+
+.pill.species {
+  background: white;
+}
+
 .pills {
   margin-bottom: 2.5px;
 }
