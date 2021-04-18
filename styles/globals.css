@@ -426,3 +426,35 @@ ul {
 .pills {
   margin-bottom: 2.5px;
 }
+
+.viz-list {
+  font-size: 14px;
+}
+
+.viz-list li {
+  display: flex;
+}
+
+.viz-list li + li {
+  margin-top: 5px;
+}
+
+.viz-list div:first-child {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding-right: 10px;
+  flex-grow: 1;
+}
+
+.viz-list div:nth-child(2) {
+  margin-left: auto;
+  padding-right: 10px;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.viz-list meter {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 30px;
+}
