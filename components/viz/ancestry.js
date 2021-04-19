@@ -9,7 +9,7 @@ import { formatName, repairMalformedNaturalHybridEpithet } from "lib/string";
 
 export const AncestryViz = ({ grex }) => {
   const router = useRouter();
-  const ancestry = useAncestry(grex, 2);
+  const ancestry = useAncestry(grex, 4);
 
   React.useEffect(() => {
     if (typeof google === "undefined") {
@@ -96,6 +96,11 @@ export const AncestryViz = ({ grex }) => {
     google.charts.load("current", { packages: ["orgchart"] });
     google.charts.setOnLoadCallback(drawChart);
   }, [ancestry]);
+
+  if (typeof document !== "undefined") {
+    const el = document.querySelector(".chart-wrap");
+    if (el) el.scrollTo(1220 / 2 - window.innerWidth / 2, 0);
+  }
 
   return (
     <>
