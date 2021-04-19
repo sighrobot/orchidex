@@ -287,7 +287,6 @@ th {
 table {
   margin-top: 30px;
   font-size: 80%;
-  opacity: 0.5;
 }
 
 .container > main > div:first-child {
@@ -435,6 +434,10 @@ ul {
   display: flex;
 }
 
+.viz-list li:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
 .viz-list li + li {
   margin-top: 5px;
 }
@@ -457,4 +460,18 @@ ul {
   margin-left: auto;
   flex-shrink: 0;
   width: 30px;
+}
+
+.viz-list meter::-webkit-meter-bar {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.viz-list meter::-webkit-meter-optimum-value {
+  background: #a44cf5;
+}
+
+.ancestry-viz + .viz-list {
+  margin-top: 20px;
 }

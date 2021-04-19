@@ -11,6 +11,9 @@ import { Resources } from "components/resources";
 import Head from "next/head";
 import { description } from "lib/string";
 import { AncestryViz } from "components/viz/ancestry";
+import List from "components/viz/list";
+import { useSpeciesAncestry } from "lib/hooks/useAncestry";
+import { Name } from "components/name";
 
 export async function getServerSideProps(context) {
   const data = await fetchGrex(context.query.id);
@@ -29,6 +32,7 @@ export async function getServerSideProps(context) {
 export const Grex = ({ grex }) => {
   const onDate = useDate({ d: grex?.date_of_registration });
   const progeny = useProgeny(grex);
+  const speciesAncestry = useSpeciesAncestry(grex);
 
   const byRegistrant = onDate.filter(
     (f) => f.id !== grex.id && f.registrant_name === grex?.registrant_name
@@ -69,6 +73,17 @@ export const Grex = ({ grex }) => {
         <details>
           <summary>Ancestry</summary>
           <AncestryViz grex={grex} />
+          <List
+            data={speciesAncestry}
+            getFields={(sa) => [sa.grex.epithet]}
+            renderField={({ grex: g = {} }) => (
+              <Name grex={g} shouldAbbreviate />
+            )}
+            getCount={(d) => d.score}
+            renderCount={(score) =>
+              `${(Math.round(score * 1000) / 10).toFixed(1)} %`
+            }
+          />
         </details>
       </section>
 
