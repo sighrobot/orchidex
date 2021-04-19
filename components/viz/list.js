@@ -1,39 +1,47 @@
-import { orderBy } from "lodash";
+import { countBy, orderBy } from "lodash";
 
 import React from "react";
 
 const List = ({
   data,
+  getCount,
   getFields = () => [],
   order = "desc",
   renderField = (k) => k,
+  renderCount = (c) => c,
   limit,
   title,
+  countByField,
+  max,
 }) => {
   const counts = React.useMemo(() => {
     const c = {};
 
-    data.forEach((d) => {
-      const fields = getFields(d);
+    if (countByField) {
+      data.forEach((d) => {
+        const fields = getFields(d);
 
-      fields.forEach((field) => {
-        if (c[field]) {
-          c[field] += 1;
-        } else {
-          c[field] = 1;
-        }
+        fields.forEach((field) => {
+          if (c[field]) {
+            c[field] += 1;
+          } else {
+            c[field] = 1;
+          }
+        });
       });
-    });
+    }
 
     return c;
-  }, [getFields, data]);
+  }, [countByField, getFields, data]);
 
   const sorted = React.useMemo(
     () =>
-      orderBy(Object.keys(counts), (k) => counts[k], order).filter(
-        (k) => counts[k] > 1
-      ),
-    [counts]
+      countByField
+        ? orderBy(Object.keys(counts), (k) => counts[k], order).filter(
+            (k) => counts[k] > 0
+          )
+        : orderBy(data, getCount, order),
+    [data, getCount, counts, countByField, order]
   );
 
   return (
@@ -42,10 +50,13 @@ const List = ({
       <ul>
         {sorted.slice(0, limit).map((k) => {
           return (
-            <li key={k}>
+            <li key={k.grex.id}>
               <div>{renderField(k)}</div>
-              <div>{counts[k]}</div>
-              <meter max={1} value={counts[k] / counts[sorted[0]]}></meter>
+              <div>{renderCount(getCount ? getCount(k) : counts[k])}</div>
+              <meter
+                max={sorted[0].score}
+                value={getCount ? getCount(k) : counts[k]}
+              ></meter>
             </li>
           );
         })}

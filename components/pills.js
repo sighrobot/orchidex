@@ -1,45 +1,46 @@
 import { Pill } from "components/pill";
 import { CROSS_CHAR, UNKNOWN_CHAR } from "lib/string";
 
+const hasParents = (grex = {}) =>
+  grex.seed_parent_epithet && grex.pollen_parent_epithet;
+
+const isParentNaturalHybrid = (grex = {}) =>
+  grex.seed_parent_epithet[0] === UNKNOWN_CHAR ||
+  grex.pollen_parent_epithet[0] === UNKNOWN_CHAR;
+
+const isNaturalHybrid = (grex = {}) =>
+  grex.epithet[0] === CROSS_CHAR ||
+  (hasParents(grex) && grex.registrant_name === "This is a natural hybrid") ||
+  (hasParents(grex) &&
+    !isParentNaturalHybrid(grex) &&
+    grex.epithet &&
+    grex.epithet[0] == grex.epithet[0].toLowerCase());
+
+export const isSpecies = (grex = {}) =>
+  !isParentNaturalHybrid(grex) &&
+  !isNaturalHybrid(grex) &&
+  grex.epithet &&
+  grex.epithet[0] === grex.epithet[0].toLowerCase();
+
 export const Pills = ({ grex }) => {
   const pills = [];
 
-  const hasParents = grex.seed_parent_epithet && grex.pollen_parent_epithet;
-
-  const isParentNaturalHybrid =
-    grex.seed_parent_epithet[0] === UNKNOWN_CHAR ||
-    grex.pollen_parent_epithet[0] === UNKNOWN_CHAR;
-
   const isIntergeneric = grex.seed_parent_genus !== grex.pollen_parent_genus;
 
-  const isNaturalHybrid =
-    grex.epithet[0] === CROSS_CHAR ||
-    (hasParents && grex.registrant_name === "This is a natural hybrid") ||
-    (hasParents &&
-      !isParentNaturalHybrid &&
-      grex.epithet &&
-      grex.epithet[0] == grex.epithet[0].toLowerCase());
-
-  const isSpecies =
-    !isParentNaturalHybrid &&
-    !isNaturalHybrid &&
-    grex.epithet &&
-    grex.epithet[0] === grex.epithet[0].toLowerCase();
-
   const isPrimaryHybrid =
-    !isParentNaturalHybrid &&
-    !isNaturalHybrid &&
+    !isParentNaturalHybrid(grex) &&
+    !isNaturalHybrid(grex) &&
     grex.seed_parent_epithet &&
     grex.seed_parent_epithet[0] === grex.seed_parent_epithet[0].toLowerCase() &&
     grex.pollen_parent_epithet &&
     grex.pollen_parent_epithet[0] ===
       grex.pollen_parent_epithet[0].toLowerCase();
 
-  if (isSpecies) {
+  if (isSpecies(grex)) {
     pills.push("species");
   }
 
-  if (isNaturalHybrid) {
+  if (isNaturalHybrid(grex)) {
     pills.push("natural");
   }
 
