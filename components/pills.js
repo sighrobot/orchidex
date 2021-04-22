@@ -25,6 +25,10 @@ export const isSpecies = (grex = {}) =>
 export const Pills = ({ grex }) => {
   const pills = [];
 
+  if (grex.hypothetical) {
+    pills.push("hypothetical");
+  }
+
   const isIntergeneric = grex.seed_parent_genus !== grex.pollen_parent_genus;
 
   const isPrimaryHybrid =

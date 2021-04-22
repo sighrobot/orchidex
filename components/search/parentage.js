@@ -4,6 +4,7 @@ export const SearchParentage = ({
   onChange = () => {},
   onSubmit = () => {},
   state,
+  submitText = "Search",
 }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -66,7 +67,7 @@ export const SearchParentage = ({
 
       <div>
         <button disabled={false} type="submit">
-          Search
+          {submitText}
         </button>
       </div>
     </form>

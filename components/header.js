@@ -27,6 +27,16 @@ export const Header = () => {
             Recent
           </a>
         </Link>
+
+        <Link href="/learn/hybridizer">
+          <a
+            className={
+              router.pathname === "/learn/hybridizer" ? "active" : undefined
+            }
+          >
+            Hybridizer
+          </a>
+        </Link>
       </nav>
     </header>
   );
