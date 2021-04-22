@@ -17,11 +17,11 @@ export const Header = () => {
       </h1>
 
       <nav>
-        <Link href="/viz">
+        {/* <Link href="/viz">
           <a className={router.pathname === "/viz" ? "active" : undefined}>
             Treemap
           </a>
-        </Link>
+        </Link> */}
         <Link href="/recent">
           <a className={router.pathname === "/recent" ? "active" : undefined}>
             Recent
