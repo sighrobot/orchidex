@@ -40,7 +40,11 @@ const List = ({
         ? orderBy(Object.keys(counts), (k) => counts[k], order).filter(
             (k) => counts[k] > 0
           )
-        : orderBy(data, getCount, order),
+        : orderBy(
+            data,
+            [getCount, ({ grex: g }) => `${g.genus} ${g.epithet}`],
+            [order, "asc"]
+          ),
     [data, getCount, counts, countByField, order]
   );
 

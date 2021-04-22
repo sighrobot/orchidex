@@ -408,6 +408,11 @@ ul {
   text-transform: uppercase;
 }
 
+.pill.hypothetical {
+  background: black;
+  color: white;
+}
+
 .pill.intergeneric {
   background: pink;
 }
