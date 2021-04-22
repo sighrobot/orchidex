@@ -61,6 +61,9 @@ const Hybridizer = () => {
 
   return (
     <Container title="Hybridizer | Orchidex">
+      <h2>Hybridizer</h2>
+      <br />
+
       <SearchParentage
         state={{
           g1: state.seed_parent_genus,
