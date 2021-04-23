@@ -67,7 +67,7 @@ const List = ({
               shortenGenus: true,
               shortenEpithet: true,
             });
-            return `${fn.epithet} ${renderCount(d.score).replace(" ", "")}`;
+            return `${renderCount(d.score).replace(" ", "")} ${fn.epithet}`;
           })
           .join(", ")}
       />
