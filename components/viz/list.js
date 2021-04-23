@@ -1,6 +1,8 @@
+import { formatName } from "lib/string";
 import { countBy, orderBy } from "lodash";
 
 import React from "react";
+import ReactDOMServer from "react-dom/server";
 
 const List = ({
   data,
@@ -49,7 +51,27 @@ const List = ({
   );
 
   return (
-    <div className="viz-list">
+    <div
+      className="viz-list"
+      onClick={() => {
+        document.querySelector(".viz-list textarea").select();
+        document.execCommand("copy");
+      }}
+    >
+      <textarea
+        style={{ opacity: 0, position: "absolute" }}
+        readOnly
+        value={sorted
+          .map((d) => {
+            const fn = formatName(d.grex, {
+              shortenGenus: true,
+              shortenEpithet: true,
+            });
+            return `${fn.epithet} ${renderCount(d.score).replace(" ", "")}`;
+          })
+          .join(", ")}
+      />
+
       {title && <h3>{title}</h3>}
       <ul>
         {sorted.slice(0, limit).map((k) => {
