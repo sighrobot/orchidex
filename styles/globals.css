@@ -435,6 +435,11 @@ ul {
 
 .viz-list {
   font-size: 14px;
+  transition: 200ms ease opacity;
+}
+
+.viz-list:active {
+  opacity: 0;
 }
 
 .viz-list li {
