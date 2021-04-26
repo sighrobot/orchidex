@@ -8,7 +8,6 @@ import { useProgeny } from "lib/hooks/useProgeny";
 import { useDate } from "lib/hooks/useDate";
 import Link from "next/link";
 import { Resources } from "components/resources";
-import Head from "next/head";
 import { description } from "lib/string";
 import { AncestryViz } from "components/viz/ancestry";
 import List from "components/viz/list";
@@ -43,13 +42,10 @@ export const Grex = ({ grex }) => {
   }
 
   return (
-    <Container title={`${grex.genus} ${grex.epithet} | Orchidex`}>
-      <Head>
-        {description(grex) && (
-          <meta property="og:description" content={description(grex)} />
-        )}
-      </Head>
-
+    <Container
+      title={`${grex.genus} ${grex.epithet} | Orchidex`}
+      description={description(grex)}
+    >
       <G heading grex={grex} hideLink />
 
       <Resources grex={grex} />
