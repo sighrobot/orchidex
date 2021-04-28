@@ -31,11 +31,12 @@ if (process.env.NODE_ENV === "development") {
 
 const s3 = new S3({ region: "us-east-1" });
 
-export const query = async (expr) => {
+export const query = async (expr, getOverrides = (opts = {}) => opts) => {
   if (!expr) return null;
 
   const params = {
     ...S3_SELECT_PARAMS,
+    ...getOverrides(S3_SELECT_PARAMS),
     Expression: expr,
   };
 

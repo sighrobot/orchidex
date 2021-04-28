@@ -568,3 +568,9 @@ ul {
 .magic-search + section {
   padding: 0;
 }
+
+figure {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+}
