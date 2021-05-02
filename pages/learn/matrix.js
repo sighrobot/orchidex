@@ -32,100 +32,94 @@ const Matrix = () => {
     })();
   }, []);
 
+  const size = 15;
+
   // console.log(species, primaries);
 
   return (
     // <Container title="Species Matrix | Orchidex">
     //   <h2>Matrix</h2>
 
-    <figure className="matrix">
-      {species.map((seed, i) => {
-        return [
-          <div
-            key={seed.species}
-            style={{
-              // transform: "rotate(-45deg) translate(-60px, 5px)",
-              height: `calc(100vw / ${species.length + 1})`,
-              width: `calc(100% / ${species.length + 1})`,
-              display: "flex",
-              alignItems: "center",
-              //   justifyContent: "flex-end",
-              fontSize: "10px",
-            }}
-          >
-            {seed.species}
-            {/* <div
-              style={{
-                width: `${(66.7 / species.length) * (species.length - 1 - i)}%`,
-                height: "1px",
-                background: "black",
-                position: "absolute",
-                transform: `rotate(45deg)`,
-                transformOrigin: "0 0",
-                marginLeft: "30px",
-                // top: 0,
-              }}
-            />
-            <div
-              style={{
-                width: `${(66.7 / species.length) * (i - 1)}%`,
-                height: "1px",
-                background: "black",
-                position: "absolute",
-                transform: `rotate(-45deg)`,
-                transformOrigin: "0 0",
-                marginLeft: "30px",
-                // top: 0,
-              }}
-            /> */}
-          </div>,
-        ].concat(
-          species.map((pollen, j) => {
-            // const seedEp = s.epithet;
-            const foundSeed =
-              map[seed.species] && map[seed.species][pollen.species];
-            const foundPollen =
-              map[pollen.species] && map[pollen.species][seed.species];
-            const special = foundSeed && foundPollen;
+    <figure
+      className="matrix"
+      style={{ width: "100%", height: `${size * (species.length + 1)}px` }}
+    >
+      <svg
+        style={{ width: "100%", height: `${size * (species.length + 1)}px` }}
+      >
+        {species.map((seed, i) => {
+          // return species.map((pollen, j) => {
+          // const seedEp = s.epithet;
+          // const foundSeed =
+          //   map[seed.species] && map[seed.species][pollen.species];
+          // const foundPollen =
+          //   map[pollen.species] && map[pollen.species][seed.species];
+          // const special = foundSeed && foundPollen;
 
-            return (
-              <div
-                key={`${seed.taxon_name}-${i}-${j}`}
-                style={{
-                  // opacity:
-                  //   foundSeed && foundSeed.date_of_registration
-                  //     ? Math.max(
-                  //         new Date(foundSeed.date_of_registration).getTime() /
-                  //           (Date.now() - new Date("1880-01-01").getTime()),
-                  //         0.33
-                  //       )
-                  //     : 1,
-                  background:
-                    i === j
-                      ? "#bcebfb"
-                      : special
-                      ? "black"
-                      : foundSeed || foundPollen
-                      ? "black"
-                      : "rgba(255, 255, 255, 0.75)",
-                  borderLeft: "1px solid #bcebfb",
-                  borderTop: "1px solid #bcebfb",
-                  // transform: "rotate(45deg)",
-                  // transformOrigin: "0 0",
-                  width: `calc(100vw / ${species.length + 1})`,
-                  height: `calc(100vw / ${species.length + 1})`,
-                  flexShrink: 0,
-                }}
-                // style={{
-                //   height: "1px",
-                //   background: "black",
-                //   width: "100%",
-                // }}
+          return (
+            <>
+              <text
+                x={100}
+                y={i * size + size + size / 4}
+                textAnchor="end"
+                style={{ fontSize: "12px" }}
+              >
+                {seed.species}
+              </text>
+
+              <line
+                key={`${seed.taxon_name}-${i}`}
+                stroke="rgba(0, 0, 0, 0.1)"
+                x1={100 + size / 2}
+                y1={i * size + size}
+                y2={(species.length / 2) * size + i * size}
+                x2={"95%"}
               />
-            );
-          })
-        );
-      })}
+
+              <line
+                key={`${seed.taxon_name}-${i}`}
+                stroke="rgba(0, 0, 0, 0.1)"
+                x1={100 + size / 2}
+                y1={i * size}
+                y2={-(species.length / 2 - i) * size}
+                x2={"95%"}
+              />
+
+              {/* <line
+                key={`${seed.taxon_name}-${i}`}
+                fill="black"
+                x={0}
+                y={i * 10}
+                width="66.67%"
+                height={1}
+                transform="rotate(-45)"
+              /> */}
+            </>
+            // y2={(i + 1) * 10}
+            // strokeWidth={1}
+            // width="5%"
+            // height="5%"
+
+            // style={{
+            //   background:
+            //     i === j
+            //       ? "#bcebfb"
+            //       : special
+            //       ? "black"
+            //       : foundSeed || foundPollen
+            //       ? "black"
+            //       : "rgba(255, 255, 255, 0.75)",
+            //   borderLeft: "1px solid #bcebfb",
+            //   borderTop: "1px solid #bcebfb",
+            //   // transform: "rotate(45deg)",
+            //   // transformOrigin: "0 0",
+            //   width: `calc(100vw / ${species.length + 1})`,
+            //   height: `calc(100vw / ${species.length + 1})`,
+            //   flexShrink: 0,
+            // }}
+          );
+        })}
+      </svg>
     </figure>
     // </Container>
   );
