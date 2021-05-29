@@ -2,7 +2,7 @@ import { query } from "lib/aws";
 import { cloneDeep } from "lodash";
 
 export default async (req, res) => {
-  const genus = "Vanda";
+  const genus = "Phragmipedium";
   const expr = `SELECT * FROM S3Object WHERE genus = '${genus}' and lower(rank) = 'species' and lower(taxonomic_status) = 'accepted'`;
 
   const species = await query(expr, (config) => {
