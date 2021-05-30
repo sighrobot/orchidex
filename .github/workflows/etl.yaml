@@ -8,7 +8,7 @@ name: Data Pipeline
 
 on:
   schedule:
-    - cron: "30 * * * *" # every 5 minutes (test)
+    - cron: "0 */3 * * *" # every 3 hours (test)
 
 # on: push
 
