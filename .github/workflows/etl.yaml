@@ -1,16 +1,16 @@
 # inspired by https://www.tjwaterman.com/web-scraping-with-github-actions/
 
-name: Data Pipeline
-
 # on:
 #   schedule:
-#     - cron: "0 12 * * *" # daily at 8am (UTC-4)
+#     - cron: "0 */3 * * *" # every 3 hours (test)
+
+# on: push
+
+name: Data Pipeline
 
 on:
   schedule:
-    - cron: "0 */3 * * *" # every 3 hours (test)
-
-# on: push
+    - cron: "0 12 * * *" # daily at 8am (UTC-4)
 
 jobs:
   rhs-delta:
@@ -60,7 +60,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add data
-          git commit -m "RHS data daily delta"
+          git diff --quiet && git diff --staged --quiet || git commit -m "RHS data daily delta"
 
       - name: Push changes
         uses: ad-m/github-push-action@master
