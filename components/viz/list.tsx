@@ -2,7 +2,18 @@ import { formatName } from "lib/string";
 import { countBy, orderBy } from "lodash";
 
 import React from "react";
-import ReactDOMServer from "react-dom/server";
+
+type ListProps = {
+  data: any;
+  getCount: any;
+  getFields?: any;
+  order?: "asc" | "desc" | boolean;
+  renderField?: (f: any) => React.ReactNode;
+  renderCount?: (c: number) => string;
+  limit?: number;
+  title?: string;
+  countByField?: boolean;
+};
 
 const List = ({
   data,
@@ -10,12 +21,11 @@ const List = ({
   getFields = () => [],
   order = "desc",
   renderField = (k) => k,
-  renderCount = (c) => c,
+  renderCount = (c) => String(c),
   limit,
   title,
   countByField,
-  max,
-}) => {
+}: ListProps) => {
   const counts = React.useMemo(() => {
     const c = {};
 
@@ -54,7 +64,7 @@ const List = ({
     <div
       className="viz-list"
       onClick={() => {
-        document.querySelector(".viz-list textarea").select();
+        (document.querySelector(".viz-list textarea") as any).select();
         document.execCommand("copy");
       }}
     >

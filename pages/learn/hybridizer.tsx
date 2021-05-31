@@ -1,11 +1,12 @@
 import React from "react";
 import { Container } from "components/container";
-import { Grex } from "components/grex";
+import { GrexCard } from "components/grex";
 import { Name } from "components/name";
 import { SearchParentage } from "components/search/parentage";
 import { AncestryViz } from "components/viz/ancestry";
 import List from "components/viz/list";
 import { useSpeciesAncestry } from "lib/hooks/useAncestry";
+import { Grex } from "lib/types";
 
 // const grex = {
 //   id: "0123456789",
@@ -37,7 +38,13 @@ const Hybridizer = () => {
   console.log(grex);
 
   const handleChange = (e) => {
-    const field = {};
+    const field: Pick<
+      Grex,
+      | "seed_parent_genus"
+      | "seed_parent_epithet"
+      | "pollen_parent_genus"
+      | "pollen_parent_epithet"
+    > = {};
 
     switch (e.target.name) {
       case "g1":
@@ -76,7 +83,7 @@ const Hybridizer = () => {
         submitText="Hybridize"
       />
 
-      {/* {grex && <Grex grex={grex} hideLink />} */}
+      {/* {grex && <GrexCard grex={grex} hideLink />} */}
 
       {grex && <AncestryViz grex={grex} />}
 

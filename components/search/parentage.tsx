@@ -1,11 +1,25 @@
 import React from "react";
 
+type SearchParentageState = {
+  g1?: string;
+  e1?: string;
+  g2?: string;
+  e2?: string;
+};
+
+type SearchParentageProps = {
+  onChange: (e: any) => void;
+  onSubmit: (state: object) => void;
+  state: SearchParentageState;
+  submitText?: string;
+};
+
 export const SearchParentage = ({
   onChange = () => {},
   onSubmit = () => {},
   state,
   submitText = "Search",
-}) => {
+}: SearchParentageProps) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onSubmit(state);

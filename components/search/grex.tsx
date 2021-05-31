@@ -4,12 +4,24 @@ import { capitalize } from "lodash";
 import { SEARCH_FIELDS } from "lib/constants";
 import { INPUT_NAME_SUFFIX } from "lib/string";
 import { useRouter } from "next/router";
+import { Grex } from "lib/types";
+
+type SearchGrexState = {
+  genus?: string;
+  epithet?: string;
+};
+
+type SearchGrexProps = {
+  onChange: (e: any) => void;
+  onSubmit: (state: object) => void;
+  state: SearchGrexState;
+};
 
 export const SearchGrex = ({
   onChange = () => {},
   onSubmit = () => {},
   state,
-}) => {
+}: SearchGrexProps) => {
   const router = useRouter();
   const [expanded, setExpanded] = React.useState(false);
 

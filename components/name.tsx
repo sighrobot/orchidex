@@ -3,14 +3,26 @@ import {
   repairMalformedNaturalHybridEpithet,
   UNKNOWN_CHAR,
 } from "lib/string";
+import { Grex } from "lib/types";
 import Link from "next/link";
+
+type NameProps = {
+  grex?: {
+    id?: Grex["id"];
+    genus: Grex["genus"];
+    epithet: Grex["epithet"];
+  };
+  link?: boolean;
+  linkAsSearch?: boolean;
+  shouldAbbreviate?: boolean;
+};
 
 export const Name = ({
   grex,
   link = true,
   linkAsSearch = false,
   shouldAbbreviate = false,
-}) => {
+}: NameProps) => {
   if (grex) {
     const epithet = repairMalformedNaturalHybridEpithet(grex);
 

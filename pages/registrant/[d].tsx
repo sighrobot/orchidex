@@ -1,22 +1,21 @@
 import { orderBy, groupBy } from "lodash";
 
 import { Container } from "components/container";
-import { useRouter } from "next/router";
-import { useDate } from "lib/hooks/useDate";
-import { Grex } from "components/grex";
 
-export const RegisteredOnDate = () => {
+import { useRouter } from "next/router";
+import { useRegistrant } from "lib/hooks/useRegistrant";
+import { GrexCard } from "components/grex";
+
+export const Registrant = () => {
   const router = useRouter();
   const { d = "" } = router.query;
 
-  const dateStr = new Date(`${d}T00:00:00`).toString().slice(3, 15);
-
-  const onDate = useDate({ d });
+  const onDate = useRegistrant({ name: d });
   const grouped = groupBy(onDate, "genus");
 
   return (
-    <Container title={`Registrations on ${dateStr} | Orchidex`}>
-      <h2>Registered {dateStr}</h2>
+    <Container title={`${d} | Orchidex`}>
+      <h2>{d}</h2>
       <section>
         {orderBy(Object.keys(grouped)).map((genus) => {
           return (
@@ -28,9 +27,7 @@ export const RegisteredOnDate = () => {
                 <div>
                   {orderBy(grouped[genus], ["genus", "epithet"]).map(
                     (grexOnDate) => {
-                      return (
-                        <Grex key={grexOnDate.id} grex={grexOnDate} hideDate />
-                      );
+                      return <GrexCard key={grexOnDate.id} grex={grexOnDate} />;
                     }
                   )}
                 </div>
@@ -43,4 +40,4 @@ export const RegisteredOnDate = () => {
   );
 };
 
-export default RegisteredOnDate;
+export default Registrant;

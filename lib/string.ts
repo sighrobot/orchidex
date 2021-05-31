@@ -1,3 +1,5 @@
+import type { Grex } from "./types";
+
 // https://bytes.grubhub.com/disabling-safari-autofill-for-a-single-line-address-input-b83137b5b1c7
 export const INPUT_NAME_SUFFIX = "__search__";
 
@@ -18,7 +20,13 @@ export const abbreviateEpithet = ({ epithet } = { epithet: "" }) => {
   return epithet.replace("Memoria ", "Mem. ");
 };
 
-export const formatName = (grex, { shortenGenus, shortenEpithet } = {}) => {
+export const formatName = (
+  grex: Pick<Grex, "genus" | "epithet">,
+  {
+    shortenGenus,
+    shortenEpithet,
+  }: { shortenGenus?: boolean; shortenEpithet?: boolean } = {}
+) => {
   const g = shortenGenus ? abbreviateGenus(grex) : grex.genus;
   const e = shortenEpithet ? abbreviateEpithet(grex) : grex.epithet;
 
@@ -52,7 +60,7 @@ export const description = ({
   pollen_parent_epithet,
   date_of_registration,
   registrant_name,
-}) => {
+}: Grex) => {
   if (
     seed_parent_genus &&
     pollen_parent_genus &&
