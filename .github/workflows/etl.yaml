@@ -42,7 +42,7 @@ jobs:
         working-directory: data/rhs
 
       - name: Sort by date
-        run: (head -n1 new.tsv && tail -n+2 new.tsv | sort -t$'\t' -r -n -k9 ) > sorted.tsv
+        run: (head -n1 new.tsv && tail -n+2 new.tsv | sort -t$'\t' -r -k9 ) > sorted.tsv
         working-directory: data/rhs
 
       - name: Copy new dataset to S3
