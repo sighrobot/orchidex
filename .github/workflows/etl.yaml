@@ -35,7 +35,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Scrape delta data
-        run: node scripts/update.js $(($(node scripts/lastId.js) + 1)) data/rhs/delta.tsv
+        run: node scripts/update.js $(($(tail -n1 data/rhs/data.tsv  | tr '\t' '\n' | head -n1) + 1)) data/rhs/delta.tsv
 
       - name: Concatenate whole and delta sets
         run: (cat data.tsv && tail -n+2 delta.tsv) > new.tsv
