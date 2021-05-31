@@ -1,9 +1,16 @@
 import React from "react";
 
+type SearchParentageState = {
+  g1?: string;
+  e1?: string;
+  g2?: string;
+  e2?: string;
+};
+
 type SearchParentageProps = {
   onChange: (e: any) => void;
   onSubmit: (state: object) => void;
-  state: { g1: string; e1: string; g2: string; e2: string };
+  state: SearchParentageState;
   submitText?: string;
 };
 

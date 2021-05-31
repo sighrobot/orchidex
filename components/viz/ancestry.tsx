@@ -3,7 +3,7 @@ import React from "react";
 import { useAncestry } from "lib/hooks/useAncestry";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { find, sortBy } from "lodash";
+import { find, get, sortBy } from "lodash";
 import { formatName, repairMalformedNaturalHybridEpithet } from "lib/string";
 
 export const AncestryViz = ({ grex }) => {
@@ -11,7 +11,9 @@ export const AncestryViz = ({ grex }) => {
   const ancestry = useAncestry(grex, 4);
 
   React.useEffect(() => {
-    if (typeof google === "undefined") {
+    const google = get(global, "google");
+
+    if (!google) {
       return;
     }
 

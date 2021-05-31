@@ -21,7 +21,7 @@ export const abbreviateEpithet = ({ epithet } = { epithet: "" }) => {
 };
 
 export const formatName = (
-  grex: Grex,
+  grex: Pick<Grex, "genus" | "epithet">,
   {
     shortenGenus,
     shortenEpithet,
@@ -60,7 +60,7 @@ export const description = ({
   pollen_parent_epithet,
   date_of_registration,
   registrant_name,
-}) => {
+}: Grex) => {
   if (
     seed_parent_genus &&
     pollen_parent_genus &&
