@@ -7,7 +7,7 @@ import { GrexCard } from "components/grex";
 
 export const RegisteredOnDate = () => {
   const router = useRouter();
-  const d = (router.query || "") as string;
+  const d = (router.query.d || "") as string;
 
   const dateStr = new Date(`${d}T00:00:00`).toString().slice(3, 15);
 
