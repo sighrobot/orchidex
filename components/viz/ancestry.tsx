@@ -3,8 +3,7 @@ import React from "react";
 import { useAncestry } from "lib/hooks/useAncestry";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import sortBy from "lodash.sortby";
-import { find } from "lodash";
+import { find, sortBy } from "lodash";
 import { formatName, repairMalformedNaturalHybridEpithet } from "lib/string";
 
 export const AncestryViz = ({ grex }) => {
@@ -31,9 +30,8 @@ export const AncestryViz = ({ grex }) => {
       const isSpecies =
         formattedRoot.epithet &&
         formattedRoot.epithet[0] === formattedRoot.epithet[0].toLowerCase();
-      const repairedEpithet = repairMalformedNaturalHybridEpithet(
-        formattedRoot
-      );
+      const repairedEpithet =
+        repairMalformedNaturalHybridEpithet(formattedRoot);
 
       const rows = [
         [
@@ -58,9 +56,8 @@ export const AncestryViz = ({ grex }) => {
           const isSpecies =
             formatted.epithet &&
             formatted.epithet[0] === formatted.epithet[0].toLowerCase();
-          const repairedEpithet = repairMalformedNaturalHybridEpithet(
-            formatted
-          );
+          const repairedEpithet =
+            repairMalformedNaturalHybridEpithet(formatted);
           return [
             {
               v: l.source,

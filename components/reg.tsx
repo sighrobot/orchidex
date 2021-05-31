@@ -1,6 +1,12 @@
+import { Grex } from "lib/types";
 import Link from "next/link";
 
-export const Reg = ({ grex, hideDate }) => {
+type RegProps = {
+  grex?: Grex;
+  hideDate: boolean;
+};
+
+export const Reg = ({ grex, hideDate }: RegProps) => {
   if (grex) {
     if (
       !grex.date_of_registration ||

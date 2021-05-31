@@ -2,7 +2,17 @@ import { Header } from "components/header";
 import Head from "next/head";
 import { Footer } from "./footer";
 
-export const Container = ({ title, children, description }) => {
+type ContainerProps = {
+  children: React.ReactNode;
+  title?: string;
+  description?: string;
+};
+
+export const Container = ({
+  title,
+  children,
+  description = "",
+}: ContainerProps) => {
   return (
     <div className="container">
       <Head>

@@ -1,6 +1,15 @@
 import { Name } from "components/name";
+import { Grex } from "lib/types";
 
-export const Parentage = ({ grex, shouldAbbreviateParentage = true }) => {
+type ParentageProps = {
+  grex?: Grex;
+  shouldAbbreviateParentage?: boolean;
+};
+
+export const Parentage = ({
+  grex,
+  shouldAbbreviateParentage = true,
+}: ParentageProps) => {
   if (grex) {
     const {
       seed_parent_genus,

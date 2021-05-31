@@ -5,11 +5,17 @@ import { SEARCH_FIELDS } from "lib/constants";
 import { INPUT_NAME_SUFFIX } from "lib/string";
 import { useRouter } from "next/router";
 
+type SearchGrexProps = {
+  onChange: () => void;
+  onSubmit: (state: object) => void;
+  state: object;
+};
+
 export const SearchGrex = ({
   onChange = () => {},
   onSubmit = () => {},
   state,
-}) => {
+}: SearchGrexProps) => {
   const router = useRouter();
   const [expanded, setExpanded] = React.useState(false);
 

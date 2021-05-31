@@ -2,7 +2,7 @@ import React from "react";
 import { orderBy } from "lodash";
 
 import { Container } from "components/container";
-import { Grex as G } from "components/grex";
+import { GrexCard } from "components/grex";
 import { fetchGrex } from "lib/hooks/useGrex";
 import { useProgeny } from "lib/hooks/useProgeny";
 import { useDate } from "lib/hooks/useDate";
@@ -46,7 +46,7 @@ export const Grex = ({ grex }) => {
       title={`${grex.genus} ${grex.epithet} | Orchidex`}
       description={description(grex)}
     >
-      <G heading grex={grex} hideLink />
+      <GrexCard heading grex={grex} hideLink />
 
       <Resources grex={grex} />
 
@@ -59,7 +59,7 @@ export const Grex = ({ grex }) => {
               ["date_of_registration", "genus", "epithet"],
               ["desc"]
             ).map((grexOnDate) => {
-              return <G key={grexOnDate.id} grex={grexOnDate} />;
+              return <GrexCard key={grexOnDate.id} grex={grexOnDate} />;
             })}
           </div>
         </details>
@@ -95,7 +95,7 @@ export const Grex = ({ grex }) => {
               {orderBy(byRegistrant, ["genus", "epithet"]).map(
                 (grexOnDate, idx) => {
                   return (
-                    <G
+                    <GrexCard
                       key={`${idx}-${grexOnDate.id}`}
                       grex={grexOnDate}
                       hideReg

@@ -78,15 +78,12 @@ const levels = async (grex, level = 1) => {
     });
 
     generation = await getNextGeneration(
-      // uniqBy(
       flatten(
         generation.map((g) => [
           { genus: g.seed_parent_genus, epithet: g.seed_parent_epithet },
           { genus: g.pollen_parent_genus, epithet: g.pollen_parent_epithet },
         ])
-      ).filter((f) => f.genus && f.epithet),
-      (u) => `${u.genus} ${u.epithet}`
-      // )
+      ).filter((f) => f.genus && f.epithet)
     );
 
     if (generation.length === 0) {

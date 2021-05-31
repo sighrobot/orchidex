@@ -1,6 +1,10 @@
 import React from "react";
 
-export const useDate = ({ d } = {}) => {
+type UseDateProps = {
+  d?: string;
+};
+
+export const useDate = ({ d }: UseDateProps = { d: "" }) => {
   const [grexes, setGrexes] = React.useState([]);
 
   React.useEffect(() => {

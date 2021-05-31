@@ -1,10 +1,16 @@
+import { Grex } from "lib/types";
+
 const ORCHID_ROOTS_BASE_ID = 100000000;
 const SHARED_PROPS = {
   target: "_blank",
   rel: "noreferrer noopener",
 };
 
-export const Resources = ({ grex = {} }) => {
+type ResourcesProps = {
+  grex: Grex;
+};
+
+export const Resources = ({ grex }: ResourcesProps) => {
   const idNumber = parseInt(grex.id, 10);
   const orchidRootsIdNumber = ORCHID_ROOTS_BASE_ID + idNumber;
 

@@ -3,7 +3,7 @@ import Router, { useRouter } from "next/router";
 import { orderBy } from "lodash";
 
 import { Container } from "components/container";
-import { Grex } from "components/grex";
+import { GrexCard } from "components/grex";
 import { CROSS_FIELDS, SEARCH_FIELDS } from "lib/constants";
 import { INPUT_NAME_SUFFIX } from "lib/string";
 import { SearchParentage } from "components/search/parentage";
@@ -165,7 +165,7 @@ export default function Index({ initialState = {}, initialSimple = true }) {
           ["date_of_registration", "genus", "epithet"],
           ["desc"]
         ).map((r) => {
-          return <Grex key={r.id} grex={r} />;
+          return <GrexCard key={r.id} grex={r} />;
         })}
       </section>
     </Container>
