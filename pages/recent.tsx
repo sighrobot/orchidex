@@ -13,12 +13,14 @@ export default function Index() {
       <h2>Recently registered</h2>
 
       {orderBy(
-        Object.keys(grouped).filter(
-          (d, _, arr) =>
-            new Date(`${arr[0]}T00:00:00`).getTime() -
-              new Date(`${d}T00:00:00`).getTime() <=
-            7 * 24 * 60 * 60 * 1000
-        ),
+        Object.keys(grouped)
+          .filter((d) => !isNaN(new Date(d).getTime())) // Wu Wen-Hsian
+          .filter(
+            (d, _, arr) =>
+              new Date(`${arr[0]}T00:00:00`).getTime() -
+                new Date(`${d}T00:00:00`).getTime() <=
+              7 * 24 * 60 * 60 * 1000
+          ),
         (d) => d,
         "desc"
       ).map((d, idx) => {
