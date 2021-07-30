@@ -136,6 +136,7 @@ const get = async (id) => {
   });
 };
 
+const LAST_GOOD = 1044679;
 const END_AFTER = 100;
 let nullsInARow = 0;
 
@@ -160,7 +161,7 @@ stream.write(
 let i = startIndex;
 
 (async () => {
-  while (nullsInARow < END_AFTER) {
+  while (i < LAST_GOOD || nullsInARow < END_AFTER) {
     if (i <= skip[0] || i >= skip[1]) {
       try {
         const got = await get(i);
