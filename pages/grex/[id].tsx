@@ -11,24 +11,36 @@ import { Resources } from "components/resources";
 import { description } from "lib/string";
 import { AncestryViz } from "components/viz/ancestry";
 import List from "components/viz/list";
-import { useSpeciesAncestry } from "lib/hooks/useAncestry";
+import { fetchGrexByName, useSpeciesAncestry } from "lib/hooks/useAncestry";
 import { Name } from "components/name";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
-  const data = await fetchGrex(context.query.id);
+  const { id, g, e } = context.query;
 
-  if (!data) {
-    return {
-      notFound: true,
-    };
+  if (parseInt(id, 10)) {
+    const data = await fetchGrex(id);
+
+    if (data) {
+      return { props: { grex: data } };
+    }
+  }
+
+  if (g && e) {
+    const data = await fetchGrexByName({ genus: g, epithet: e });
+
+    if (data) {
+      return { props: { grex: data } };
+    }
   }
 
   return {
-    props: { grex: data }, // will be passed to the page component as props
+    notFound: true,
   };
 }
 
 export const Grex = ({ grex }) => {
+  const router = useRouter();
   const onDate = useDate({ d: grex?.date_of_registration });
   const progeny = useProgeny(grex);
   const speciesAncestry = useSpeciesAncestry(grex);
@@ -40,6 +52,12 @@ export const Grex = ({ grex }) => {
   if (!grex) {
     return <Container>loading&hellip;</Container>;
   }
+
+  React.useEffect(() => {
+    if (router.asPath.includes("/grex/s")) {
+      router.replace(`/grex/${grex.id}`);
+    }
+  }, [router.asPath]);
 
   return (
     <Container
