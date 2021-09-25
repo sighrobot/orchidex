@@ -1,8 +1,9 @@
 import React from "react";
 import cache from "lib/cache";
 import { repairMalformedNaturalHybridEpithet, UNKNOWN_CHAR } from "lib/string";
-import { flatten, partition, uniqBy, uniqueId } from "lodash";
+import { find, flatten, partition } from "lodash";
 import { isSpecies } from "components/pills";
+import { APP_URL } from "lib/constants";
 
 export const fetchGrexByName = async ({ genus, epithet }) => {
   if (!genus || !epithet) return null;
@@ -20,13 +21,23 @@ export const fetchGrexByName = async ({ genus, epithet }) => {
 
   try {
     const fetched = await fetch(
-      `/api/search?genus=${quotedGenus}&epithet=${quotedEpithet}`
+      `${APP_URL}/api/search?genus=${quotedGenus}&epithet=${quotedEpithet}`
     );
     const json = await fetched.json();
 
-    cache.set(`${json[0].genus} ${json[0].epithet}`, json[0]);
+    let match;
 
-    return json[0];
+    if (json.length === 1) {
+      match = json[0];
+    } else {
+      match = find(json, (g) => g.epithet.length === epithet.length);
+    }
+
+    if (match) {
+      cache.set(`${match.genus} ${match.epithet}`, match);
+    }
+
+    return match;
   } catch (e) {
     return null;
   }

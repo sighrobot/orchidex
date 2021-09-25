@@ -1,8 +1,4 @@
-import {
-  formatName,
-  repairMalformedNaturalHybridEpithet,
-  UNKNOWN_CHAR,
-} from "lib/string";
+import { formatName } from "lib/string";
 import { Grex } from "lib/types";
 import Link from "next/link";
 
@@ -24,13 +20,8 @@ export const Name = ({
   shouldAbbreviate = false,
 }: NameProps) => {
   if (grex) {
-    const epithet = repairMalformedNaturalHybridEpithet(grex);
-
     const href = linkAsSearch
-      ? `/?genus="${grex.genus}"&epithet="${epithet.replace(
-          new RegExp(UNKNOWN_CHAR, "g"),
-          "_"
-        )}"`
+      ? `/grex/s?g=${grex.genus}&e=${grex.epithet}`
       : `/grex/${grex.id}`;
 
     const formattedName = formatName(grex, {
