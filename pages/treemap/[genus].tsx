@@ -1,12 +1,8 @@
 import { Container } from "components/container";
 import { useRouter } from "next/router";
 import React from "react";
-import List from "components/viz/list";
-import { formatName } from "lib/string";
-import { ResponsiveTreeMap, ResponsiveTreeMapCanvas } from "@nivo/treemap";
-import { groupBy } from "lodash";
+import { ResponsiveTreeMapCanvas } from "@nivo/treemap";
 import { countBy } from "lodash";
-import { Grex } from "lib/types";
 
 const Treemap = () => {
   const router = useRouter();
@@ -84,7 +80,7 @@ const Treemap = () => {
         innerPadding={1}
         labelSkipSize={30}
         colors={(d) =>
-          `rgb(128, ${(1 - d.value / children[0]?.value ?? 1) * 255}, 255)`
+          `rgb(255, ${(1 - d.value / children[0]?.value ?? 1) * 255}, 128)`
         }
         label="id"
         value="value"
