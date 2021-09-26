@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import { ResponsiveTreeMapCanvas } from "@nivo/treemap";
 import { countBy } from "lodash";
+import { APP_URL } from "lib/constants";
 
 const Treemap = () => {
   const router = useRouter();
@@ -15,7 +16,7 @@ const Treemap = () => {
   React.useEffect(() => {
     (async () => {
       if (genus) {
-        const fetched = await fetch(`/api/parentGenus/${genus}`);
+        const fetched = await fetch(`${APP_URL}/api/parentGenus/${genus}`);
         const json = await fetched.json();
 
         setData(json);
