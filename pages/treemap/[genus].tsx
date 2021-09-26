@@ -1,13 +1,16 @@
 import { Container } from "components/container";
+import { isSpecies } from "components/pills";
 import { useRouter } from "next/router";
 import React from "react";
 import { ResponsiveTreeMapCanvas } from "@nivo/treemap";
-import { countBy } from "lodash";
+import { countBy, capitalize } from "lodash";
 import { APP_URL } from "lib/constants";
 
 const Treemap = () => {
   const router = useRouter();
-  const { genus = "" } = router.query;
+  const { genus: rawGenus = "" } = router.query;
+  const genus = capitalize(rawGenus as string);
+
   const [parent, setParent] = React.useState("seed");
   const [type, setType] = React.useState<"species" | "hybrid" | "all">("all");
 
@@ -25,7 +28,7 @@ const Treemap = () => {
   }, [genus]);
 
   const filtered = React.useMemo(
-    () => data.filter((d) => d[`${parent}_parent_genus`] === genus),
+    () => data.filter((d) => d[`${parent}_parent_genus`].toLowerCase()),
     [parent, genus, data]
   );
 
@@ -41,12 +44,17 @@ const Treemap = () => {
   const children = React.useMemo(
     () =>
       Object.keys(grouped)
-        .map((g) => ({
-          name: g.split(`${genus} `)[1],
-          value: grouped[g],
-        }))
+        .map((g) => {
+          return {
+            name: g,
+            value: grouped[g],
+          };
+        })
         .filter((g) => {
-          const isSpecies = g.name[0].toLowerCase() === g.name[0];
+          const split = g.name.split(" ");
+          const epithet = split.slice(1).join(" ");
+
+          const isSpecies = epithet[0].toLowerCase() === epithet[0];
           if (type === "species") {
             return isSpecies;
           }
