@@ -6,11 +6,11 @@ const hasParents = (grex: Grex) =>
   grex.seed_parent_epithet && grex.pollen_parent_epithet;
 
 const isParentNaturalHybrid = (grex: Grex) =>
-  grex.seed_parent_epithet[0] === UNKNOWN_CHAR ||
-  grex.pollen_parent_epithet[0] === UNKNOWN_CHAR;
+  grex.seed_parent_epithet?.[0] === UNKNOWN_CHAR ||
+  grex.pollen_parent_epithet?.[0] === UNKNOWN_CHAR;
 
 const isNaturalHybrid = (grex: Grex) =>
-  grex.epithet[0] === CROSS_CHAR ||
+  grex.epithet?.[0] === CROSS_CHAR ||
   (hasParents(grex) && grex.registrant_name === "This is a natural hybrid") ||
   (hasParents(grex) &&
     !isParentNaturalHybrid(grex) &&
