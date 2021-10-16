@@ -66,7 +66,7 @@ mark {
 
 footer {
   font-size: 12px;
-  background: white;
+  background: black;
   flex-shrink: 0;
   padding: 0 10px;
   padding-bottom: 32px;
@@ -90,6 +90,7 @@ footer button {
 }
 
 footer button div {
+  color: white;
   opacity: 0.8;
   height: 100%;
   width: 100%;
@@ -103,6 +104,7 @@ footer button img {
   position: absolute;
   top: 6px;
   left: 6.5px;
+  filter: invert();
 }
 
 nav a {
@@ -474,16 +476,6 @@ ul {
   margin-left: auto;
   flex-shrink: 0;
   width: 30px;
-}
-
-.viz-list meter::-webkit-meter-bar {
-  background: transparent;
-  border: none;
-  border-radius: 0;
-}
-
-.viz-list meter::-webkit-meter-optimum-value {
-  background: #a44cf5;
 }
 
 .ancestry-viz + .viz-list {
