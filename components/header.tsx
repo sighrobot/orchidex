@@ -1,8 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-const p = require("../package.json");
-
 export const Header = () => {
   const router = useRouter();
   return (
@@ -11,7 +9,6 @@ export const Header = () => {
         <Link href="/">
           <a>
             <em style={{ color: "#a5abfb" }}>Orchi</em>dex
-            <sup>v{p.version}</sup>
           </a>
         </Link>
       </h1>

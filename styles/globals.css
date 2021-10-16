@@ -7,7 +7,7 @@ body {
 }
 
 body {
-  background: #bcebfb;
+  background: white;
   font-size: 16px;
   width: 100vw;
 }
@@ -20,6 +20,7 @@ body {
   box-sizing: border-box;
   font-family: inherit;
   font-size: inherit;
+  letter-spacing: -0.5px;
 }
 
 h1,
@@ -126,7 +127,7 @@ small {
 
 .container header h1 {
   margin-right: 20px;
-  font-size: 150%;
+  font-size: 125%;
 }
 
 .container header h1 a {
