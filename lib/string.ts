@@ -1,4 +1,5 @@
 import type { Grex } from "./types";
+import { GENUS_TO_ABBREVIATION } from "./abbreviations";
 
 // https://bytes.grubhub.com/disabling-safari-autofill-for-a-single-line-address-input-b83137b5b1c7
 export const INPUT_NAME_SUFFIX = "__search__";
@@ -12,10 +13,8 @@ export const normalize = (s = "") =>
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
 
-const abbreviations = require("./abbreviations.json");
-
 export const abbreviateGenus = ({ genus } = { genus: "" }) =>
-  abbreviations[genus] || genus;
+  GENUS_TO_ABBREVIATION[genus] || genus;
 export const abbreviateEpithet = ({ epithet } = { epithet: "" }) => {
   return epithet.replace("Memoria ", "Mem. ");
 };
