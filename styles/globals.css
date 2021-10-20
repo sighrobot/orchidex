@@ -107,14 +107,61 @@ footer button img {
   filter: invert();
 }
 
-nav a {
-  margin-right: 10px;
+nav > a {
+  margin-right: 20px;
   color: inherit;
   text-transform: lowercase;
+  font-size: 150%;
+  text-decoration: none;
+  transition: 200ms ease color;
+  align-self: stretch;
+  line-height: 30px;
+}
+
+nav > a:nth-of-type(2) {
+  font-size: 180%;
+  line-height: 1;
+}
+
+nav > a:hover {
+  color: #8c94ff;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+}
+
+nav .magic-search {
+  margin-right: 20px !important;
+}
+
+nav .magic-search input {
+  border-radius: 20px;
+  padding: 5px 15px;
+  font-size: 80%;
+  width: 190px;
+  border: 1px solid #ccc !important;
 }
 
 a.active {
   text-decoration: none;
+}
+
+button.grex {
+  text-align: left;
+  background: none;
+  border: none;
+  display: block;
+  cursor: pointer;
+}
+
+/* button.grex:hover {
+  background: inherit;
+} */
+
+article.grex:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 small {
@@ -124,12 +171,12 @@ small {
 .container header {
   display: flex;
   align-items: center;
-  padding: 20px 0;
+  padding: 10px 0;
 }
 
 .container header h1 {
   margin-right: 20px;
-  font-size: 125%;
+  font-size: 110%;
 }
 
 .container header h1 a {
@@ -480,4 +527,15 @@ ul {
 
 .ancestry-viz + .viz-list {
   margin-top: 20px;
+}
+
+.magic-search {
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.magic-search + section {
+  padding: 0;
 }

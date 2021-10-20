@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Magic } from "./search/magic";
 
 export const Header = () => {
   const router = useRouter();
@@ -19,9 +20,15 @@ export const Header = () => {
             Treemap
           </a>
         </Link> */}
+
+        <Magic />
+
         <Link href="/recent">
-          <a className={router.pathname === "/recent" ? "active" : undefined}>
-            Recent
+          <a
+            title="Recently registered"
+            className={router.pathname === "/recent" ? "active" : undefined}
+          >
+            &#x029D7;
           </a>
         </Link>
 
@@ -31,7 +38,7 @@ export const Header = () => {
               router.pathname === "/learn/hybridizer" ? "active" : undefined
             }
           >
-            Hybridizer
+            &#x02697;
           </a>
         </Link>
       </nav>

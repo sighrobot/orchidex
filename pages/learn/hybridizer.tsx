@@ -7,6 +7,7 @@ import { AncestryViz } from "components/viz/ancestry";
 import List from "components/viz/list";
 import { useSpeciesAncestry } from "lib/hooks/useAncestry";
 import { Grex } from "lib/types";
+import { Magic } from "components/search/magic";
 
 // const grex = {
 //   id: "0123456789",
@@ -35,30 +36,24 @@ const Hybridizer = () => {
   const [state, setState] = React.useState(INITIAL_STATE);
   const speciesAncestry = useSpeciesAncestry(grex);
 
-  console.log(grex);
+  const handleSeedChange = (g: Grex) => {
+    const field: Pick<Grex, "seed_parent_genus" | "seed_parent_epithet"> = {};
 
-  const handleChange = (e) => {
-    const field: Pick<
-      Grex,
-      | "seed_parent_genus"
-      | "seed_parent_epithet"
-      | "pollen_parent_genus"
-      | "pollen_parent_epithet"
-    > = {};
+    if (g) {
+      field.seed_parent_genus = g.genus;
+      field.seed_parent_epithet = g.epithet;
+    }
 
-    switch (e.target.name) {
-      case "g1":
-        field.seed_parent_genus = e.target.value;
-        break;
-      case "e1":
-        field.seed_parent_epithet = e.target.value;
-        break;
-      case "g2":
-        field.pollen_parent_genus = e.target.value;
-        break;
-      case "e2":
-        field.pollen_parent_epithet = e.target.value;
-        break;
+    setState((s) => ({ ...s, ...field }));
+  };
+
+  const handlePollenChange = (g: Grex) => {
+    const field: Pick<Grex, "pollen_parent_genus" | "pollen_parent_epithet"> =
+      {};
+
+    if (g) {
+      field.pollen_parent_genus = g.genus;
+      field.pollen_parent_epithet = g.epithet;
     }
 
     setState((s) => ({ ...s, ...field }));
@@ -71,19 +66,12 @@ const Hybridizer = () => {
       <h2>Hybridizer</h2>
       <br />
 
-      <SearchParentage
-        state={{
-          g1: state.seed_parent_genus,
-          e1: state.seed_parent_epithet,
-          g2: state.pollen_parent_genus,
-          e2: state.pollen_parent_epithet,
-        }}
-        onChange={handleChange}
-        onSubmit={handleSubmit}
-        submitText="Hybridize"
-      />
+      <Magic onChange={handleSeedChange} />
+      <Magic onChange={handlePollenChange} />
 
-      {/* {grex && <GrexCard grex={grex} hideLink />} */}
+      <button type="submit" onClick={handleSubmit}>
+        Hybridize!
+      </button>
 
       {grex && <AncestryViz grex={grex} />}
 
