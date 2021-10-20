@@ -116,11 +116,13 @@ nav > a {
   transition: 200ms ease color;
   align-self: stretch;
   line-height: 30px;
+  flex-shrink: 0;
 }
 
 nav > a:nth-of-type(2) {
   font-size: 180%;
   line-height: 1;
+  margin-right: 10px;
 }
 
 nav > a:hover {
@@ -130,17 +132,19 @@ nav > a:hover {
 nav {
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 nav .magic-search {
   margin-right: 20px !important;
+  flex-grow: 1;
 }
 
 nav .magic-search input {
+  width: 100%;
   border-radius: 20px;
-  padding: 5px 15px;
-  font-size: 80%;
-  width: 190px;
+  padding: 4px 10px;
+  font-size: 16px;
   border: 1px solid #ccc !important;
 }
 
@@ -156,9 +160,9 @@ button.grex {
   cursor: pointer;
 }
 
-/* button.grex:hover {
-  background: inherit;
-} */
+button.grex a {
+  color: black;
+}
 
 article.grex:hover {
   background: rgba(0, 0, 0, 0.05);
@@ -172,6 +176,8 @@ small {
   display: flex;
   align-items: center;
   padding: 10px 0;
+  max-width: 600px;
+  width: 100%;
 }
 
 .container header h1 {

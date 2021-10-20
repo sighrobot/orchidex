@@ -55,7 +55,7 @@ export const Magic = ({
       <form className="search magic-search">
         <input
           onChange={handleChange}
-          placeholder="Search by grex name…"
+          placeholder="Search"
           type="search"
           value={value}
         />
