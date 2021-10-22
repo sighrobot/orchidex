@@ -1,7 +1,7 @@
 import { GENUSES } from "./abbreviations";
 
 const isSubstringOfGenus = (s: string): boolean => {
-  return GENUSES.some((g) => g.includes(s));
+  return GENUSES.some((g) => g.toLowerCase().indexOf(s.toLowerCase()) === 0);
 };
 
 export const parseMagicQuery = (
@@ -23,6 +23,8 @@ export const parseMagicQuery = (
   if (isFirstTokenGenus) {
     return { genus: tokens[0], epithet: tokens.slice(1).join(" ") };
   }
+
+  console.log(tokens);
 
   return { genus: "", epithet: trimmed };
 };

@@ -16,6 +16,8 @@ export default async (req, res) => {
         .filter((c) => c)
         .join(" and ");
 
+  console.log(condx);
+
   const d = await q(`SELECT * FROM S3Object WHERE ${condx} limit 1000`);
 
   res.status(200).json(d);

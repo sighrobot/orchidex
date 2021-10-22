@@ -16,8 +16,6 @@ export const Reg = ({ grex, hideDate, hideLink }: RegProps) => {
       return null;
     }
 
-    const LinkComponent = hideLink ? "span" : Link;
-
     const dateStr = grex.date_of_registration
       ? new Date(`${grex.date_of_registration}T00:00:00`)
           .toString()
@@ -25,16 +23,22 @@ export const Reg = ({ grex, hideDate, hideLink }: RegProps) => {
       : "on unknown date";
     return (
       <span className="reg">
-        Registered{" "}
-        {!hideDate && (
-          <LinkComponent href={`/date/${grex.date_of_registration}`}>
-            <a className="date">{dateStr}</a>
-          </LinkComponent>
+        {!hideDate &&
+          (hideLink ? (
+            <span>{dateStr}</span>
+          ) : (
+            <Link href={`/date/${grex.date_of_registration}`}>
+              <a className="date">{dateStr}</a>
+            </Link>
+          ))}
+        {!hideDate && " / "}
+        {hideLink ? (
+          <span>{grex.registrant_name}</span>
+        ) : (
+          <Link href={`/registrant/${grex.registrant_name}`}>
+            <a>{grex.registrant_name}</a>
+          </Link>
         )}{" "}
-        by{" "}
-        <LinkComponent href={`/registrant/${grex.registrant_name}`}>
-          <a>{grex.registrant_name}</a>
-        </LinkComponent>{" "}
         {grex.originator_name !== grex.registrant_name &&
           `(${grex.originator_name})`}
       </span>

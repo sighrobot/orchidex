@@ -4,6 +4,27 @@ import { Magic } from "./search/magic";
 
 export const Header = () => {
   const router = useRouter();
+
+  const handleSubmit = ({ genus, epithet }) => {
+    const params = [];
+
+    if (genus) {
+      params.push(`genus=${genus}`);
+    }
+
+    if (epithet) {
+      params.push(`epithet=${epithet}`);
+    }
+
+    router.push(`/?${params.join("&")}`);
+  };
+
+  const handleChange = (grex) => {
+    if (grex) {
+      router.push(`/grex/${grex.id}`);
+    }
+  };
+
   return (
     <header>
       <h1>
@@ -21,7 +42,7 @@ export const Header = () => {
           </a>
         </Link> */}
 
-        <Magic />
+        <Magic onChange={handleChange} onSubmit={handleSubmit} />
 
         <Link href="/recent">
           <a

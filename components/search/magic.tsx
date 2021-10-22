@@ -2,26 +2,43 @@ import React from "react";
 import { GrexCard } from "components/grex";
 import { parseMagicQuery } from "lib/magic-search";
 import { Grex } from "lib/types";
-import { debounce, throttle } from "lodash";
+import { throttle } from "lodash";
 import { fetchSearch } from "pages";
 
 export const Magic = ({
   onChange,
-  name,
+  onSubmit,
 }: {
   onChange?: (grex: Grex) => void;
-  name?: string;
+  onSubmit?: (partialGrex: Partial<Grex>) => void;
 }) => {
   const [value, setValue] = React.useState<string>("");
   const [results, setResults] = React.useState<Grex[]>([]);
   const handleChange = (e) => setValue(e.target.value);
   const [selected, setSelected] = React.useState<Grex | null>(null);
 
-  const handleSelection = (g: Grex) => setSelected(g);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (value.trim()) {
+      const partialGrex = parseMagicQuery(value);
+      setResults([]);
+      setValue("");
+      setSelected(null);
+      onSubmit(partialGrex);
+    }
+  };
+
+  const handleSelection = (g: Grex) => {
+    // setSelected(g);
+    setResults([]);
+    setValue("");
+    setSelected(null);
+    onChange(g);
+  };
 
   const dbed = React.useCallback(
     throttle(async (value) => {
-      if (value && value.length > 3) {
+      if (value && value.length >= 3) {
         const partialGrex = parseMagicQuery(value);
         const params = [`epithet=${partialGrex.epithet}`];
 
@@ -33,7 +50,7 @@ export const Magic = ({
 
         setResults(search);
       }
-    }, 750),
+    }, 500),
     []
   );
 
@@ -52,7 +69,7 @@ export const Magic = ({
 
   return (
     <>
-      <form className="search magic-search">
+      <form onSubmit={handleSubmit} className="search magic-search">
         <input
           onChange={handleChange}
           placeholder="Search"
@@ -61,7 +78,24 @@ export const Magic = ({
         />
       </form>
 
-      {value.length > 0 && (
+      {/* <button
+        style={{
+          position: "fixed",
+          top: 50,
+          right: 0,
+          height: 40,
+          width: 40,
+          fontSize: "30px",
+          lineHeight: "30px",
+          background: "none",
+          border: "none",
+          zIndex: 3,
+        }}
+      >
+        &times;
+      </button> */}
+
+      {value.trim().length > 0 && (
         <section
           style={{
             overflowX: "auto",
@@ -79,9 +113,12 @@ export const Magic = ({
         >
           {value.length > 0 &&
             results.map((r) => (
-              <article key={r.id} className="grex">
-                <GrexCard asButton onClick={handleSelection} grex={r} />
-              </article>
+              <GrexCard
+                key={r.id}
+                asButton
+                onClick={handleSelection}
+                grex={r}
+              />
             ))}
         </section>
       )}

@@ -1,5 +1,6 @@
 import { Name } from "components/name";
 import { Grex } from "lib/types";
+import { isSpecies } from "./pills";
 
 type ParentageProps = {
   grex?: Grex;
@@ -20,21 +21,24 @@ export const Parentage = ({
       pollen_parent_epithet,
     } = grex;
 
-    if (
-      seed_parent_genus &&
-      seed_parent_epithet &&
-      pollen_parent_genus &&
-      pollen_parent_epithet
-    ) {
-      return (
-        <span className="parentage">
+    if (isSpecies(grex)) {
+      return null;
+    }
+
+    return (
+      <span className="parentage">
+        {seed_parent_genus && seed_parent_epithet ? (
           <Name
             shouldAbbreviate={shouldAbbreviateParentage}
             link={!hideLink}
             linkAsSearch
             grex={{ genus: seed_parent_genus, epithet: seed_parent_epithet }}
-          />{" "}
-          &times;{" "}
+          />
+        ) : (
+          "?"
+        )}{" "}
+        &times;{" "}
+        {pollen_parent_genus && pollen_parent_epithet ? (
           <Name
             shouldAbbreviate={shouldAbbreviateParentage}
             link={!hideLink}
@@ -44,10 +48,10 @@ export const Parentage = ({
               epithet: pollen_parent_epithet,
             }}
           />
-        </span>
-      );
-    }
+        ) : (
+          "?"
+        )}
+      </span>
+    );
   }
-
-  return null;
 };
