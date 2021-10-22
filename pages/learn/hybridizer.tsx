@@ -10,6 +10,7 @@ import { Grex } from "lib/types";
 import { Magic } from "components/search/magic";
 import { fetchGrex } from "lib/hooks/useGrex";
 import router, { useRouter } from "next/router";
+import { abbreviateGenus } from "lib/string";
 
 // const grex = {
 //   id: "0123456789",
@@ -92,8 +93,20 @@ const Hybridizer = ({ seed, pollen }) => {
     }
   }, [seed, pollen]);
 
+  const title =
+    seed && pollen
+      ? `${abbreviateGenus(seedParent)} ${
+          seedParent.epithet
+        } × ${abbreviateGenus(pollenParent)} ${
+          pollenParent.epithet
+        } | Hybridizer | Orchidex`
+      : "Hybridizer | Orchidex";
+
   return (
-    <Container title="Hybridizer | Orchidex">
+    <Container
+      // title={`${grex.genus} ${grex.epithet} | Orchidex`}
+      title={title}
+    >
       <h2>Hybridizer</h2>
       <br />
 
