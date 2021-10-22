@@ -4,9 +4,10 @@ import Link from "next/link";
 type RegProps = {
   grex?: Grex;
   hideDate: boolean;
+  hideLink?: boolean;
 };
 
-export const Reg = ({ grex, hideDate }: RegProps) => {
+export const Reg = ({ grex, hideDate, hideLink }: RegProps) => {
   if (grex) {
     if (
       !grex.date_of_registration ||
@@ -22,16 +23,22 @@ export const Reg = ({ grex, hideDate }: RegProps) => {
       : "on unknown date";
     return (
       <span className="reg">
-        Registered{" "}
-        {!hideDate && (
-          <Link href={`/date/${grex.date_of_registration}`}>
-            <a className="date">{dateStr}</a>
+        {!hideDate &&
+          (hideLink ? (
+            <span>{dateStr}</span>
+          ) : (
+            <Link href={`/date/${grex.date_of_registration}`}>
+              <a className="date">{dateStr}</a>
+            </Link>
+          ))}
+        {!hideDate && " / "}
+        {hideLink ? (
+          <span>{grex.registrant_name}</span>
+        ) : (
+          <Link href={`/registrant/${grex.registrant_name}`}>
+            <a>{grex.registrant_name}</a>
           </Link>
         )}{" "}
-        by{" "}
-        <Link href={`/registrant/${grex.registrant_name}`}>
-          <a>{grex.registrant_name}</a>
-        </Link>{" "}
         {grex.originator_name !== grex.registrant_name &&
           `(${grex.originator_name})`}
       </span>

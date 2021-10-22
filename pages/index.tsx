@@ -8,8 +8,10 @@ import { CROSS_FIELDS, SEARCH_FIELDS } from "lib/constants";
 import { INPUT_NAME_SUFFIX } from "lib/string";
 import { SearchParentage } from "components/search/parentage";
 import { SearchGrex } from "components/search/grex";
+import { parseMagicQuery } from "lib/magic-search";
+import { Magic } from "components/search/magic";
 
-async function fetchSearch(params = []) {
+export async function fetchSearch(params = []) {
   const fetched = await fetch(`/api/search?${params.join("&")}`);
   return fetched.json();
 }
@@ -90,6 +92,7 @@ export default function Index({ initialState = {}, initialSimple = true }) {
       setSimple(nextSimple);
 
       (async () => {
+        console.log({ params });
         const data = await fetchSearch(params);
 
         setResults(data);

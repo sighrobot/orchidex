@@ -1,8 +1,30 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Magic } from "./search/magic";
 
 export const Header = () => {
   const router = useRouter();
+
+  const handleSubmit = ({ genus, epithet }) => {
+    const params = [];
+
+    if (genus) {
+      params.push(`genus=${genus}`);
+    }
+
+    if (epithet) {
+      params.push(`epithet=${epithet}`);
+    }
+
+    router.push(`/?${params.join("&")}`);
+  };
+
+  const handleChange = (grex) => {
+    if (grex) {
+      router.push(`/grex/${grex.id}`);
+    }
+  };
+
   return (
     <header>
       <h1>
@@ -19,9 +41,15 @@ export const Header = () => {
             Treemap
           </a>
         </Link> */}
+
+        <Magic onChange={handleChange} onSubmit={handleSubmit} />
+
         <Link href="/recent">
-          <a className={router.pathname === "/recent" ? "active" : undefined}>
-            Recent
+          <a
+            title="Recently registered"
+            className={router.pathname === "/recent" ? "active" : undefined}
+          >
+            &#x029D7;
           </a>
         </Link>
 
@@ -31,7 +59,7 @@ export const Header = () => {
               router.pathname === "/learn/hybridizer" ? "active" : undefined
             }
           >
-            Hybridizer
+            &#x02697;
           </a>
         </Link>
       </nav>

@@ -107,14 +107,67 @@ footer button img {
   filter: invert();
 }
 
-nav a {
-  margin-right: 10px;
+nav > a {
+  margin-right: 20px;
   color: inherit;
   text-transform: lowercase;
+  font-size: 150%;
+  text-decoration: none;
+  transition: 200ms ease color;
+  align-self: stretch;
+  line-height: 30px;
+  flex-shrink: 0;
+}
+
+nav > a:nth-of-type(2) {
+  font-size: 180%;
+  line-height: 1;
+  margin-right: 10px;
+}
+
+nav > a:hover {
+  color: #8c94ff;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+nav .magic-search {
+  margin-right: 20px !important;
+  flex-grow: 1;
+}
+
+nav .magic-search input {
+  width: 100%;
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-size: 16px;
+  border: 1px solid #ccc !important;
 }
 
 a.active {
   text-decoration: none;
+}
+
+button.grex {
+  text-align: left;
+  background: none;
+  border: none;
+  display: block;
+  cursor: pointer;
+  padding: 20px 10px;
+  width: 100%;
+}
+
+button.grex a {
+  color: black !important;
+}
+
+button.grex:hover {
+  background: rgba(0, 0, 0, 0.05);
 }
 
 small {
@@ -124,12 +177,14 @@ small {
 .container header {
   display: flex;
   align-items: center;
-  padding: 20px 0;
+  padding: 10px 0;
+  max-width: 600px;
+  width: 100%;
 }
 
 .container header h1 {
   margin-right: 20px;
-  font-size: 125%;
+  font-size: 120%;
 }
 
 .container header h1 a {
@@ -152,6 +207,10 @@ h3 {
 }
 
 section {
+  /* padding: 20px 0; */
+}
+
+details {
   padding: 20px 0;
 }
 
@@ -165,44 +224,53 @@ section + section {
 
 a {
   color: black;
+  text-decoration: none;
 }
 
+a:hover {
+  color: black !important;
+  text-decoration: underline;
+}
+
+.reg a,
 .parentage a {
   /* color: #a44cf5; */
   /* color: #6d04ce; */
-  color: #8c94ff;
+  /* color: #8c94ff; */
+  color: gray;
 }
 
 .genus {
   font-style: italic;
 }
 
-article {
+.grex {
   padding: 20px 0;
 }
 
-article + article {
+.grex + .grex {
   border-top: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-article:hover {
+.grex:hover {
   background: rgba(255, 255, 255, 0.1);
 }
 
-article .parentage,
-article .reg {
-  font-size: 80%;
+.grex .parentage,
+.grex .reg {
+  font-size: 75%;
+  color: gray;
 }
 
-article.heading {
+.grex.heading {
   padding: 0;
 }
 
-article.heading:hover {
+.grex.heading:hover {
   background: none;
 }
 
-article.heading .name {
+.grex.heading .name {
   font-size: 110%;
 }
 
@@ -218,7 +286,15 @@ details summary {
 }
 
 .reg {
-  opacity: 0.5;
+  /* opacity: 0.5; */
+}
+
+.parentage a {
+  /* color: blue; */
+}
+
+.reg a {
+  /* color: purple; */
 }
 
 form.search {
@@ -480,4 +556,15 @@ ul {
 
 .ancestry-viz + .viz-list {
   margin-top: 20px;
+}
+
+.magic-search {
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.magic-search + section {
+  padding: 0;
 }

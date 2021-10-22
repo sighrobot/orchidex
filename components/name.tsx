@@ -36,11 +36,7 @@ export const Name = ({
     const content = (
       <>
         <em>{formattedName.genus}</em>{" "}
-        {isSpecies ? (
-          <em>{formattedName.epithet}</em>
-        ) : (
-          formattedName.epithet || "(?)"
-        )}
+        {isSpecies ? <em>{formattedName.epithet}</em> : formattedName.epithet}
       </>
     );
     return (
