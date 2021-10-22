@@ -34,6 +34,8 @@ const INITIAL_STATE = {
 const Hybridizer = () => {
   const [grex, setGrex] = React.useState(null);
   const [state, setState] = React.useState(INITIAL_STATE);
+  const [seedParent, setSeedParent] = React.useState<Grex | null>(null);
+  const [pollenParent, setPollenParent] = React.useState<Grex | null>(null);
   const speciesAncestry = useSpeciesAncestry(grex);
 
   const handleSeedChange = (g: Grex) => {
@@ -44,6 +46,7 @@ const Hybridizer = () => {
       field.seed_parent_epithet = g.epithet;
     }
 
+    setSeedParent(g);
     setState((s) => ({ ...s, ...field }));
   };
 
@@ -56,6 +59,7 @@ const Hybridizer = () => {
       field.pollen_parent_epithet = g.epithet;
     }
 
+    setPollenParent(g);
     setState((s) => ({ ...s, ...field }));
   };
 
@@ -66,12 +70,25 @@ const Hybridizer = () => {
       <h2>Hybridizer</h2>
       <br />
 
-      <Magic onChange={handleSeedChange} />
-      <Magic onChange={handlePollenChange} />
+      <Magic inlineMenu onChange={handleSeedChange} />
+
+      {seedParent ? <GrexCard grex={seedParent} /> : "?"}
+
+      <div>&times;</div>
+
+      {pollenParent ? <GrexCard grex={pollenParent} /> : "?"}
+
+      <Magic inlineMenu onChange={handlePollenChange} />
 
       <button type="submit" onClick={handleSubmit}>
         Hybridize!
       </button>
+
+      <br />
+      <br />
+      <br />
+
+      {grex && <GrexCard hideLink grex={grex} />}
 
       {grex && <AncestryViz grex={grex} />}
 

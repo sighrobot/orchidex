@@ -6,9 +6,11 @@ import { throttle } from "lodash";
 import { fetchSearch } from "pages";
 
 export const Magic = ({
+  inlineMenu,
   onChange,
   onSubmit,
 }: {
+  inlineMenu?: boolean;
   onChange?: (grex: Grex) => void;
   onSubmit?: (partialGrex: Partial<Grex>) => void;
 }) => {
@@ -97,19 +99,33 @@ export const Magic = ({
 
       {value.trim().length > 0 && (
         <section
-          style={{
-            overflowX: "auto",
-            position: "absolute",
-            zIndex: 2,
-            top: 50,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backdropFilter: value.length > 0 ? "blur(2px) grayscale(100%)" : "",
-            background: "#bcebfb",
-            transition: "200ms ease backdropFilter",
-            opacity: 0.95,
-          }}
+          style={
+            inlineMenu
+              ? {
+                  height: 300,
+                  left: 10,
+                  right: 10,
+                  maxWidth: 400,
+                  overflowY: "auto",
+                  position: "absolute",
+                  background: "white",
+                  border: "1px solid gray",
+                }
+              : {
+                  overflowX: "auto",
+                  position: "absolute",
+                  zIndex: 2,
+                  top: 50,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  backdropFilter:
+                    value.length > 0 ? "blur(2px) grayscale(100%)" : "",
+                  background: "#bcebfb",
+                  transition: "200ms ease backdropFilter",
+                  opacity: 0.95,
+                }
+          }
         >
           {value.length > 0 &&
             results.map((r) => (
