@@ -110,6 +110,7 @@ export const Magic = ({
                   position: "absolute",
                   background: "white",
                   border: "1px solid gray",
+                  zIndex: 1,
                 }
               : {
                   overflowX: "auto",

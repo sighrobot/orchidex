@@ -8,6 +8,8 @@ import List from "components/viz/list";
 import { useSpeciesAncestry } from "lib/hooks/useAncestry";
 import { Grex } from "lib/types";
 import { Magic } from "components/search/magic";
+import { fetchGrex } from "lib/hooks/useGrex";
+import router, { useRouter } from "next/router";
 
 // const grex = {
 //   id: "0123456789",
@@ -20,6 +22,18 @@ import { Magic } from "components/search/magic";
 //   hypothetical: true,
 // };
 
+export async function getServerSideProps(context) {
+  const { seed: s, pollen: p } = context.query;
+
+  const [seed, pollen] = await Promise.all([fetchGrex(s), fetchGrex(p)]);
+
+  if (seed && pollen) {
+    return { props: { seed, pollen } };
+  }
+
+  return { props: {} };
+}
+
 const INITIAL_STATE = {
   id: "hypothetical",
   genus: "Hypothesis",
@@ -31,11 +45,12 @@ const INITIAL_STATE = {
   hypothetical: true,
 };
 
-const Hybridizer = () => {
+const Hybridizer = ({ seed, pollen }) => {
+  const router = useRouter();
   const [grex, setGrex] = React.useState(null);
   const [state, setState] = React.useState(INITIAL_STATE);
-  const [seedParent, setSeedParent] = React.useState<Grex | null>(null);
-  const [pollenParent, setPollenParent] = React.useState<Grex | null>(null);
+  const [seedParent, setSeedParent] = React.useState<Grex | null>(seed);
+  const [pollenParent, setPollenParent] = React.useState<Grex | null>(pollen);
   const speciesAncestry = useSpeciesAncestry(grex);
 
   const handleSeedChange = (g: Grex) => {
@@ -63,7 +78,19 @@ const Hybridizer = () => {
     setState((s) => ({ ...s, ...field }));
   };
 
-  const handleSubmit = () => setGrex(state);
+  const handleSubmit = () => {
+    setGrex(state);
+    router.replace(
+      `/learn/hybridizer?seed=${seedParent.id}&pollen=${pollenParent.id}`
+    );
+  };
+
+  React.useEffect(() => {
+    if (seed && pollen) {
+      handleSeedChange(seed);
+      handlePollenChange(pollen);
+    }
+  }, [seed, pollen]);
 
   return (
     <Container title="Hybridizer | Orchidex">
