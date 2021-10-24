@@ -78,7 +78,6 @@ a:hover {
   width: 100%;
   background: white;
   font-family: 'IBM Plex Mono', monospace;
-  /* transform: rotate(180deg); */
 }
 
 .seed.species,
@@ -104,16 +103,8 @@ path.link {
   stroke-width: 2;
 }
 
-.google-visualization-orgchart-linenode {
-  border-color: rgba(0, 0, 0, 0.5) !important;
-}
-
-#chart_div {
-  min-width: 800px;
-}
-
 .chart-wrap {
-  overflow-x: auto;
+  margin: 0 -10px;
 }
 
 @media (max-width: 800px) {
