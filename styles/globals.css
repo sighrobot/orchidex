@@ -56,7 +56,7 @@ a:hover {
 #chart_div,
 .google-visualization-orgchart-node,
 .svg-chart-container {
-  transform: rotate(180deg);
+  /* transform: rotate(180deg); */
 }
 
 .google-visualization-orgchart-node {
@@ -78,7 +78,7 @@ a:hover {
   width: 100%;
   background: white;
   font-family: 'IBM Plex Mono', monospace;
-  transform: rotate(180deg);
+  /* transform: rotate(180deg); */
 }
 
 .seed.species,
