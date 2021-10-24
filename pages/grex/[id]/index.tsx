@@ -86,7 +86,17 @@ export const Grex = ({ grex }) => {
       <section>
         <details>
           <summary>Ancestry</summary>
+
+          <Link href={`${router.asPath}/tree`}>
+            <a
+              style={{ display: "block", textAlign: "right", fontSize: "14px" }}
+            >
+              View complete tree &rarr;
+            </a>
+          </Link>
+
           <AncestryViz grex={grex} />
+
           <List
             data={speciesAncestry}
             getFields={(sa) => [sa.grex.epithet]}

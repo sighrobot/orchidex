@@ -54,7 +54,8 @@ a:hover {
 }
 
 #chart_div,
-.google-visualization-orgchart-node {
+.google-visualization-orgchart-node,
+.svg-chart-container {
   transform: rotate(180deg);
 }
 
@@ -72,8 +73,18 @@ a:hover {
 .root {
   color: white;
   padding: 5px !important;
-  min-height: 60px;
-  min-width: 70px;
+  font-size: 16px;
+  height: 100%;
+  width: 100%;
+  background: white;
+  font-family: 'IBM Plex Mono', monospace;
+  transform: rotate(180deg);
+}
+
+.seed.species,
+.pollen.species,
+.root.species {
+  border-top: 10px solid black !important;
 }
 
 .root {
@@ -86,6 +97,11 @@ a:hover {
 
 .pollen {
   background: #777;
+}
+
+path.link {
+  stroke: black;
+  stroke-width: 2;
 }
 
 .google-visualization-orgchart-linenode {

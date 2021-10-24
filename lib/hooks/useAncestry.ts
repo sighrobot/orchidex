@@ -139,12 +139,17 @@ export const useSpeciesAncestry = (grex) => {
 };
 
 export const useAncestry = (grex, level = 2) => {
-  const [ancestry, setAncestry] = React.useState({ nodes: [], links: [] });
+  const [ancestry, setAncestry] = React.useState({
+    nodes: [],
+    links: [],
+    nodeMap: {},
+  });
 
   React.useEffect(() => {
     (async () => {
       const nodes = [grex];
       const links = [];
+      const nodeMap = { [grex.id]: grex };
 
       let num = 0;
       let seed = 1;
@@ -159,6 +164,7 @@ export const useAncestry = (grex, level = 2) => {
         });
 
         nodes.push({ ...parent, id, type, l: counter });
+        nodeMap[id] = { ...parent, id, type, l: counter };
         nameCache.set(`${parent.genus} ${parent.epithet}`, parent);
       };
 
@@ -208,12 +214,12 @@ export const useAncestry = (grex, level = 2) => {
         await fetchParents(grex);
 
         if (nodes.length > 1) {
-          setAncestry({ nodes, links });
+          setAncestry({ nodes, links, nodeMap });
         } else {
-          setAncestry({ nodes: [], links: [] });
+          setAncestry({ nodes: [], links: [], nodeMap: {} });
         }
       } else {
-        setAncestry({ nodes: [grex], links: [] });
+        setAncestry({ nodes: [grex], links: [], nodeMap });
       }
     })();
   }, [grex]);

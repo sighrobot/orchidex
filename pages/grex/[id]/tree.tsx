@@ -9,6 +9,8 @@ import { AncestryViz } from "components/viz/ancestry";
 import List from "components/viz/list";
 import { useSpeciesAncestry } from "lib/hooks/useAncestry";
 import { Name } from "components/name";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   const data = await fetchGrex(context.query.id);
@@ -25,6 +27,7 @@ export async function getServerSideProps(context) {
 }
 
 export const Grex = ({ grex }) => {
+  const router = useRouter();
   const speciesAncestry = useSpeciesAncestry(grex);
 
   if (!grex) {
@@ -33,14 +36,19 @@ export const Grex = ({ grex }) => {
 
   return (
     <Container
+      fullWidth
       title={`${grex.genus} ${grex.epithet} | Orchidex`}
       description={description(grex)}
     >
       <GrexCard heading grex={grex} hideLink />
 
-      <Resources grex={grex} />
+      <Link href={router.asPath.replace("/tree", "")}>
+        <a style={{ display: "block", textAlign: "right", fontSize: "14px" }}>
+          &larr; Back to grex
+        </a>
+      </Link>
 
-      <AncestryViz grex={grex} />
+      <AncestryViz grex={grex} maxDepth />
 
       <List
         data={speciesAncestry}
