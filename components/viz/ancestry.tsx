@@ -4,6 +4,8 @@ import { useAncestry } from 'lib/hooks/useAncestry';
 import { sortBy } from 'lodash';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
 
+let chart;
+
 export const AncestryViz = ({ grex, maxDepth = false }) => {
   const ancestry = useAncestry(grex, maxDepth ? 1000 : 2);
 
@@ -14,7 +16,7 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
       return;
     }
 
-    const ch = new OrgChart()
+    chart = new OrgChart()
       .container('#tree')
       .data([
         ...sortBy(ancestry.links, ['type', 'genus', 'epithet']).map((l) => {
@@ -60,14 +62,36 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
           </div>,
         );
       })
-      .render()
-      .expandAll();
+      .render();
 
-    ch.fit();
+    chart.fit();
   }, [ancestry]);
+
+  const handleResetView = React.useCallback(() => {
+    // chart?.expandAll();
+    chart?.render().fit();
+  }, []);
+
+  const handleExpandAll = React.useCallback(() => {
+    chart?.expandAll();
+    chart?.fit();
+    chart?.render();
+  }, []);
+
+  const handleCollapseAll = React.useCallback(() => {
+    chart?.collapseAll();
+    chart?.fit();
+    chart?.render();
+  }, []);
 
   return (
     <div className='ancestry-viz chart-wrap'>
+      <menu>
+        <button onClick={handleResetView}>Re-center</button>
+        <button onClick={handleExpandAll}>Expand All</button>
+        <button onClick={handleCollapseAll}>Collapse All</button>
+        {/* <button onClick={handleResetView}>Reset View</button> */}
+      </menu>
       <div id='tree' />
     </div>
   );
