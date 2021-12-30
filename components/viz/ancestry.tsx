@@ -1,7 +1,7 @@
 import { renderToString } from 'react-dom/server';
 import React, { useRef } from 'react';
 import { useAncestry } from 'lib/hooks/useAncestry';
-import _, { sortBy } from 'lodash';
+import { sortBy } from 'lodash';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
 import { useRouter } from 'next/router';
 
@@ -23,8 +23,9 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
     }
 
     chart
-      .svgHeight(maxDepth ? window.innerHeight * 0.75 : 400)
+      .svgHeight(maxDepth ? window.innerHeight * 0.75 : 350)
       .container(d3Container.current)
+
       .data([
         ...sortBy(ancestry.links, ['type', 'genus', 'epithet']).map((l) => {
           return {
@@ -40,15 +41,12 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
         },
       ])
       .nodeWidth((a, b, c) => {
-        return 240;
+        return 180;
       })
       .nodeHeight((a) => {
         return 80;
       })
-      // .siblingsMargin((d) => Math.max(25, (d.depth + 1) * 25))
-      .siblingsMargin((d) => 100)
-      .childrenMargin((d) => 100)
-
+      .childrenMargin((d) => (d.depth + 3) * 25)
       .nodeContent(({ data: n }) => {
         const formatted = formatName(n, {
           shortenGenus: true,
