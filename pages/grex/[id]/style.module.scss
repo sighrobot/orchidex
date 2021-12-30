@@ -1,0 +1,20 @@
+.tree {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  // align-items: center;
+
+  > {
+    div:nth-child(1) {
+      flex-grow: 1;
+      // min-width: 360px;
+    }
+
+    div:nth-child(2) {
+      // max-width: 360px;
+      // min-width: 360px;
+      margin-left: 30px;
+      flex-shrink: 0;
+    }
+  }
+}

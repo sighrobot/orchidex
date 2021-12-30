@@ -1,23 +1,31 @@
 import { renderToString } from 'react-dom/server';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useAncestry } from 'lib/hooks/useAncestry';
-import { sortBy } from 'lodash';
+import _, { sortBy } from 'lodash';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
+import { useRouter } from 'next/router';
 
-let chart;
-
+let chart = null;
 export const AncestryViz = ({ grex, maxDepth = false }) => {
+  const d3Container = useRef(null);
+  const router = useRouter();
   const ancestry = useAncestry(grex, maxDepth ? 1000 : 2);
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     const { OrgChart } = require('d3-org-chart');
 
     if (!ancestry.nodes[0]) {
       return;
     }
 
-    chart = new OrgChart()
-      .container('#tree')
+    if (!chart) {
+      chart = new OrgChart();
+    }
+
+    chart
+      // .svgWidth("100%")
+      .svgHeight(maxDepth ? window.innerHeight * 0.75 : 400)
+      .container(d3Container.current)
       .data([
         ...sortBy(ancestry.links, ['type', 'genus', 'epithet']).map((l) => {
           return {
@@ -33,13 +41,15 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
         },
       ])
       .nodeWidth((a, b, c) => {
-        return 140;
+        return 240;
       })
       .nodeHeight((a) => {
-        return 72;
+        return 80;
       })
-      .siblingsMargin((d) => Math.max(25, (d.depth + 1) * 25))
-      .childrenMargin((d) => Math.max(25, (d.depth + 1) * 25))
+      // .siblingsMargin((d) => Math.max(25, (d.depth + 1) * 25))
+      .siblingsMargin((d) => 100)
+      .childrenMargin((d) => 100)
+
       .nodeContent(({ data: n }) => {
         const formatted = formatName(n, {
           shortenGenus: true,
@@ -52,20 +62,29 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
 
         return renderToString(
           <div
-            className={`${n.type ? n.type : 'root'} ${
+            className={`node ${n.type ? n.type : 'root'} ${
               isSpecies ? 'species' : ''
             }`}
           >
-            <em>{formatted.genus}</em>{' '}
-            {isSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
-            <div>{n.registration_date}</div>
+            <div className='name'>
+              <em>{formatted.genus}</em>{' '}
+              {isSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
+            </div>
+            {n.date_of_registration && (
+              <div className='date'>{n.date_of_registration.slice(0, 4)}</div>
+            )}
           </div>,
         );
       })
-      .render();
+      .onNodeClick((id: string) => {
+        router.push(`/grex/${id.split('-')[0]}`);
+      })
+      .layout('bottom')
+      .render()
+      .expandAll();
 
-    chart.fit();
-  }, [ancestry]);
+    chart.render().fit();
+  }, [d3Container.current, ancestry]);
 
   const handleResetView = React.useCallback(() => {
     // chart?.expandAll();
@@ -74,25 +93,17 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
 
   const handleExpandAll = React.useCallback(() => {
     chart?.expandAll();
-    chart?.fit();
-    chart?.render();
-  }, []);
-
-  const handleCollapseAll = React.useCallback(() => {
-    chart?.collapseAll();
-    chart?.fit();
+    // chart?.fit();
     chart?.render();
   }, []);
 
   return (
-    <div className='ancestry-viz chart-wrap'>
+    <div className='ancestry-viz'>
       <menu>
         <button onClick={handleResetView}>Re-center</button>
         <button onClick={handleExpandAll}>Expand All</button>
-        <button onClick={handleCollapseAll}>Collapse All</button>
-        {/* <button onClick={handleResetView}>Reset View</button> */}
       </menu>
-      <div id='tree' />
+      <div ref={d3Container} />
     </div>
   );
 };

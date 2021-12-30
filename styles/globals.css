@@ -68,22 +68,33 @@ a:hover {
   padding: 0px !important;
 }
 
-.seed,
-.pollen,
-.root {
-  color: white;
-  padding: 5px !important;
+.node {
+  color: black;
+  display: flex;
+  flex-direction: column;
   font-size: 16px;
-  height: 100%;
-  width: 100%;
+  font-family: "IBM Plex Mono", monospace;
+  border: 1px solid black;
+}
+
+.node > .name {
+  padding: 20px 10px;
+}
+
+.node .date {
+  padding: 0 10px;
+  line-height: 18px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.25);
   background: white;
-  font-family: 'IBM Plex Mono', monospace;
+  border-top: 1px solid black;
+  height: 20px;
 }
 
 .seed.species,
 .pollen.species,
 .root.species {
-  border-top: 10px solid black !important;
+  border-bottom: 10px solid #16161d;
 }
 
 .root {
