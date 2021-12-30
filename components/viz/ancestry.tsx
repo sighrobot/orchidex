@@ -11,7 +11,7 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
   const router = useRouter();
   const ancestry = useAncestry(grex, maxDepth ? 1000 : 2);
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     const { OrgChart } = require('d3-org-chart');
 
     if (!ancestry.nodes[0]) {
@@ -78,20 +78,16 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
       })
       .layout('bottom')
       .render()
-      .expandAll();
-
-    chart.render().fit();
+      .expandAll()
+      .fit();
   }, [d3Container.current, ancestry]);
 
   const handleResetView = React.useCallback(() => {
-    // chart?.expandAll();
-    chart?.render().fit();
+    chart?.fit();
   }, []);
 
   const handleExpandAll = React.useCallback(() => {
     chart?.expandAll();
-    // chart?.fit();
-    chart?.render();
   }, []);
 
   return (
