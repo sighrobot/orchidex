@@ -6,21 +6,34 @@ import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
 import { useRouter } from 'next/router';
 
 let chart = null;
+
 export const AncestryViz = ({ grex, maxDepth = false }) => {
   const d3Container = useRef(null);
   const router = useRouter();
   const ancestry = useAncestry(grex, maxDepth ? 1000 : 2);
+  const isSmall = window.innerWidth < 600;
 
-  React.useEffect(() => {
+  const handleResetView = React.useCallback(() => {
+    if (maxDepth || !isSmall) {
+      chart.fit();
+    } else {
+      chart.zoomTreeBounds({
+        x0: -window.innerWidth * 0.85,
+        x1: window.innerWidth * 0.85,
+        y0: 300,
+        y1: -650,
+      });
+    }
+  }, [isSmall, maxDepth]);
+
+  React.useLayoutEffect(() => {
     const { OrgChart } = require('d3-org-chart');
 
     if (!ancestry.nodes[0]) {
       return;
     }
 
-    if (!chart) {
-      chart = new OrgChart();
-    }
+    chart = new OrgChart();
 
     chart
       .svgHeight(maxDepth ? window.innerHeight * 0.75 : 350)
@@ -41,12 +54,13 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
         },
       ])
       .nodeWidth((a, b, c) => {
-        return 180;
+        return maxDepth || !isSmall ? 200 : 150;
       })
       .nodeHeight((a) => {
         return 80;
       })
-      .childrenMargin((d) => (d.depth + 3) * 25)
+      .childrenMargin((d) => (d.depth === 0 ? 100 : (d.depth + 1) * 25))
+
       .nodeContent(({ data: n }) => {
         const formatted = formatName(n, {
           shortenGenus: true,
@@ -75,19 +89,26 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
       })
       .onNodeClick((id: string) => {
         router.push(`/grex/${id.split('-')[0]}`);
-      })
+      });
+
+    if (!maxDepth && isSmall) {
+      chart
+        .neightbourMargin((d) => 20)
+        .siblingsMargin((d) => 20)
+        .childrenMargin((d) => 80)
+        .compactMarginPair((d) => 40);
+    }
+    chart
       .layout('bottom')
       .render()
       .expandAll()
-      .fit();
-  }, [d3Container.current, ancestry]);
+      .zoomTreeBounds({ x0: -435, x1: 435, y0: 0, y1: -400 });
 
-  const handleResetView = React.useCallback(() => {
-    chart?.fit();
-  }, []);
+    handleResetView();
+  }, [isSmall, handleResetView, d3Container.current, ancestry]);
 
   const handleExpandAll = React.useCallback(() => {
-    chart?.expandAll();
+    chart.expandAll();
   }, []);
 
   return (
