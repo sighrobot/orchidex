@@ -53,7 +53,7 @@ export const Grex = ({ grex }) => {
       <div className={styles.tree}>
         <AncestryViz grex={grex} maxDepth />
 
-        <List
+        {/* <List
           data={speciesAncestry}
           getFields={(sa) => [sa.grex.epithet]}
           renderField={({ grex: g = {} }) => <Name grex={g} shouldAbbreviate />}
@@ -61,7 +61,7 @@ export const Grex = ({ grex }) => {
           renderCount={(score) =>
             `${(Math.round(score * 1000) / 10).toFixed(1)} %`
           }
-        />
+        /> */}
       </div>
     </Container>
   );

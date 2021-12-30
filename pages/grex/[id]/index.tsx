@@ -68,6 +68,24 @@ export const Grex = ({ grex }) => {
 
       <Resources grex={grex} />
 
+      <Link href={`${router.asPath}/tree`}>
+        <a style={{ display: "block", textAlign: "right", fontSize: "14px" }}>
+          View complete tree &rarr;
+        </a>
+      </Link>
+
+      <AncestryViz grex={grex} />
+
+      <List
+        data={speciesAncestry}
+        getFields={(sa) => [sa.grex.epithet]}
+        renderField={({ grex: g = {} }) => <Name grex={g} shouldAbbreviate />}
+        getCount={(d) => d.score}
+        renderCount={(score) =>
+          `${(Math.round(score * 1000) / 10).toFixed(1)} %`
+        }
+      />
+
       <section>
         <details>
           <summary>Progeny ({progeny.length.toLocaleString()})</summary>
@@ -80,34 +98,6 @@ export const Grex = ({ grex }) => {
               return <GrexCard key={grexOnDate.id} grex={grexOnDate} />;
             })}
           </div>
-        </details>
-      </section>
-
-      <section>
-        <details>
-          <summary>Ancestry</summary>
-
-          <Link href={`${router.asPath}/tree`}>
-            <a
-              style={{ display: "block", textAlign: "right", fontSize: "14px" }}
-            >
-              View complete tree &rarr;
-            </a>
-          </Link>
-
-          <AncestryViz grex={grex} />
-
-          <List
-            data={speciesAncestry}
-            getFields={(sa) => [sa.grex.epithet]}
-            renderField={({ grex: g = {} }) => (
-              <Name grex={g} shouldAbbreviate />
-            )}
-            getCount={(d) => d.score}
-            renderCount={(score) =>
-              `${(Math.round(score * 1000) / 10).toFixed(1)} %`
-            }
-          />
         </details>
       </section>
 

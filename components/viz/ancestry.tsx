@@ -23,7 +23,6 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
     }
 
     chart
-      // .svgWidth("100%")
       .svgHeight(maxDepth ? window.innerHeight * 0.75 : 400)
       .container(d3Container.current)
       .data([
