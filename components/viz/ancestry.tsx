@@ -5,24 +5,26 @@ import { sortBy } from 'lodash';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
 import { useRouter } from 'next/router';
 
-let chart = null;
-
 export const AncestryViz = ({ grex, maxDepth = false }) => {
   const d3Container = useRef(null);
   const router = useRouter();
   const ancestry = useAncestry(grex, maxDepth ? 1000 : 2);
-  const isSmall = window.innerWidth < 600;
+  const isSmall =
+    typeof window === 'undefined' ? false : window.innerWidth < 600;
+  let chart = null;
 
   const handleResetView = React.useCallback(() => {
-    if (maxDepth || !isSmall) {
-      chart.fit();
-    } else {
-      chart.zoomTreeBounds({
-        x0: -window.innerWidth * 0.85,
-        x1: window.innerWidth * 0.85,
-        y0: 300,
-        y1: -650,
-      });
+    if (chart) {
+      if (maxDepth || !isSmall) {
+        chart.fit();
+      } else {
+        chart.zoomTreeBounds({
+          x0: -window.innerWidth * 0.85,
+          x1: window.innerWidth * 0.85,
+          y0: 300,
+          y1: -650,
+        });
+      }
     }
   }, [isSmall, maxDepth]);
 
@@ -33,7 +35,9 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
       return;
     }
 
-    chart = new OrgChart();
+    if (!chart) {
+      chart = new OrgChart();
+    }
 
     chart
       .svgHeight(maxDepth ? window.innerHeight * 0.75 : 350)
@@ -89,7 +93,8 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
       })
       .onNodeClick((id: string) => {
         router.push(`/grex/${id.split('-')[0]}`);
-      });
+      })
+      .layout('bottom');
 
     if (!maxDepth && isSmall) {
       chart
@@ -98,11 +103,8 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
         .childrenMargin((d) => 80)
         .compactMarginPair((d) => 40);
     }
-    chart
-      .layout('bottom')
-      .render()
-      .expandAll()
-      .zoomTreeBounds({ x0: -435, x1: 435, y0: 0, y1: -400 });
+
+    chart.render().expandAll();
 
     handleResetView();
   }, [isSmall, handleResetView, d3Container.current, ancestry]);
