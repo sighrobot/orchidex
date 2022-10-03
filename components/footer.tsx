@@ -1,10 +1,10 @@
-import React from "react";
+import React from 'react';
 
 export const Footer = () => {
   const [show, setShow] = React.useState(false);
 
   React.useEffect(() => {
-    if (window.matchMedia("(display-mode: standalone)").matches) {
+    if (window.matchMedia('(display-mode: standalone)').matches) {
       setShow(true);
     }
   }, []);
@@ -27,8 +27,8 @@ export const Footer = () => {
         <button onClick={() => history.forward()}>
           <div>&#5125;</div>
         </button>
-        <button id="share" onClick={handleShare}>
-          <img src="https://raw.githubusercontent.com/leungwensen/svg-icon/master/dist/svg/zero/share.svg" />
+        <button id='share' onClick={handleShare}>
+          <img src='https://raw.githubusercontent.com/leungwensen/svg-icon/master/dist/svg/zero/share.svg' />
         </button>
         <button disabled></button>
         <button disabled></button>

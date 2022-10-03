@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { Magic } from "./search/magic";
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Magic } from './search/magic';
 
 export const Header = () => {
   const router = useRouter();
@@ -16,7 +16,7 @@ export const Header = () => {
       params.push(`epithet=${epithet}`);
     }
 
-    router.push(`/?${params.join("&")}`);
+    router.push(`/?${params.join('&')}`);
   };
 
   const handleChange = (grex) => {
@@ -27,14 +27,6 @@ export const Header = () => {
 
   return (
     <header>
-      <h1>
-        <Link href="/">
-          <a>
-            <em style={{ color: "#a5abfb" }}>Orchi</em>dex
-          </a>
-        </Link>
-      </h1>
-
       <nav>
         {/* <Link href="/viz">
           <a className={router.pathname === "/viz" ? "active" : undefined}>
@@ -42,26 +34,40 @@ export const Header = () => {
           </a>
         </Link> */}
 
-        <Magic onChange={handleChange} onSubmit={handleSubmit} />
+        <div>
+          <Link href='/recent'>
+            <a
+              title='Recently registered'
+              className={router.pathname === '/recent' ? 'active' : undefined}
+            >
+              Recents
+            </a>
+          </Link>
 
-        <Link href="/recent">
-          <a
-            title="Recently registered"
-            className={router.pathname === "/recent" ? "active" : undefined}
-          >
-            &#x029D7;
-          </a>
-        </Link>
+          <Link href='/learn/hybridizer'>
+            <a
+              className={
+                router.pathname === '/learn/hybridizer' ? 'active' : undefined
+              }
+            >
+              Hybridizer
+            </a>
+          </Link>
+        </div>
 
-        <Link href="/learn/hybridizer">
-          <a
-            className={
-              router.pathname === "/learn/hybridizer" ? "active" : undefined
-            }
-          >
-            &#x02697;
-          </a>
-        </Link>
+        <h1>
+          <Link href='/'>
+            <a>
+              <span style={{ color: 'orchid' }}>Orchi</span>dex
+            </a>
+          </Link>
+        </h1>
+
+        <div>
+          <Link href='/'>
+            <a>Search</a>
+          </Link>
+        </div>
       </nav>
     </header>
   );

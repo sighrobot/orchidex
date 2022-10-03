@@ -2,12 +2,11 @@ html,
 body {
   padding: 0;
   margin: 0;
-  font-family: "Courier New", Courier, monospace;
-  font-family: "IBM Plex Mono", monospace;
+  font-family: "IBM Plex Sans", Helvetica;
 }
 
 body {
-  background: white;
+  background: #eef;
   font-size: 16px;
   width: 100vw;
 }
@@ -16,11 +15,12 @@ body {
   width: 100vw;
 }
 
+
+
 * {
   box-sizing: border-box;
   font-family: inherit;
   font-size: inherit;
-  letter-spacing: -0.5px;
 }
 
 h1,
@@ -51,7 +51,7 @@ mark {
 }
 
 .container > div {
-  padding: 0 10px;
+  /* padding: 0 10px; */
   flex-grow: 1;
 }
 
@@ -107,46 +107,6 @@ footer button img {
   filter: invert();
 }
 
-nav > a {
-  margin-right: 20px;
-  color: inherit;
-  text-transform: lowercase;
-  font-size: 150%;
-  text-decoration: none;
-  transition: 200ms ease color;
-  align-self: stretch;
-  line-height: 30px;
-  flex-shrink: 0;
-}
-
-nav > a:nth-of-type(2) {
-  font-size: 180%;
-  line-height: 1;
-  margin-right: 10px;
-}
-
-nav > a:hover {
-  color: #8c94ff;
-}
-
-nav {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-nav .magic-search {
-  margin-right: 20px !important;
-  flex-grow: 1;
-}
-
-nav .magic-search input {
-  width: 100%;
-  border-radius: 20px;
-  padding: 4px 10px;
-  font-size: 16px;
-  border: 1px solid #ccc !important;
-}
 
 a.active {
   text-decoration: none;
@@ -177,23 +137,43 @@ small {
 .container header {
   display: flex;
   align-items: center;
-  padding: 10px 0;
-  max-width: 600px;
+  padding: 10px;
+  width: 100%;
+  border-bottom: 2px solid white;
+}
+
+header nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 14px;
+}
+
+header nav > * {
   width: 100%;
 }
 
+header nav > div  {
+  text-align: left;
+}
+
+header nav > h1 + div {
+  text-align: right;
+}
+
+header nav > div:first-child a:first-child {
+  margin-right: 10px;
+}
+
 .container header h1 {
-  margin-right: 20px;
-  font-size: 120%;
+  text-align: center;
 }
 
 .container header h1 a {
+  font-size: 18px;
   text-decoration: none;
   color: inherit;
-}
-
-h1 {
-  text-transform: uppercase;
 }
 
 h2 {
@@ -219,7 +199,7 @@ section + section {
 }
 
 .container main {
-  padding: 10px 0;
+  padding: 10px;
 }
 
 a {
@@ -228,7 +208,6 @@ a {
 }
 
 a:hover {
-  color: black !important;
   text-decoration: underline;
 }
 
@@ -237,7 +216,7 @@ a:hover {
   /* color: #a44cf5; */
   /* color: #6d04ce; */
   /* color: #8c94ff; */
-  color: gray;
+  color: orchid;
 }
 
 .genus {
@@ -493,19 +472,23 @@ ul {
 }
 
 .pill.intergeneric {
-  background: pink;
+  background: #D97A79;
+  color:white;
 }
 
 .pill.primary {
-  background: yellow;
+  background: #B9B864;
+  color:white;
 }
 
 .pill.natural {
-  background: lightgreen;
+  background: #59D97F;
+  color:white;
 }
 
 .pill.species {
-  background: white;
+  background: #59D97F;
+  color:white;
 }
 
 .pills {
