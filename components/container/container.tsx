@@ -1,6 +1,8 @@
-import { Header } from 'components/header';
+import { Header } from 'components/header/header';
 import Head from 'next/head';
-import { Footer } from './footer';
+import { Footer } from '../footer/footer';
+
+import styles from './style.module.scss';
 
 type ContainerProps = {
   children: React.ReactNode;
@@ -14,7 +16,7 @@ export const Container = ({
   description = '',
 }: ContainerProps) => {
   return (
-    <div className='container'>
+    <div className={styles.container}>
       <Head>
         <title>{title}</title>
 

@@ -1,18 +1,18 @@
-import { orderBy, groupBy } from "lodash";
+import { orderBy, groupBy } from 'lodash';
 
-import { Container } from "components/container";
-import { useRouter } from "next/router";
-import { useDate } from "lib/hooks/useDate";
-import { GrexCard } from "components/grex";
+import { Container } from 'components/container/container';
+import { useRouter } from 'next/router';
+import { useDate } from 'lib/hooks/useDate';
+import { GrexCard } from 'components/grex/grex';
 
 export const RegisteredOnDate = () => {
   const router = useRouter();
-  const d = (router.query.d || "") as string;
+  const d = (router.query.d || '') as string;
 
   const dateStr = new Date(`${d}T00:00:00`).toString().slice(3, 15);
 
   const onDate = useDate({ d });
-  const grouped = groupBy(onDate, "genus");
+  const grouped = groupBy(onDate, 'genus');
 
   return (
     <Container title={`Registrations on ${dateStr} | Orchidex`}>
@@ -26,7 +26,7 @@ export const RegisteredOnDate = () => {
                   <em>{genus}</em> ({grouped[genus].length.toLocaleString()})
                 </summary>
                 <div>
-                  {orderBy(grouped[genus], ["genus", "epithet"]).map(
+                  {orderBy(grouped[genus], ['genus', 'epithet']).map(
                     (grexOnDate) => {
                       return (
                         <GrexCard
@@ -35,7 +35,7 @@ export const RegisteredOnDate = () => {
                           hideDate
                         />
                       );
-                    }
+                    },
                   )}
                 </div>
               </details>

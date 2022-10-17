@@ -1,0 +1,48 @@
+.tabs {
+  nav {
+    background: linear-gradient(to right, #ddd, transparent);
+    border-bottom: 2px solid white;
+    display: flex;
+
+    button {
+      background: transparent;
+      border: none;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      font-size: 12px;
+      padding: 5px 10px;
+      height: 100%;
+      user-select: none;
+      transition: 100ms ease background;
+
+      &:hover:not([disabled]) {
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      &[disabled] {
+        cursor: not-allowed;
+        opacity: 0.25;
+      }
+    }
+  }
+
+  .active {
+    color: black;
+    background: white !important;
+  }
+
+  .content {
+    padding: 0 10px;
+  }
+
+  .count {
+    background: white;
+    font-weight: bold;
+    min-width: 14px;
+    padding: 1px 2px;
+    font-size: 8px;
+    margin-left: 4px;
+  }
+}

@@ -1,9 +1,8 @@
 import React from 'react';
 import Router, { useRouter } from 'next/router';
 import { orderBy } from 'lodash';
-
-import { Container } from 'components/container';
-import { GrexCard } from 'components/grex';
+import { Container } from 'components/container/container';
+import { GrexCard } from 'components/grex/grex';
 import { CROSS_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
 import { SearchParentage } from 'components/search/parentage';

@@ -1,13 +1,14 @@
-import { formatName } from "lib/string";
-import { countBy, orderBy } from "lodash";
+import { formatName } from 'lib/string';
+import { countBy, orderBy } from 'lodash';
 
-import React from "react";
+import React from 'react';
+import style from './list.module.scss';
 
 type ListProps = {
   data: any;
   getCount: any;
   getFields?: any;
-  order?: "asc" | "desc" | boolean;
+  order?: 'asc' | 'desc' | boolean;
   renderField?: (f: any) => React.ReactNode;
   renderCount?: (c: number) => string;
   limit?: number;
@@ -19,7 +20,7 @@ const List = ({
   data,
   getCount,
   getFields = () => [],
-  order = "desc",
+  order = 'desc',
   renderField = (k) => k,
   renderCount = (c) => String(c),
   limit,
@@ -50,26 +51,26 @@ const List = ({
     () =>
       countByField
         ? orderBy(Object.keys(counts), (k) => counts[k], order).filter(
-            (k) => counts[k] > 0
+            (k) => counts[k] > 0,
           )
         : orderBy(
             data,
             [getCount, ({ grex: g }) => `${g.genus} ${g.epithet}`],
-            [order, "asc"]
+            [order, 'asc'],
           ),
-    [data, getCount, counts, countByField, order]
+    [data, getCount, counts, countByField, order],
   );
 
   return (
     <div
-      className="viz-list"
+      className={style.vizList}
       onClick={() => {
-        (document.querySelector(".viz-list textarea") as any).select();
-        document.execCommand("copy");
+        (document.querySelector('.viz-list textarea') as any).select();
+        document.execCommand('copy');
       }}
     >
       <textarea
-        style={{ opacity: 0, position: "absolute" }}
+        style={{ opacity: 0, position: 'absolute' }}
         readOnly
         value={sorted
           .map((d) => {
@@ -77,9 +78,9 @@ const List = ({
               shortenGenus: true,
               shortenEpithet: true,
             });
-            return `${renderCount(d.score).replace(" ", "")} ${fn.epithet}`;
+            return `${renderCount(d.score).replace(' ', '')} ${fn.epithet}`;
           })
-          .join(", ")}
+          .join(', ')}
       />
 
       {title && <h3>{title}</h3>}

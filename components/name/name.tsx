@@ -1,12 +1,12 @@
-import { formatName } from "lib/string";
-import { Grex } from "lib/types";
-import Link from "next/link";
+import { formatName } from 'lib/string';
+import { Grex } from 'lib/types';
+import Link from 'next/link';
 
 type NameProps = {
   grex?: {
-    id?: Grex["id"];
-    genus: Grex["genus"];
-    epithet: Grex["epithet"];
+    id?: Grex['id'];
+    genus: Grex['genus'];
+    epithet: Grex['epithet'];
   };
   link?: boolean;
   linkAsSearch?: boolean;
@@ -35,12 +35,12 @@ export const Name = ({
 
     const content = (
       <>
-        <em>{formattedName.genus}</em>{" "}
+        <em>{formattedName.genus}</em>{' '}
         {isSpecies ? <em>{formattedName.epithet}</em> : formattedName.epithet}
       </>
     );
     return (
-      <span className="name">
+      <span className='name'>
         {link ? (
           <Link href={href}>
             <a>{content}</a>

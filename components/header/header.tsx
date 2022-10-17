@@ -1,6 +1,8 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Magic } from './search/magic';
+import { Magic } from '../search/magic';
+
+import style from './style.module.scss';
 
 export const Header = () => {
   const router = useRouter();
@@ -26,7 +28,7 @@ export const Header = () => {
   };
 
   return (
-    <header>
+    <header className={style.header}>
       <nav>
         {/* <Link href="/viz">
           <a className={router.pathname === "/viz" ? "active" : undefined}>

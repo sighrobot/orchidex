@@ -1,15 +1,15 @@
-import { Container } from "components/container";
-import { useRouter } from "next/router";
-import React from "react";
-import { ResponsiveTreeMapCanvas } from "@nivo/treemap";
-import { countBy } from "lodash";
-import { APP_URL } from "lib/constants";
+import { Container } from 'components/container/container';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { ResponsiveTreeMapCanvas } from '@nivo/treemap';
+import { countBy } from 'lodash';
+import { APP_URL } from 'lib/constants';
 
 const Treemap = () => {
   const router = useRouter();
-  const { genus = "" } = router.query;
-  const [parent, setParent] = React.useState("seed");
-  const [type, setType] = React.useState<"species" | "hybrid" | "all">("all");
+  const { genus = '' } = router.query;
+  const [parent, setParent] = React.useState('seed');
+  const [type, setType] = React.useState<'species' | 'hybrid' | 'all'>('all');
 
   const [data, setData] = React.useState([]);
 
@@ -26,16 +26,17 @@ const Treemap = () => {
 
   const filtered = React.useMemo(
     () => data.filter((d) => d[`${parent}_parent_genus`] === genus),
-    [parent, genus, data]
+    [parent, genus, data],
   );
 
   const grouped = React.useMemo(
     () =>
       countBy(
         filtered,
-        (d) => `${d[`${parent}_parent_genus`]} ${d[`${parent}_parent_epithet`]}`
+        (d) =>
+          `${d[`${parent}_parent_genus`]} ${d[`${parent}_parent_epithet`]}`,
       ),
-    [filtered, parent]
+    [filtered, parent],
   );
 
   const children = React.useMemo(
@@ -47,45 +48,45 @@ const Treemap = () => {
         }))
         .filter((g) => {
           const isSpecies = g.name[0].toLowerCase() === g.name[0];
-          if (type === "species") {
+          if (type === 'species') {
             return isSpecies;
           }
 
-          if (type === "hybrid") {
+          if (type === 'hybrid') {
             return !isSpecies;
           }
 
           return true;
         })
         .sort((a, b) => (a.value < b.value ? 1 : -1)),
-    [grouped, genus, type]
+    [grouped, genus, type],
   );
 
   const handleParent = React.useCallback(
     (e) => setParent(e.target.value),
-    [setParent]
+    [setParent],
   );
 
   const handleType = React.useCallback(
     (e) => setType(e.target.name),
-    [setType]
+    [setType],
   );
 
   const map = React.useMemo(() => {
     return (
       <ResponsiveTreeMapCanvas
-        labelTextColor="black"
+        labelTextColor='black'
         data={{ children: children }}
         leavesOnly
-        borderColor="transparent"
+        borderColor='transparent'
         innerPadding={1}
         labelSkipSize={30}
         colors={(d) =>
           `rgb(255, ${(1 - d.value / children[0]?.value ?? 1) * 255}, 128)`
         }
-        label="id"
-        value="value"
-        identity="name"
+        label='id'
+        value='value'
+        identity='name'
         animate={false}
       />
     );
@@ -99,44 +100,44 @@ const Treemap = () => {
         <label>
           <input
             onChange={handleType}
-            type="radio"
-            radioGroup="type"
-            name="all"
-            checked={type === "all"}
+            type='radio'
+            radioGroup='type'
+            name='all'
+            checked={type === 'all'}
           />
           all
         </label>
         <label>
           <input
             onChange={handleType}
-            type="radio"
-            radioGroup="type"
-            name="species"
-            checked={type === "species"}
+            type='radio'
+            radioGroup='type'
+            name='species'
+            checked={type === 'species'}
           />
           species
         </label>
         <label>
           <input
             onChange={handleType}
-            type="radio"
-            radioGroup="type"
-            name="hybrid"
-            checked={type === "hybrid"}
+            type='radio'
+            radioGroup='type'
+            name='hybrid'
+            checked={type === 'hybrid'}
           />
           hybrid
         </label>
       </div>
 
       <div>
-        Parent:{" "}
+        Parent:{' '}
         <select onChange={handleParent} value={parent}>
-          <option value="seed">Seed</option>
-          <option value="pollen">Pollen</option>
+          <option value='seed'>Seed</option>
+          <option value='pollen'>Pollen</option>
         </select>
       </div>
 
-      <div style={{ height: "800px" }}>{map}</div>
+      <div style={{ height: '800px' }}>{map}</div>
 
       {/* <section>
         <List

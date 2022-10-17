@@ -1,10 +1,12 @@
-import React from "react";
-import { capitalize } from "lodash";
+import React from 'react';
+import { capitalize } from 'lodash';
 
-import { SEARCH_FIELDS } from "lib/constants";
-import { INPUT_NAME_SUFFIX } from "lib/string";
-import { useRouter } from "next/router";
-import { Grex } from "lib/types";
+import { SEARCH_FIELDS } from 'lib/constants';
+import { INPUT_NAME_SUFFIX } from 'lib/string';
+import { useRouter } from 'next/router';
+import { Grex } from 'lib/types';
+
+import searchStyle from './search.module.scss';
 
 type SearchGrexState = {
   genus?: string;
@@ -32,7 +34,7 @@ export const SearchGrex = ({
   };
 
   return (
-    <form className="search search-grex" onSubmit={handleSubmit}>
+    <form className={searchStyle.search} onSubmit={handleSubmit}>
       {SEARCH_FIELDS.map((f, idx) => {
         const show = expanded || idx < 2 || state[f] || router.query[f];
 
@@ -40,33 +42,33 @@ export const SearchGrex = ({
           return (
             <input
               key={f}
-              autoCorrect="off"
-              autoCapitalize="off"
+              autoCorrect='off'
+              autoCapitalize='off'
               name={`${f}${INPUT_NAME_SUFFIX}`}
               onChange={onChange}
-              placeholder={capitalize(f.replace(/_/g, " "))}
-              type="search"
-              value={state[f] || ""}
+              placeholder={capitalize(f.replace(/_/g, ' '))}
+              type='search'
+              value={state[f] || ''}
               spellCheck={false}
-              style={{ fontStyle: f.includes("genus") ? "italic" : "normal" }}
+              style={{ fontStyle: f.includes('genus') ? 'italic' : 'normal' }}
             />
           );
         }
       })}
 
-      <div style={{ display: "flex" }}>
+      <div style={{ display: 'flex' }}>
         <button
-          style={{ marginBottom: "-20px" }}
-          className="simple"
-          type="button"
+          style={{ marginBottom: '-20px' }}
+          className='simple'
+          type='button'
           onClick={() => setExpanded((e) => !e)}
         >
-          {expanded ? "show fewer" : "show more"}
+          {expanded ? 'show fewer' : 'show more'}
         </button>
       </div>
 
       <div>
-        <button disabled={false} type="submit">
+        <button disabled={false} type='submit'>
           Search
         </button>
       </div>

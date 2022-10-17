@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding-bottom: 75px;
+
+  > div {
+    flex-grow: 1;
+
+    > div {
+      margin: 0 auto;
+    }
+  }
+
+  > main {
+    > div:first-child {
+      margin-bottom: 30px;
+    }
+  }
+
+  header {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    width: 100%;
+    border-bottom: 2px solid white;
+
+    h1 {
+      text-align: center;
+
+      a {
+        font-size: 18px;
+        text-decoration: none;
+        color: inherit;
+      }
+    }
+  }
+}

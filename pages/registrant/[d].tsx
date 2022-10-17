@@ -1,17 +1,17 @@
-import { orderBy, groupBy } from "lodash";
+import { orderBy, groupBy } from 'lodash';
 
-import { Container } from "components/container";
+import { Container } from 'components/container/container';
 
-import { useRouter } from "next/router";
-import { useRegistrant } from "lib/hooks/useRegistrant";
-import { GrexCard } from "components/grex";
+import { useRouter } from 'next/router';
+import { useRegistrant } from 'lib/hooks/useRegistrant';
+import { GrexCard } from 'components/grex/grex';
 
 export const Registrant = () => {
   const router = useRouter();
-  const { d = "" } = router.query;
+  const { d = '' } = router.query;
 
   const onDate = useRegistrant({ name: d });
-  const grouped = groupBy(onDate, "genus");
+  const grouped = groupBy(onDate, 'genus');
 
   return (
     <Container title={`${d} | Orchidex`}>
@@ -25,10 +25,10 @@ export const Registrant = () => {
                   <em>{genus}</em> ({grouped[genus].length.toLocaleString()})
                 </summary>
                 <div>
-                  {orderBy(grouped[genus], ["genus", "epithet"]).map(
+                  {orderBy(grouped[genus], ['genus', 'epithet']).map(
                     (grexOnDate) => {
                       return <GrexCard key={grexOnDate.id} grex={grexOnDate} />;
-                    }
+                    },
                   )}
                 </div>
               </details>

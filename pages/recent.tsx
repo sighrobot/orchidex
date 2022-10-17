@@ -1,8 +1,8 @@
 import { groupBy, orderBy } from 'lodash';
 
-import { Container } from 'components/container';
+import { Container } from 'components/container/container';
 import { useDate } from 'lib/hooks/useDate';
-import { GrexCard } from 'components/grex';
+import { GrexCard } from 'components/grex/grex';
 
 export default function Index() {
   const recent = useDate();

@@ -1,0 +1,43 @@
+.grex {
+  padding: 20px 0;
+
+  & + .grex {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+  }
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+}
+
+.grexHeading {
+  border-bottom: 2px solid white;
+  padding: 10px;
+  padding-top: 0;
+
+  &:hover {
+    background: none;
+  }
+
+  .name {
+    font-size: 110%;
+  }
+}
+
+.grexButton {
+  text-align: left;
+  background: none;
+  border: none;
+  display: block;
+  cursor: pointer;
+  padding: 20px 10px;
+  width: 100%;
+
+  a {
+    color: black !important;
+  }
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+}

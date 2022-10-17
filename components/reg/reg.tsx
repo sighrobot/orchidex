@@ -1,6 +1,8 @@
 import { Grex } from 'lib/types';
 import Link from 'next/link';
 
+import styles from './style.module.scss';
+
 type RegProps = {
   grex?: Grex;
   hideDate: boolean;
@@ -22,7 +24,7 @@ export const Reg = ({ grex, hideDate, hideLink }: RegProps) => {
           .slice(3, 15)
       : 'on unknown date';
     return (
-      <span className='reg'>
+      <span className={styles.reg}>
         {!hideDate &&
           (hideLink ? (
             <span>Registered {dateStr}</span>

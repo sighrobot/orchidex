@@ -1,6 +1,7 @@
-import { Pill } from "components/pill";
-import { CROSS_CHAR, UNKNOWN_CHAR } from "lib/string";
-import { Grex } from "lib/types";
+import { Pill } from 'components/pills/pill';
+import { CROSS_CHAR, UNKNOWN_CHAR } from 'lib/string';
+import { Grex } from 'lib/types';
+import styles from './pills.module.scss';
 
 const hasParents = (grex: Grex) =>
   grex.seed_parent_epithet && grex.pollen_parent_epithet;
@@ -11,23 +12,25 @@ const isParentNaturalHybrid = (grex: Grex) =>
 
 const isNaturalHybrid = (grex: Grex) =>
   grex.epithet[0] === CROSS_CHAR ||
-  (hasParents(grex) && grex.registrant_name === "This is a natural hybrid") ||
+  (hasParents(grex) && grex.registrant_name === 'This is a natural hybrid') ||
   (hasParents(grex) &&
     !isParentNaturalHybrid(grex) &&
     grex.epithet &&
+    !Number.isInteger(parseInt(grex.epithet[0], 10)) &&
     grex.epithet[0] == grex.epithet[0].toLowerCase());
 
 export const isSpecies = (grex: Grex) =>
   !isParentNaturalHybrid(grex) &&
   !isNaturalHybrid(grex) &&
   grex.epithet &&
+  !Number.isInteger(parseInt(grex.epithet[0], 10)) &&
   grex.epithet[0] === grex.epithet[0].toLowerCase();
 
 export const Pills = ({ grex }) => {
   const pills = [];
 
   if (grex.hypothetical) {
-    pills.push("hypothetical");
+    pills.push('hypothetical');
   }
 
   const isIntergeneric = grex.seed_parent_genus !== grex.pollen_parent_genus;
@@ -42,19 +45,19 @@ export const Pills = ({ grex }) => {
       grex.pollen_parent_epithet[0].toLowerCase();
 
   if (isSpecies(grex)) {
-    pills.push("species");
+    pills.push('species');
   }
 
   if (isNaturalHybrid(grex)) {
-    pills.push("natural");
+    pills.push('natural');
   }
 
   if (isIntergeneric) {
-    pills.push("intergeneric");
+    pills.push('intergeneric');
   }
 
   if (isPrimaryHybrid) {
-    pills.push("primary");
+    pills.push('primary');
   }
 
   if (pills.length === 0) {
@@ -62,7 +65,7 @@ export const Pills = ({ grex }) => {
   }
 
   return (
-    <div className="pills">
+    <div className={styles.pills}>
       {pills.map((p) => (
         <Pill key={p} type={p} />
       ))}

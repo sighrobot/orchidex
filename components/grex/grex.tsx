@@ -1,8 +1,11 @@
-import { Name } from "components/name";
-import { Parentage } from "components/parentage";
-import { Pills } from "components/pills";
-import { Reg } from "components/reg";
-import type { Grex } from "lib/types";
+import { Name } from 'components/name/name';
+import { Parentage } from 'components/parentage/parentage';
+import { Pills } from 'components/pills/pills';
+import { Reg } from 'components/reg/reg';
+import type { Grex } from 'lib/types';
+import cn from 'classnames';
+
+import styles from './style.module.scss';
 
 type GrexProps = {
   asButton?: boolean;
@@ -25,13 +28,16 @@ export const GrexCard = ({
 }: GrexProps) => {
   const shouldRenderAsButton = asButton && !!onClick;
   const Component: keyof JSX.IntrinsicElements = shouldRenderAsButton
-    ? "button"
-    : "article";
+    ? 'button'
+    : 'article';
   const handleClick = shouldRenderAsButton ? () => onClick(grex) : undefined;
 
   return (
     <Component
-      className={heading ? "heading grex" : "grex"}
+      className={cn(styles.grex, {
+        [styles.grexHeading]: heading,
+        [styles.grexButton]: shouldRenderAsButton,
+      })}
       onClick={handleClick}
     >
       <Pills grex={grex} />

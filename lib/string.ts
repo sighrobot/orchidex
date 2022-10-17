@@ -29,7 +29,7 @@ export const formatName = (
   const g = shortenGenus ? abbreviateGenus(grex) : grex.genus;
   const e = shortenEpithet ? abbreviateEpithet(grex) : grex.epithet;
 
-  return { genus: g, epithet: e };
+  return { genus: g, epithet: e, full: `${g} ${e}` };
 };
 
 export const repairMalformedNaturalHybridEpithet = (

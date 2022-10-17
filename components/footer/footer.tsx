@@ -1,5 +1,7 @@
 import React from 'react';
 
+import style from './style.module.scss';
+
 export const Footer = () => {
   const [show, setShow] = React.useState(false);
 
@@ -20,7 +22,7 @@ export const Footer = () => {
 
   if (show) {
     return (
-      <footer>
+      <footer className={style.footer}>
         <button onClick={() => history.back()}>
           <div>&#5130;</div>
         </button>

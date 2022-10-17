@@ -1,0 +1,42 @@
+.vizList {
+  font-size: 14px;
+  transition: 200ms ease opacity;
+  margin-top: 20px;
+
+  &:active {
+    opacity: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    & + li {
+      margin-top: 5px;
+    }
+  }
+
+  div:first-child {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+    flex-grow: 1;
+  }
+
+  div:nth-child(2) {
+    margin-left: auto;
+    padding-right: 10px;
+    color: rgba(0, 0, 0, 0.5);
+  }
+
+  meter {
+    margin-left: auto;
+    flex-shrink: 0;
+    width: 30px;
+  }
+}

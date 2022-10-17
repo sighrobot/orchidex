@@ -2,7 +2,7 @@ import React from "react";
 import cache from "lib/cache";
 import { repairMalformedNaturalHybridEpithet, UNKNOWN_CHAR } from "lib/string";
 import { find, flatten, partition } from "lodash";
-import { isSpecies } from "components/pills";
+import { isSpecies } from "components/pills/pills";
 import { APP_URL } from "lib/constants";
 
 export const fetchGrexByName = async ({ genus, epithet }) => {
