@@ -25,7 +25,8 @@ async function getIDsOnPage(page) {
   const ids = Array.from(table.querySelectorAll('tbody a'))
     .map((e) => e.href)
     .filter((l) => l.includes('orchiddetails'))
-    .map((l) => parseInt(l.split('=')[1], 10));
+    .map((l) => parseInt(l.split('=')[1], 10))
+    .filter((_, idx) => page === startPage ? idx >= startItem - 1 : true);
 
   return ids;
 }
@@ -55,6 +56,8 @@ const FIELDS = [
 
 const args = process.argv.slice(2);
 const outFilename = args[0];
+const startPage = args[1] ? parseInt(args[1], 10) : 1;
+const startItem = args[2] ? parseInt(args[2], 10) : 1;
 
 if (!outFilename) {
   console.error('Error: no out file specified');
@@ -166,7 +169,7 @@ stream.write(
     .join('\t')}\n`,
 );
 
-let p = 1;
+let p = startPage;
 let ids = [];
 
 (async () => {
@@ -184,7 +187,7 @@ let ids = [];
 
         if (got !== null) {
           console.log(
-            `${p}\t${i + 1}\t${split[0]}\t${split.slice(1, 3).join(' ')}`,
+            `${p}\t${p === startPage ? i + startItem : i + 1}\t${split[0]}\t${split.slice(1, 3).join(' ')}`,
           );
           stream.write(`${got}\n`);
         }
