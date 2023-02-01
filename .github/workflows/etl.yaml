@@ -10,7 +10,8 @@ name: Data Pipeline
 
 on:
   schedule:
-    - cron: "0 12 * * *" # daily at 8am (UTC-4)
+    - cron: '0 12 * * *' # daily at 8am (UTC-4)
+  workflow_dispatch:
 
 jobs:
   rhs-delta:
