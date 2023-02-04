@@ -1,6 +1,6 @@
-import { query as q } from "lib/aws";
-import { SEARCH_FIELDS, CROSS_FIELDS } from "lib/constants";
-import { formatClause, makeCrossQuery } from "lib/utils";
+import { query as q } from 'lib/datasette';
+import { SEARCH_FIELDS, CROSS_FIELDS } from 'lib/constants';
+import { formatClause, makeCrossQuery } from 'lib/utils';
 
 export default async (req, res) => {
   const { query } = req;
@@ -14,11 +14,9 @@ export default async (req, res) => {
         }
       })
         .filter((c) => c)
-        .join(" and ");
+        .join(' and ');
 
-  console.log(condx);
-
-  const d = await q(`SELECT * FROM S3Object WHERE ${condx} limit 1000`);
+  const d = await q(`SELECT * FROM rhs WHERE ${condx} limit 1000`);
 
   res.status(200).json(d);
 };

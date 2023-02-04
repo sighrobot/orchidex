@@ -1,70 +1,84 @@
 # inspired by https://www.tjwaterman.com/web-scraping-with-github-actions/
 
-# on:
-#   schedule:
-#     - cron: "0 */3 * * *" # every 3 hours (test)
-
-# on: push
-
 name: Data Pipeline
 
 on:
   schedule:
     - cron: '0 12 * * *' # daily at 8am (UTC-4)
   workflow_dispatch:
+  push:
 
 jobs:
-  rhs-delta:
+  # rhs-delta:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v2
+
+  #     - name: Use Node.js
+  #       uses: actions/setup-node@v2
+  #       with:
+  #         node-version: 14.x
+
+  #     - name: Install dependencies
+  #       run: yarn --frozen-lockfile
+
+  #     - name: Scrape delta data
+  #       run: node scripts/update.js $(($(tail -n1 data/rhs/data.tsv  | tr '\t' '\n' | head -n1) + 1)) data/rhs/delta.tsv
+
+  #     - name: Concatenate whole and delta sets
+  #       run: (cat data.tsv && tail -n+2 delta.tsv) > new.tsv
+  #       working-directory: data/rhs
+
+  #     - name: Sort by date
+  #       run: (head -n1 new.tsv && tail -n+2 new.tsv | sort -t$'\t' -r -k9 ) > sorted.tsv
+  #       working-directory: data/rhs
+
+  #     - name: Clean up files
+  #       run: |
+  #         rm sorted.tsv delta.tsv
+  #         mv new.tsv data.tsv
+  #       working-directory: data/rhs
+
+  #     - name: Commit files
+  #       run: |
+  #         git config --local user.email "action@github.com"
+  #         git config --local user.name "GitHub Action"
+  #         git add data
+  #         git diff --quiet && git diff --staged --quiet || git commit -m "[action] RHS data daily delta"
+
+  #     - name: Push changes
+  #       uses: ad-m/github-push-action@master
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         branch: ${{ github.ref }}
+
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Use Node.js
-        uses: actions/setup-node@v2
+      - name: Set up Python
+        uses: actions/setup-python@v1
         with:
-          node-version: 14.x
+          python-version: 3.10.9
 
-      - name: Install dependencies
-        run: yarn --frozen-lockfile
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Scrape delta data
-        run: node scripts/update.js $(($(tail -n1 data/rhs/data.tsv  | tr '\t' '\n' | head -n1) + 1)) data/rhs/delta.tsv
-
-      - name: Concatenate whole and delta sets
-        run: (cat data.tsv && tail -n+2 delta.tsv) > new.tsv
-        working-directory: data/rhs
-
-      - name: Sort by date
-        run: (head -n1 new.tsv && tail -n+2 new.tsv | sort -t$'\t' -r -k9 ) > sorted.tsv
-        working-directory: data/rhs
-
-      - name: Copy new dataset to S3
-        run: aws s3api put-object --bucket orchidex --key rhs.tsv --body sorted.tsv
-        working-directory: data/rhs
-
-      - name: Clean up files
+      - name: Install Python dependencies
         run: |
-          rm sorted.tsv delta.tsv
-          mv new.tsv data.tsv
+          python -m pip install --upgrade pip
+          pip install -r data/rhs/requirements.txt
+
+      - name: Make temporary SQLite database
         working-directory: data/rhs
+        run: sqlite3 orchidex.db < init.sql
 
-      - name: Commit files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add data
-          git diff --quiet && git diff --staged --quiet || git commit -m "[action] RHS data daily delta"
+      - name: Deploy Datasette using Vercel
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        working-directory: data/rhs
+        run: datasette publish vercel orchidex.db --token $VERCEL_TOKEN --project xylem
 
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+      - name: Delete temporary SQLite database
+        working-directory: data/rhs
+        run: rm orchidex.db

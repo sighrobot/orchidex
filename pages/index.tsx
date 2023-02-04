@@ -1,18 +1,17 @@
-import React from "react";
-import Router, { useRouter } from "next/router";
-import { orderBy } from "lodash";
+import React from 'react';
+import Router, { useRouter } from 'next/router';
+import { orderBy } from 'lodash';
 
-import { Container } from "components/container";
-import { GrexCard } from "components/grex";
-import { CROSS_FIELDS, SEARCH_FIELDS } from "lib/constants";
-import { INPUT_NAME_SUFFIX } from "lib/string";
-import { SearchParentage } from "components/search/parentage";
-import { SearchGrex } from "components/search/grex";
-import { parseMagicQuery } from "lib/magic-search";
-import { Magic } from "components/search/magic";
+import { Container } from 'components/container';
+import { GrexCard } from 'components/grex';
+import { CROSS_FIELDS, SEARCH_FIELDS } from 'lib/constants';
+import { INPUT_NAME_SUFFIX } from 'lib/string';
+import { SearchParentage } from 'components/search/parentage';
+import { SearchGrex } from 'components/search/grex';
+import { APP_URL } from 'lib/constants';
 
 export async function fetchSearch(params = []) {
-  const fetched = await fetch(`/api/search?${params.join("&")}`);
+  const fetched = await fetch(`${APP_URL}/api/search?${params.join('&')}`);
   return fetched.json();
 }
 
@@ -38,11 +37,11 @@ export default function Index({ initialState = {}, initialSimple = true }) {
   const handleChange = (e) =>
     setState((s) => ({
       ...s,
-      [e.target.name.replace(INPUT_NAME_SUFFIX, "")]: e.target.value,
+      [e.target.name.replace(INPUT_NAME_SUFFIX, '')]: e.target.value,
     }));
 
   const handleSubmit = (s) => {
-    let url = "/";
+    let url = '/';
     const params = [];
 
     SEARCH_FIELDS.forEach((f) => {
@@ -52,14 +51,14 @@ export default function Index({ initialState = {}, initialSimple = true }) {
     });
 
     if (params.length > 0) {
-      url += `?${params.join("&")}`;
+      url += `?${params.join('&')}`;
 
       Router.replace(url);
     }
   };
 
   const handleSubmitCross = () => {
-    let url = "/";
+    let url = '/';
     const params = [];
 
     CROSS_FIELDS.forEach((f) => {
@@ -69,7 +68,7 @@ export default function Index({ initialState = {}, initialSimple = true }) {
     });
 
     if (params.length > 0) {
-      url += `?${params.join("&")}`;
+      url += `?${params.join('&')}`;
 
       Router.replace(url);
     }
@@ -106,8 +105,8 @@ export default function Index({ initialState = {}, initialSimple = true }) {
 
   const exp = (
     <>
-      <em>{query.g1}</em> {query.e1}{" "}
-      {(query.g2 || query.e2) && (query.g1 || query.e1) && "×"}{" "}
+      <em>{query.g1}</em> {query.e1}{' '}
+      {(query.g2 || query.e2) && (query.g1 || query.e1) && '×'}{' '}
       <em>{query.g2}</em> {query.e2}
     </>
   );
@@ -118,25 +117,25 @@ export default function Index({ initialState = {}, initialSimple = true }) {
   const strArr = [...stuff1];
 
   if (stuff1.length > 0 && stuff2.length > 0) {
-    strArr.push("×");
+    strArr.push('×');
   }
 
   strArr.push(...stuff2);
 
   const title = `${
-    strArr.length > 0 ? `${strArr.join(" ")} | Search` : "Search"
+    strArr.length > 0 ? `${strArr.join(' ')} | Search` : 'Search'
   } |
   Orchidex`;
 
   return (
     <Container title={title}>
-      <div style={{ display: "flex", marginBottom: "5px", maxWidth: "400px" }}>
+      <div style={{ display: 'flex', marginBottom: '5px', maxWidth: '400px' }}>
         <button
-          className="simple"
-          type="button"
+          className='simple'
+          type='button'
           onClick={() => setSimple((s) => !s)}
         >
-          {!simple ? "search by parentage" : "search by grex"}
+          {!simple ? 'search by parentage' : 'search by grex'}
         </button>
       </div>
 
@@ -157,16 +156,16 @@ export default function Index({ initialState = {}, initialSimple = true }) {
       <section>
         {results !== null && (
           <h3>
-            Results {simple ? "for" : ""} {exp} (
+            Results {simple ? 'for' : ''} {exp} (
             {results.length.toLocaleString()}
-            {results.length === 1000 ? "+" : ""})
+            {results.length === 1000 ? '+' : ''})
           </h3>
         )}
 
         {orderBy(
           results,
-          ["date_of_registration", "genus", "epithet"],
-          ["desc"]
+          ['date_of_registration', 'genus', 'epithet'],
+          ['desc'],
         ).map((r) => {
           return <GrexCard key={r.id} grex={r} />;
         })}
