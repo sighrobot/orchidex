@@ -89,13 +89,13 @@ const Treemap = () => {
           }
           nodeOpacity={1}
           label={(d) => {
-            if (!d.data.name || d.width < 12 || d.height < 12) {
+            if (!d.id || d.width < 12 || d.height < 12) {
               return '';
             }
             if (d.labelRotation === 0) {
-              return d.data.name.slice(0, d.width / 7);
+              return d.id.slice(0, d.width / 7);
             }
-            return d.data.name.slice(0, d.height / 8);
+            return d.id.slice(0, d.height / 8);
           }}
           value='value'
           identity='name'
