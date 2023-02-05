@@ -42,9 +42,7 @@ export const GrexCard = ({
     >
       <Pills grex={grex} />
       <Name link={!shouldRenderAsButton && !hideLink} grex={grex} />
-      <br />
       <Parentage hideLink={shouldRenderAsButton} grex={grex} />
-      <br />
       {!hideReg && (
         <Reg grex={grex} hideLink={shouldRenderAsButton} hideDate={hideDate} />
       )}

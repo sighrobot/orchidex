@@ -13,18 +13,28 @@ type TabsConfig = {
 type TabsProps = {
   config: TabsConfig[];
   identifier?: string;
-  sidecar?: React.ReactNode;
+  onClick?: (c: TabsConfig) => void;
+  padding?: boolean;
 };
 
-export const Tabs = ({ config = [], identifier, sidecar }: TabsProps) => {
+export const Tabs = ({
+  config = [],
+  identifier,
+  onClick,
+  padding,
+}: TabsProps) => {
   const [tab, setTab] = React.useState<number>(0);
 
-  React.useEffect(() => {
-    setTab(0);
-  }, [identifier]);
+  React.useEffect(
+    () => setTab(findIndex(config, (c) => !c.disabled)),
+    [config, identifier],
+  );
 
-  const handleClick = (e) =>
-    setTab(findIndex(config, { label: e.target.name }));
+  const handleClick = (e) => {
+    const idx = findIndex(config, { label: e.target.name });
+    setTab(idx);
+    onClick?.(config[idx]);
+  };
 
   return (
     <div className={style.tabs}>
@@ -47,9 +57,10 @@ export const Tabs = ({ config = [], identifier, sidecar }: TabsProps) => {
             </button>
           );
         })}
-        {sidecar && <div className={style.sidecar}>{sidecar}</div>}
       </nav>
-      <div className={style.content}>{config[tab]?.component}</div>
+      <div className={cn(style.content, { [style.noPadding]: !padding })}>
+        {config[tab]?.component}
+      </div>
     </div>
   );
 };

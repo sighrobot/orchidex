@@ -1,11 +1,7 @@
 .vizList {
-  font-size: 14px;
-  transition: 200ms ease opacity;
+  font-size: 12px;
   margin-top: 20px;
-
-  &:active {
-    opacity: 0;
-  }
+  max-width: 300px;
 
   li {
     display: flex;

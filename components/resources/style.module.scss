@@ -1,11 +1,10 @@
 .resources {
   display: flex;
-  padding: 10px;
-  padding-bottom: 5px;
+  padding-top: 15px;
 
   a {
-    color: gray;
-    font-size: 11px;
+    color: #97999a;
+    font-size: 12px;
 
     &:after {
       content: ' ⧉';
@@ -16,7 +15,7 @@
     }
 
     &:hover {
-      color: blue;
+      color: black;
       text-decoration: underline;
     }
   }

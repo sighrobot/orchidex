@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { Grex } from 'lib/types';
 
 import searchStyle from './search.module.scss';
+import { ButtonSimple } from 'components/button-simple/button-simple';
 
 type SearchGrexState = {
   genus?: string;
@@ -57,14 +58,12 @@ export const SearchGrex = ({
       })}
 
       <div style={{ display: 'flex' }}>
-        <button
-          style={{ marginBottom: '-20px' }}
-          className='simple'
-          type='button'
+        <ButtonSimple
           onClick={() => setExpanded((e) => !e)}
+          style={{ marginBottom: '-20px' }}
         >
           {expanded ? 'show fewer' : 'show more'}
-        </button>
+        </ButtonSimple>
       </div>
 
       <div>

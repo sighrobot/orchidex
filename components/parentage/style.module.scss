@@ -1,8 +1,15 @@
 .parentage {
-  color: gray;
-  font-size: 75%;
+  color: #3f454e;
+  font-size: 80%;
 
   a {
-    color: orchid;
+    color: #3f454e;
+    font-weight: normal;
+    font-size: 12px;
+    text-decoration: underline;
+
+    &:hover {
+      color: black;
+    }
   }
 }

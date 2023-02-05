@@ -22,11 +22,9 @@ export const Resources = ({ grex }: ResourcesProps) => {
     <div className={style.resources}>
       <a
         {...SHARED_PROPS}
-        href={`https://www.google.com/search?q=${encodeURIComponent(
-          `"${grex.genus} ${grex.epithet}"`,
-        )}&tbm=isch`}
+        href={`https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${grex.id}`}
       >
-        Google Images
+        RHS IOR
       </a>
 
       <a
@@ -34,7 +32,7 @@ export const Resources = ({ grex }: ResourcesProps) => {
         href={
           isSpecies(grex)
             ? `https://bluenanta.com/search/search_orchid/?role=pub&family=Orchidaceae&spc_string=${encodeURIComponent(
-                formatName(grex).full,
+                formatName(grex).long.full,
               )}`
             : `https://bluenanta.com/display/information/${String(
                 orchidRootsIdNumber,
@@ -46,9 +44,11 @@ export const Resources = ({ grex }: ResourcesProps) => {
 
       <a
         {...SHARED_PROPS}
-        href={`https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${grex.id}`}
+        href={`https://www.google.com/search?q=${encodeURIComponent(
+          `"${grex.genus} ${grex.epithet}"`,
+        )}&tbm=isch`}
       >
-        RHS IOR
+        Google Images
       </a>
     </div>
   );

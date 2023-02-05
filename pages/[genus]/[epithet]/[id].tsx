@@ -1,20 +1,21 @@
 import React from 'react';
-import { orderBy } from 'lodash';
+import { kebabCase, orderBy } from 'lodash';
 
-import { Container } from 'components/container/container';
+import { Container, Padded } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
 import { fetchGrex } from 'lib/hooks/useGrex';
 import { useProgeny } from 'lib/hooks/useProgeny';
 import { useDate } from 'lib/hooks/useDate';
 import Link from 'next/link';
 import { Resources } from 'components/resources/resources';
-import { description } from 'lib/string';
+import { description, formatName } from 'lib/string';
 import { AncestryViz } from 'components/viz/ancestry';
 import List from 'components/viz/list';
 import { fetchGrexByName, useSpeciesAncestry } from 'lib/hooks/useAncestry';
 import { Name } from 'components/name/name';
 import { useRouter } from 'next/router';
 import { Tabs } from 'components/tabs/tabs';
+import { isSpecies } from 'components/pills/pills';
 
 export async function getServerSideProps(context) {
   const { id, g, e } = context.query;
@@ -40,11 +41,25 @@ export async function getServerSideProps(context) {
   };
 }
 
+const SpeciesAncestry = ({ grex }) => {
+  const speciesAncestry = useSpeciesAncestry(grex);
+
+  return (
+    <List
+      data={speciesAncestry}
+      getFields={(sa) => [sa.grex.epithet]}
+      renderField={({ grex: g = {} }) => <Name grex={g} shouldAbbreviate />}
+      getCount={(d) => d.score}
+      renderCount={(score) => `${(Math.round(score * 1000) / 10).toFixed(1)} %`}
+    />
+  );
+};
+
 export const Grex = ({ grex }) => {
   const router = useRouter();
   const onDate = useDate({ d: grex?.date_of_registration });
   const progeny = useProgeny(grex);
-  const speciesAncestry = useSpeciesAncestry(grex);
+  const name = formatName(grex);
 
   const byRegistrant = onDate.filter(
     (f) => f.id !== grex.id && f.registrant_name === grex?.registrant_name,
@@ -55,41 +70,46 @@ export const Grex = ({ grex }) => {
   }
 
   React.useEffect(() => {
-    if (router.asPath.includes('/grex/s')) {
-      router.replace(`/grex/${grex.id}`);
+    const split = router.asPath.split('/');
+    console.log(split);
+    if (split.length === 3 || isNaN(parseInt(split[split.length - 1], 10))) {
+      router.replace(
+        `/${kebabCase(name.long.genus)}/${kebabCase(name.long.epithet)}/${
+          grex.id
+        }`,
+      );
     }
   }, [router.asPath]);
 
+  const isGrexSpecies = isSpecies(grex);
+
   return (
     <Container
-      title={`${grex.genus} ${grex.epithet} | Orchidex`}
+      title={`${name.short.full} | Orchidex`}
       description={description(grex)}
     >
-      <Resources grex={grex} />
-
-      <GrexCard heading grex={grex} hideLink />
+      <Padded style={{ background: 'white' }}>
+        <GrexCard heading grex={grex} hideLink />
+        <Resources grex={grex} />
+      </Padded>
 
       <Tabs
+        padding
         identifier={grex.id}
         config={[
           {
             label: 'Ancestry',
+            disabled: isGrexSpecies,
             component: (
               <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                 <AncestryViz grex={grex} />
-                <List
-                  data={speciesAncestry}
-                  getFields={(sa) => [sa.grex.epithet]}
-                  renderField={({ grex: g = {} }) => (
-                    <Name grex={g} shouldAbbreviate />
-                  )}
-                  getCount={(d) => d.score}
-                  renderCount={(score) =>
-                    `${(Math.round(score * 1000) / 10).toFixed(1)} %`
-                  }
-                />
               </div>
             ),
+          },
+          {
+            label: 'Species Ancestors',
+            disabled: isGrexSpecies,
+            component: <SpeciesAncestry grex={grex} />,
           },
           {
             label: `Progeny`,

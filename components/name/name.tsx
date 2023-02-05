@@ -1,6 +1,8 @@
 import { formatName } from 'lib/string';
 import { Grex } from 'lib/types';
+import { kebabCase } from 'lodash';
 import Link from 'next/link';
+import style from './style.module.scss';
 
 type NameProps = {
   grex?: {
@@ -20,29 +22,44 @@ export const Name = ({
   shouldAbbreviate = false,
 }: NameProps) => {
   if (grex) {
-    const href = linkAsSearch
-      ? `/grex/s?g=${grex.genus}&e=${grex.epithet}`
-      : `/grex/${grex.id}`;
+    const formattedName = formatName(grex);
 
-    const formattedName = formatName(grex, {
-      shortenGenus: shouldAbbreviate,
-      shortenEpithet: shouldAbbreviate,
-    });
+    const genus = shouldAbbreviate
+      ? formattedName.short.genus
+      : formattedName.long.genus;
+    const epithet = shouldAbbreviate
+      ? formattedName.short.epithet
+      : formattedName.long.epithet;
+
+    const href = linkAsSearch
+      ? `/g/s?g=${grex.genus}&e=${grex.epithet}`
+      : `/${kebabCase(formattedName.long.genus)}/${kebabCase(
+          formattedName.long.epithet,
+        )}/${grex.id}`;
 
     const isSpecies =
-      formattedName.epithet &&
-      formattedName.epithet[0] === formattedName.epithet[0].toLowerCase();
+      epithet &&
+      isNaN(Number(epithet[0])) &&
+      epithet[0] === epithet[0].toLowerCase();
 
     const content = (
       <>
-        <em>{formattedName.genus}</em>{' '}
-        {isSpecies ? <em>{formattedName.epithet}</em> : formattedName.epithet}
+        <em>{genus}</em> {isSpecies ? <em>{epithet}</em> : epithet}
       </>
     );
     return (
-      <span className='name'>
+      <span className={style.name}>
         {link ? (
-          <Link href={href}>
+          <Link
+            href={href}
+            as={
+              linkAsSearch
+                ? `/${encodeURIComponent(
+                    formattedName.long.genus,
+                  )}/${encodeURIComponent(formattedName.long.epithet)}`
+                : undefined
+            }
+          >
             <a>{content}</a>
           </Link>
         ) : (

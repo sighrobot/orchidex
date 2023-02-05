@@ -1,8 +1,11 @@
+import { ButtonSimple } from 'components/button-simple/button-simple';
 import { formatName } from 'lib/string';
-import { countBy, orderBy } from 'lodash';
+import { orderBy } from 'lodash';
 
 import React from 'react';
 import style from './list.module.scss';
+
+const type = 'text/plain';
 
 type ListProps = {
   data: any;
@@ -61,30 +64,17 @@ const List = ({
     [data, getCount, counts, countByField, order],
   );
 
-  return (
-    <div
-      className={style.vizList}
-      onClick={() => {
-        (document.querySelector('.viz-list textarea') as any).select();
-        document.execCommand('copy');
-      }}
-    >
-      <textarea
-        style={{ opacity: 0, position: 'absolute' }}
-        readOnly
-        value={sorted
-          .map((d) => {
-            const fn = formatName(d.grex, {
-              shortenGenus: true,
-              shortenEpithet: true,
-            });
-            return `${renderCount(d.score).replace(' ', '')} ${fn.epithet}`;
-          })
-          .join(', ')}
-      />
+  const copiedValue = sorted
+    .map((d) => {
+      const fn = formatName(d.grex);
+      return `${renderCount(d.score).replace(' ', '')} ${fn.short.epithet}`;
+    })
+    .join(', ');
 
+  return (
+    <div className={style.vizList}>
       {title && <h3>{title}</h3>}
-      <ul>
+      <ul style={{ marginBottom: '10px' }}>
         {sorted.slice(0, limit).map((k) => {
           return (
             <li key={k.grex.id}>
@@ -98,6 +88,17 @@ const List = ({
           );
         })}
       </ul>
+      <ButtonSimple
+        onClick={() => {
+          const data = [
+            new ClipboardItem({ [type]: new Blob([copiedValue], { type }) }),
+          ];
+          navigator.clipboard.write(data);
+        }}
+        style={{ textAlign: 'right', display: 'block' }}
+      >
+        Copy text as cells
+      </ButtonSimple>
     </div>
   );
 };

@@ -106,10 +106,8 @@ const Hybridizer = ({ seed, pollen }) => {
     <Container
       // title={`${grex.genus} ${grex.epithet} | Orchidex`}
       title={title}
+      heading='Hybridizer'
     >
-      <h2>Hybridizer</h2>
-      <br />
-
       <Magic inlineMenu onChange={handleSeedChange} />
 
       {seedParent ? <GrexCard grex={seedParent} /> : '?'}

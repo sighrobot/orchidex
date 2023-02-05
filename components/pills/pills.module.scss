@@ -3,32 +3,28 @@
 }
 
 .pill {
+  color: white;
+  font-size: 9px;
   padding: 2px 3px;
-  font-size: 10px;
   text-transform: uppercase;
 
   &.hypothetical {
     background: black;
-    color: white;
   }
 
   &.intergeneric {
-    background: #d97a79;
-    color: white;
+    background: #785ef0;
   }
 
   &.primary {
-    background: #b9b864;
-    color: white;
+    background: #dc267f;
   }
-  
+
   &.natural {
-    background: #59d97f;
-    color: white;
+    background: #fe6100;
   }
-  
+
   &.species {
-    background: #59d97f;
-    color: white;
+    background: #ffb000;
   }
 }

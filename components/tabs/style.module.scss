@@ -1,6 +1,7 @@
 .tabs {
   nav {
     background: linear-gradient(to right, #ddd, transparent);
+    border-top: 2px solid white;
     border-bottom: 2px solid white;
     display: flex;
 
@@ -12,7 +13,7 @@
       display: flex;
       align-items: center;
       font-size: 12px;
-      padding: 5px 10px;
+      padding: 7.5px 10px;
       height: 100%;
       user-select: none;
       transition: 100ms ease background;
@@ -35,6 +36,10 @@
 
   .content {
     padding: 0 10px;
+  }
+
+  .noPadding {
+    padding: 0;
   }
 
   .count {

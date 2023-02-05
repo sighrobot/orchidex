@@ -7,7 +7,7 @@ body {
 
 body {
   background: #eee;
-  font-size: 16px;
+  font-size: 14px;
   width: 100vw;
 }
 
@@ -36,37 +36,6 @@ svg text {
   font-family: inherit !important;
 }
 
-mark {
-  background: rgba(0, 255, 0, 0.25);
-  color: white;
-}
-
-a.active {
-  text-decoration: none;
-}
-
-small {
-  font-size: 80%;
-}
-
-h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-h3 {
-  font-size: 18px;
-  margin-bottom: 10px;
-}
-
-details {
-  padding: 20px 0;
-}
-
-section + section {
-  border-top: 1px solid rgba(0, 0, 0, 0.2);
-}
-
 a {
   color: black;
   text-decoration: none;
@@ -74,60 +43,6 @@ a {
 
 a:hover {
   text-decoration: underline;
-}
-
-.genus {
-  font-style: italic;
-}
-
-details summary > * {
-  display: inline-block;
-}
-
-details summary {
-  width: auto;
-  cursor: pointer;
-  padding: 10px 0;
-  user-select: none;
-  outline: 0;
-}
-
-button.simple {
-  background: none;
-  border: none;
-  user-select: none;
-  outline: 0;
-  cursor: pointer;
-  font-size: 12px;
-  text-decoration: underline;
-  opacity: 0.5;
-  margin-left: auto;
-  padding: 0;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-td,
-th {
-  padding: 5px 0;
-}
-
-th {
-  padding-right: 10px;
-  text-align: left;
-}
-
-table {
-  margin-top: 30px;
-  font-size: 80%;
-}
-
-h1 {
-  position: relative;
-  display: inline-block;
 }
 
 #chart_div,
@@ -148,8 +63,9 @@ h1 {
 .pollen,
 .root {
   color: white;
-  padding: 3px !important;
-  font-size: 10px;
+  padding: 5px !important;
+  font-size: 12px;
+  min-width: 100px;
 }
 
 .root {
@@ -170,10 +86,7 @@ h1 {
 
 .chart-wrap {
   overflow-x: auto;
-}
-
-#chart_div {
-  width: 1220px;
+  width: 1200px;
 }
 
 @media (max-width: 500px) {
@@ -181,5 +94,6 @@ h1 {
   .pollen,
   .root {
     font-size: 10px;
+    min-width: unset;
   }
 }

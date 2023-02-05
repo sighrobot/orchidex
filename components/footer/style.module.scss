@@ -4,7 +4,6 @@
   left: 0;
   right: 0;
   font-size: 12px;
-  background: black;
   flex-shrink: 0;
   padding: 0 10px;
   padding-bottom: 32px;
@@ -26,7 +25,6 @@
     cursor: pointer;
 
     div {
-      color: white;
       opacity: 0.8;
       height: 100%;
       width: 100%;
@@ -40,7 +38,17 @@
       position: absolute;
       top: 6px;
       left: 6.5px;
-      filter: invert(1);
     }
+  }
+}
+
+.public {
+  color: gray;
+  padding: 40px 10px 0 10px;
+  font-size: 10px;
+
+  a {
+    color: inherit;
+    text-decoration: underline;
   }
 }

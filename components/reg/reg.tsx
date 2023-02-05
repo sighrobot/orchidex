@@ -30,7 +30,7 @@ export const Reg = ({ grex, hideDate, hideLink }: RegProps) => {
             <span>Registered {dateStr}</span>
           ) : (
             <>
-              <span>Registered</span>
+              Registered{' '}
               <Link href={`/date/${grex.date_of_registration}`}>
                 <a className='date'>{dateStr}</a>
               </Link>

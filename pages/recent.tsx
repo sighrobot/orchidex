@@ -9,9 +9,7 @@ export default function Index() {
   const grouped = groupBy(recent, 'date_of_registration');
 
   return (
-    <Container title='Recent | Orchidex'>
-      <h2>Recently registered</h2>
-
+    <Container title='Recent - Orchidex' heading='Recently registered'>
       {orderBy(
         Object.keys(grouped)
           .filter((d) => !isNaN(new Date(d).getTime())) // Wu Wen-Hsian

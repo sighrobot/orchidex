@@ -1,8 +1,13 @@
 .reg {
   color: gray;
-  font-size: 75%;
+  font-size: 12px;
 
   a {
-    color: orchid;
+    color: #3f454e;
+    text-decoration: underline;
+
+    &:hover {
+      color: black;
+    }
   }
 }
