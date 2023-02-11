@@ -1,5 +1,6 @@
 .container {
   main {
+    min-height: 90vh;
     border-left: 2px solid white;
     width: 100%;
     overflow: hidden;
@@ -14,7 +15,6 @@
 .wrap {
   display: flex;
   max-width: 1200px;
-  min-height: 100vh; // hmmm
   margin: 0 auto;
 
   @media (max-width: 800px) {
@@ -48,4 +48,15 @@
 .sidebar {
   border-right: 2px solid white;
   background: linear-gradient(to bottom, white, transparent);
+}
+
+.footer {
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 40px 20px 20px 20px;
+  font-size: 10px;
+
+  a {
+    text-decoration: underline;
+  }
 }

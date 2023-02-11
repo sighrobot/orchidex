@@ -38,15 +38,11 @@ export const Footer = () => {
       </footer>
     );
   }
-  return null;
-  // return (
-  //   <footer className={style.public}>
-  //     Orchidex makes{' '}
-  //     <Link href='https://en.wikipedia.org/wiki/Fair_use'>
-  //       <a>fair use</a>
-  //     </Link>{' '}
-  //     of International Orchid Register data (&copy; Royal Horticultural Society)
-  //     for non-profit, educational purposes.
-  //   </footer>
-  // );
+  // return null;
+  return (
+    <footer className={style.public}>
+      Orchidex makes fair use of International Orchid Register data (&copy;
+      Royal Horticultural Society) for non-profit, educational purposes.
+    </footer>
+  );
 };
