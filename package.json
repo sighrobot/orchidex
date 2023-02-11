@@ -11,7 +11,6 @@
     "@nivo/core": "0.80.0",
     "@nivo/treemap": "0.80.0",
     "@vercel/analytics": "^0.1.8",
-    "aws-sdk": "2.1013.0",
     "cache-lru": "1.1.11",
     "classnames": "^2.3.2",
     "lodash": "4.17.21",
