@@ -1,0 +1,20 @@
+.box {
+  padding: 30px;
+  font-size: 14px;
+}
+
+.stat {
+  border-bottom: 2px solid white;
+
+  meter {
+    margin-top: 10px;
+    width: 100%;
+  }
+}
+
+.title {
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin-bottom: 10px;
+}

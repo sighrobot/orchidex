@@ -52,7 +52,7 @@ const Hybridizer = ({ seed, pollen }) => {
   const [state, setState] = React.useState(INITIAL_STATE);
   const [seedParent, setSeedParent] = React.useState<Grex | null>(seed);
   const [pollenParent, setPollenParent] = React.useState<Grex | null>(pollen);
-  const speciesAncestry = useSpeciesAncestry(grex);
+  const { data: speciesAncestry } = useSpeciesAncestry(grex, true);
 
   const handleSeedChange = (g: Grex) => {
     const field: Pick<Grex, 'seed_parent_genus' | 'seed_parent_epithet'> = {};

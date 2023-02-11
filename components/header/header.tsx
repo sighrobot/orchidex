@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Magic } from '../search/magic';
@@ -10,15 +11,16 @@ export const Header = () => {
   return (
     <header className={style.header}>
       <nav>
-        <h1>
+        <h1 className={style.brand}>
           <Link href='/'>
-            <a className={style.brand}>
+            <a>
               <span style={{ color: 'orchid', fontStyle: 'italic' }}>
                 Orchi
               </span>
               dex
             </a>
           </Link>
+          <img src='/transparent.png' />
         </h1>
 
         <Link href='/recent'>

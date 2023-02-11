@@ -16,6 +16,9 @@ import { Name } from 'components/name/name';
 import { useRouter } from 'next/router';
 import { Tabs } from 'components/tabs/tabs';
 import { isSpecies } from 'components/pills/pills';
+import { StatBox, StatCard } from 'components/stat/stat';
+import style from './style.module.scss';
+import { ButtonSimple } from 'components/button-simple/button-simple';
 
 export async function getServerSideProps(context) {
   const { id, g, e } = context.query;
@@ -41,14 +44,30 @@ export async function getServerSideProps(context) {
   };
 }
 
-const SpeciesAncestry = ({ grex }) => {
-  const speciesAncestry = useSpeciesAncestry(grex);
+export const SpeciesAncestry = ({ grex }) => {
+  const {
+    data: speciesAncestry,
+    loading,
+    active,
+    load,
+  } = useSpeciesAncestry(grex);
+
+  if (!active) {
+    return <ButtonSimple onClick={load}>Calculate!</ButtonSimple>;
+  }
+
+  if (loading) {
+    return <>Loading...</>;
+  }
 
   return (
     <List
+      className={style.speciesAncestry}
       data={speciesAncestry}
       getFields={(sa) => [sa.grex.epithet]}
-      renderField={({ grex: g = {} }) => <Name grex={g} shouldAbbreviate />}
+      renderField={({ grex: g = {} }) => (
+        <Name className={style.speciesAncestryName} grex={g} shouldAbbreviate />
+      )}
       getCount={(d) => d.score}
       renderCount={(score) => `${(Math.round(score * 1000) / 10).toFixed(1)} %`}
     />
@@ -71,7 +90,6 @@ export const Grex = ({ grex }) => {
 
   React.useEffect(() => {
     const split = router.asPath.split('/');
-    console.log(split);
     if (split.length === 3 || isNaN(parseInt(split[split.length - 1], 10))) {
       router.replace(
         `/${kebabCase(name.long.genus)}/${kebabCase(name.long.epithet)}/${
@@ -93,131 +111,113 @@ export const Grex = ({ grex }) => {
         <Resources grex={grex} />
       </Padded>
 
-      <Tabs
-        padding
-        identifier={grex.id}
-        config={[
-          {
-            label: 'Ancestry',
-            disabled: isGrexSpecies,
-            component: (
-              <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                <AncestryViz grex={grex} />
-              </div>
-            ),
-          },
-          {
-            label: 'Species Ancestors',
-            disabled: isGrexSpecies,
-            component: <SpeciesAncestry grex={grex} />,
-          },
-          {
-            label: `Progeny`,
-            count: progeny.length,
-            component: (
-              <>
-                {orderBy(
-                  progeny.filter((d) => d.synonym_flag.includes('not')),
-                  ['date_of_registration', 'genus', 'epithet'],
-                  ['desc'],
-                ).map((grexOnDate) => {
-                  return <GrexCard key={grexOnDate.id} grex={grexOnDate} />;
-                })}
-              </>
-            ),
-          },
-          {
-            label: `Same-Date`,
-            count: byRegistrant.length,
-            disabled: !grex?.date_of_registration,
-            component: (
-              <>
-                {orderBy(byRegistrant, ['genus', 'epithet']).map(
-                  (grexOnDate, idx) => {
-                    return (
-                      <GrexCard
-                        key={`${idx}-${grexOnDate.id}`}
-                        grex={grexOnDate}
-                        hideReg
-                      />
-                    );
-                  },
-                )}
-              </>
-            ),
-          },
-        ]}
-      />
-
-      {'raw' in router.query && (
-        <section>
-          <details>
-            <summary>Raw Data</summary>
-            <div>
-              <table>
-                <tbody>
-                  {Object.keys(grex).map((k) => {
-                    const field = grex[k];
-                    let href;
-                    let rel;
-                    let target;
-
-                    switch (k) {
-                      case 'id':
-                        href = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${field}`;
-                        rel = 'noopener noreferrer';
-                        target = '_blank';
-                        break;
-                      case 'genus':
-                        href = `/?genus="${field}"`;
-                        break;
-                      case 'epithet':
-                        href = `/?epithet="${field}"`;
-                        break;
-                      case 'registrant_name':
-                        href = `/?registrant_name="${field}"`;
-                        break;
-                      case 'date_of_registration':
-                        href = `/date/${field}`;
-                        break;
-                      case 'seed_parent_genus':
-                        href = `/?seed_parent_genus="${field}"`;
-                        break;
-                      case 'seed_parent_epithet':
-                        href = `/?seed_parent_epithet="${field}"`;
-                        break;
-                      case 'pollen_parent_genus':
-                        href = `/?pollen_parent_genus="${field}"`;
-                        break;
-                      case 'pollen_parent_epithet':
-                        href = `/?pollen_parent_epithet="${field}"`;
-                        break;
-                      default:
-                        break;
-                    }
-
-                    return (
-                      <tr key={k}>
-                        <th>{k.replace(/_/g, ' ')}:</th>
-                        <td>
-                          {href ? (
-                            <Link href={href}>
-                              <a target={target} rel={rel}>
-                                {grex[k]}
-                              </a>
-                            </Link>
-                          ) : (
-                            grex[k]
-                          )}
-                        </td>
-                      </tr>
-                    );
+      <div className={style.content}>
+        <Tabs
+          padding
+          identifier={grex.id}
+          config={[
+            {
+              label: 'Ancestry',
+              disabled: isGrexSpecies,
+              component: (
+                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                  <AncestryViz grex={grex} />
+                </div>
+              ),
+            },
+            {
+              label: `Progeny`,
+              count: progeny.length,
+              component: (
+                <>
+                  {orderBy(
+                    progeny.filter((d) => d.synonym_flag.includes('not')),
+                    ['date_of_registration', 'genus', 'epithet'],
+                    ['desc'],
+                  ).map((grexOnDate) => {
+                    return <GrexCard key={grexOnDate.id} grex={grexOnDate} />;
                   })}
-                </tbody>
-              </table>
-            </div>
-          </details>
-        </section>
+                </>
+              ),
+            },
+          ]}
+        />
+
+        <aside className={style.sidebar}>
+          {!isGrexSpecies && (
+            <>
+              <StatCard stat='registrant_genus_pct' grex={grex} />
+              <StatCard stat='year_genus_pct' grex={grex} />
+              <StatBox heading='Species Ancestry'>
+                <SpeciesAncestry grex={grex} />
+              </StatBox>
+            </>
+          )}
+        </aside>
+      </div>
+
+      {router.query.debug && (
+        <table>
+          <tbody>
+            {Object.keys(grex).map((k) => {
+              const field = grex[k];
+              let href;
+              let rel;
+              let target;
+
+              switch (k) {
+                case 'id':
+                  href = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${field}`;
+                  rel = 'noopener noreferrer';
+                  target = '_blank';
+                  break;
+                case 'genus':
+                  href = `/?genus="${field}"`;
+                  break;
+                case 'epithet':
+                  href = `/?epithet="${field}"`;
+                  break;
+                case 'registrant_name':
+                  href = `/?registrant_name="${field}"`;
+                  break;
+                case 'date_of_registration':
+                  href = `/date/${field}`;
+                  break;
+                case 'seed_parent_genus':
+                  href = `/?seed_parent_genus="${field}"`;
+                  break;
+                case 'seed_parent_epithet':
+                  href = `/?seed_parent_epithet="${field}"`;
+                  break;
+                case 'pollen_parent_genus':
+                  href = `/?pollen_parent_genus="${field}"`;
+                  break;
+                case 'pollen_parent_epithet':
+                  href = `/?pollen_parent_epithet="${field}"`;
+                  break;
+                default:
+                  break;
+              }
+
+              return (
+                <tr key={k}>
+                  <th>{k.replace(/_/g, ' ')}:</th>
+                  <td>
+                    {href ? (
+                      <Link href={href}>
+                        <a target={target} rel={rel}>
+                          {grex[k]}
+                        </a>
+                      </Link>
+                    ) : (
+                      grex[k]
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
       )}
     </Container>
   );

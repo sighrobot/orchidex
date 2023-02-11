@@ -1,15 +1,13 @@
 .vizList {
-  font-size: 12px;
-  margin-top: 20px;
-  max-width: 300px;
+  max-width: 400px;
+
+  ul {
+    padding: 0;
+  }
 
   li {
     display: flex;
     align-items: center;
-
-    &:hover {
-      background: rgba(0, 0, 0, 0.05);
-    }
 
     & + li {
       margin-top: 5px;
@@ -28,6 +26,7 @@
     margin-left: auto;
     padding-right: 10px;
     color: rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
   }
 
   meter {
@@ -35,4 +34,8 @@
     flex-shrink: 0;
     width: 30px;
   }
+}
+
+.ancestry {
+  padding: 40px 0;
 }

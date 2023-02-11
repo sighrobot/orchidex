@@ -6,6 +6,8 @@ import { useRouter } from 'next/router';
 import { find, get, sortBy } from 'lodash';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
 
+import style from './list.module.scss';
+
 export const AncestryViz = ({ grex }) => {
   const router = useRouter();
   const ancestry = useAncestry(grex, 2);
@@ -107,7 +109,7 @@ export const AncestryViz = ({ grex }) => {
         <script src='//www.gstatic.com/charts/loader.js' />
       </Head>
 
-      <div className='ancestry-viz chart-wrap'>
+      <div className={`${style.ancestry} ancestry-viz chart-wrap`}>
         <div id='chart_div' />
       </div>
     </>

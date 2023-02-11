@@ -10,3 +10,9 @@ export type Grex = {
   pollen_parent_genus?: string;
   pollen_parent_epithet?: string;
 };
+
+export type Stat =
+  | 'registrant_genus_pct'
+  | 'seed_parent_progeny'
+  | 'pollen_parent_progeny'
+  | 'year_genus_pct';

@@ -3,8 +3,10 @@ import { Grex } from 'lib/types';
 import { kebabCase } from 'lodash';
 import Link from 'next/link';
 import style from './style.module.scss';
+import cn from 'classnames';
 
 type NameProps = {
+  className?: string;
   grex?: {
     id?: Grex['id'];
     genus: Grex['genus'];
@@ -13,9 +15,12 @@ type NameProps = {
   link?: boolean;
   linkAsSearch?: boolean;
   shouldAbbreviate?: boolean;
+  as?: keyof JSX.IntrinsicElements;
 };
 
 export const Name = ({
+  as = 'span',
+  className,
   grex,
   link = true,
   linkAsSearch = false,
@@ -47,8 +52,9 @@ export const Name = ({
         <em>{genus}</em> {isSpecies ? <em>{epithet}</em> : epithet}
       </>
     );
+    const Component = as;
     return (
-      <span className={style.name}>
+      <Component className={cn(style.name, className)}>
         {link ? (
           <Link
             href={href}
@@ -65,7 +71,7 @@ export const Name = ({
         ) : (
           content
         )}
-      </span>
+      </Component>
     );
   }
 

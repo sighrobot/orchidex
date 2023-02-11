@@ -1,4 +1,6 @@
 .tabs {
+  overflow: hidden;
+
   nav {
     background: linear-gradient(to right, #ddd, transparent);
     border-top: 2px solid white;
@@ -12,11 +14,13 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      font-size: 12px;
-      padding: 7.5px 10px;
+      padding: 10px 20px;
       height: 100%;
       user-select: none;
       transition: 100ms ease background;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 500;
 
       &:hover:not([disabled]) {
         background: rgba(255, 255, 255, 0.5);
@@ -35,7 +39,7 @@
   }
 
   .content {
-    padding: 0 10px;
+    padding: 0 20px;
   }
 
   .noPadding {

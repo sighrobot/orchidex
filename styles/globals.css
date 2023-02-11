@@ -7,7 +7,7 @@ body {
 
 body {
   background: #eee;
-  font-size: 14px;
+  font-size: 16px;
   width: 100vw;
 }
 
@@ -64,7 +64,6 @@ a:hover {
 .root {
   color: white;
   padding: 5px !important;
-  font-size: 12px;
   min-width: 100px;
 }
 
@@ -93,7 +92,7 @@ a:hover {
   .seed,
   .pollen,
   .root {
-    font-size: 10px;
+    font-size: 12px;
     min-width: unset;
   }
 }

@@ -1,5 +1,5 @@
 .header {
-  width: 140px;
+  width: 150px;
   flex-shrink: 0;
   padding: 20px;
 
@@ -10,7 +10,18 @@
   nav {
     display: flex;
     flex-direction: column;
-    font-size: 14px;
+
+    h1 {
+      display: flex;
+      align-items: center;
+
+      img {
+        flex-shrink: 0;
+        width: 25px;
+        height: 25px;
+        margin-left: 5px;
+      }
+    }
 
     a {
       display: inline-block;

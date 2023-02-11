@@ -1,3 +1,4 @@
+import cn from 'classnames';
 import { ButtonSimple } from 'components/button-simple/button-simple';
 import { formatName } from 'lib/string';
 import { orderBy } from 'lodash';
@@ -8,6 +9,7 @@ import style from './list.module.scss';
 const type = 'text/plain';
 
 type ListProps = {
+  className?: string;
   data: any;
   getCount: any;
   getFields?: any;
@@ -20,6 +22,7 @@ type ListProps = {
 };
 
 const List = ({
+  className,
   data,
   getCount,
   getFields = () => [],
@@ -72,7 +75,7 @@ const List = ({
     .join(', ');
 
   return (
-    <div className={style.vizList}>
+    <div className={cn(style.vizList, className)}>
       {title && <h3>{title}</h3>}
       <ul style={{ marginBottom: '10px' }}>
         {sorted.slice(0, limit).map((k) => {
@@ -88,7 +91,7 @@ const List = ({
           );
         })}
       </ul>
-      <ButtonSimple
+      {/* <ButtonSimple
         onClick={() => {
           const data = [
             new ClipboardItem({ [type]: new Blob([copiedValue], { type }) }),
@@ -98,7 +101,7 @@ const List = ({
         style={{ textAlign: 'right', display: 'block' }}
       >
         Copy text as cells
-      </ButtonSimple>
+      </ButtonSimple> */}
     </div>
   );
 };

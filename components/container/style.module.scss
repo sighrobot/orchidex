@@ -1,7 +1,6 @@
 .container {
   main {
-    border: 2px solid white;
-    border-top: 0;
+    border-left: 2px solid white;
     width: 100%;
     overflow: hidden;
   }
@@ -15,7 +14,6 @@
 .wrap {
   display: flex;
   max-width: 1200px;
-  // width: 100%;
   min-height: 100vh; // hmmm
   margin: 0 auto;
 
@@ -27,4 +25,27 @@
 .heading {
   font-size: 24px;
   margin: 0;
+}
+
+.section {
+  h4 {
+    padding: 10px 20px;
+    background: linear-gradient(to right, #ccc, transparent);
+    border-bottom: 2px solid white;
+  }
+
+  .scrollable {
+    max-height: 400px;
+    overflow-y: auto;
+
+    > * {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+}
+
+.sidebar {
+  border-right: 2px solid white;
+  background: linear-gradient(to bottom, white, transparent);
 }
