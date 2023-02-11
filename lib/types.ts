@@ -13,6 +13,6 @@ export type Grex = {
 
 export type Stat =
   | 'registrant_genus_pct'
-  | 'seed_parent_progeny'
+  | 'seed_parent_source'
   | 'pollen_parent_progeny'
   | 'year_genus_pct';

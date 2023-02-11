@@ -16,7 +16,9 @@ export default async (req, res) => {
         .filter((c) => c)
         .join(' and ');
 
-  const d = await q(`SELECT * FROM rhs WHERE ${condx} limit 1000`);
+  const d = await q(
+    `SELECT * FROM rhs WHERE ${condx} order by date_of_registration desc limit 1000`,
+  );
 
   res.status(200).json(d);
 };

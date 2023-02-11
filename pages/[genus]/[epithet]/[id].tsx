@@ -15,7 +15,7 @@ import { fetchGrexByName, useSpeciesAncestry } from 'lib/hooks/useAncestry';
 import { Name } from 'components/name/name';
 import { useRouter } from 'next/router';
 import { Tabs } from 'components/tabs/tabs';
-import { isSpecies } from 'components/pills/pills';
+import { isNaturalHybrid, isSpecies } from 'components/pills/pills';
 import { StatBox, StatCard } from 'components/stat/stat';
 import style from './style.module.scss';
 import { ButtonSimple } from 'components/button-simple/button-simple';
@@ -143,7 +143,7 @@ export const Grex = ({ grex }) => {
           ]}
         />
 
-        {!isGrexSpecies && (
+        {!isSpecies(grex) && !isNaturalHybrid(grex) && (
           <aside className={style.sidebar}>
             <StatCard stat='registrant_genus_pct' grex={grex} />
             <StatCard stat='year_genus_pct' grex={grex} />

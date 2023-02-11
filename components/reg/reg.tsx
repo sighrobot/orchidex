@@ -43,7 +43,9 @@ export const Reg = ({ grex, hideDate, hideLink }: RegProps) => {
         {hideLink ? (
           <span>{grex.registrant_name}</span>
         ) : (
-          <Link href={`/registrant/${grex.registrant_name}`}>
+          <Link
+            href={`/registrant/${encodeURIComponent(grex.registrant_name)}`}
+          >
             {grex.registrant_name}
           </Link>
         )}{' '}

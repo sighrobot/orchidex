@@ -27,7 +27,7 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
         WHERE genus = '${grex.genus}'
         AND registrant_name = "${grex.registrant_name}"
       `;
-    case 'seed_parent_progeny':
+    case 'seed_parent_source':
       return `SELECT 
       rhs1.registrant_name AS r1, 
       rhs2.registrant_name AS r2, 
@@ -82,7 +82,7 @@ export const getStatTitle = ({ stat }: { stat: Stat }) => {
   switch (stat) {
     case 'registrant_genus_pct':
       return 'Genus by Registrant';
-    case 'seed_parent_progeny':
+    case 'seed_parent_source':
       return 'Seed Parent Progeny';
     case 'pollen_parent_progeny':
       return 'Pollen Parent Progeny';
@@ -118,7 +118,7 @@ export const getStatText = ({
         isLow ? 'less than 1%' : `${Math.round(value * 100)}%`,
         'of all hybrids registered in',
         year,
-        'were',
+        'are',
         `${grex.genus}.`,
       ];
 
@@ -129,6 +129,9 @@ export const getStatText = ({
       segments[0] = capitalize(segments[0]);
 
       return segments.join(' ');
+    }
+    case 'seed_parent_source': {
+      return '';
     }
     default:
       return '';

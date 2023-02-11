@@ -1,5 +1,5 @@
 import { useStat } from 'lib/hooks/useStat';
-import { getStatSql, getStatText, getStatTitle } from 'lib/stats';
+import { getStatText, getStatTitle } from 'lib/stats';
 import { Grex, Stat } from 'lib/types';
 import style from './style.module.scss';
 import cn from 'classnames';
@@ -11,8 +11,16 @@ export const StatBox = ({ className = '', children, heading }) => (
   </div>
 );
 
+export const StatPercentage = ({ description, value }) => {
+  return (
+    <>
+      <div>{description}</div>
+      <meter value={value} />
+    </>
+  );
+};
+
 export const StatCard = ({ grex, stat }: { grex: Grex; stat: Stat }) => {
-  const q = getStatSql({ grex, stat });
   const { data, loading } = useStat({ stat, grex });
   const s = getStatText({ stat, grex, value: data?.[0]?.pct });
   const t = getStatTitle({ stat });
@@ -22,8 +30,7 @@ export const StatCard = ({ grex, stat }: { grex: Grex; stat: Stat }) => {
   return (
     <StatBox className={style.stat} heading={t}>
       {loading && 'Loading...'}
-      {isValid && <div>{s}</div>}
-      {isValid && <meter value={data?.[0]?.pct} />}
+      {isValid && <StatPercentage description={s} value={data?.[0]?.pct} />}
       {!loading && !isValid && (
         <em>Unfortunately, there was an error generating this statistic.</em>
       )}

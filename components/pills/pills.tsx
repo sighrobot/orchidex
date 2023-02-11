@@ -10,7 +10,7 @@ const isParentNaturalHybrid = (grex: Grex) =>
   grex.seed_parent_epithet[0] === UNKNOWN_CHAR ||
   grex.pollen_parent_epithet[0] === UNKNOWN_CHAR;
 
-const isNaturalHybrid = (grex: Grex) =>
+export const isNaturalHybrid = (grex: Grex) =>
   grex.epithet[0] === CROSS_CHAR ||
   (hasParents(grex) && grex.registrant_name === 'This is a natural hybrid') ||
   (hasParents(grex) &&
@@ -26,6 +26,17 @@ export const isSpecies = (grex: Grex) =>
   !Number.isInteger(parseInt(grex.epithet[0], 10)) &&
   grex.epithet[0] === grex.epithet[0].toLowerCase();
 
+export const isPrimary = (grex) =>
+  !isParentNaturalHybrid(grex) &&
+  !isNaturalHybrid(grex) &&
+  grex.seed_parent_epithet &&
+  grex.seed_parent_epithet[0] === grex.seed_parent_epithet[0].toLowerCase() &&
+  grex.pollen_parent_epithet &&
+  grex.pollen_parent_epithet[0] === grex.pollen_parent_epithet[0].toLowerCase();
+
+export const isIntergeneric = (grex) =>
+  grex.seed_parent_genus !== grex.pollen_parent_genus;
+
 export const Pills = ({ grex }) => {
   const pills = [];
 
@@ -33,16 +44,7 @@ export const Pills = ({ grex }) => {
     pills.push('hypothetical');
   }
 
-  const isIntergeneric = grex.seed_parent_genus !== grex.pollen_parent_genus;
-
-  const isPrimaryHybrid =
-    !isParentNaturalHybrid(grex) &&
-    !isNaturalHybrid(grex) &&
-    grex.seed_parent_epithet &&
-    grex.seed_parent_epithet[0] === grex.seed_parent_epithet[0].toLowerCase() &&
-    grex.pollen_parent_epithet &&
-    grex.pollen_parent_epithet[0] ===
-      grex.pollen_parent_epithet[0].toLowerCase();
+  const isPrimaryHybrid = isPrimary(grex);
 
   if (isSpecies(grex)) {
     pills.push('species');
@@ -52,7 +54,7 @@ export const Pills = ({ grex }) => {
     pills.push('natural');
   }
 
-  if (isIntergeneric) {
+  if (isIntergeneric(grex)) {
     pills.push('intergeneric');
   }
 

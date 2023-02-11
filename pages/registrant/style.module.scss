@@ -1,0 +1,39 @@
+.quickStats {
+  color: gray;
+  margin-top: 2.5px;
+  margin-top: 5px;
+}
+
+.columns {
+  display: flex;
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+  }
+}
+
+.genusFacet {
+  flex-shrink: 0;
+  width: 200px;
+  padding: 20px;
+
+  border-bottom: 2px solid white;
+  background: rgba(255, 0, 0, 0.02);
+  border-left: 2px solid white;
+  border-right: 2px solid white;
+  font-size: 14px;
+  max-height: 80vh;
+  align-self: flex-start;
+  overflow-y: auto;
+
+  @media (max-width: 600px) {
+    max-height: 150px;
+    width: 100%;
+    max-width: unset;
+  }
+}
+
+.list {
+  padding: 0 20px;
+  flex-grow: 1;
+}
