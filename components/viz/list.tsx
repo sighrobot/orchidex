@@ -1,13 +1,19 @@
-import { formatName } from "lib/string";
-import { countBy, orderBy } from "lodash";
+import cn from 'classnames';
+import { ButtonSimple } from 'components/button-simple/button-simple';
+import { formatName } from 'lib/string';
+import { orderBy } from 'lodash';
 
-import React from "react";
+import React from 'react';
+import style from './list.module.scss';
+
+const type = 'text/plain';
 
 type ListProps = {
+  className?: string;
   data: any;
   getCount: any;
   getFields?: any;
-  order?: "asc" | "desc" | boolean;
+  order?: 'asc' | 'desc' | boolean;
   renderField?: (f: any) => React.ReactNode;
   renderCount?: (c: number) => string;
   limit?: number;
@@ -16,10 +22,11 @@ type ListProps = {
 };
 
 const List = ({
+  className,
   data,
   getCount,
   getFields = () => [],
-  order = "desc",
+  order = 'desc',
   renderField = (k) => k,
   renderCount = (c) => String(c),
   limit,
@@ -50,40 +57,27 @@ const List = ({
     () =>
       countByField
         ? orderBy(Object.keys(counts), (k) => counts[k], order).filter(
-            (k) => counts[k] > 0
+            (k) => counts[k] > 0,
           )
         : orderBy(
             data,
             [getCount, ({ grex: g }) => `${g.genus} ${g.epithet}`],
-            [order, "asc"]
+            [order, 'asc'],
           ),
-    [data, getCount, counts, countByField, order]
+    [data, getCount, counts, countByField, order],
   );
 
-  return (
-    <div
-      className="viz-list"
-      onClick={() => {
-        (document.querySelector(".viz-list textarea") as any).select();
-        document.execCommand("copy");
-      }}
-    >
-      <textarea
-        style={{ opacity: 0, position: "absolute" }}
-        readOnly
-        value={sorted
-          .map((d) => {
-            const fn = formatName(d.grex, {
-              shortenGenus: true,
-              shortenEpithet: true,
-            });
-            return `${renderCount(d.score).replace(" ", "")} ${fn.epithet}`;
-          })
-          .join(", ")}
-      />
+  const copiedValue = sorted
+    .map((d) => {
+      const fn = formatName(d.grex);
+      return `${renderCount(d.score).replace(' ', '')} ${fn.short.epithet}`;
+    })
+    .join(', ');
 
+  return (
+    <div className={cn(style.vizList, className)}>
       {title && <h3>{title}</h3>}
-      <ul>
+      <ul style={{ marginBottom: '10px' }}>
         {sorted.slice(0, limit).map((k) => {
           return (
             <li key={k.grex.id}>
@@ -97,6 +91,17 @@ const List = ({
           );
         })}
       </ul>
+      {/* <ButtonSimple
+        onClick={() => {
+          const data = [
+            new ClipboardItem({ [type]: new Blob([copiedValue], { type }) }),
+          ];
+          navigator.clipboard.write(data);
+        }}
+        style={{ textAlign: 'right', display: 'block' }}
+      >
+        Copy text as cells
+      </ButtonSimple> */}
     </div>
   );
 };

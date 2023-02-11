@@ -1,0 +1,12 @@
+.reg {
+  color: gray;
+
+  a {
+    color: #3f454e;
+    text-decoration: underline;
+
+    &:hover {
+      color: black;
+    }
+  }
+}

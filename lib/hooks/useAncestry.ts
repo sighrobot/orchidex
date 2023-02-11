@@ -1,16 +1,16 @@
-import React from "react";
-import cache from "lib/cache";
-import { repairMalformedNaturalHybridEpithet, UNKNOWN_CHAR } from "lib/string";
-import { find, flatten, partition } from "lodash";
-import { isSpecies } from "components/pills";
-import { APP_URL } from "lib/constants";
+import React from 'react';
+import cache from 'lib/cache';
+import { repairMalformedNaturalHybridEpithet, UNKNOWN_CHAR } from 'lib/string';
+import { find, flatten, partition } from 'lodash';
+import { isSpecies } from 'components/pills/pills';
+import { APP_URL } from 'lib/constants';
 
 export const fetchGrexByName = async ({ genus, epithet }) => {
   if (!genus || !epithet) return null;
 
   const quotedGenus = `"${genus}"`;
   const quotedEpithet = epithet.includes(UNKNOWN_CHAR)
-    ? epithet.replace(new RegExp(UNKNOWN_CHAR, "g"), "_")
+    ? epithet.replace(new RegExp(UNKNOWN_CHAR, 'g'), '_')
     : `"${repairMalformedNaturalHybridEpithet({ epithet })}"`;
 
   const cached = cache.get(`${genus} ${epithet}`);
@@ -21,7 +21,7 @@ export const fetchGrexByName = async ({ genus, epithet }) => {
 
   try {
     const fetched = await fetch(
-      `${APP_URL}/api/search?genus=${quotedGenus}&epithet=${quotedEpithet}`
+      `${APP_URL}/api/search?genus=${quotedGenus}&epithet=${quotedEpithet}`,
     );
     const json = await fetched.json();
 
@@ -54,8 +54,8 @@ const getNextGeneration = async (names = []) => {
     return have;
   }
 
-  const f = await fetch("/api/ancestry", {
-    method: "POST",
+  const f = await fetch('/api/ancestry', {
+    method: 'POST',
     body: JSON.stringify(namesNeed),
   });
 
@@ -93,8 +93,8 @@ const levels = async (grex, level = 1) => {
         generation.map((g) => [
           { genus: g.seed_parent_genus, epithet: g.seed_parent_epithet },
           { genus: g.pollen_parent_genus, epithet: g.pollen_parent_epithet },
-        ])
-      ).filter((f) => f.genus && f.epithet)
+        ]),
+      ).filter((f) => f.genus && f.epithet),
     );
 
     if (generation.length === 0) {
@@ -105,23 +105,40 @@ const levels = async (grex, level = 1) => {
   return { scores, map };
 };
 
-export const useSpeciesAncestry = (grex) => {
+export const useSpeciesAncestry = (grex, preload = false) => {
   const [ancestry, setAncestry] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+  const [active, setActive] = React.useState(false);
 
   React.useEffect(() => {
-    (async () => {
-      if (grex) {
-        await levels(grex, 100); // wtf, but this has to run twice
-        const { scores, map } = await levels(grex, 100);
-
-        setAncestry(
-          Object.keys(scores).map((k) => ({ score: scores[k], grex: map[k] }))
-        );
-      }
-    })();
+    setActive(false);
   }, [grex]);
 
-  return ancestry;
+  React.useEffect(() => {
+    if (preload) {
+      load();
+    }
+  }, [preload]);
+
+  const load = async () => {
+    setActive(true);
+    setLoading(true);
+
+    if (grex) {
+      await levels(grex, 100); // wtf, but this has to run twice
+      const { scores, map } = await levels(grex, 100);
+
+      setAncestry(
+        Object.keys(scores).map((k) => ({
+          score: scores[k],
+          grex: map[k],
+        })),
+      );
+      setLoading(false);
+    }
+  };
+
+  return { data: ancestry, loading, active, load };
 };
 
 export const useAncestry = (grex, level = 2) => {
@@ -153,7 +170,7 @@ export const useAncestry = (grex, level = 2) => {
           num++;
           const id = `${parent.id}-${num}`;
 
-          handleParent("seed", seed, parent, child, id);
+          handleParent('seed', seed, parent, child, id);
 
           if (seed < level) {
             seed++;
@@ -167,7 +184,7 @@ export const useAncestry = (grex, level = 2) => {
           num++;
           const id = `${parent.id}-${num}`;
 
-          handleParent("pollen", pollen, parent, child, id);
+          handleParent('pollen', pollen, parent, child, id);
 
           if (pollen < level) {
             pollen++;

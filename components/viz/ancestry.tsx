@@ -1,17 +1,19 @@
-import { renderToString } from "react-dom/server";
-import React from "react";
-import { useAncestry } from "lib/hooks/useAncestry";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { find, get, sortBy } from "lodash";
-import { formatName, repairMalformedNaturalHybridEpithet } from "lib/string";
+import { renderToString } from 'react-dom/server';
+import React from 'react';
+import { useAncestry } from 'lib/hooks/useAncestry';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { find, get, sortBy } from 'lodash';
+import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
+
+import style from './list.module.scss';
 
 export const AncestryViz = ({ grex }) => {
   const router = useRouter();
-  const ancestry = useAncestry(grex, 4);
+  const ancestry = useAncestry(grex, 2);
 
   React.useEffect(() => {
-    const google = get(global, "google");
+    const google = get(global, 'google');
 
     if (!google) {
       return;
@@ -20,58 +22,57 @@ export const AncestryViz = ({ grex }) => {
     let data;
     function drawChart() {
       data = new google.visualization.DataTable();
-      data.addColumn("string", "name");
-      data.addColumn("string", "parent");
-      data.addColumn("string", "toolTip");
+      data.addColumn('string', 'name');
+      data.addColumn('string', 'parent');
+      data.addColumn('string', 'toolTip');
 
-      const formattedRoot = formatName(ancestry.nodes[0], {
-        shortenGenus: true,
-        shortenEpithet: true,
-      });
+      const formattedRoot = formatName(ancestry.nodes[0]);
 
       const isSpecies =
-        formattedRoot.epithet &&
-        formattedRoot.epithet[0] === formattedRoot.epithet[0].toLowerCase();
-      const repairedEpithet =
-        repairMalformedNaturalHybridEpithet(formattedRoot);
+        formattedRoot.short.epithet &&
+        isNaN(Number(formattedRoot.short.epithet[0])) &&
+        formattedRoot.short.epithet[0] ===
+          formattedRoot.short.epithet[0].toLowerCase();
+      const repairedEpithet = repairMalformedNaturalHybridEpithet(
+        formattedRoot.short,
+      );
 
       const rows = [
         [
           {
             v: ancestry.nodes[0]?.id,
             f: renderToString(
-              <div className="root">
-                <em>{formattedRoot.genus}</em>{" "}
+              <div className='root'>
+                <em>{formattedRoot.short.genus}</em>{' '}
                 {isSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
-              </div>
+              </div>,
             ),
           },
-          "",
-          "",
+          '',
+          '',
         ],
-        ...sortBy(ancestry.links, "type").map((l) => {
+        ...sortBy(ancestry.links, 'type').map((l) => {
           const n = find(ancestry.nodes, { id: l.source });
-          const formatted = formatName(n, {
-            shortenGenus: true,
-            shortenEpithet: true,
-          });
+          const formatted = formatName(n);
           const isSpecies =
-            formatted.epithet &&
-            formatted.epithet[0] === formatted.epithet[0].toLowerCase();
-          const repairedEpithet =
-            repairMalformedNaturalHybridEpithet(formatted);
+            formatted.short.epithet &&
+            formatted.short.epithet[0] ===
+              formatted.short.epithet[0].toLowerCase();
+          const repairedEpithet = repairMalformedNaturalHybridEpithet(
+            formatted.short,
+          );
           return [
             {
               v: l.source,
               f: renderToString(
                 <div className={l.type}>
-                  <em>{formatted.genus}</em>{" "}
+                  <em>{formatted.short.genus}</em>{' '}
                   {isSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
-                </div>
+                </div>,
               ),
             },
             l.target,
-            "",
+            '',
           ];
         }),
       ];
@@ -81,34 +82,35 @@ export const AncestryViz = ({ grex }) => {
 
       // Create the chart.
       var chart = new google.visualization.OrgChart(
-        document.getElementById("chart_div")
+        document.getElementById('chart_div'),
       );
       // Draw the chart, setting the allowHtml option to true for the tooltips.
       chart.draw(data, { allowHtml: true });
-      google.visualization.events.addListener(chart, "select", (e) => {
-        const id = rows[chart.getSelection()[0].row][0].v.split("-")[0];
+      google.visualization.events.addListener(chart, 'select', (e) => {
+        const id = rows[chart.getSelection()[0].row][0].v.split('-')[0];
+        console.log(data);
 
-        router.push(`/grex/${id}`);
+        router.push(`/g/${id}`);
       });
     }
 
-    google.charts.load("current", { packages: ["orgchart"] });
+    google.charts.load('current', { packages: ['orgchart'] });
     google.charts.setOnLoadCallback(drawChart);
   }, [ancestry]);
 
-  if (typeof document !== "undefined") {
-    const el = document.querySelector(".chart-wrap");
+  if (typeof document !== 'undefined') {
+    const el = document.querySelector('.chart-wrap');
     if (el) el.scrollTo(1220 / 2 - window.innerWidth / 2, 0);
   }
 
   return (
     <>
       <Head>
-        <script src="//www.gstatic.com/charts/loader.js" />
+        <script src='//www.gstatic.com/charts/loader.js' />
       </Head>
 
-      <div className="ancestry-viz chart-wrap">
-        <div id="chart_div" />
+      <div className={`${style.ancestry} ancestry-viz chart-wrap`}>
+        <div id='chart_div' />
       </div>
     </>
   );

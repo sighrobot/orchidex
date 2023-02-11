@@ -1,6 +1,8 @@
-import { Name } from "components/name";
-import { Grex } from "lib/types";
-import { isSpecies } from "./pills";
+import { Name } from 'components/name/name';
+import { Grex } from 'lib/types';
+import { isSpecies } from 'components/pills/pills';
+
+import styles from './style.module.scss';
 
 type ParentageProps = {
   grex?: Grex;
@@ -26,7 +28,7 @@ export const Parentage = ({
     }
 
     return (
-      <span className="parentage">
+      <span className={styles.parentage}>
         {seed_parent_genus && seed_parent_epithet ? (
           <Name
             shouldAbbreviate={shouldAbbreviateParentage}
@@ -35,9 +37,9 @@ export const Parentage = ({
             grex={{ genus: seed_parent_genus, epithet: seed_parent_epithet }}
           />
         ) : (
-          "?"
-        )}{" "}
-        &times;{" "}
+          '?'
+        )}{' '}
+        &times;{' '}
         {pollen_parent_genus && pollen_parent_epithet ? (
           <Name
             shouldAbbreviate={shouldAbbreviateParentage}
@@ -49,7 +51,7 @@ export const Parentage = ({
             }}
           />
         ) : (
-          "?"
+          '?'
         )}
       </span>
     );

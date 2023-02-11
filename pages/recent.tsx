@@ -1,17 +1,15 @@
-import { groupBy, orderBy } from "lodash";
+import { groupBy, orderBy } from 'lodash';
 
-import { Container } from "components/container";
-import { useDate } from "lib/hooks/useDate";
-import { GrexCard } from "components/grex";
+import { Container } from 'components/container/container';
+import { useDate } from 'lib/hooks/useDate';
+import { GrexCard } from 'components/grex/grex';
 
 export default function Index() {
   const recent = useDate();
-  const grouped = groupBy(recent, "date_of_registration");
+  const grouped = groupBy(recent, 'date_of_registration');
 
   return (
-    <Container title="Recent | Orchidex">
-      <h2>Recently registered</h2>
-
+    <Container title='Recent - Orchidex' heading='Recently registered'>
       {orderBy(
         Object.keys(grouped)
           .filter((d) => !isNaN(new Date(d).getTime())) // Wu Wen-Hsian
@@ -19,10 +17,10 @@ export default function Index() {
             (d, _, arr) =>
               new Date(`${arr[0]}T00:00:00`).getTime() -
                 new Date(`${d}T00:00:00`).getTime() <=
-              7 * 24 * 60 * 60 * 1000
+              7 * 24 * 60 * 60 * 1000,
           ),
         (d) => d,
-        "desc"
+        'desc',
       ).map((d, idx) => {
         return (
           <section key={d}>
@@ -32,7 +30,7 @@ export default function Index() {
                 {grouped[d].length.toLocaleString()})
               </summary>
               <div>
-                {orderBy(grouped[d], ["genus", "epithet"]).map((r) => {
+                {orderBy(grouped[d], ['genus', 'epithet']).map((r) => {
                   return <GrexCard key={r.id} grex={r} hideDate />;
                 })}
               </div>

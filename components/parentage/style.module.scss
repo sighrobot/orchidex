@@ -1,0 +1,14 @@
+.parentage {
+  color: #3f454e;
+
+  a {
+    color: #3f454e;
+    font-weight: normal;
+    text-decoration: underline;
+    font-size: 16px;
+
+    &:hover {
+      color: black;
+    }
+  }
+}

@@ -1,0 +1,47 @@
+.header {
+  width: 150px;
+  flex-shrink: 0;
+  padding: 20px;
+
+  @media (max-width: 800px) {
+    width: 100%;
+  }
+
+  nav {
+    display: flex;
+    flex-direction: column;
+
+    h1 {
+      display: flex;
+      align-items: center;
+
+      img {
+        flex-shrink: 0;
+        width: 25px;
+        height: 25px;
+        margin-left: 5px;
+      }
+    }
+
+    a {
+      display: inline-block;
+    }
+
+    @media (max-width: 800px) {
+      flex-direction: row;
+
+      a:not(:first-child) {
+        margin-left: 10px;
+      }
+    }
+  }
+}
+
+.brand {
+  margin-bottom: 10px;
+  text-transform: uppercase;
+
+  @media (max-width: 800px) {
+    margin-bottom: 0;
+  }
+}

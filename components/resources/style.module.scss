@@ -1,0 +1,22 @@
+.resources {
+  display: flex;
+  padding-top: 15px;
+
+  a {
+    color: #97999a;
+    font-size: 14px;
+
+    &:after {
+      content: ' ⧉';
+    }
+
+    + a {
+      margin-left: 15px;
+    }
+
+    &:hover {
+      color: black;
+      text-decoration: underline;
+    }
+  }
+}

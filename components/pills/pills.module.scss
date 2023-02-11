@@ -1,0 +1,30 @@
+.pills {
+  margin-bottom: 5px;
+}
+
+.pill {
+  color: white;
+  font-size: 10px;
+  padding: 4px;
+  text-transform: uppercase;
+
+  &.hypothetical {
+    background: black;
+  }
+
+  &.intergeneric {
+    background: #785ef0;
+  }
+
+  &.primary {
+    background: #dc267f;
+  }
+
+  &.natural {
+    background: #fe6100;
+  }
+
+  &.species {
+    background: #ffb000;
+  }
+}

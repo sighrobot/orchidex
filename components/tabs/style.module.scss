@@ -1,0 +1,57 @@
+.tabs {
+  overflow: hidden;
+
+  nav {
+    background: linear-gradient(to right, #ddd, transparent);
+    border-top: 2px solid white;
+    border-bottom: 2px solid white;
+    display: flex;
+
+    button {
+      background: transparent;
+      border: none;
+      color: #333;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      height: 100%;
+      user-select: none;
+      transition: 100ms ease background;
+      text-transform: uppercase;
+      font-size: 12px;
+      font-weight: 500;
+
+      &:hover:not([disabled]) {
+        background: rgba(255, 255, 255, 0.5);
+      }
+
+      &[disabled] {
+        cursor: not-allowed;
+        opacity: 0.25;
+      }
+    }
+  }
+
+  .active {
+    color: black;
+    background: white !important;
+  }
+
+  .content {
+    padding: 0 20px;
+  }
+
+  .noPadding {
+    padding: 0;
+  }
+
+  .count {
+    background: white;
+    font-weight: bold;
+    min-width: 14px;
+    padding: 1px 2px;
+    font-size: 8px;
+    margin-left: 4px;
+  }
+}

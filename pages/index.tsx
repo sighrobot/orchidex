@@ -1,14 +1,14 @@
 import React from 'react';
 import Router, { useRouter } from 'next/router';
 import { orderBy } from 'lodash';
-
-import { Container } from 'components/container';
-import { GrexCard } from 'components/grex';
+import { Container } from 'components/container/container';
+import { GrexCard } from 'components/grex/grex';
 import { CROSS_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
 import { SearchParentage } from 'components/search/parentage';
 import { SearchGrex } from 'components/search/grex';
 import { APP_URL } from 'lib/constants';
+import { ButtonSimple } from 'components/button-simple/button-simple';
 
 export async function fetchSearch(params = []) {
   const fetched = await fetch(`${APP_URL}/api/search?${params.join('&')}`);
@@ -128,15 +128,11 @@ export default function Index({ initialState = {}, initialSimple = true }) {
   Orchidex`;
 
   return (
-    <Container title={title}>
+    <Container title={title} heading='Search'>
       <div style={{ display: 'flex', marginBottom: '5px', maxWidth: '400px' }}>
-        <button
-          className='simple'
-          type='button'
-          onClick={() => setSimple((s) => !s)}
-        >
+        <ButtonSimple onClick={() => setSimple((s) => !s)}>
           {!simple ? 'search by parentage' : 'search by grex'}
-        </button>
+        </ButtonSimple>
       </div>
 
       {simple ? (
