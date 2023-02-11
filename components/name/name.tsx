@@ -66,7 +66,7 @@ export const Name = ({
                 : undefined
             }
           >
-            <a>{content}</a>
+            {content}
           </Link>
         ) : (
           content

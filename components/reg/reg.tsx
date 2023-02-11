@@ -31,8 +31,11 @@ export const Reg = ({ grex, hideDate, hideLink }: RegProps) => {
           ) : (
             <>
               Registered{' '}
-              <Link href={`/date/${grex.date_of_registration}`}>
-                <a className='date'>{dateStr}</a>
+              <Link
+                href={`/date/${grex.date_of_registration}`}
+                className='date'
+              >
+                {dateStr}
               </Link>
             </>
           ))}
@@ -41,7 +44,7 @@ export const Reg = ({ grex, hideDate, hideLink }: RegProps) => {
           <span>{grex.registrant_name}</span>
         ) : (
           <Link href={`/registrant/${grex.registrant_name}`}>
-            <a>{grex.registrant_name}</a>
+            {grex.registrant_name}
           </Link>
         )}{' '}
         {grex.originator_name !== grex.registrant_name &&

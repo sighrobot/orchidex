@@ -204,10 +204,8 @@ export const Grex = ({ grex }) => {
                   <th>{k.replace(/_/g, ' ')}:</th>
                   <td>
                     {href ? (
-                      <Link href={href}>
-                        <a target={target} rel={rel}>
-                          {grex[k]}
-                        </a>
+                      <Link href={href} target={target} rel={rel}>
+                        {grex[k]}
                       </Link>
                     ) : (
                       grex[k]

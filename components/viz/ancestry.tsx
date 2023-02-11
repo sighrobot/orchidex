@@ -1,7 +1,7 @@
 import { renderToString } from 'react-dom/server';
 import React from 'react';
 import { useAncestry } from 'lib/hooks/useAncestry';
-import Head from 'next/head';
+import Head from 'next/head'; // using next/script doesn't work ?
 import { useRouter } from 'next/router';
 import { find, get, sortBy } from 'lodash';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
@@ -13,7 +13,7 @@ export const AncestryViz = ({ grex }) => {
   const ancestry = useAncestry(grex, 2);
 
   React.useEffect(() => {
-    const google = get(global, 'google');
+    const google = get(global, 'google') as any;
 
     if (!google) {
       return;
