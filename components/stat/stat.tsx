@@ -45,8 +45,10 @@ export const StatContent = ({
         <em>Unfortunately, there was an error generating this statistic.</em>
       );
     }
-    case 'seed_parent_source':
-    case 'pollen_parent_source': {
+    case 'seed_parent_registrants':
+    case 'pollen_parent_registrants':
+    case 'seed_parent_originators':
+    case 'pollen_parent_originators': {
       const sum = data.reduce((acc, { c }) => acc + c, 0);
       return data.length > 0 ? (
         <List
@@ -69,7 +71,7 @@ export const StatContent = ({
           }
           getCount={(d) => d.score}
           renderCount={(score) => `${Math.round((score / sum) * 100)} %`}
-          limit={10}
+          limit={5}
         />
       ) : (
         <em>

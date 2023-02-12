@@ -7,7 +7,7 @@ type TabsConfig = {
   label: string;
   count?: number;
   disabled?: boolean;
-  component: React.ReactNode;
+  component: React.FunctionComponent;
 };
 
 type TabsProps = {
@@ -59,7 +59,7 @@ export const Tabs = ({
         })}
       </nav>
       <div className={cn(style.content, { [style.noPadding]: !padding })}>
-        {config[tab]?.component}
+        {config[tab]?.component({})}
       </div>
     </div>
   );

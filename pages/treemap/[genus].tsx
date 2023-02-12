@@ -147,8 +147,8 @@ const Treemap = () => {
         padding={false}
         onClick={handleParent}
         config={[
-          { label: 'Seed Parent', component: map },
-          { label: 'Pollen Parent', component: map },
+          { label: 'Seed Parent', component: () => map },
+          { label: 'Pollen Parent', component: () => map },
         ]}
       />
     </Container>

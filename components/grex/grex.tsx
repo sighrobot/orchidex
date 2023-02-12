@@ -15,6 +15,7 @@ type GrexProps = {
   hideLink?: boolean;
   heading?: boolean;
   onClick?: (grex: Grex) => void;
+  activeRegId?: string;
 };
 
 export const GrexCard = ({
@@ -25,6 +26,7 @@ export const GrexCard = ({
   hideLink,
   heading = false,
   onClick,
+  activeRegId,
 }: GrexProps) => {
   const shouldRenderAsButton = asButton && !!onClick;
   const Component: keyof JSX.IntrinsicElements = shouldRenderAsButton
@@ -44,7 +46,12 @@ export const GrexCard = ({
       <Name as='h2' link={!shouldRenderAsButton && !hideLink} grex={grex} />
       <Parentage hideLink={shouldRenderAsButton} grex={grex} />
       {!hideReg && (
-        <Reg grex={grex} hideLink={shouldRenderAsButton} hideDate={hideDate} />
+        <Reg
+          activeId={activeRegId}
+          grex={grex}
+          hideLink={shouldRenderAsButton}
+          hideDate={hideDate}
+        />
       )}
     </Component>
   );

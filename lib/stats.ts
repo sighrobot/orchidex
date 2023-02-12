@@ -27,7 +27,7 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
         WHERE genus = '${grex.genus}'
         AND registrant_name = "${grex.registrant_name}"
       `;
-    case 'seed_parent_source':
+    case 'seed_parent_registrants':
       return `SELECT 
       rhs1.registrant_name AS r1, 
       rhs2.registrant_name AS r2, 
@@ -39,11 +39,11 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
         AND rhs1.seed_parent_epithet = rhs2.epithet 
         AND rhs2.registrant_name != ''
         AND rhs2.registrant_name not like 'This is a natural hybrid%'
-    WHERE rhs1.registrant_name = "${grex.registrant_name}"
+    WHERE rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
     GROUP BY 
-      rhs1.registrant_name, rhs2.registrant_name order by c desc;
+      rhs1.registrant_name, rhs2.registrant_name order by c desc LIMIT 5;
     `;
-    case 'pollen_parent_source':
+    case 'pollen_parent_registrants':
       return `SELECT 
         rhs1.registrant_name AS r1, 
         rhs2.registrant_name AS r2, 
@@ -55,10 +55,42 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
           AND rhs1.pollen_parent_epithet = rhs2.epithet 
           AND rhs2.registrant_name != ''
           AND rhs2.registrant_name not like 'This is a natural hybrid%'
-      WHERE rhs1.registrant_name = "${grex.registrant_name}"
+      WHERE rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
       GROUP BY 
-        rhs1.registrant_name, rhs2.registrant_name order by c desc;
+        rhs1.registrant_name, rhs2.registrant_name order by c desc LIMIT 5;
       `;
+    case 'seed_parent_originators':
+      return `SELECT 
+        rhs1.registrant_name AS r1, 
+        rhs2.originator_name AS r2, 
+        COUNT(*) AS c
+      FROM 
+        rhs rhs1
+        JOIN rhs rhs2 
+          ON rhs1.seed_parent_genus = rhs2.genus 
+          AND rhs1.seed_parent_epithet = rhs2.epithet 
+          AND rhs2.originator_name != ''
+          AND rhs2.originator_name not like 'This is a natural hybrid%'
+      WHERE rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
+      GROUP BY 
+        rhs1.registrant_name, rhs2.originator_name order by c desc LIMIT 5;
+      `;
+    case 'pollen_parent_originators':
+      return `SELECT 
+          rhs1.registrant_name AS r1, 
+          rhs2.originator_name AS r2, 
+          COUNT(*) AS c
+        FROM 
+          rhs rhs1
+          JOIN rhs rhs2 
+            ON rhs1.pollen_parent_genus = rhs2.genus 
+            AND rhs1.pollen_parent_epithet = rhs2.epithet 
+            AND rhs2.originator_name != ''
+            AND rhs2.originator_name not like 'This is a natural hybrid%'
+        WHERE rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
+        GROUP BY 
+          rhs1.registrant_name, rhs2.originator_name order by c desc LIMIT 5;
+        `;
     case 'year_genus_pct':
       return `SELECT
         (CAST(count(*) AS FLOAT) / (SELECT count(*) FROM rhs WHERE substr(date_of_registration, 0, 5) = '${grex.date_of_registration.slice(
@@ -82,10 +114,14 @@ export const getStatTitle = ({ stat }: { stat: Stat }) => {
   switch (stat) {
     case 'registrant_genus_pct':
       return 'Genus by Registrant';
-    case 'seed_parent_source':
+    case 'seed_parent_registrants':
       return 'Top Seed Parent Registrants';
-    case 'pollen_parent_source':
+    case 'pollen_parent_registrants':
       return 'Top Pollen Parent Registrants';
+    case 'seed_parent_originators':
+      return 'Top Seed Parent Originators';
+    case 'pollen_parent_originators':
+      return 'Top Pollen Parent Originators';
     case 'year_genus_pct':
       return 'Genus By Year';
     default:

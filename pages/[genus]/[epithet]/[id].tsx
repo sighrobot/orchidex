@@ -119,7 +119,7 @@ export const Grex = ({ grex }) => {
             {
               label: 'Ancestry',
               disabled: isGrexSpecies,
-              component: (
+              component: () => (
                 <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                   <AncestryViz grex={grex} />
                 </div>
@@ -128,7 +128,7 @@ export const Grex = ({ grex }) => {
             {
               label: `Progeny`,
               count: progeny.length,
-              component: (
+              component: () => (
                 <>
                   {orderBy(
                     progeny.filter((d) => d.synonym_flag.includes('not')),

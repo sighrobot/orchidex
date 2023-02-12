@@ -4,12 +4,13 @@ import Link from 'next/link';
 import styles from './style.module.scss';
 
 type RegProps = {
+  activeId?: string;
   grex?: Grex;
   hideDate: boolean;
   hideLink?: boolean;
 };
 
-export const Reg = ({ grex, hideDate, hideLink }: RegProps) => {
+export const Reg = ({ grex, activeId, hideDate, hideLink }: RegProps) => {
   if (grex) {
     if (
       !grex.date_of_registration ||
@@ -42,15 +43,28 @@ export const Reg = ({ grex, hideDate, hideLink }: RegProps) => {
         {hideDate ? 'Registered by ' : ' by '}
         {hideLink ? (
           <span>{grex.registrant_name}</span>
-        ) : (
+        ) : !activeId || activeId !== grex.registrant_name ? (
           <Link
             href={`/registrant/${encodeURIComponent(grex.registrant_name)}`}
           >
             {grex.registrant_name}
           </Link>
+        ) : (
+          grex.registrant_name
         )}{' '}
+        {grex.originator_name !== grex.registrant_name && '('}
         {grex.originator_name !== grex.registrant_name &&
-          `(${grex.originator_name})`}
+          (activeId !== grex.originator_name ? (
+            <Link
+              className='originator'
+              href={`/registrant/${encodeURIComponent(grex.originator_name)}`}
+            >
+              {grex.originator_name}
+            </Link>
+          ) : (
+            grex.originator_name
+          ))}
+        {grex.originator_name !== grex.registrant_name && ')'}
       </span>
     );
   }
