@@ -16,7 +16,7 @@
   border: 2px solid white;
   background: linear-gradient(
     to bottom left,
-    rgba(218, 112, 214, 0.125),
+    /* rgba(218, 112, 214, 0.125),*/ rgba(255, 255, 0, 0.1),
     transparent
   );
   align-self: flex-start;
@@ -29,6 +29,12 @@
 .speciesAncestry {
   * {
     font-size: 12px;
+  }
+
+  padding: 0;
+
+  li {
+    padding: 2.5px 0;
   }
 }
 

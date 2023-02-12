@@ -8,6 +8,7 @@ import style from './list.module.scss';
 const type = 'text/plain';
 
 type ListProps = {
+  activeId?: string;
   className?: string;
   data: any;
   getCount: any;
@@ -22,6 +23,7 @@ type ListProps = {
 };
 
 const List = ({
+  activeId,
   className,
   data,
   getCount,
@@ -84,8 +86,14 @@ const List = ({
       {title && <h3>{title}</h3>}
       <ul>
         {sorted.slice(0, limit).map((k) => {
+          console.log({ k, activeId });
           return (
-            <li key={k.grex.id}>
+            <li
+              key={k.grex.id}
+              className={
+                activeId && k.id === activeId ? style.active : undefined
+              }
+            >
               <div>{renderField(k)}</div>
               <div>{renderCount(getCount ? getCount(k) : counts[k])}</div>
               {showBars && (

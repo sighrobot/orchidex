@@ -16,12 +16,14 @@ import React from 'react';
 const thisYear = new Date().getFullYear();
 
 export const Registrant = () => {
-  const [genus, setGenus] = React.useState('');
+  const [genus, setGenus] = React.useState('All genera');
   const router = useRouter();
   const { d = '' } = router.query;
 
   const rawData = useRegistrant({ name: d });
-  const onDate = rawData.filter((g) => !genus || g.genus === genus);
+  const onDate = rawData.filter(
+    (g) => genus === 'All genera' || g.genus === genus,
+  );
   const statMap = { intergeneric: 0, primary: 0, genera: new Set() };
 
   rawData.forEach((g) => {
@@ -40,8 +42,7 @@ export const Registrant = () => {
 
   const groupedRaw = groupBy(rawData, 'genus');
 
-  const handleFilterGenus = (genus) =>
-    setGenus((g) => (g === genus ? '' : genus));
+  const handleFilterGenus = (genus) => setGenus(genus);
 
   return (
     <Container title={`${d} | Orchidex`}>
@@ -58,11 +59,21 @@ export const Registrant = () => {
 
       <section className={style.columns}>
         <List
+          activeId={genus}
           className={style.genusFacet}
-          data={Object.keys(groupedRaw).map((genus) => ({
-            score: groupedRaw[genus].length,
-            grex: groupedRaw[genus][0],
-          }))}
+          data={Object.keys(groupedRaw)
+            .map((genus) => ({
+              score: groupedRaw[genus].length,
+              grex: groupedRaw[genus][0],
+              id: genus,
+            }))
+            .concat([
+              {
+                score: rawData.length,
+                grex: { genus: 'All genera', epithet: '' },
+                id: 'All genera',
+              },
+            ])}
           renderField={({ grex: g = {} }) => (
             <ButtonSimple
               onClick={() => handleFilterGenus(g.genus)}
@@ -73,17 +84,9 @@ export const Registrant = () => {
                 width: '100%',
                 textAlign: 'left',
                 textDecoration: 'none',
-                opacity: 1,
-                background: g.genus === genus ? 'white' : undefined,
               }}
             >
-              {g.genus === genus ? (
-                <strong style={{ color: 'black' }}>
-                  <em>{g.genus}</em>
-                </strong>
-              ) : (
-                <em style={{ color: 'gray' }}>{g.genus}</em>
-              )}
+              {g.genus === 'All genera' ? g.genus : <em>{g.genus}</em>}
             </ButtonSimple>
           )}
           getCount={(d) => d.score}

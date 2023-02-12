@@ -1,7 +1,7 @@
 import { renderToString } from 'react-dom/server';
 import React from 'react';
 import { useAncestry } from 'lib/hooks/useAncestry';
-import Head from 'next/head'; // using next/script doesn't work ?
+import Script from 'next/script';
 import { useRouter } from 'next/router';
 import { find, get, sortBy } from 'lodash';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
@@ -104,14 +104,9 @@ export const AncestryViz = ({ grex }) => {
   }
 
   return (
-    <>
-      <Head>
-        <script src='//www.gstatic.com/charts/loader.js' />
-      </Head>
-
-      <div className={`${style.ancestry} ancestry-viz chart-wrap`}>
-        <div id='chart_div' />
-      </div>
-    </>
+    <div className={`${style.ancestry} ancestry-viz chart-wrap`}>
+      <Script src='//www.gstatic.com/charts/loader.js' />
+      <div id='chart_div' />
+    </div>
   );
 };

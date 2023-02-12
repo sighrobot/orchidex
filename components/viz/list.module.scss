@@ -1,5 +1,6 @@
 .vizList {
   max-width: 400px;
+  padding: 15px 0;
 
   ul {
     padding: 0;
@@ -8,10 +9,7 @@
   li {
     display: flex;
     align-items: center;
-
-    & + li {
-      margin-top: 5px;
-    }
+    padding: 2.5px 20px;
   }
 
   div:first-child {
@@ -29,8 +27,7 @@
   }
 
   meter {
-    padding-left: 10px;
-    margin-left: auto;
+    margin-left: 10px;
     flex-shrink: 0;
     width: 30px;
   }
@@ -38,4 +35,13 @@
 
 .ancestry {
   padding: 40px 0;
+}
+
+.active {
+  background: white;
+
+  * {
+    color: black !important;
+    font-weight: 500;
+  }
 }
