@@ -83,9 +83,9 @@ export const getStatTitle = ({ stat }: { stat: Stat }) => {
     case 'registrant_genus_pct':
       return 'Genus by Registrant';
     case 'seed_parent_source':
-      return 'Seed Parent Registrants';
+      return 'Top Seed Parent Registrants';
     case 'pollen_parent_source':
-      return 'Pollen Parent Registrants';
+      return 'Top Pollen Parent Registrants';
     case 'year_genus_pct':
       return 'Genus By Year';
     default:
