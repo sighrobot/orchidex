@@ -1,4 +1,4 @@
-import { orderBy, groupBy, sortBy } from 'lodash';
+import { orderBy, groupBy } from 'lodash';
 
 import { Container } from 'components/container/container';
 
@@ -12,13 +12,15 @@ import { isIntergeneric, isPrimary } from 'components/pills/pills';
 import List from 'components/viz/list';
 import { ButtonSimple } from 'components/button-simple/button-simple';
 import React from 'react';
+import { StatCard } from 'components/stat/stat';
+import { Grex } from 'lib/types';
 
 const thisYear = new Date().getFullYear();
 
 export const Registrant = () => {
   const [genus, setGenus] = React.useState('All genera');
   const router = useRouter();
-  const { d = '' } = router.query;
+  const d = (router.query.d as string) ?? '';
 
   const rawData = useRegistrant({ name: d });
   const onDate = rawData.filter(
@@ -56,6 +58,12 @@ export const Registrant = () => {
           </span>
         </div>
       </Hero>
+
+      {/* <iframe
+        width='100%'
+        height={600}
+        src='https://docs.google.com/spreadsheets/d/e/2PACX-1vTNGfNtIPlFd3a4ru62XJAKBYPEb9CbvAP4CQ_XUHwcdekeWQPqp8xa-Lgk13nIAsD7GvwUs01f0hQt/pubhtml?gid=1958250303&amp;single=true&amp;widget=false&amp;chrome=false&amp;headers=false'
+      ></iframe> */}
 
       <section className={style.columns}>
         <List
@@ -102,7 +110,18 @@ export const Registrant = () => {
           )}
         </section>
 
-        <aside></aside>
+        <aside className={style.sidebar}>
+          <StatCard
+            activeId={d}
+            stat='seed_parent_source'
+            grex={{ registrant_name: d } as Grex}
+          />
+          <StatCard
+            activeId={d}
+            stat='pollen_parent_source'
+            grex={{ registrant_name: d } as Grex}
+          />
+        </aside>
       </section>
     </Container>
   );

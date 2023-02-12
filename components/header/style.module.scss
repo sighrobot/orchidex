@@ -3,7 +3,7 @@
   flex-shrink: 0;
   padding: 20px;
 
-  @media (max-width: 800px) {
+  @media (max-width: 1000px) {
     width: 100%;
   }
 
@@ -27,7 +27,7 @@
       display: inline-block;
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 1000px) {
       flex-direction: row;
 
       a:not(:first-child) {
@@ -41,7 +41,7 @@
   margin-bottom: 10px;
   text-transform: uppercase;
 
-  @media (max-width: 800px) {
+  @media (max-width: 1000px) {
     margin-bottom: 0;
   }
 }

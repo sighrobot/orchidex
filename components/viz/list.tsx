@@ -86,7 +86,6 @@ const List = ({
       {title && <h3>{title}</h3>}
       <ul>
         {sorted.slice(0, limit).map((k) => {
-          console.log({ k, activeId });
           return (
             <li
               key={k.grex.id}

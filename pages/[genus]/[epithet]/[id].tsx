@@ -147,9 +147,11 @@ export const Grex = ({ grex }) => {
           <aside className={style.sidebar}>
             <StatCard stat='registrant_genus_pct' grex={grex} />
             <StatCard stat='year_genus_pct' grex={grex} />
-            <StatBox heading='Species Ancestry'>
-              <SpeciesAncestry grex={grex} />
-            </StatBox>
+            {grex.genus && grex.epithet && (
+              <StatBox heading='Species Ancestry'>
+                <SpeciesAncestry grex={grex} />
+              </StatBox>
+            )}
           </aside>
         )}
       </div>

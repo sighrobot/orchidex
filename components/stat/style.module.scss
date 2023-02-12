@@ -6,7 +6,7 @@
 .stat {
   border-bottom: 2px solid white;
 
-  meter {
+  > meter {
     margin-top: 10px;
     width: 100%;
   }
@@ -17,4 +17,38 @@
   text-transform: uppercase;
   font-weight: 500;
   margin-bottom: 10px;
+}
+
+.statList {
+  max-width: 400px;
+  padding: 0;
+
+  ul {
+    padding: 0;
+  }
+
+  li {
+    padding: 2.5px 0;
+    * {
+      font-size: 14px !important;
+    }
+  }
+
+  div:first-child {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    padding-right: 10px;
+    flex-grow: 1;
+  }
+
+  meter {
+    margin-left: 10px;
+    flex-shrink: 0;
+    width: 30px;
+  }
+
+  a {
+    text-decoration: underline;
+  }
 }

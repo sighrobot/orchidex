@@ -6,7 +6,7 @@ export const useStat = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    if (stat && grex) {
+    if (stat && grex && grex.registrant_name) {
       setLoading(true);
       (async () => {
         const fetched = await fetch('/api/stat', {
@@ -18,7 +18,7 @@ export const useStat = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
         setLoading(false);
       })();
     }
-  }, [stat, grex.epithet]);
+  }, [stat, JSON.stringify(grex)]);
 
   return { data, loading };
 };

@@ -3,6 +3,8 @@ import { getStatText, getStatTitle } from 'lib/stats';
 import { Grex, Stat } from 'lib/types';
 import style from './style.module.scss';
 import cn from 'classnames';
+import List from 'components/viz/list';
+import Link from 'next/link';
 
 export const StatBox = ({ className = '', children, heading }) => (
   <div className={cn(style.box, className)}>
@@ -20,19 +22,84 @@ export const StatPercentage = ({ description, value }) => {
   );
 };
 
-export const StatCard = ({ grex, stat }: { grex: Grex; stat: Stat }) => {
-  const { data, loading } = useStat({ stat, grex });
-  const s = getStatText({ stat, grex, value: data?.[0]?.pct });
-  const t = getStatTitle({ stat });
+export const StatContent = ({
+  stat,
+  grex,
+  data,
+  activeId,
+}: {
+  stat: Stat;
+  grex: Grex;
+  data: any;
+  activeId: string;
+}) => {
+  switch (stat) {
+    case 'registrant_genus_pct':
+    case 'year_genus_pct': {
+      const value = data?.[0]?.pct;
+      const s = getStatText({ stat, grex, value });
 
-  const isValid = !loading && data?.[0]?.pct !== undefined;
+      return value !== undefined ? (
+        <StatPercentage description={s} value={value} />
+      ) : (
+        <em>Unfortunately, there was an error generating this statistic.</em>
+      );
+    }
+    case 'seed_parent_source':
+    case 'pollen_parent_source': {
+      const sum = data.reduce((acc, { c }) => acc + c, 0);
+      return data.length > 0 ? (
+        <List
+          className={style.statList}
+          data={data.map((d) => ({
+            score: d.c,
+            grex: { genus: '', epithet: '', registrant_name: d.r2 },
+            id: d.r2,
+          }))}
+          renderField={({ grex: g = {} }) =>
+            activeId && activeId === g.registrant_name ? (
+              <strong>{g.registrant_name}</strong>
+            ) : (
+              <Link
+                href={`/registrant/${encodeURIComponent(g.registrant_name)}`}
+              >
+                {g.registrant_name}
+              </Link>
+            )
+          }
+          getCount={(d) => d.score}
+          renderCount={(score) => `${Math.round((score / sum) * 100)} %`}
+          limit={10}
+        />
+      ) : (
+        <em>
+          The {stat.split('_')[0]} parents of hybrids registered by {activeId}{' '}
+          have no recorded registrants.
+        </em>
+      );
+    }
+    default:
+      return null;
+  }
+};
+
+export const StatCard = ({
+  grex,
+  stat,
+  activeId,
+}: {
+  grex: Grex;
+  stat: Stat;
+  activeId?: string;
+}) => {
+  const { data, loading } = useStat({ stat, grex });
+  const t = getStatTitle({ stat });
 
   return (
     <StatBox className={style.stat} heading={t}>
       {loading && 'Loading...'}
-      {isValid && <StatPercentage description={s} value={data?.[0]?.pct} />}
-      {!loading && !isValid && (
-        <em>Unfortunately, there was an error generating this statistic.</em>
+      {!loading && (
+        <StatContent activeId={activeId} stat={stat} grex={grex} data={data} />
       )}
     </StatBox>
   );

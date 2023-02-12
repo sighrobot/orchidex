@@ -7,7 +7,7 @@
 .columns {
   display: flex;
 
-  @media (max-width: 600px) {
+  @media (max-width: 850px) {
     flex-direction: column;
   }
 }
@@ -15,6 +15,7 @@
 .genusFacet {
   flex-shrink: 0;
   width: 240px;
+  max-width: unset !important;
 
   border-bottom: 2px solid white;
   background: linear-gradient(
@@ -30,10 +31,10 @@
   overflow-y: auto;
 
   * {
-    font-size: 16px !important;
+    font-size: 14px !important;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 850px) {
     max-height: 160px;
     width: 100%;
     max-width: unset;
@@ -43,4 +44,22 @@
 .list {
   padding: 0 20px;
   flex-grow: 1;
+}
+
+.sidebar {
+  flex-shrink: 0;
+  width: 260px;
+  border-left: 2px solid white;
+  border-right: 2px solid white;
+
+  background: linear-gradient(
+    to bottom left,
+    /* rgba(218, 112, 214, 0.125),*/ rgba(255, 255, 0, 0.1),
+    transparent
+  );
+  align-self: flex-start;
+
+  @media (max-width: 850px) {
+    width: 100%;
+  }
 }

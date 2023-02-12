@@ -43,7 +43,7 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
     GROUP BY 
       rhs1.registrant_name, rhs2.registrant_name order by c desc;
     `;
-    case 'pollen_parent_progeny':
+    case 'pollen_parent_source':
       return `SELECT 
         rhs1.registrant_name AS r1, 
         rhs2.registrant_name AS r2, 
@@ -83,9 +83,9 @@ export const getStatTitle = ({ stat }: { stat: Stat }) => {
     case 'registrant_genus_pct':
       return 'Genus by Registrant';
     case 'seed_parent_source':
-      return 'Seed Parent Progeny';
-    case 'pollen_parent_progeny':
-      return 'Pollen Parent Progeny';
+      return 'Seed Parent Registrants';
+    case 'pollen_parent_source':
+      return 'Pollen Parent Registrants';
     case 'year_genus_pct':
       return 'Genus By Year';
     default:
@@ -129,9 +129,6 @@ export const getStatText = ({
       segments[0] = capitalize(segments[0]);
 
       return segments.join(' ');
-    }
-    case 'seed_parent_source': {
-      return '';
     }
     default:
       return '';
