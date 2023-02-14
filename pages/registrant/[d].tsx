@@ -43,23 +43,22 @@ export const Registrant = () => {
 
   return (
     <Container title={`${d} | Orchidex`}>
-      <Hero subheading='Entity' heading={d}>
-        <div className={style.quickStats}>
-          Since{' '}
-          <strong>{rawData.at(-1)?.date_of_registration.slice(0, 4)}</strong>
-        </div>
+      <Hero heading={d}>
         <div className={style.quickStats}>
           <span>
             <strong>{rawData.length.toLocaleString()}</strong>{' '}
-            {rawData.length === 1 ? 'hybrid' : 'hybrids'} in{' '}
+            {rawData.length === 1 ? 'record' : 'records'} across{' '}
             <strong>{statMap.genera.size}</strong>{' '}
             {statMap.genera.size === 1 ? 'genus' : 'genera'}
           </span>
         </div>
+        <div className={style.quickStats}>
+          First recorded in{' '}
+          <strong>{rawData.at(-1)?.date_of_registration.slice(0, 4)}</strong>
+        </div>
       </Hero>
 
       <Tabs
-        identifier={d}
         config={[
           {
             label: 'Registrant',

@@ -12,23 +12,17 @@ type TabsConfig = {
 
 type TabsProps = {
   config: TabsConfig[];
-  identifier?: string;
   onClick?: (c: TabsConfig) => void;
   padding?: boolean;
 };
 
-export const Tabs = ({
-  config = [],
-  identifier,
-  onClick,
-  padding,
-}: TabsProps) => {
+export const Tabs = ({ config = [], onClick, padding }: TabsProps) => {
   const [tab, setTab] = React.useState<number>(0);
 
   React.useEffect(() => {
     const disabledIdx = findIndex(config, (c) => !c.disabled);
     setTab(disabledIdx === -1 ? 0 : disabledIdx);
-  }, [config, identifier]);
+  }, [JSON.stringify(config)]);
 
   const handleClick = (e) => {
     const idx = findIndex(config, { label: e.target.name });

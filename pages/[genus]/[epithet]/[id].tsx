@@ -134,7 +134,6 @@ export const Grex = ({ grex }) => {
       <div className={style.content}>
         <Tabs
           padding
-          identifier={grex.id}
           config={[
             {
               label: 'Ancestry',

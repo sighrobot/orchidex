@@ -79,7 +79,10 @@ export const Container = ({
           The International Orchid Register
         </Link>{' '}
         &copy; The Royal Horticultural Society. Data from the{' '}
-        <Link href='https://doi.org/10.34885/nswv-8994' target='_blank'>
+        <Link
+          href='https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:30000046-2'
+          target='_blank'
+        >
           WCVP
         </Link>{' '}
         &copy; Royal Botanic Gardens, Kew.
