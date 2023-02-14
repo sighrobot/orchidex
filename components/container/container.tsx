@@ -71,14 +71,14 @@ export const Container = ({
         >
           17 U.S.C. § 107
         </Link>
-        . Data from the{' '}
+        . Data from{' '}
         <Link
           href='https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchidregister.asp'
           target='_blank'
         >
           The International Orchid Register
         </Link>{' '}
-        &copy; The Royal Horticultural Society. Data from the{' '}
+        &copy; The Royal Horticultural Society. Data from{' '}
         <Link
           href='https://powo.science.kew.org/taxon/urn:lsid:ipni.org:names:30000046-2'
           target='_blank'
