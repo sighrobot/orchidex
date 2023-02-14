@@ -12,9 +12,10 @@ const SHARED_PROPS = {
 
 type ResourcesProps = {
   grex: Grex;
+  blueNantaSpeciesId?: string;
 };
 
-export const Resources = ({ grex }: ResourcesProps) => {
+export const Resources = ({ grex, blueNantaSpeciesId }: ResourcesProps) => {
   const idNumber = parseInt(grex.id, 10);
   const orchidRootsIdNumber = ORCHID_ROOTS_BASE_ID + idNumber;
 
@@ -29,15 +30,9 @@ export const Resources = ({ grex }: ResourcesProps) => {
 
       <a
         {...SHARED_PROPS}
-        href={
-          isSpecies(grex)
-            ? `https://bluenanta.com/search/search_orchid/?role=pub&family=Orchidaceae&spc_string=${encodeURIComponent(
-                formatName(grex).long.full,
-              )}`
-            : `https://bluenanta.com/display/information/${String(
-                orchidRootsIdNumber,
-              )}/?family=Orchidaceae`
-        }
+        href={`https://bluenanta.com/display/information/${
+          blueNantaSpeciesId ?? String(orchidRootsIdNumber)
+        }/?family=Orchidaceae`}
       >
         BlueNanta
       </a>

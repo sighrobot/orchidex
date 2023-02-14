@@ -1,11 +1,10 @@
 import React from 'react';
-import { kebabCase, orderBy } from 'lodash';
+import { capitalize, kebabCase, orderBy } from 'lodash';
 
 import { Container, Padded } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
 import { fetchGrex } from 'lib/hooks/useGrex';
 import { useProgeny } from 'lib/hooks/useProgeny';
-import { useDate } from 'lib/hooks/useDate';
 import Link from 'next/link';
 import { Resources } from 'components/resources/resources';
 import { description, formatName } from 'lib/string';
@@ -19,6 +18,8 @@ import { isNaturalHybrid, isSpecies } from 'components/pills/pills';
 import { StatBox, StatCard } from 'components/stat/stat';
 import style from './style.module.scss';
 import { ButtonSimple } from 'components/button-simple/button-simple';
+
+import { useWcvp } from 'lib/hooks/useWcvp';
 
 export async function getServerSideProps(context) {
   const { id, g, e } = context.query;
@@ -76,13 +77,13 @@ export const SpeciesAncestry = ({ grex }) => {
 
 export const Grex = ({ grex }) => {
   const router = useRouter();
-  const onDate = useDate({ d: grex?.date_of_registration });
   const progeny = useProgeny(grex);
   const name = formatName(grex);
-
-  const byRegistrant = onDate.filter(
-    (f) => f.id !== grex.id && f.registrant_name === grex?.registrant_name,
-  );
+  const { data: wcvp = [] } = useWcvp(grex);
+  const wcvpSpecies =
+    wcvp.length === 1
+      ? wcvp[0]
+      : wcvp.filter((w) => w.taxon_rank === 'Species')[0];
 
   if (!grex) {
     return <Container>loading&hellip;</Container>;
@@ -108,7 +109,26 @@ export const Grex = ({ grex }) => {
     >
       <Padded style={{ background: 'white' }}>
         <GrexCard heading grex={grex} hideLink />
-        <Resources grex={grex} />
+        {wcvpSpecies && (
+          <div style={{ color: 'gray', marginTop: '5px' }}>
+            {[
+              capitalize(wcvpSpecies.lifeform_description),
+              wcvpSpecies.climate_description,
+              wcvpSpecies.geographic_area,
+            ]
+              .filter((s) => s)
+              .join('; ')}
+          </div>
+        )}
+        {wcvpSpecies && (
+          <div style={{ color: 'gray', marginTop: '2.5px' }}>
+            {wcvpSpecies.primary_author} {wcvpSpecies.first_published}
+          </div>
+        )}
+        <Resources
+          grex={grex}
+          blueNantaSpeciesId={wcvpSpecies?.plant_name_id}
+        />
       </Padded>
 
       <div className={style.content}>

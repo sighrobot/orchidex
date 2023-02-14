@@ -1,7 +1,6 @@
 import { Header } from 'components/header/header';
 import Head from 'next/head';
 import Link from 'next/link';
-import { Footer } from '../footer/footer';
 
 import style from './style.module.scss';
 
@@ -64,7 +63,8 @@ export const Container = ({
       </div>
 
       <footer className={style.footer}>
-        Orchidex makes fair use of data for nonprofit educational purposes under{' '}
+        This site makes fair use of data for nonprofit educational purposes
+        under{' '}
         <Link
           href='https://www.law.cornell.edu/uscode/text/17/107'
           target='_blank'
@@ -78,7 +78,11 @@ export const Container = ({
         >
           The International Orchid Register
         </Link>{' '}
-        &copy; The Royal Horticultural Society.
+        &copy; The Royal Horticultural Society. Data from the{' '}
+        <Link href='https://doi.org/10.34885/nswv-8994' target='_blank'>
+          WCVP
+        </Link>{' '}
+        &copy; Royal Botanic Gardens, Kew.
       </footer>
     </div>
   );
