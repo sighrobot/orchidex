@@ -10,7 +10,7 @@ import style from './list.module.scss';
 
 export const AncestryViz = ({ grex }) => {
   const router = useRouter();
-  const ancestry = useAncestry(grex, 2);
+  const ancestry = useAncestry(grex, 4);
 
   React.useEffect(() => {
     const google = get(global, 'google') as any;
@@ -88,7 +88,6 @@ export const AncestryViz = ({ grex }) => {
       chart.draw(data, { allowHtml: true });
       google.visualization.events.addListener(chart, 'select', (e) => {
         const id = rows[chart.getSelection()[0].row][0].v.split('-')[0];
-        console.log(data);
 
         router.push(`/g/${id}`);
       });

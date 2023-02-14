@@ -8,6 +8,7 @@ type TabsConfig = {
   count?: number;
   disabled?: boolean;
   component: React.FunctionComponent;
+  disablePadding?: boolean;
 };
 
 type TabsProps = {
@@ -52,7 +53,11 @@ export const Tabs = ({ config = [], onClick, padding }: TabsProps) => {
           );
         })}
       </nav>
-      <div className={cn(style.content, { [style.noPadding]: !padding })}>
+      <div
+        className={cn(style.content, {
+          [style.noPadding]: !padding || config[tab]?.disablePadding,
+        })}
+      >
         {config[tab]?.component({})}
       </div>
     </div>

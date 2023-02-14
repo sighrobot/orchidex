@@ -64,7 +64,8 @@ a:hover {
 .root {
   color: white;
   padding: 5px !important;
-  min-width: 100px;
+  min-height: 60px;
+  min-width: 70px;
 }
 
 .root {
@@ -83,16 +84,16 @@ a:hover {
   border-color: rgba(0, 0, 0, 0.5) !important;
 }
 
-.chart-wrap {
-  overflow-x: auto;
-  width: 1200px;
+#chart_div {
+  min-width: 800px;
 }
 
-@media (max-width: 500px) {
-  .seed,
-  .pollen,
-  .root {
-    font-size: 12px;
-    min-width: unset;
+.chart-wrap {
+  overflow-x: auto;
+}
+
+@media (max-width: 800px) {
+  #chart_div {
+    min-width: 800px;
   }
 }

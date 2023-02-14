@@ -138,11 +138,8 @@ export const Grex = ({ grex }) => {
             {
               label: 'Ancestry',
               disabled: isGrexSpecies,
-              component: () => (
-                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                  <AncestryViz grex={grex} />
-                </div>
-              ),
+              disablePadding: true,
+              component: () => <AncestryViz grex={grex} />,
             },
             {
               label: `Progeny`,
