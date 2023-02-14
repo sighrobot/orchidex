@@ -53,11 +53,15 @@ export const StatContent = ({
       return data.length > 0 ? (
         <List
           className={style.statList}
-          data={data.map((d) => ({
-            score: d.c,
-            grex: { genus: '', epithet: '', registrant_name: d.r2 },
-            id: d.r2,
-          }))}
+          data={data.map((d) => {
+            // sometimes reg and orig names get flipped in the return columns
+            const id = d.r1 === grex.registrant_name ? d.r2 : d.r1;
+            return {
+              score: d.c,
+              grex: { genus: '', epithet: '', registrant_name: id },
+              id,
+            };
+          })}
           renderField={({ grex: g = {} }) =>
             activeId && activeId === g.registrant_name ? (
               <strong>{g.registrant_name}</strong>

@@ -146,7 +146,7 @@ export const Registrant = () => {
           {
             label: `Originator`,
             count: originations.length,
-            // disabled: originations.length === 0,
+            disabled: originations.length === 0,
             component: () => {
               const [genus, setGenus] = React.useState('All genera');
               const handleFilterGenus = (genus) => setGenus(genus);

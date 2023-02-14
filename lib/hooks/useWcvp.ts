@@ -20,6 +20,8 @@ export const useWcvp = (grex: Grex) => {
         setData(json);
         setLoading(false);
       })();
+    } else {
+      setData([]);
     }
   }, [grex.genus, grex.epithet]);
 

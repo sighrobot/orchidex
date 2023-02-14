@@ -25,10 +25,10 @@ export const Tabs = ({
 }: TabsProps) => {
   const [tab, setTab] = React.useState<number>(0);
 
-  React.useEffect(
-    () => setTab(findIndex(config, (c) => !c.disabled)),
-    [config, identifier],
-  );
+  React.useEffect(() => {
+    const disabledIdx = findIndex(config, (c) => !c.disabled);
+    setTab(disabledIdx === -1 ? 0 : disabledIdx);
+  }, [config, identifier]);
 
   const handleClick = (e) => {
     const idx = findIndex(config, { label: e.target.name });

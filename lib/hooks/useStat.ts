@@ -2,7 +2,7 @@ import { Grex, Stat } from 'lib/types';
 import React from 'react';
 
 export const useStat = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
-  const [data, setData] = React.useState(null);
+  const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
@@ -17,6 +17,8 @@ export const useStat = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
         setData(json);
         setLoading(false);
       })();
+    } else {
+      setData([]);
     }
   }, [stat, JSON.stringify(grex)]);
 
