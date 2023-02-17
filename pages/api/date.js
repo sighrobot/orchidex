@@ -2,9 +2,17 @@ import { query } from 'lib/datasette';
 
 export default async (req, res) => {
   const { d: date } = req.query;
-  const expr = date
-    ? `SELECT * FROM rhs WHERE date_of_registration = '${date}'`
-    : `SELECT * FROM rhs ORDER BY date_of_registration DESC limit 100`;
+  let expr = '';
+  if (date) {
+    expr += `SELECT * FROM rhs WHERE date_of_registration = '${date}'`;
+  } else {
+    const d = new Date();
+    d.setDate(d.getDate() - 7);
+
+    expr += `SELECT * FROM rhs WHERE date(date_of_registration) >= '${d
+      .toISOString()
+      .slice(0, 4)}' ORDER BY date_of_registration DESC`;
+  }
 
   const d = await query(expr);
 
