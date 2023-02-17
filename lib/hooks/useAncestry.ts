@@ -1,11 +1,12 @@
 import React from 'react';
-import cache from 'lib/cache';
+import { nameCache, ancestryIdCache } from 'lib/cache';
 import { repairMalformedNaturalHybridEpithet, UNKNOWN_CHAR } from 'lib/string';
 import { find, flatten, partition } from 'lodash';
 import { isSpecies } from 'components/pills/pills';
 import { APP_URL } from 'lib/constants';
+import { Grex } from 'lib/types';
 
-export const fetchGrexByName = async ({ genus, epithet }) => {
+export const fetchGrexByName = async ({ genus, epithet }): Promise<Grex> => {
   if (!genus || !epithet) return null;
 
   const quotedGenus = `"${genus}"`;
@@ -13,7 +14,7 @@ export const fetchGrexByName = async ({ genus, epithet }) => {
     ? epithet.replace(new RegExp(UNKNOWN_CHAR, 'g'), '_')
     : `"${repairMalformedNaturalHybridEpithet({ epithet })}"`;
 
-  const cached = cache.get(`${genus} ${epithet}`);
+  const cached = nameCache.get(`${genus} ${epithet}`);
 
   if (cached) {
     return cached;
@@ -34,7 +35,7 @@ export const fetchGrexByName = async ({ genus, epithet }) => {
     }
 
     if (match) {
-      cache.set(`${match.genus} ${match.epithet}`, match);
+      nameCache.set(`${match.genus} ${match.epithet}`, match);
     }
 
     return match;
@@ -45,10 +46,10 @@ export const fetchGrexByName = async ({ genus, epithet }) => {
 
 const getNextGeneration = async (names = []) => {
   const [namesHave, namesNeed] = partition(names, (n) => {
-    return cache.has(`${n.genus} ${n.epithet}`);
+    return nameCache.has(`${n.genus} ${n.epithet}`);
   });
 
-  const have = namesHave.map((n) => cache.get(`${n.genus} ${n.epithet}`));
+  const have = namesHave.map((n) => nameCache.get(`${n.genus} ${n.epithet}`));
 
   if (namesNeed.length === 0) {
     return have;
@@ -62,7 +63,7 @@ const getNextGeneration = async (names = []) => {
   const gen = await f.json();
 
   gen.forEach((g) => {
-    cache.set(`${g.genus} ${g.epithet}`, g);
+    nameCache.set(`${g.genus} ${g.epithet}`, g);
   });
 
   return [...have, ...gen];
@@ -105,27 +106,14 @@ const levels = async (grex, level = 1) => {
   return { scores, map };
 };
 
-export const useSpeciesAncestry = (grex, preload = false) => {
-  const [ancestry, setAncestry] = React.useState([]);
+export const useSpeciesAncestry = (grex) => {
+  const [ancestry, setAncestry] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
-  const [active, setActive] = React.useState(false);
 
-  React.useEffect(() => {
-    setActive(false);
-  }, [grex]);
-
-  React.useEffect(() => {
-    if (preload) {
-      load();
-    }
-  }, [preload]);
-
-  const load = async () => {
-    setActive(true);
+  const load = React.useCallback(async () => {
     setLoading(true);
 
-    if (grex) {
-      await levels(grex, 100); // wtf, but this has to run twice
+    if (grex.id) {
       const { scores, map } = await levels(grex, 100);
 
       setAncestry(
@@ -135,10 +123,19 @@ export const useSpeciesAncestry = (grex, preload = false) => {
         })),
       );
       setLoading(false);
+      ancestryIdCache.set(grex.id, true);
     }
-  };
+  }, [grex.id]);
 
-  return { data: ancestry, loading, active, load };
+  React.useEffect(() => {
+    if (ancestryIdCache.get(grex.id)) {
+      load();
+    } else {
+      setAncestry(null);
+    }
+  }, [load, grex.id]);
+
+  return { data: ancestry, loading, load };
 };
 
 export const useAncestry = (grex, level = 2) => {
@@ -162,7 +159,7 @@ export const useAncestry = (grex, level = 2) => {
         });
 
         nodes.push({ ...parent, id, type, l: counter });
-        cache.set(`${parent.genus} ${parent.epithet}`, parent);
+        nameCache.set(`${parent.genus} ${parent.epithet}`, parent);
       };
 
       const handleSeed = (parent, child) => {

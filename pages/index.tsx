@@ -91,7 +91,6 @@ export default function Index({ initialState = {}, initialSimple = true }) {
       setSimple(nextSimple);
 
       (async () => {
-        console.log({ params });
         const data = await fetchSearch(params);
 
         setResults(data);

@@ -10,6 +10,8 @@ import styles from './style.module.scss';
 type GrexProps = {
   asButton?: boolean;
   grex: Grex;
+  seedParent?: Grex;
+  pollenParent?: Grex;
   hideDate?: boolean;
   hideReg?: boolean;
   hideLink?: boolean;
@@ -21,6 +23,8 @@ type GrexProps = {
 export const GrexCard = ({
   asButton,
   grex,
+  seedParent,
+  pollenParent,
   hideDate,
   hideReg,
   hideLink,
@@ -44,7 +48,12 @@ export const GrexCard = ({
     >
       <Pills grex={grex} />
       <Name as='h2' link={!shouldRenderAsButton && !hideLink} grex={grex} />
-      <Parentage hideLink={shouldRenderAsButton} grex={grex} />
+      <Parentage
+        hideLink={shouldRenderAsButton}
+        grex={grex}
+        seedParent={seedParent}
+        pollenParent={pollenParent}
+      />
       {!hideReg && (
         <Reg
           activeId={activeRegId}

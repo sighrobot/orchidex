@@ -18,26 +18,24 @@ import { isNaturalHybrid, isSpecies } from 'components/pills/pills';
 import { StatBox, StatCard } from 'components/stat/stat';
 import style from './style.module.scss';
 import { ButtonSimple } from 'components/button-simple/button-simple';
+import { Grex as GrexType } from 'lib/types';
 
 import { useWcvp } from 'lib/hooks/useWcvp';
 
 export async function getServerSideProps(context) {
-  const { id, g, e } = context.query;
+  const { genus: g, params } = context.query;
+  const [e, id] = params;
+
+  let grex: GrexType;
 
   if (parseInt(id, 10)) {
-    const data = await fetchGrex(id);
-
-    if (data) {
-      return { props: { grex: data } };
-    }
+    grex = await fetchGrex(id);
+  } else if (g && e) {
+    grex = await fetchGrexByName({ genus: g, epithet: e });
   }
 
-  if (g && e) {
-    const data = await fetchGrexByName({ genus: g, epithet: e });
-
-    if (data) {
-      return { props: { grex: data } };
-    }
+  if (grex) {
+    return { props: { grex } };
   }
 
   return {
@@ -46,14 +44,9 @@ export async function getServerSideProps(context) {
 }
 
 export const SpeciesAncestry = ({ grex }) => {
-  const {
-    data: speciesAncestry,
-    loading,
-    active,
-    load,
-  } = useSpeciesAncestry(grex);
+  const { data, loading, load } = useSpeciesAncestry(grex);
 
-  if (!active) {
+  if (!loading && data === null) {
     return <ButtonSimple onClick={load}>Calculate!</ButtonSimple>;
   }
 
@@ -64,7 +57,7 @@ export const SpeciesAncestry = ({ grex }) => {
   return (
     <List
       className={style.speciesAncestry}
-      data={speciesAncestry}
+      data={data}
       getFields={(sa) => [sa.grex.epithet]}
       renderField={({ grex: g = {} }) => (
         <Name className={style.speciesAncestryName} grex={g} shouldAbbreviate />
@@ -75,7 +68,7 @@ export const SpeciesAncestry = ({ grex }) => {
   );
 };
 
-export const Grex = ({ grex }) => {
+export const Grex = ({ grex, seedParent, pollenParent }) => {
   const router = useRouter();
   const progeny = useProgeny(grex);
   const name = formatName(grex);
@@ -108,7 +101,13 @@ export const Grex = ({ grex }) => {
       description={description(grex)}
     >
       <Padded style={{ background: 'white' }}>
-        <GrexCard heading grex={grex} hideLink />
+        <GrexCard
+          heading
+          grex={grex}
+          seedParent={seedParent}
+          pollenParent={pollenParent}
+          hideLink
+        />
         {wcvpSpecies && (
           <div style={{ color: 'gray', marginTop: '5px' }}>
             {[
@@ -159,10 +158,14 @@ export const Grex = ({ grex }) => {
           ]}
         />
 
-        {!isSpecies(grex) && !isNaturalHybrid(grex) && (
+        {!isSpecies(grex) && (
           <aside className={style.sidebar}>
-            <StatCard stat='registrant_genus_pct' grex={grex} />
-            <StatCard stat='year_genus_pct' grex={grex} />
+            {!isNaturalHybrid(grex) && (
+              <StatCard stat='registrant_genus_pct' grex={grex} />
+            )}
+            {!isNaturalHybrid(grex) && (
+              <StatCard stat='year_genus_pct' grex={grex} />
+            )}
             {grex.genus && grex.epithet && (
               <StatBox heading='Species Ancestry'>
                 <SpeciesAncestry grex={grex} />

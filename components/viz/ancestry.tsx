@@ -88,8 +88,17 @@ export const AncestryViz = ({ grex }) => {
       chart.draw(data, { allowHtml: true });
       google.visualization.events.addListener(chart, 'select', (e) => {
         const id = rows[chart.getSelection()[0].row][0].v.split('-')[0];
+        if (id !== grex.id) {
+          const destGrex = ancestry.nodes.find(
+            (n) => n.id.split('-')[0] === id,
+          );
 
-        router.push(`/g/${id}`);
+          router.push(
+            `/${encodeURIComponent(destGrex.genus)}/${encodeURIComponent(
+              destGrex.epithet,
+            )}/${destGrex.id.split('-')[0]}`,
+          );
+        }
       });
     }
 

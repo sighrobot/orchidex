@@ -21,7 +21,5 @@ export default async (req, res) => {
 
   const d = await query(`SELECT * FROM rhs WHERE ${q}`);
 
-  // console.log(d);
-
   res.status(200).json(d ?? []);
 };

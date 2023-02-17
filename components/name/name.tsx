@@ -37,7 +37,7 @@ export const Name = ({
       : formattedName.long.epithet;
 
     const href = linkAsSearch
-      ? `/g/s?g=${grex.genus}&e=${grex.epithet}`
+      ? `/${encodeURIComponent(grex.genus)}/${encodeURIComponent(grex.epithet)}`
       : `/${kebabCase(formattedName.long.genus)}/${kebabCase(
           formattedName.long.epithet,
         )}/${grex.id}`;

@@ -1,7 +1,10 @@
-import LRU from "cache-lru";
+import LRU from 'cache-lru';
 
-const cache = new LRU();
+const byName = new LRU();
+byName.limit(2000);
 
-cache.limit(2000);
+const byId = new LRU();
+byId.limit(2000);
 
-export default cache;
+export const nameCache = byName;
+export const ancestryIdCache = byId;

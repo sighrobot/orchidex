@@ -6,16 +6,24 @@ import styles from './style.module.scss';
 
 type ParentageProps = {
   grex?: Grex;
+  seedParent?: Grex;
+  pollenParent?: Grex;
   hideLink?: boolean;
   shouldAbbreviateParentage?: boolean;
 };
 
 export const Parentage = ({
   grex,
+  seedParent,
+  pollenParent,
   hideLink,
   shouldAbbreviateParentage = true,
 }: ParentageProps) => {
   if (grex) {
+    if (isSpecies(grex)) {
+      return null;
+    }
+
     const {
       seed_parent_genus,
       seed_parent_epithet,
@@ -23,18 +31,18 @@ export const Parentage = ({
       pollen_parent_epithet,
     } = grex;
 
-    if (isSpecies(grex)) {
-      return null;
-    }
-
     return (
       <span className={styles.parentage}>
         {seed_parent_genus && seed_parent_epithet ? (
           <Name
             shouldAbbreviate={shouldAbbreviateParentage}
             link={!hideLink}
-            linkAsSearch
-            grex={{ genus: seed_parent_genus, epithet: seed_parent_epithet }}
+            linkAsSearch={!seedParent}
+            grex={{
+              genus: seed_parent_genus,
+              epithet: seed_parent_epithet,
+              ...seedParent,
+            }}
           />
         ) : (
           '?'
@@ -44,10 +52,11 @@ export const Parentage = ({
           <Name
             shouldAbbreviate={shouldAbbreviateParentage}
             link={!hideLink}
-            linkAsSearch
+            linkAsSearch={!pollenParent}
             grex={{
               genus: pollen_parent_genus,
               epithet: pollen_parent_epithet,
+              ...pollenParent,
             }}
           />
         ) : (
