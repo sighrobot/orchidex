@@ -4,7 +4,6 @@ import { capitalize } from 'lodash';
 import { SEARCH_FIELDS } from 'lib/constants';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
 import { useRouter } from 'next/router';
-import { Grex } from 'lib/types';
 
 import searchStyle from './search.module.scss';
 import { ButtonSimple } from 'components/button-simple/button-simple';
@@ -67,7 +66,7 @@ export const SearchGrex = ({
       </div>
 
       <div>
-        <button disabled={false} type='submit'>
+        <button disabled={!state.genus && !state.epithet} type='submit'>
           Search
         </button>
       </div>

@@ -1,7 +1,5 @@
 .container {
   main {
-    min-height: 90vh;
-
     width: 100%;
     overflow: hidden;
   }
@@ -9,17 +7,13 @@
 
 .padded {
   padding: 20px;
+  padding-top: 10px;
   background: white;
 }
 
 .wrap {
-  display: flex;
-  max-width: 1400px;
+  max-width: 1200px;
   margin: 0 auto;
-
-  @media (max-width: 1000px) {
-    flex-direction: column;
-  }
 }
 
 .heading {
@@ -51,10 +45,10 @@
 }
 
 .footer {
-  color: gray;
   max-width: 600px;
   margin: 0 auto;
   padding: 40px 20px;
+  padding-top: 80px;
   font-size: 10px;
 
   a {

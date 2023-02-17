@@ -82,7 +82,10 @@ export const SearchParentage = ({
       </div>
 
       <div>
-        <button disabled={false} type='submit'>
+        <button
+          disabled={!state.g1 && !state.e1 && !state.g2 && !state.e2}
+          type='submit'
+        >
           {submitText}
         </button>
       </div>

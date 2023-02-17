@@ -1,10 +1,12 @@
 import { Header } from 'components/header/header';
 import Head from 'next/head';
 import Link from 'next/link';
+import cn from 'classnames';
 
 import style from './style.module.scss';
 
 type ContainerProps = {
+  className?: string;
   children: React.ReactNode;
   title?: string;
   description?: string;
@@ -20,13 +22,14 @@ export const Section = ({ children, heading }) => (
   </section>
 );
 
-export const Padded = ({ children, ...rest }) => (
-  <section className={style.padded} {...rest}>
+export const Padded = ({ className = '', children, ...rest }) => (
+  <section className={cn(style.padded, className)} {...rest}>
     {children}
   </section>
 );
 
 export const Container = ({
+  className,
   title,
   children,
   description = '',
@@ -34,7 +37,7 @@ export const Container = ({
   renderSidebar,
 }: ContainerProps) => {
   return (
-    <div className={style.container}>
+    <div className={cn(style.container, className)}>
       <Head>
         <title>{title}</title>
 

@@ -16,10 +16,6 @@ export const SEARCH_FIELDS = [
   'seed_parent_epithet',
   'pollen_parent_genus',
   'pollen_parent_epithet',
-  'id',
-  'synonym_flag',
-  'synonym_genus_name',
-  'synonym_epithet_name',
 ];
 
 export const NORMALIZED_SEARCH_FIELDS = [

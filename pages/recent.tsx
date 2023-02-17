@@ -10,18 +10,7 @@ export default function Index() {
 
   return (
     <Container title='Recent - Orchidex' heading='Recently registered'>
-      {orderBy(
-        Object.keys(grouped)
-          .filter((d) => !isNaN(new Date(d).getTime())) // Wu Wen-Hsian
-          .filter(
-            (d, _, arr) =>
-              new Date(`${arr[0]}T00:00:00`).getTime() -
-                new Date(`${d}T00:00:00`).getTime() <=
-              7 * 24 * 60 * 60 * 1000,
-          ),
-        (d) => d,
-        'desc',
-      ).map((d, idx) => {
+      {Object.keys(grouped).map((d, idx) => {
         return (
           <section key={d}>
             <details open={idx === 0}>

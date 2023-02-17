@@ -9,6 +9,14 @@ body {
   background: #eee;
   font-size: 16px;
   width: 100vw;
+  height: 100vh;
+  background: linear-gradient(
+    to bottom right,
+    white 40%,
+    rgba(218, 112, 214, 0.33),
+    rgba(255, 140, 0, 0.5)
+  );
+  background-attachment: fixed;
 }
 
 #__next {

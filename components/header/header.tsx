@@ -8,21 +8,22 @@ export const Header = () => {
 
   return (
     <header className={style.header}>
+      <h1 className={style.brand}>
+        <Link href='/'>
+          <span style={{ color: 'orchid', fontStyle: 'italic' }}>Orchi</span>
+          dex
+        </Link>
+        <img src='/transparent.png' />
+      </h1>
       <nav>
-        <h1 className={style.brand}>
-          <Link href='/'>
-            <span style={{ color: 'orchid', fontStyle: 'italic' }}>Orchi</span>
-            dex
-          </Link>
-          <img src='/transparent.png' />
-        </h1>
-
         <Link
           href='/recent'
           className={router.pathname === '/recent' ? 'active' : undefined}
         >
-          Recents
+          Recent
         </Link>
+
+        <Link href='/search'>Search</Link>
 
         <Link
           href='/learn/hybridizer'
@@ -30,10 +31,10 @@ export const Header = () => {
             router.pathname === '/learn/hybridizer' ? 'active' : undefined
           }
         >
-          Hybridizer
+          Hybridize
         </Link>
 
-        <Link href='/'>Search</Link>
+        <Link href='/about'>About</Link>
       </nav>
     </header>
   );

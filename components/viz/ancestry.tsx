@@ -108,7 +108,7 @@ export const AncestryViz = ({ grex }) => {
 
   if (typeof document !== 'undefined') {
     const el = document.querySelector('.chart-wrap');
-    if (el) el.scrollTo(1220 / 2 - window.innerWidth / 2, 0);
+    if (el) el.scrollTo(800 / 2 - window.innerWidth / 2, 0);
   }
 
   return (
