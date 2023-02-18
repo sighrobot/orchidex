@@ -15,9 +15,15 @@ type TabsProps = {
   config: TabsConfig[];
   onClick?: (c: TabsConfig) => void;
   padding?: boolean;
+  renderToSide?: React.ReactNode;
 };
 
-export const Tabs = ({ config = [], onClick, padding }: TabsProps) => {
+export const Tabs = ({
+  config = [],
+  onClick,
+  padding,
+  renderToSide,
+}: TabsProps) => {
   const [tab, setTab] = React.useState<number>(0);
 
   React.useEffect(() => {
@@ -58,7 +64,14 @@ export const Tabs = ({ config = [], onClick, padding }: TabsProps) => {
           [style.noPadding]: !padding || config[tab]?.disablePadding,
         })}
       >
-        {config[tab]?.component({})}
+        <div
+          className={cn(style.contentWrap, {
+            [style.noPadding]: !padding || config[tab]?.disablePadding,
+          })}
+        >
+          {config[tab]?.component({})}
+        </div>
+        <div className={style.sideWrap}>{renderToSide}</div>
       </div>
     </div>
   );

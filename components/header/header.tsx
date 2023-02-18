@@ -13,7 +13,7 @@ export const Header = () => {
           <span style={{ color: 'orchid', fontStyle: 'italic' }}>Orchi</span>
           dex
         </Link>
-        <img src='/transparent.png' />
+        {/* <img src='/black.png' /> */}
       </h1>
       <nav>
         <Link
@@ -25,16 +25,16 @@ export const Header = () => {
 
         <Link href='/search'>Search</Link>
 
-        <Link
+        {/* <Link
           href='/learn/hybridizer'
           className={
             router.pathname === '/learn/hybridizer' ? 'active' : undefined
           }
         >
           Hybridize
-        </Link>
+        </Link> */}
 
-        <Link href='/about'>About</Link>
+        {/* <Link href='/about'>About</Link> */}
       </nav>
     </header>
   );

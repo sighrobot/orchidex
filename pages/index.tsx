@@ -78,7 +78,7 @@ export default function Index() {
 
       <section className={style.columns}>
         <div className={style.search}>
-          <h3>Search for species or hybrids</h3>
+          <h3>Search by name</h3>
           <SearchGrex
             onChange={handleChangeSimple}
             onSubmit={handleSubmitSimple}

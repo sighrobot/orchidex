@@ -13,12 +13,7 @@
 .sidebar {
   flex-shrink: 0;
   width: 280px;
-  border: 2px solid white;
-  background: linear-gradient(
-    to bottom left,
-    /* rgba(218, 112, 214, 0.125),*/ rgba(255, 255, 0, 0.1),
-    transparent
-  );
+  background: rgba(255, 255, 255, 0.4);
   align-self: flex-start;
 
   @media (max-width: 800px) {

@@ -1,0 +1,21 @@
+.meter {
+  height: 8px;
+  position: relative;
+  border: 1px solid black;
+}
+
+.track {
+  background: white;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+.value {
+  background: black;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+}

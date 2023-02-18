@@ -12,15 +12,7 @@ type ContainerProps = {
   description?: string;
   isFullWidth?: boolean;
   heading?: string;
-  renderSidebar?: () => React.ReactNode;
 };
-
-export const Section = ({ children, heading }) => (
-  <section className={style.section}>
-    <h4>{heading}</h4>
-    <div className={style.scrollable}>{children}</div>
-  </section>
-);
 
 export const Padded = ({ className = '', children, ...rest }) => (
   <section className={cn(style.padded, className)} {...rest}>
@@ -34,7 +26,6 @@ export const Container = ({
   children,
   description = '',
   heading = '',
-  renderSidebar,
 }: ContainerProps) => {
   return (
     <div className={cn(style.container, className)}>
@@ -59,10 +50,6 @@ export const Container = ({
           )}
           {children}
         </main>
-
-        {renderSidebar && (
-          <aside className={style.sidebar}>{renderSidebar()}</aside>
-        )}
       </div>
 
       <footer className={style.footer}>

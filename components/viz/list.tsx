@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import { Meter } from 'components/meter/meter';
 import { formatName } from 'lib/string';
 import { orderBy } from 'lodash';
 
@@ -96,9 +97,10 @@ const List = ({
               <div>{renderField(k)}</div>
               <div>{renderCount(getCount ? getCount(k) : counts[k])}</div>
               {showBars && (
-                <meter
+                <Meter
+                  className={style.meter}
                   value={(getCount ? getCount(k) : counts[k]) / total}
-                ></meter>
+                />
               )}
             </li>
           );

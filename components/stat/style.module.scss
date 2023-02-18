@@ -3,13 +3,8 @@
   font-size: 14px;
 }
 
-.stat {
-  border-bottom: 2px solid white;
-
-  > meter {
-    margin-top: 10px;
-    width: 100%;
-  }
+.meter {
+  margin-top: 10px;
 }
 
 .title {
@@ -40,12 +35,6 @@
     text-overflow: ellipsis;
     padding-right: 10px;
     flex-grow: 1;
-  }
-
-  meter {
-    margin-left: 10px;
-    flex-shrink: 0;
-    width: 30px;
   }
 
   a {

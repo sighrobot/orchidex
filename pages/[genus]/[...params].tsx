@@ -100,7 +100,7 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
       title={`${name.short.full} | Orchidex`}
       description={description(grex)}
     >
-      <Padded style={{ background: 'white' }}>
+      <Padded>
         <GrexCard
           heading
           grex={grex}
@@ -109,7 +109,7 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
           hideLink
         />
         {wcvpSpecies && (
-          <div style={{ color: 'gray', marginTop: '5px' }}>
+          <div style={{ marginTop: '5px' }}>
             {[
               capitalize(wcvpSpecies.lifeform_description),
               wcvpSpecies.climate_description,
@@ -120,7 +120,7 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
           </div>
         )}
         {wcvpSpecies && (
-          <div style={{ color: 'gray', marginTop: '2.5px' }}>
+          <div style={{ marginTop: '2.5px' }}>
             {wcvpSpecies.primary_author} {wcvpSpecies.first_published}
           </div>
         )}
@@ -133,6 +133,23 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
       <div className={style.content}>
         <Tabs
           padding
+          renderToSide={
+            !isSpecies(grex) && (
+              <aside className={style.sidebar}>
+                {!isNaturalHybrid(grex) && (
+                  <StatCard stat='registrant_genus_pct' grex={grex} />
+                )}
+                {!isNaturalHybrid(grex) && (
+                  <StatCard stat='year_genus_pct' grex={grex} />
+                )}
+                {grex.genus && grex.epithet && (
+                  <StatBox heading='Species Ancestry'>
+                    <SpeciesAncestry grex={grex} />
+                  </StatBox>
+                )}
+              </aside>
+            )
+          }
           config={[
             {
               label: 'Ancestry',
@@ -157,22 +174,6 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
             },
           ]}
         />
-
-        {!isSpecies(grex) && (
-          <aside className={style.sidebar}>
-            {!isNaturalHybrid(grex) && (
-              <StatCard stat='registrant_genus_pct' grex={grex} />
-            )}
-            {!isNaturalHybrid(grex) && (
-              <StatCard stat='year_genus_pct' grex={grex} />
-            )}
-            {grex.genus && grex.epithet && (
-              <StatBox heading='Species Ancestry'>
-                <SpeciesAncestry grex={grex} />
-              </StatBox>
-            )}
-          </aside>
-        )}
       </div>
 
       {router.query.debug && (

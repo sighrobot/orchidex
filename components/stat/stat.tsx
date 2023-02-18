@@ -5,6 +5,7 @@ import style from './style.module.scss';
 import cn from 'classnames';
 import List from 'components/viz/list';
 import Link from 'next/link';
+import { Meter } from 'components/meter/meter';
 
 export const StatBox = ({ className = '', children, heading }) => (
   <div className={cn(style.box, className)}>
@@ -17,7 +18,7 @@ export const StatPercentage = ({ description, value }) => {
   return (
     <>
       <div>{description}</div>
-      <meter value={value} />
+      <Meter className={style.meter} value={value} />
     </>
   );
 };

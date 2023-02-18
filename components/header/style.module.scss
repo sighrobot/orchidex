@@ -1,19 +1,21 @@
 .header {
   width: 150px;
   flex-shrink: 0;
-  padding: 20px;
+  padding: 20px 10px;
   display: flex;
   width: 100%;
+  align-items: center;
 
   h1 {
     display: flex;
     align-items: center;
+    line-height: 1;
 
     img {
+      transform: translateY(1px);
       flex-shrink: 0;
-      width: 25px;
-      height: 25px;
-      margin-left: 5px;
+      width: 32px;
+      height: 32px;
     }
   }
   nav {
@@ -22,10 +24,13 @@
 
     a {
       display: inline-block;
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 12px;
     }
 
     a:not(:first-child) {
-      margin-left: 10px;
+      margin-left: 20px;
     }
   }
 }
@@ -33,6 +38,12 @@
 .brand {
   margin-bottom: 10px;
   text-transform: uppercase;
-
   margin-bottom: 0;
+  font-weight: 500;
+  font-size: 18px;
+  text-shadow: 1px 1px rgba(0, 0, 0, 0.1);
+
+  a {
+    text-decoration: none;
+  }
 }

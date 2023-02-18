@@ -1,6 +1,4 @@
 .quickStats {
-  color: gray;
-  margin-top: 2.5px;
   margin-top: 5px;
 }
 
@@ -16,19 +14,11 @@
   flex-shrink: 0;
   width: 240px;
   max-width: unset !important;
-
-  border-bottom: 2px solid white;
-  background: linear-gradient(
-    to bottom right,
-    rgba(218, 112, 214, 0.1),
-    transparent
-  );
-  border-left: 2px solid white;
-  border-right: 2px solid white;
-
   max-height: 80vh;
   align-self: flex-start;
   overflow-y: auto;
+  margin-right: 40px;
+  background: rgba(255, 255, 255, 0.5);
 
   * {
     font-size: 14px !important;
@@ -42,24 +32,23 @@
 }
 
 .list {
-  padding: 0 20px;
+  padding: 0 10px;
   flex-grow: 1;
+  margin-right: 40px;
+
+  @media (max-width: 850px) {
+    margin-right: 0;
+  }
 }
 
 .sidebar {
   flex-shrink: 0;
   width: 260px;
-  border-left: 2px solid white;
-  border-right: 2px solid white;
-
-  background: linear-gradient(
-    to bottom left,
-    /* rgba(218, 112, 214, 0.125),*/ rgba(255, 255, 0, 0.1),
-    transparent
-  );
+  background: rgba(255, 255, 255, 0.5);
   align-self: flex-start;
 
   @media (max-width: 850px) {
     width: 100%;
+    margin-right: 0;
   }
 }

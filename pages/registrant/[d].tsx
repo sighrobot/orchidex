@@ -59,6 +59,30 @@ export const Registrant = () => {
       </Hero>
 
       <Tabs
+        renderToSide={
+          <aside className={style.sidebar}>
+            <StatCard
+              activeId={d}
+              stat='seed_parent_registrants'
+              grex={{ registrant_name: d } as Grex}
+            />
+            <StatCard
+              activeId={d}
+              stat='seed_parent_originators'
+              grex={{ registrant_name: d } as Grex}
+            />
+            <StatCard
+              activeId={d}
+              stat='pollen_parent_registrants'
+              grex={{ registrant_name: d } as Grex}
+            />
+            <StatCard
+              activeId={d}
+              stat='pollen_parent_originators'
+              grex={{ registrant_name: d } as Grex}
+            />
+          </aside>
+        }
         config={[
           {
             label: 'Registrant',
@@ -125,19 +149,6 @@ export const Registrant = () => {
                       },
                     )}
                   </section>
-
-                  <aside className={style.sidebar}>
-                    <StatCard
-                      activeId={d}
-                      stat='seed_parent_registrants'
-                      grex={{ registrant_name: d } as Grex}
-                    />
-                    <StatCard
-                      activeId={d}
-                      stat='pollen_parent_registrants'
-                      grex={{ registrant_name: d } as Grex}
-                    />
-                  </aside>
                 </section>
               );
             },
@@ -207,19 +218,6 @@ export const Registrant = () => {
                       },
                     )}
                   </section>
-
-                  <aside className={style.sidebar}>
-                    <StatCard
-                      activeId={d}
-                      stat='seed_parent_originators'
-                      grex={{ registrant_name: d } as Grex}
-                    />
-                    <StatCard
-                      activeId={d}
-                      stat='pollen_parent_originators'
-                      grex={{ registrant_name: d } as Grex}
-                    />
-                  </aside>
                 </section>
               );
             },
