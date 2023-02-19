@@ -66,7 +66,7 @@ export const SearchGrex = ({
       </div>
 
       <div>
-        <button disabled={!state.genus && !state.epithet} type='submit'>
+        <button disabled={SEARCH_FIELDS.every((f) => !state[f])} type='submit'>
           Search
         </button>
       </div>
