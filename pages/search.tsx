@@ -9,6 +9,7 @@ import { SearchParentage } from 'components/search/parentage';
 import { SearchGrex } from 'components/search/grex';
 import { APP_URL } from 'lib/constants';
 import { ButtonSimple } from 'components/button-simple/button-simple';
+import { H3 } from 'components/layout';
 
 export async function fetchSearch(params = []) {
   const fetched = await fetch(`${APP_URL}/api/search?${params.join('&')}`);
@@ -150,11 +151,11 @@ export default function Search({ initialState = {}, initialSimple = true }) {
 
       <section>
         {results !== null && (
-          <h3>
+          <H3>
             Results {simple ? 'for' : ''} {exp} (
             {results.length.toLocaleString()}
             {results.length === 1000 ? '+' : ''})
-          </h3>
+          </H3>
         )}
 
         {orderBy(

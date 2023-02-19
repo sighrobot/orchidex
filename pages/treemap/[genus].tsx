@@ -5,6 +5,7 @@ import { ResponsiveTreeMap, ResponsiveTreeMapCanvas } from '@nivo/treemap';
 import { countBy } from 'lodash';
 import { APP_URL } from 'lib/constants';
 import { Tabs } from 'components/tabs/tabs';
+import { H2 } from 'components/layout';
 
 const Treemap = () => {
   const router = useRouter();
@@ -108,7 +109,7 @@ const Treemap = () => {
 
   return (
     <Container title={`${genus} | Orchidex`}>
-      <h2>{genus}</h2>
+      <H2>{genus}</H2>
 
       <div>
         <label>

@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import { H3 } from 'components/layout';
 import { Meter } from 'components/meter/meter';
 import { formatName } from 'lib/string';
 import { orderBy } from 'lodash';
@@ -84,7 +85,7 @@ const List = ({
 
   return (
     <div className={cn(style.vizList, className)}>
-      {title && <h3>{title}</h3>}
+      {title && <H3>{title}</H3>}
       <ul>
         {sorted.slice(0, limit).map((k) => {
           return (

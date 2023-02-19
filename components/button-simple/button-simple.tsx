@@ -1,20 +1,22 @@
-import React, { CSSProperties } from 'react';
+import { BaseProps } from 'lib/types';
+import React from 'react';
 import style from './style.module.scss';
+import cn from 'classnames';
 
-type ButtonSimpleProps = {
+type ButtonSimpleProps = BaseProps & {
   children?: React.ReactNode;
   onClick: (e: any) => void;
-  style?: CSSProperties;
 };
 
 export const ButtonSimple = ({
+  className,
   children,
   onClick,
   style: inlineStyle,
 }: ButtonSimpleProps) => {
   return (
     <button
-      className={style.simple}
+      className={cn(style.simple, className)}
       onClick={onClick}
       style={inlineStyle}
       type='button'

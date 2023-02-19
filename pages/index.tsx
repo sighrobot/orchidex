@@ -1,5 +1,6 @@
 import { Container, Padded } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
+import { H3 } from 'components/layout';
 import { SearchGrex } from 'components/search/grex';
 import { SearchParentage } from 'components/search/parentage';
 import { CROSS_FIELDS, SEARCH_FIELDS } from 'lib/constants';
@@ -78,13 +79,13 @@ export default function Index() {
 
       <section className={style.columns}>
         <div className={style.search}>
-          <h3>Search by name</h3>
+          <H3>Search by name</H3>
           <SearchGrex
             onChange={handleChangeSimple}
             onSubmit={handleSubmitSimple}
             state={simpleState}
           />
-          <h3>Search by parentage</h3>
+          <H3>Search by parentage</H3>
           <SearchParentage
             onChange={handleChangeCross}
             onSubmit={handleSubmitCross}
@@ -93,7 +94,7 @@ export default function Index() {
         </div>
 
         <div className={style.recent}>
-          <h3>Recently registered</h3>
+          <H3>Recently registered</H3>
           {recent.slice(0, 3).map((r) => {
             return <GrexCard key={r.id} grex={r} />;
           })}

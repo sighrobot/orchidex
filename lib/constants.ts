@@ -1,4 +1,4 @@
-const DEFAULT_APP_URL = `https://${process.env.VERCEL_URL || 'grex.es'}`;
+const DEFAULT_APP_URL = `https://${process.env.VERCEL_URL || 'orchidex.org'}`;
 export const APP_URL =
   process.env.NODE_ENV === 'development'
     ? 'http://localhost:3000'

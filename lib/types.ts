@@ -1,3 +1,10 @@
+import type { CSSProperties } from 'react';
+
+export type BaseProps = {
+  className?: string;
+  style?: CSSProperties;
+};
+
 export type Grex = {
   id: string;
   genus: string;

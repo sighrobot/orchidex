@@ -1,0 +1,17 @@
+.about {
+  article {
+    a {
+      text-decoration: underline;
+      font-weight: 500;
+    }
+    padding: 20px 10px;
+
+    p {
+      max-width: 600px;
+    }
+  }
+}
+
+.support {
+  background: rgba(255, 0, 255, 0.05);
+}

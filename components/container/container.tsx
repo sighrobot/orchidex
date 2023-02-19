@@ -4,6 +4,7 @@ import Link from 'next/link';
 import cn from 'classnames';
 
 import style from './style.module.scss';
+import { H2 } from 'components/layout';
 
 type ContainerProps = {
   className?: string;
@@ -45,7 +46,7 @@ export const Container = ({
         <main>
           {heading && (
             <Padded>
-              <h2 className={style.heading}>{heading}</h2>
+              <H2 className={style.heading}>{heading}</H2>
             </Padded>
           )}
           {children}
