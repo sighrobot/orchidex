@@ -13,7 +13,7 @@ import style from './index.module.scss';
 
 export default function Index() {
   const router = useRouter();
-  const recent = useDate();
+  const recent = useDate({ limit: 3 });
   const [simpleState, setSimpleState] = React.useState({});
   const [crossState, setCrossState] = React.useState({});
 

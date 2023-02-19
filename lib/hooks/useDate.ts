@@ -1,25 +1,24 @@
-import React from "react";
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 type UseDateProps = {
   d?: string;
+  limit?: number;
 };
 
-export const useDate = ({ d }: UseDateProps = { d: "" }) => {
-  const [grexes, setGrexes] = React.useState([]);
+export const useDate = ({ d, limit }: UseDateProps = { d: '' }) => {
+  let url = '/api/date?';
 
-  React.useEffect(() => {
-    (async () => {
-      let url = "/api/date";
+  if (d) {
+    url += `&d=${d}`;
+  }
 
-      if (d) {
-        url += `?d=${d}`;
-      }
+  if (limit) {
+    url += `&limit=${limit}`;
+  }
 
-      const fetched = await fetch(url);
-      const json = await fetched.json();
-      setGrexes(json);
-    })();
-  }, [d]);
+  const { data = [] } = useSWR(url, fetcher);
 
-  return grexes;
+  return data;
 };
