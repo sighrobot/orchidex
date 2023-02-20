@@ -37,7 +37,7 @@ export const Header = () => {
           Hybridize
         </Link> */}
 
-        {/* <Link href='/about'>About</Link> */}
+        <Link href='/about'>About</Link>
       </nav>
     </header>
   );

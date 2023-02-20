@@ -11,7 +11,9 @@ export default async (req: NextRequest) => {
   const q = `select * from wcvp where taxon_name = '${genus} ${epithet
     .replace(/ var /g, ' var. ')
     .replace(/{var}/g, 'var.')
-    .replace(/ subsp. /g, ' var. ')}'`;
+    .replace(/ subsp. /g, ' var. ')
+    .replace(/{subsp.}/g, 'subsp.')
+    .trim()}'`;
 
   return query(q);
 };

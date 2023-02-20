@@ -5,7 +5,11 @@ import style from './style.module.scss';
 
 export default function Data() {
   return (
-    <Container className={style.data} title='Data - Orchidex' heading='Data'>
+    <Container
+      className={style.data}
+      title='About our data - Orchidex'
+      heading='About our data'
+    >
       <article>
         <H3>Provenance</H3>
         <p>
@@ -40,10 +44,11 @@ export default function Data() {
       <article>
         <H3>Report an issue</H3>
         <p>
-          If you believe there is an error on this site that does not exist in
-          the source data, please email{' '}
+          If you believe there is an error on this site with respect to the
+          source data, please email{' '}
           <Link href='mailto:info@orchidex.org'>info@orchidex.org</Link> with a
           link to the specific page(s) and a brief description of the issue.
+          Screenshots are highly encouraged!
         </p>
       </article>
     </Container>

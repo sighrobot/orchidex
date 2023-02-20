@@ -2,21 +2,30 @@
   article {
     padding: 20px 10px;
 
-    a {
-      text-decoration: underline;
-      // font-weight: 500;
-    }
-
     h3 + p {
       margin-top: 10px;
+    }
+
+    a {
+      text-decoration: underline;
+      font-weight: 500;
     }
 
     p {
       max-width: 600px;
     }
 
+    dt {
+      margin-bottom: 10px;
+    }
+
+    dt:not(:first-child) {
+      margin-top: 20px;
+    }
+
     dd {
       margin: 0;
+      max-width: 600px;
     }
   }
 }
