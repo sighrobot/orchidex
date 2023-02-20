@@ -1,20 +1,7 @@
-.content {
-  display: flex;
-
-  > div:first-child {
-    flex-grow: 1;
-  }
-
-  @media (max-width: 800px) {
-    flex-direction: column;
-  }
-}
-
 .sidebar {
   flex-shrink: 0;
   width: 280px;
   background: rgba(255, 255, 255, 0.4);
-  align-self: flex-start;
 
   @media (max-width: 800px) {
     width: 100%;
@@ -22,10 +9,6 @@
 }
 
 .speciesAncestry {
-  * {
-    font-size: 12px;
-  }
-
   padding: 0;
 
   li {
@@ -36,8 +19,4 @@
 .speciesAncestryName {
   font-weight: normal;
   text-decoration: underline;
-
-  * {
-    font-size: 14px;
-  }
 }

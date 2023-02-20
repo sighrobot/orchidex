@@ -17,7 +17,7 @@
   max-height: 80vh;
   align-self: flex-start;
   overflow-y: auto;
-  margin-right: 40px;
+  margin-right: 20px;
   background: rgba(255, 255, 255, 0.5);
 
   * {
@@ -34,7 +34,6 @@
 .list {
   padding: 0 10px;
   flex-grow: 1;
-  margin-right: 40px;
 
   @media (max-width: 850px) {
     margin-right: 0;

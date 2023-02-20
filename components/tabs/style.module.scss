@@ -37,16 +37,19 @@
 
   .content {
     display: flex;
-    justify-content: space-between;
+
+    @media (max-width: 800px) {
+      flex-direction: column;
+    }
 
     .contentWrap {
+      overflow: hidden;
       padding: 0 10px;
       flex-grow: 1;
     }
 
     .sideWrap {
       flex-shrink: 0;
-      flex-grow: 0;
     }
   }
 
