@@ -10,11 +10,14 @@ export const Header = () => {
     <header className={style.header}>
       <h1 className={style.brand}>
         <Link href='/'>
-          <span style={{ color: 'orchid', fontStyle: 'italic' }}>Orchi</span>
-          dex
+          <span className={style.orchi}>Orchi</span>
+          <span className={style.dex}>dex</span>
         </Link>
         {/* <img src='/black.png' /> */}
       </h1>
+
+      <mark className={style.beta}>Beta</mark>
+
       <nav>
         <Link
           href='/recent'
