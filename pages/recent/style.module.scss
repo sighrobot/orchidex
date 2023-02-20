@@ -1,0 +1,17 @@
+.recent {
+  section {
+    padding: 0 10px;
+  }
+
+  section + section {
+    margin-top: 40px;
+  }
+
+  summary {
+    cursor: pointer;
+  }
+
+  summary > * {
+    display: inline-block;
+  }
+}

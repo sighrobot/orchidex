@@ -61,7 +61,7 @@ export const SearchGrex = ({
           onClick={() => setExpanded((e) => !e)}
           style={{ marginBottom: '-20px' }}
         >
-          {expanded ? 'show fewer' : 'show more'}
+          {expanded ? 'show fewer fields' : 'show more fields'}
         </ButtonSimple>
       </div>
 

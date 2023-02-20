@@ -11,6 +11,8 @@ import { APP_URL } from 'lib/constants';
 import { ButtonSimple } from 'components/button-simple/button-simple';
 import { H3 } from 'components/layout';
 
+import style from './style.module.scss';
+
 export async function fetchSearch(params = []) {
   const fetched = await fetch(`${APP_URL}/api/search?${params.join('&')}`);
   return fetched.json();
@@ -128,26 +130,30 @@ export default function Search({ initialState = {}, initialSimple = true }) {
   Orchidex`;
 
   return (
-    <Container title={title} heading='Search'>
-      <div style={{ display: 'flex', marginBottom: '5px', maxWidth: '400px' }}>
-        <ButtonSimple onClick={() => setSimple((s) => !s)}>
-          {!simple ? 'search by parentage' : 'search by grex'}
-        </ButtonSimple>
-      </div>
+    <Container className={style.search} title={title} heading='Search'>
+      <section>
+        <div
+          style={{ display: 'flex', marginBottom: '5px', maxWidth: '400px' }}
+        >
+          <ButtonSimple onClick={() => setSimple((s) => !s)}>
+            {!simple ? 'search by parentage' : 'search by grex'}
+          </ButtonSimple>
+        </div>
 
-      {simple ? (
-        <SearchParentage
-          onChange={handleChange}
-          onSubmit={handleSubmitCross}
-          state={state}
-        />
-      ) : (
-        <SearchGrex
-          onChange={handleChange}
-          onSubmit={handleSubmit}
-          state={state}
-        />
-      )}
+        {simple ? (
+          <SearchParentage
+            onChange={handleChange}
+            onSubmit={handleSubmitCross}
+            state={state}
+          />
+        ) : (
+          <SearchGrex
+            onChange={handleChange}
+            onSubmit={handleSubmit}
+            state={state}
+          />
+        )}
+      </section>
 
       <section>
         {results !== null && (

@@ -32,12 +32,12 @@ export const Reg = ({ grex, activeId, hideDate, hideLink }: RegProps) => {
           ) : (
             <>
               Registered{' '}
-              <Link
+              {/* <Link
                 href={`/date/${grex.date_of_registration}`}
                 className='date'
-              >
-                {dateStr}
-              </Link>
+              > */}
+              {dateStr}
+              {/* </Link> */}
             </>
           ))}
         {hideDate ? 'Registered by ' : ' by '}
