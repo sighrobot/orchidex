@@ -1,19 +1,12 @@
-import React from "react";
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export const useRegistrant = ({ name }) => {
-  const [results, setResults] = React.useState([]);
+  const { data = [] } = useSWR(
+    `/api/registrant/${encodeURIComponent(name)}`,
+    (url) => (name ? fetcher(url) : []),
+  );
 
-  React.useEffect(() => {
-    (async () => {
-      if (name) {
-        const fetched = await fetch(
-          `/api/registrant/${encodeURIComponent(name)}`
-        );
-        const json = await fetched.json();
-        setResults(json);
-      }
-    })();
-  }, [name]);
-
-  return results;
+  return data;
 };

@@ -22,7 +22,12 @@ export const Registrant = () => {
 
   const rawData = useRegistrant({ name: d });
 
-  const statMap = { intergeneric: 0, primary: 0, genera: new Set() };
+  const statMap = {
+    intergeneric: 0,
+    primary: 0,
+    genera: new Set(),
+    firstYear: null,
+  };
 
   rawData.forEach((g) => {
     if (isPrimary(g)) {
@@ -36,6 +41,13 @@ export const Registrant = () => {
     statMap.genera = statMap.genera
       ? statMap.genera.add(g.genus)
       : new Set([g.genus]);
+
+    const year = parseInt(g.date_of_registration.slice(0, 4), 10);
+
+    if (year) {
+      statMap.firstYear =
+        statMap.firstYear === null ? year : Math.min(statMap.firstYear, year);
+    }
   });
 
   const registrations = rawData.filter((g) => g.registrant_name === d);
@@ -53,8 +65,7 @@ export const Registrant = () => {
           </span>
         </div>
         <div className={style.quickStats}>
-          First recorded in{' '}
-          <strong>{rawData.at(-1)?.date_of_registration.slice(0, 4)}</strong>
+          First registered in <strong>{statMap.firstYear}</strong>
         </div>
       </Hero>
 

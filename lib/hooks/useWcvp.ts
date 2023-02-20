@@ -1,29 +1,18 @@
 import { isSpecies } from 'components/pills/pills';
 import { Grex } from 'lib/types';
-import React from 'react';
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export const useWcvp = (grex: Grex) => {
-  const [data, setData] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
+  let url = '/api/wcvp';
 
-  React.useEffect(() => {
-    if (isSpecies(grex)) {
-      setLoading(true);
-      (async () => {
-        let url = '/api/wcvp';
+  url += `?genus=${encodeURIComponent(grex.genus)}`;
+  url += `&epithet=${encodeURIComponent(grex.epithet)}`;
 
-        url += `?genus=${encodeURIComponent(grex.genus)}`;
-        url += `&epithet=${encodeURIComponent(grex.epithet)}`;
+  const { data = [], isLoading } = useSWR(url, (url) =>
+    isSpecies(grex) ? fetcher(url) : [],
+  );
 
-        const fetched = await fetch(url);
-        const json = await fetched.json();
-        setData(json);
-        setLoading(false);
-      })();
-    } else {
-      setData([]);
-    }
-  }, [grex.genus, grex.epithet]);
-
-  return { data, loading };
+  return { data, loading: isLoading };
 };

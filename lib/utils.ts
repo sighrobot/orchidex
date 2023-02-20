@@ -1,13 +1,13 @@
-import { normalize } from "lib/string";
-import { NORMALIZED_SEARCH_FIELDS } from "lib/constants";
+import { normalize } from 'lib/string';
+import { NORMALIZED_SEARCH_FIELDS } from 'lib/constants';
 
-export const massageQueryTerm = (s = "", shouldNormalize = false) => {
+export const massageQueryTerm = (s = '', shouldNormalize = false) => {
   const massaged = s.toLowerCase().replace(/'/g, "''");
 
   return shouldNormalize ? normalize(massaged) : massaged;
 };
 
-export const formatClause = (key, value = "") => {
+export const formatClause = (key, value = '') => {
   const lastValueIndex = value.length - 1;
   const shouldNormalize = NORMALIZED_SEARCH_FIELDS.includes(key);
   const left = shouldNormalize ? `${key}_normalized` : `lower(${key})`;
@@ -43,26 +43,26 @@ export const makeCrossQuery = ({ g1, e1, g2, e2 }) => {
   const seedParent1Clause = `${seedParent1
     .map(makeClause)
     .filter((c) => c)
-    .join(" and ")}`;
+    .join(' and ')}`;
   const pollenParent2Clause = `${pollenParent2
     .map(makeClause)
     .filter((c) => c)
-    .join(" and ")}`;
+    .join(' and ')}`;
   const combo1 = [seedParent1Clause, pollenParent2Clause]
     .filter((c) => c)
-    .join(" and ");
+    .join(' and ');
 
   const seedParent2Clause = `${seedParent2
     .map(makeClause)
     .filter((c) => c)
-    .join(" and ")}`;
+    .join(' and ')}`;
   const pollenParent1Clause = `${pollenParent1
     .map(makeClause)
     .filter((c) => c)
-    .join(" and ")}`;
+    .join(' and ')}`;
   const combo2 = [seedParent2Clause, pollenParent1Clause]
     .filter((c) => c)
-    .join(" and ");
+    .join(' and ');
 
-  return [combo1, combo2].join(" or ");
+  return [combo1, combo2].join(' or ');
 };

@@ -1,9 +1,12 @@
-import { query } from 'lib/datasette';
+import { query } from 'lib/datasette2';
 import { UNKNOWN_CHAR } from 'lib/string';
 import { massageQueryTerm } from 'lib/utils';
+import { NextRequest } from 'next/server';
 
-export default async (req, res) => {
-  const names = JSON.parse(req.body);
+export const config = { runtime: 'edge' };
+
+export default async (req: NextRequest) => {
+  const names = await req.json();
 
   const q = names
     .map((n) => {
@@ -19,7 +22,5 @@ export default async (req, res) => {
     })
     .join(' OR ');
 
-  const d = await query(`SELECT * FROM rhs WHERE ${q}`);
-
-  res.status(200).json(d ?? []);
+  return query(`SELECT * FROM rhs WHERE ${q}`);
 };

@@ -1,21 +1,15 @@
-import React from "react";
+import { Grex } from 'lib/types';
+import useSWR from 'swr';
 
-export const useProgeny = (grex) => {
-  const [progeny, setProgeny] = React.useState([]);
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-  React.useEffect(() => {
-    (async () => {
-      if (grex && grex.genus && grex.epithet) {
-        const fetched = await fetch(
-          `/api/progeny?genus=${grex.genus}&epithet=${encodeURIComponent(
-            grex.epithet
-          )}`
-        );
-        const json = await fetched.json();
-        setProgeny(json);
-      }
-    })();
-  }, [grex, grex?.genus, grex?.epithet]);
+export const useProgeny = (grex: Grex) => {
+  let url = '/api/progeny';
 
-  return progeny;
+  url += `?genus=${encodeURIComponent(grex.genus)}`;
+  url += `&epithet=${encodeURIComponent(grex.epithet)}`;
+
+  const { data = [], isLoading } = useSWR(url, fetcher);
+
+  return data;
 };

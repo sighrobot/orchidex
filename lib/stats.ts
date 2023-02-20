@@ -24,28 +24,26 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
         SELECT
             (CAST(count(*) AS FLOAT) / (SELECT count(*) FROM rhs WHERE registrant_name = "${grex.registrant_name}") ) as pct
         FROM rhs
-        WHERE genus = '${grex.genus}'
+        WHERE genus = '${grex.genus}' AND epithet != ''
         AND registrant_name = "${grex.registrant_name}"
       `;
     case 'seed_parent_registrants':
       return `SELECT 
-      rhs1.registrant_name AS r1, 
-      rhs2.registrant_name AS r2, 
+      rhs2.registrant_name AS r2,
       COUNT(*) AS c
     FROM 
       rhs rhs1
       JOIN rhs rhs2 
         ON rhs1.seed_parent_genus = rhs2.genus 
         AND rhs1.seed_parent_epithet = rhs2.epithet 
-        AND rhs2.registrant_name != ''
-        AND rhs2.registrant_name not like 'This is a natural hybrid%'
-    WHERE rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
+        AND r2 != ''
+        AND r2 not like 'This is a natural hybrid%'
+    WHERE  rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
     GROUP BY 
-      rhs1.registrant_name, rhs2.registrant_name order by c desc LIMIT 5;
+      r2 order by c desc, r2 LIMIT 5;
     `;
     case 'pollen_parent_registrants':
       return `SELECT 
-        rhs1.registrant_name AS r1, 
         rhs2.registrant_name AS r2, 
         COUNT(*) AS c
       FROM 
@@ -53,15 +51,14 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
         JOIN rhs rhs2 
           ON rhs1.pollen_parent_genus = rhs2.genus 
           AND rhs1.pollen_parent_epithet = rhs2.epithet 
-          AND rhs2.registrant_name != ''
-          AND rhs2.registrant_name not like 'This is a natural hybrid%'
+          AND r2 != ''
+          AND r2 not like 'This is a natural hybrid%'
       WHERE rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
       GROUP BY 
-        rhs1.registrant_name, rhs2.registrant_name order by c desc LIMIT 5;
+        r2 order by c desc, r2 LIMIT 5;
       `;
     case 'seed_parent_originators':
       return `SELECT 
-        rhs1.registrant_name AS r1, 
         rhs2.originator_name AS r2, 
         COUNT(*) AS c
       FROM 
@@ -69,15 +66,14 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
         JOIN rhs rhs2 
           ON rhs1.seed_parent_genus = rhs2.genus 
           AND rhs1.seed_parent_epithet = rhs2.epithet 
-          AND rhs2.originator_name != ''
-          AND rhs2.originator_name not like 'This is a natural hybrid%'
+          AND r2 != ''
+          AND r2 not like 'This is a natural hybrid%'
       WHERE rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
       GROUP BY 
-        rhs1.registrant_name, rhs2.originator_name order by c desc LIMIT 5;
+        r2 order by c desc, r2 LIMIT 5;
       `;
     case 'pollen_parent_originators':
       return `SELECT 
-          rhs1.registrant_name AS r1, 
           rhs2.originator_name AS r2, 
           COUNT(*) AS c
         FROM 
@@ -85,11 +81,11 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
           JOIN rhs rhs2 
             ON rhs1.pollen_parent_genus = rhs2.genus 
             AND rhs1.pollen_parent_epithet = rhs2.epithet 
-            AND rhs2.originator_name != ''
-            AND rhs2.originator_name not like 'This is a natural hybrid%'
+            AND r2 != ''
+            AND r2 not like 'This is a natural hybrid%'
         WHERE rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
         GROUP BY 
-          rhs1.registrant_name, rhs2.originator_name order by c desc LIMIT 5;
+          r2 order by c desc, r2 LIMIT 5;
         `;
     case 'year_genus_pct':
       return `SELECT
@@ -100,7 +96,7 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
     FROM rhs
     WHERE genus = '${
       grex.genus
-    }' AND substr(date_of_registration, 0, 5) = '${grex.date_of_registration.slice(
+    }' AND epithet != '' AND substr(date_of_registration, 0, 5) = '${grex.date_of_registration.slice(
         0,
         4,
       )}'
