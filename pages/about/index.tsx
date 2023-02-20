@@ -5,30 +5,26 @@ import style from './style.module.scss';
 
 export default function About() {
   return (
-    <Container className={style.about} title='About - Orchidex'>
-      {/* <article className={style.article}>
-        <h4>Abe Rubenstein</h4>
-        <p>
-          A software engineer and educator whose work involves data
-          visualization and data science applications, he previously served as
-          technical lead of Enigma Public, a search and discovery platform for
-          public data, and taught programming and design courses at NYU, RISD,
-          and The New School.
-        </p>
-      </article> */}
+    <Container className={style.about} title='About - Orchidex' heading='About'>
+      <article>
+        <H3>FAQ</H3>
+        <dl>
+          <dt>
+            <H3>Where does the data come from?</H3>
+          </dt>
+          <dd>
+            Please see the <Link href='/data'>Data page</Link> for details.
+          </dd>
+        </dl>
+      </article>
 
       <article>
         <p>
           Orchidex is a project by{' '}
-          <Link href='https://abe.sh'>Abe Rubenstein</Link> &amp; KT Paeth
-        </p>
-      </article>
-
-      <article className={style.support}>
-        <H3>Keep this platform free</H3>
-        <p>
-          Contribute to the human effort and infrastructure that makes this
-          platform possible.
+          <Link target='_blank' href='https://abe.sh'>
+            Abe Rubenstein
+          </Link>{' '}
+          &amp; KT Paeth
         </p>
       </article>
     </Container>

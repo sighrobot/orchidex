@@ -25,7 +25,7 @@ export const Resources = ({ grex, blueNantaSpeciesId }: ResourcesProps) => {
         {...SHARED_PROPS}
         href={`https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${grex.id}`}
       >
-        RHS IOR
+        RHS
       </a>
 
       <a

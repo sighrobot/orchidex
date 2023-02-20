@@ -1,17 +1,22 @@
 .about {
   article {
+    padding: 20px 10px;
+
     a {
       text-decoration: underline;
-      font-weight: 500;
+      // font-weight: 500;
     }
-    padding: 20px 10px;
+
+    h3 + p {
+      margin-top: 10px;
+    }
 
     p {
       max-width: 600px;
     }
-  }
-}
 
-.support {
-  background: rgba(255, 0, 255, 0.05);
+    dd {
+      margin: 0;
+    }
+  }
 }

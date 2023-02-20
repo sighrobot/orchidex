@@ -1,13 +1,11 @@
 import { Container } from 'components/container/container';
-import { H2, H3 } from 'components/layout';
+import { H3, SupportBanner } from 'components/layout';
 import Link from 'next/link';
 import style from './style.module.scss';
 
 export default function Data() {
   return (
-    <Container className={style.data} title='Data - Orchidex'>
-      <H2>Data</H2>
-
+    <Container className={style.data} title='Data - Orchidex' heading='Data'>
       <article>
         <H3>Provenance</H3>
         <p>
@@ -19,13 +17,22 @@ export default function Data() {
       </article>
 
       <article>
+        <H3>Attribution</H3>
+        <p>
+          When possible, direct hyperlinks are provided from pages on this site
+          to pages owned by the data publishers. In addition, a footer is
+          rendered on every page acknowledging attribution and copyright.
+        </p>
+      </article>
+
+      <article>
         <H3>Quality</H3>
         <p>
           Every effort has been made to present data as true to source as
           possible. Before raising a data quality issue,{' '}
           <em>
-            please kindly verify that our representation of the data actually
-            differs from that of the source.
+            please kindly verify that the representation of data on this site
+            actually differs from that of the source.
           </em>
         </p>
       </article>
@@ -33,18 +40,10 @@ export default function Data() {
       <article>
         <H3>Report an issue</H3>
         <p>
-          If you believe there is an error on Orchidex that does not exist in
-          the source data, please don't hesitate to email{' '}
+          If you believe there is an error on this site that does not exist in
+          the source data, please email{' '}
           <Link href='mailto:info@orchidex.org'>info@orchidex.org</Link> with a
           link to the specific page(s) and a brief description of the issue.
-        </p>
-      </article>
-
-      <article className={style.support}>
-        <H3>Keep this platform free</H3>
-        <p>
-          The development, infrastructure, and human capital are not for profit
-          and{' '}
         </p>
       </article>
     </Container>
