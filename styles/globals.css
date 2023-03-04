@@ -40,10 +40,6 @@ ul {
   margin: 0;
 }
 
-svg text {
-  font-family: inherit !important;
-}
-
 a {
   color: black;
   text-decoration: none;
@@ -53,55 +49,8 @@ a:hover {
   text-decoration: underline;
 }
 
-#chart_div,
-.google-visualization-orgchart-node {
-  transform: rotate(180deg);
-}
-
-.google-visualization-orgchart-node {
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
-  font-family: inherit !important;
-  cursor: pointer !important;
-  padding: 0px !important;
-}
-
-.seed,
-.pollen,
-.root {
-  color: white;
-  padding: 5px !important;
-  min-height: 60px;
-  min-width: 70px;
-}
-
-.root {
-  background: orchid;
-}
-
-.seed {
-  background: #444;
-}
-
-.pollen {
-  background: #777;
-}
-
-.google-visualization-orgchart-linenode {
-  border-color: rgba(0, 0, 0, 0.5) !important;
-}
-
-#chart_div {
-  min-width: 800px;
-}
-
-.chart-wrap {
-  overflow-x: auto;
-}
-
-@media (max-width: 800px) {
-  #chart_div {
-    min-width: 800px;
-  }
+path.link {
+  stroke: gray;
+  stroke-width: 2;
+  stroke-opacity: 0.25;
 }

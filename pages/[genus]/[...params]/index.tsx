@@ -17,7 +17,6 @@ import { Tabs } from 'components/tabs/tabs';
 import { isNaturalHybrid, isSpecies } from 'components/pills/pills';
 import { StatBox, StatCard } from 'components/stat/stat';
 import style from './style.module.scss';
-import { ButtonSimple } from 'components/button-simple/button-simple';
 import { Grex as GrexType } from 'lib/types';
 
 import { useWcvp } from 'lib/hooks/useWcvp';
@@ -44,13 +43,9 @@ export async function getServerSideProps(context) {
 }
 
 export const SpeciesAncestry = ({ grex }) => {
-  const { data, loading, load } = useSpeciesAncestry(grex);
+  const { data, isLoading } = useSpeciesAncestry(grex);
 
-  if (!loading && data === null) {
-    return <ButtonSimple onClick={load}>Calculate!</ButtonSimple>;
-  }
-
-  if (loading) {
+  if (isLoading) {
     return <>Loading...</>;
   }
 

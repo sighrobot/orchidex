@@ -1,120 +1,145 @@
 import { renderToString } from 'react-dom/server';
-import React from 'react';
+import React, { useRef } from 'react';
 import { useAncestry } from 'lib/hooks/useAncestry';
-import Script from 'next/script';
-import { useRouter } from 'next/router';
-import { find, get, sortBy } from 'lodash';
+import { orderBy } from 'lodash';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
+import {
+  isIntergeneric,
+  isNaturalHybrid,
+  isPrimary,
+  isSpecies,
+} from 'components/pills/pills';
+import cn from 'classnames';
+import style from './ancestry.module.scss';
+import Link from 'next/link';
+import { grexToHref } from 'components/name/name';
 
-import style from './list.module.scss';
+let chart = null;
 
-export const AncestryViz = ({ grex }) => {
-  const router = useRouter();
-  const ancestry = useAncestry(grex, 4);
+export const AncestryViz = ({ grex, maxDepth = false }) => {
+  const d3Container = useRef(null);
+  const ancestry = useAncestry(grex, maxDepth ? 1000 : 3);
 
   React.useEffect(() => {
-    const google = get(global, 'google') as any;
+    const { OrgChart } = require('d3-org-chart');
 
-    if (!google) {
+    if (!ancestry.nodes[0]) {
       return;
     }
 
-    let data;
-    function drawChart() {
-      data = new google.visualization.DataTable();
-      data.addColumn('string', 'name');
-      data.addColumn('string', 'parent');
-      data.addColumn('string', 'toolTip');
-
-      const formattedRoot = formatName(ancestry.nodes[0]);
-
-      const isSpecies =
-        formattedRoot.short.epithet &&
-        isNaN(Number(formattedRoot.short.epithet[0])) &&
-        formattedRoot.short.epithet[0] ===
-          formattedRoot.short.epithet[0].toLowerCase();
-      const repairedEpithet = repairMalformedNaturalHybridEpithet(
-        formattedRoot.short,
-      );
-
-      const rows = [
-        [
-          {
-            v: ancestry.nodes[0]?.id,
-            f: renderToString(
-              <div className='root'>
-                <em>{formattedRoot.short.genus}</em>{' '}
-                {isSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
-              </div>,
-            ),
-          },
-          '',
-          '',
-        ],
-        ...sortBy(ancestry.links, 'type').map((l) => {
-          const n = find(ancestry.nodes, { id: l.source });
-          const formatted = formatName(n);
-          const isSpecies =
-            formatted.short.epithet &&
-            formatted.short.epithet[0] ===
-              formatted.short.epithet[0].toLowerCase();
-          const repairedEpithet = repairMalformedNaturalHybridEpithet(
-            formatted.short,
-          );
-          return [
-            {
-              v: l.source,
-              f: renderToString(
-                <div className={l.type}>
-                  <em>{formatted.short.genus}</em>{' '}
-                  {isSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
-                </div>,
-              ),
-            },
-            l.target,
-            '',
-          ];
-        }),
-      ];
-
-      // For each orgchart box, provide the name, manager, and tooltip to show.
-      data.addRows(rows);
-
-      // Create the chart.
-      var chart = new google.visualization.OrgChart(
-        document.getElementById('chart_div'),
-      );
-      // Draw the chart, setting the allowHtml option to true for the tooltips.
-      chart.draw(data, { allowHtml: true });
-      google.visualization.events.addListener(chart, 'select', (e) => {
-        const id = rows[chart.getSelection()[0].row][0].v.split('-')[0];
-        if (id !== grex.id) {
-          const destGrex = ancestry.nodes.find(
-            (n) => n.id.split('-')[0] === id,
-          );
-
-          router.push(
-            `/${encodeURIComponent(destGrex.genus)}/${encodeURIComponent(
-              destGrex.epithet,
-            )}/${destGrex.id.split('-')[0]}`,
-          );
-        }
-      });
+    if (!chart) {
+      chart = new OrgChart();
     }
 
-    google.charts.load('current', { packages: ['orgchart'] });
-    google.charts.setOnLoadCallback(drawChart);
-  }, [ancestry]);
+    chart
+      .svgHeight(
+        window.innerHeight < 800
+          ? window.innerHeight * 0.5
+          : window.innerHeight * 0.75,
+      )
+      .container(d3Container.current)
+      .duration(200)
+      .compact(false)
+      .nodeWidth((d) => 150)
+      .nodeHeight((a) => 108)
+      .childrenMargin((d) => 100)
+      .siblingsMargin((d) => 50)
+      .buttonContent(() => null)
+      .data([
+        ...orderBy(ancestry.links, ['type'], ['desc']).map((l) => {
+          return {
+            ...ancestry.nodeMap[l.source],
+            type: l.type,
+            id: l.source,
+            parentId: l.target,
+          };
+        }),
+        {
+          ...ancestry.nodeMap[ancestry.nodes[0].id],
+          id: ancestry.nodes[0].id,
+        },
+      ])
+      .nodeContent(({ data: n }) => {
+        const formatted = formatName(n);
+        const nIsSpecies = isSpecies(n);
+        const repairedEpithet = repairMalformedNaturalHybridEpithet({
+          epithet: formatted.short.epithet,
+        });
+        const href = grexToHref({ ...n, id: n.id.split('-')[0] });
+        const content = (
+          <div
+            className={cn(style.node, {
+              [style.root]: !n.type,
+              [style[n.type]]: n.type,
+            })}
+            // style={{ opacity: n.l ? 1 - (n.l / n.maxL) * 0.25 : 1 }}
+          >
+            {nIsSpecies && (
+              <div className={cn(style.pill, style.species)}>
+                <span>Species</span>
+              </div>
+            )}
+            {isIntergeneric(n) && (
+              <div className={cn(style.pill, style.intergeneric)}>
+                <span>Intergeneric</span>
+              </div>
+            )}
+            {isPrimary(n) && (
+              <div className={cn(style.pill, style.primary)}>
+                <span>Primary</span>
+              </div>
+            )}
+            {isNaturalHybrid(n) && (
+              <div className={cn(style.pill, style.natural)}>
+                <span>Natural</span>
+              </div>
+            )}
 
-  if (typeof document !== 'undefined') {
-    const el = document.querySelector('.chart-wrap');
-    if (el) el.scrollTo(800 / 2 - window.innerWidth / 2, 0);
-  }
+            <div className={style.name}>
+              <em>{formatted.short.genus}</em>{' '}
+              {nIsSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
+            </div>
+            {
+              <div className={cn(style.pill, style.level)}>
+                {!nIsSpecies && (
+                  <span>{n.date_of_registration.slice(0, 4)}</span>
+                )}
+                {n.l && <span>{n.l}º</span>}
+              </div>
+            }
+          </div>
+        );
+
+        return renderToString(
+          n.type ? (
+            <Link
+              className={style.nodeLink}
+              href={href}
+              target={maxDepth ? '_blank' : undefined}
+            >
+              {content}
+            </Link>
+          ) : (
+            content
+          ),
+        );
+      })
+      .layout('bottom');
+
+    chart.render().expandAll();
+    chart.fit();
+
+    return () => {
+      chart = null;
+    };
+  }, [d3Container.current, ancestry]);
 
   return (
-    <div className={`${style.ancestry} ancestry-viz chart-wrap`}>
-      <Script src='//www.gstatic.com/charts/loader.js' />
-      <div id='chart_div' />
+    <div className={style.viz}>
+      {/* <menu>
+        <button onClick={() => chart.fit()}>Reset view</button>
+      </menu> */}
+      <div className={style.vizContainer} ref={d3Container} />
     </div>
   );
 };
