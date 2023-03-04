@@ -5,6 +5,7 @@ import { find, flatten, partition } from 'lodash';
 import { isSpecies } from 'components/pills/pills';
 import { APP_URL } from 'lib/constants';
 import { Grex } from 'lib/types';
+import useSWR from 'swr';
 
 export const fetchGrexByName = async ({ genus, epithet }): Promise<Grex> => {
   if (!genus || !epithet) return null;
@@ -55,16 +56,30 @@ const getNextGeneration = async (names = []) => {
     return have;
   }
 
-  const f = await fetch('/api/ancestry', {
-    method: 'POST',
-    body: JSON.stringify(namesNeed),
-  });
+  // https://stackoverflow.com/a/44687374/2502505
+  let [lists, chunkSize] = [namesNeed, 24];
+  lists = [...Array(Math.ceil(lists.length / chunkSize))].map((_) =>
+    lists.splice(0, chunkSize),
+  );
 
-  const gen = await f.json();
+  const fetches = await Promise.all(
+    lists.map((list) =>
+      fetch('/api/ancestry', {
+        method: 'POST',
+        body: JSON.stringify(list),
+      }),
+    ),
+  );
 
-  gen.forEach((g) => {
-    nameCache.set(`${g.genus} ${g.epithet}`, g);
-  });
+  const gen = [];
+
+  for (let f of fetches) {
+    const genPart = await f.json();
+    genPart.forEach((g) => {
+      nameCache.set(`${g.genus} ${g.epithet}`, g);
+    });
+    gen.push(...genPart);
+  }
 
   return [...have, ...gen];
 };
@@ -106,36 +121,22 @@ const levels = async (grex, level = 1) => {
   return { scores, map };
 };
 
-export const useSpeciesAncestry = (grex) => {
-  const [ancestry, setAncestry] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
+export const useSpeciesAncestry = (grex: Grex | null) => {
+  const fetcher = () => (grex ? levels(grex, 100) : null);
+  const { data, isLoading } = useSWR(grex?.id, fetcher);
 
-  const load = React.useCallback(async () => {
-    setLoading(true);
+  if (grex) {
+    ancestryIdCache.set(grex.id, true);
+  }
 
-    if (grex.id) {
-      const { scores, map } = await levels(grex, 100);
+  let ancestry = data
+    ? Object.keys(data.scores).map((k) => ({
+        score: data.scores[k],
+        grex: data.map[k],
+      }))
+    : null;
 
-      setAncestry(
-        Object.keys(scores).map((k) => ({
-          score: scores[k],
-          grex: map[k],
-        })),
-      );
-      setLoading(false);
-      ancestryIdCache.set(grex.id, true);
-    }
-  }, [grex.id]);
-
-  React.useEffect(() => {
-    if (ancestryIdCache.get(grex.id)) {
-      load();
-    } else {
-      setAncestry(null);
-    }
-  }, [load, grex.id]);
-
-  return { data: ancestry, loading, load };
+  return { data: ancestry, isLoading };
 };
 
 export const useAncestry = (grex, level = 2) => {
@@ -145,17 +146,32 @@ export const useAncestry = (grex, level = 2) => {
     nodeMap: {},
   });
 
+  const fetcher = () =>
+    fetch(
+      `/api/ancestry2?genus=${encodeURIComponent(
+        grex.genus,
+      )}&epithet=${encodeURIComponent(grex.epithet)}`,
+    ).then((resp) => resp.json());
+  const { data = [] } = useSWR([grex.genus, grex.epithet], fetcher);
+
   React.useEffect(() => {
+    if (data.length === 0) {
+      return;
+    }
+
     (async () => {
+      data.forEach((d) => {
+        nameCache.set(`${d.genus} ${d.epithet}`, d);
+      });
+
       const nodes = [grex];
       const links = [];
       const nodeMap = { [grex.id]: grex };
 
       let num = 0;
-      let seed = 1;
-      let pollen = 1;
+      let maxL = 0;
 
-      const handleParent = (type, counter, parent, child, id) => {
+      const addParentToGraph = (type, counter, parent, child, id) => {
         links.push({
           source: id,
           target: child.id,
@@ -164,54 +180,57 @@ export const useAncestry = (grex, level = 2) => {
         });
 
         nodes.push({ ...parent, id, type, l: counter });
-        nodeMap[id] = { ...parent, id, type, l: counter };
-        nameCache.set(`${parent.genus} ${parent.epithet}`, parent);
+
+        maxL = counter;
       };
 
-      const handleSeed = (parent, child) => {
+      const handleSeed = (parent, child, n = 0) => {
         if (parent) {
           num++;
           const id = `${parent.id}-${num}`;
 
-          handleParent('seed', seed, parent, child, id);
+          addParentToGraph('seed', n, parent, child, id);
 
-          if (seed < level) {
-            seed++;
-            return fetchParents({ ...parent, id });
+          if (n < level) {
+            return fetchParents({ ...parent, id }, n);
           }
         }
       };
 
-      const handlePollen = (parent, child) => {
+      const handlePollen = (parent, child, n = 0) => {
         if (parent) {
           num++;
           const id = `${parent.id}-${num}`;
 
-          handleParent('pollen', pollen, parent, child, id);
+          addParentToGraph('pollen', n, parent, child, id);
 
-          if (pollen < level) {
-            pollen++;
-            return fetchParents({ ...parent, id });
+          if (n < level) {
+            return fetchParents({ ...parent, id }, n);
           }
         }
       };
 
-      const fetchParents = async (child) => {
+      const fetchParents = async (child, n = 0) => {
         const seedPromise = fetchGrexByName({
           genus: child.seed_parent_genus,
           epithet: child.seed_parent_epithet,
-        }).then((parent) => handleSeed(parent, child));
+        }).then((parent) => handleSeed(parent, child, n + 1));
 
         const pollenPromise = fetchGrexByName({
           genus: child.pollen_parent_genus,
           epithet: child.pollen_parent_epithet,
-        }).then((parent) => handlePollen(parent, child));
+        }).then((parent) => handlePollen(parent, child, n + 1));
 
         return Promise.all([seedPromise, pollenPromise]);
       };
 
       if (grex && (grex.seed_parent_genus || grex.pollen_parent_genus)) {
         await fetchParents(grex);
+
+        nodes.forEach((n) => {
+          n.maxL = maxL;
+          nodeMap[n.id] = n;
+        });
 
         if (nodes.length > 1) {
           setAncestry({ nodes, links, nodeMap });
@@ -222,7 +241,7 @@ export const useAncestry = (grex, level = 2) => {
         setAncestry({ nodes: [grex], links: [], nodeMap });
       }
     })();
-  }, [grex]);
+  }, [grex, data]);
 
   return ancestry;
 };

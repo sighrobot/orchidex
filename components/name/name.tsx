@@ -18,6 +18,16 @@ type NameProps = {
   as?: keyof JSX.IntrinsicElements;
 };
 
+export const grexToHref = (grex: Grex) => {
+  const formattedName = formatName(grex);
+  const href = grex.id
+    ? `/${kebabCase(formattedName.long.genus)}/${kebabCase(
+        formattedName.long.epithet,
+      )}/${grex.id}`
+    : `/${encodeURIComponent(grex.genus)}/${encodeURIComponent(grex.epithet)}`;
+  return href;
+};
+
 export const Name = ({
   as = 'span',
   className,

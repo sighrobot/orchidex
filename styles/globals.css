@@ -40,10 +40,6 @@ ul {
   margin: 0;
 }
 
-svg text {
-  font-family: inherit !important;
-}
-
 a {
   color: black;
   text-decoration: none;
@@ -53,73 +49,8 @@ a:hover {
   text-decoration: underline;
 }
 
-#chart_div,
-.google-visualization-orgchart-node,
-.svg-chart-container {
-  /* transform: rotate(180deg); */
-}
-
-.google-visualization-orgchart-node {
-  background: none !important;
-  border: none !important;
-  box-shadow: none !important;
-  font-family: inherit !important;
-  cursor: pointer !important;
-  padding: 0px !important;
-}
-
-.node {
-  color: black;
-  display: flex;
-  flex-direction: column;
-  font-size: 16px;
-  font-family: 'IBM Plex Mono', monospace;
-  border: 1px solid black;
-}
-
-.node > .name {
-  padding: 20px 10px;
-}
-
-.node .date {
-  padding: 0 10px;
-  line-height: 18px;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.25);
-  background: white;
-  border-top: 1px solid black;
-  height: 20px;
-}
-
-.seed.species,
-.pollen.species,
-.root.species {
-  border-bottom: 10px solid #16161d;
-}
-
-.root {
-  background: orchid;
-}
-
-.seed {
-  background: #444;
-}
-
-.pollen {
-  background: #777;
-}
-
 path.link {
-  stroke: black;
+  stroke: gray;
   stroke-width: 2;
-}
-
-.chart-wrap {
-  margin: 0 -10px;
-}
-
-@media (max-width: 800px) {
-  #chart_div {
-    min-width: 800px;
-  }
+  stroke-opacity: 0.25;
 }

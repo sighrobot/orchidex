@@ -1,32 +1,24 @@
 import { renderToString } from 'react-dom/server';
 import React, { useRef } from 'react';
 import { useAncestry } from 'lib/hooks/useAncestry';
-import { sortBy } from 'lodash';
+import { orderBy } from 'lodash';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
-import { useRouter } from 'next/router';
+import {
+  isIntergeneric,
+  isNaturalHybrid,
+  isPrimary,
+  isSpecies,
+} from 'components/pills/pills';
+import cn from 'classnames';
+import style from './ancestry.module.scss';
+import Link from 'next/link';
+import { grexToHref } from 'components/name/name';
+
+let chart = null;
 
 export const AncestryViz = ({ grex, maxDepth = false }) => {
   const d3Container = useRef(null);
-  const router = useRouter();
-  const ancestry = useAncestry(grex, maxDepth ? 1000 : 2);
-  const isSmall =
-    typeof window === 'undefined' ? false : window.innerWidth < 600;
-  let chart = null;
-
-  const handleResetView = React.useCallback(() => {
-    if (chart) {
-      if (maxDepth || !isSmall) {
-        chart.fit();
-      } else {
-        chart.zoomTreeBounds({
-          x0: -window.innerWidth * 0.85,
-          x1: window.innerWidth * 0.85,
-          y0: 300,
-          y1: -650,
-        });
-      }
-    }
-  }, [isSmall, maxDepth]);
+  const ancestry = useAncestry(grex, maxDepth ? 1000 : 3);
 
   React.useLayoutEffect(() => {
     const { OrgChart } = require('d3-org-chart');
@@ -40,11 +32,21 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
     }
 
     chart
-      .svgHeight(maxDepth ? window.innerHeight * 0.75 : 350)
+      .svgHeight(
+        window.innerHeight < 800
+          ? window.innerHeight * 0.5
+          : window.innerHeight * 0.75,
+      )
       .container(d3Container.current)
-
+      .duration(200)
+      .compact(false)
+      .nodeWidth((d) => 150)
+      .nodeHeight((a) => 108)
+      .childrenMargin((d) => 100)
+      .siblingsMargin((d) => 50)
+      .buttonContent(() => null)
       .data([
-        ...sortBy(ancestry.links, ['type', 'genus', 'epithet']).map((l) => {
+        ...orderBy(ancestry.links, ['type'], ['desc']).map((l) => {
           return {
             ...ancestry.nodeMap[l.source],
             type: l.type,
@@ -57,69 +59,83 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
           id: ancestry.nodes[0].id,
         },
       ])
-      .nodeWidth((a, b, c) => {
-        return maxDepth || !isSmall ? 200 : 150;
-      })
-      .nodeHeight((a) => {
-        return 80;
-      })
-      .childrenMargin((d) => (d.depth === 0 ? 100 : (d.depth + 1) * 25))
-
       .nodeContent(({ data: n }) => {
-        const formatted = formatName(n, {
-          shortenGenus: true,
-          shortenEpithet: true,
+        const formatted = formatName(n);
+        const nIsSpecies = isSpecies(n);
+        const repairedEpithet = repairMalformedNaturalHybridEpithet({
+          epithet: formatted.short.epithet,
         });
-        const isSpecies =
-          formatted.epithet &&
-          formatted.epithet[0] === formatted.epithet[0].toLowerCase();
-        const repairedEpithet = repairMalformedNaturalHybridEpithet(formatted);
+        const href = grexToHref({ ...n, id: n.id.split('-')[0] });
+        const content = (
+          <div
+            className={cn(style.node, {
+              [style.root]: !n.type,
+              [style[n.type]]: n.type,
+            })}
+            // style={{ opacity: n.l ? 1 - (n.l / n.maxL) * 0.25 : 1 }}
+          >
+            {nIsSpecies && (
+              <div className={cn(style.pill, style.species)}>
+                <span>Species</span>
+              </div>
+            )}
+            {isIntergeneric(n) && (
+              <div className={cn(style.pill, style.intergeneric)}>
+                <span>Intergeneric</span>
+              </div>
+            )}
+            {isPrimary(n) && (
+              <div className={cn(style.pill, style.primary)}>
+                <span>Primary</span>
+              </div>
+            )}
+            {isNaturalHybrid(n) && (
+              <div className={cn(style.pill, style.natural)}>
+                <span>Natural</span>
+              </div>
+            )}
+
+            <div className={style.name}>
+              <em>{formatted.short.genus}</em>{' '}
+              {nIsSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
+            </div>
+            {
+              <div className={cn(style.pill, style.level)}>
+                {!nIsSpecies && (
+                  <span>{n.date_of_registration.slice(0, 4)}</span>
+                )}
+                {n.l && <span>{n.l}º</span>}
+              </div>
+            }
+          </div>
+        );
 
         return renderToString(
-          <div
-            className={`node ${n.type ? n.type : 'root'} ${
-              isSpecies ? 'species' : ''
-            }`}
-          >
-            <div className='name'>
-              <em>{formatted.genus}</em>{' '}
-              {isSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
-            </div>
-            {n.date_of_registration && (
-              <div className='date'>{n.date_of_registration.slice(0, 4)}</div>
-            )}
-          </div>,
+          n.type ? (
+            <Link
+              className={style.nodeLink}
+              href={href}
+              target={maxDepth ? '_blank' : undefined}
+            >
+              {content}
+            </Link>
+          ) : (
+            content
+          ),
         );
-      })
-      .onNodeClick((id: string) => {
-        router.push(`/grex/${id.split('-')[0]}`);
       })
       .layout('bottom');
 
-    if (!maxDepth && isSmall) {
-      chart
-        .neightbourMargin((d) => 20)
-        .siblingsMargin((d) => 20)
-        .childrenMargin((d) => 80)
-        .compactMarginPair((d) => 40);
-    }
-
     chart.render().expandAll();
-
-    handleResetView();
-  }, [isSmall, handleResetView, d3Container.current, ancestry]);
-
-  const handleExpandAll = React.useCallback(() => {
-    chart.expandAll();
-  }, []);
+    chart.fit();
+  }, [d3Container.current, ancestry]);
 
   return (
-    <div className='ancestry-viz'>
+    <div className={style.viz}>
       <menu>
-        <button onClick={handleResetView}>Re-center</button>
-        <button onClick={handleExpandAll}>Expand All</button>
+        <button onClick={() => chart.fit()}>Reset view</button>
       </menu>
-      <div ref={d3Container} />
+      <div className={style.vizContainer} ref={d3Container} />
     </div>
   );
 };

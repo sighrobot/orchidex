@@ -329,7 +329,7 @@ caniuse-lite@^1.0.30001406:
   optionalDependencies:
     fsevents "~2.3.2"
 
-classnames@^2.3.2:
+classnames@2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.3.2.tgz#351d813bf0137fcc6a76a16b88208d2560a0d924"
   integrity sha512-CSbhY4cFEJRe6/GQzIk5qXZ4Jeg5pcsP7b5peFSDpffpe1cqjASH/n9UTjBwOp6XpMSTwQ8Za2K5V02ueA7Tmw==
@@ -420,10 +420,10 @@ d3-array@3:
   resolved "https://registry.yarnpkg.com/d3-ease/-/d3-ease-3.0.1.tgz#9658ac38a2140d59d346160f1f6c30fda0bd12f4"
   integrity sha512-wR/XK3D3XcLIZwpbvQwQ5fK+8Ykds1ip7A2Txe0yxncXSdq1L9skcG7blcedkOX+ZcgxGAmLX1FrRGbADwzi0w==
 
-d3-flextree@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/d3-flextree/-/d3-flextree-2.1.1.tgz#0e6b8b89b0602b073db2f488b5b8030ce318dde9"
-  integrity sha512-P0SK6bRm0PT5ZZON8Lh/aOcFfr4rO53kaYCXCgwBCvsHJcYjtOb8fNrgmpOmCMCgfrT9EczXzD8wqEO8mlkBrA==
+d3-flextree@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/d3-flextree/-/d3-flextree-2.1.2.tgz#1f0419f4e6c972e096dd884627a87b6b38e7ba73"
+  integrity sha512-gJiHrx5uTTHq44bjyIb3xpbmmdZcWLYPKeO9EPVOq8EylMFOiH2+9sWqKAiQ4DcFuOZTAxPOQyv0Rnmji/g15A==
   dependencies:
     d3-hierarchy "^1.1.5"
 
@@ -461,13 +461,13 @@ d3-hierarchy@^1.1.5, d3-hierarchy@^1.1.8:
   dependencies:
     d3-color "1 - 3"
 
-d3-org-chart@2.3.3:
-  version "2.3.3"
-  resolved "https://registry.yarnpkg.com/d3-org-chart/-/d3-org-chart-2.3.3.tgz#001f8cc3b80d744df1b076eeb8b31b8562c125e2"
-  integrity sha512-a4zxrvbozgAUid/ZWa66iSrtwGgHFou+0ufRlglr8v0Wpcs65llhdiUKvZnDHhX/cT6auvkbqKAVKQAAJlvrRQ==
+d3-org-chart@2.7.0:
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/d3-org-chart/-/d3-org-chart-2.7.0.tgz#eb1b6222f261bf53a175b12644c6d2e98d0f8f7a"
+  integrity sha512-9MuERRsA1CUVgqBusmR1LyP0+QVhkGBaUmb/MUIHr5iy4psSq1D/W9qwP0WZkNw9/yDQE/JehofQPuyeIT7Z7g==
   dependencies:
     d3-array "3"
-    d3-flextree "2.1.1"
+    d3-flextree "2.1.2"
     d3-hierarchy "3"
     d3-selection "3"
     d3-shape "3"
