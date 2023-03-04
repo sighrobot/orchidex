@@ -37,6 +37,7 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
           ? window.innerHeight * 0.5
           : window.innerHeight * 0.75,
       )
+      .scaleExtent([0.05, 1])
       .container(d3Container.current)
       .duration(200)
       .compact(false)
