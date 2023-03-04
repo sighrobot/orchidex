@@ -20,7 +20,7 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
   const d3Container = useRef(null);
   const ancestry = useAncestry(grex, maxDepth ? 1000 : 3);
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     const { OrgChart } = require('d3-org-chart');
 
     if (!ancestry.nodes[0]) {
@@ -128,13 +128,17 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
 
     chart.render().expandAll();
     chart.fit();
+
+    return () => {
+      chart = null;
+    };
   }, [d3Container.current, ancestry]);
 
   return (
     <div className={style.viz}>
-      <menu>
+      {/* <menu>
         <button onClick={() => chart.fit()}>Reset view</button>
-      </menu>
+      </menu> */}
       <div className={style.vizContainer} ref={d3Container} />
     </div>
   );
