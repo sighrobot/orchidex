@@ -1,20 +1,24 @@
-import { Container } from 'components/container/container';
-import { H2, H3 } from 'components/layout';
-import Link from 'next/link';
-import style from './style.module.scss';
+import { Container } from "components/container/container";
+import { H2, H3 } from "components/layout";
+import Link from "next/link";
+import style from "./style.module.scss";
 
 export default function About() {
   return (
-    <Container className={style.about} title='About - Orchidex' heading='About'>
-      {/* <article>
+    <Container className={style.about} title="About - Orchidex" heading="About">
+      <article>
         <p>
-          Orchidex is a project by{' '}
-          <Link target='_blank' href='https://abe.sh'>
+          Orchidex is a project by{" "}
+          <Link target="_blank" href="https://abe.sh">
             Abe Rubenstein
-          </Link>{' '}
-          &amp; KT Paeth.
+          </Link>{" "}
+          &amp;{" "}
+          <a href="https://ktcharliaorchids.com" target="_blank">
+            KT Paeth
+          </a>
+          .
         </p>
-      </article> */}
+      </article>
 
       <article>
         <H2>FAQ</H2>
@@ -45,7 +49,7 @@ export default function About() {
             <H3>Where does the data come from?</H3>
           </dt>
           <dd>
-            Please see the <Link href='/data'>Data page</Link> for more
+            Please see the <Link href="/data">Data page</Link> for more
             information.
           </dd>
 
@@ -53,8 +57,8 @@ export default function About() {
             <H3>How can I contact you?</H3>
           </dt>
           <dd>
-            Please feel free to email{' '}
-            <Link href='mailto:info@orchidex.org'>info@orchidex.org</Link>. We
+            Please feel free to email{" "}
+            <Link href="mailto:info@orchidex.org">info@orchidex.org</Link>. We
             welcome questions, comments, feature requests, and any other
             feedback you may have.
           </dd>
