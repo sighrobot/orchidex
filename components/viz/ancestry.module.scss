@@ -1,21 +1,15 @@
-// .viz {
-//   .vizContainer {
-//   }
-// }
-
 .nodeLink {
   text-decoration: none !important;
 
   &:hover {
     .node {
-      opacity: 1 !important;
-    }
-    .name,
-    .level {
-      background: #16161d;
-      color: white;
+      opacity: 0.7;
     }
   }
+}
+
+.normal {
+  background: rgba(184, 151, 248, 1);
 }
 
 .node {
@@ -29,31 +23,9 @@
 }
 
 .root {
-  background: white;
-  border: 1px solid black;
-  background: linear-gradient(
-    to bottom right,
-    white 40%,
-    rgba(218, 112, 214, 0.33),
-    rgba(255, 140, 0, 0.5)
-  );
-
-  .name,
-  .level {
-    color: black;
-  }
-
   .level {
     justify-content: flex-start;
   }
-}
-
-.seed {
-  background: #444;
-}
-
-.pollen {
-  background: #777;
 }
 
 .name {
@@ -64,32 +36,21 @@
 .pill {
   padding: 5px;
   font-size: 12px;
+  font-weight: bold;
   text-transform: uppercase;
   display: flex;
   justify-content: space-between;
-  // border-bottom: 1px solid white;
-}
-
-.species {
-  background: #ffb000;
-  background: #648fff;
-}
-
-.primary {
-  background: #785ef0;
-}
-
-.intergeneric {
-  background: #dc267f;
-}
-
-.natural {
-  background: #fe6100;
+  border-bottom: 1px solid white;
 }
 
 .level {
+  padding: 5px;
+  font-size: 16px;
+  text-transform: uppercase;
+  display: flex;
   justify-content: flex-end;
   padding-top: 0;
+  border-bottom: 0;
 
   > *:not(:first-child) {
     margin-left: auto;

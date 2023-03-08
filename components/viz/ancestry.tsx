@@ -11,6 +11,7 @@ import {
 } from 'components/pills/pills';
 import cn from 'classnames';
 import style from './ancestry.module.scss';
+import pillStyle from '../pills/pills.module.scss';
 import Link from 'next/link';
 import { grexToHref } from 'components/name/name';
 
@@ -41,7 +42,7 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
       .container(d3Container.current)
       .duration(200)
       .compact(false)
-      .nodeWidth((d) => 150)
+      .nodeWidth((d) => 160)
       .nodeHeight((a) => 108)
       .childrenMargin((d) => 100)
       .siblingsMargin((d) => 50)
@@ -72,26 +73,39 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
             className={cn(style.node, {
               [style.root]: !n.type,
               [style[n.type]]: n.type,
+              [pillStyle.species]: nIsSpecies,
+              [pillStyle.natural]: isNaturalHybrid(n),
+              [pillStyle.primary]: isPrimary(n),
+              [pillStyle.intergeneric]: isIntergeneric(n),
+              [style.normal]:
+                !nIsSpecies &&
+                !isNaturalHybrid(n) &&
+                !isPrimary(n) &&
+                !isIntergeneric(n),
             })}
-            // style={{ opacity: n.l ? 1 - (n.l / n.maxL) * 0.25 : 1 }}
           >
             {nIsSpecies && (
-              <div className={cn(style.pill, style.species)}>
+              <div className={cn(style.pill)}>
                 <span>Species</span>
               </div>
             )}
-            {isIntergeneric(n) && (
-              <div className={cn(style.pill, style.intergeneric)}>
-                <span>Intergeneric</span>
+
+            {isIntergeneric(n) && isPrimary(n) ? (
+              <div className={cn(style.pill)}>
+                <span>Intergeneric Primary</span>
               </div>
-            )}
-            {isPrimary(n) && (
-              <div className={cn(style.pill, style.primary)}>
+            ) : isPrimary(n) ? (
+              <div className={cn(style.pill)}>
                 <span>Primary</span>
               </div>
-            )}
+            ) : isIntergeneric(n) ? (
+              <div className={cn(style.pill)}>
+                <span>Intergeneric</span>
+              </div>
+            ) : null}
+
             {isNaturalHybrid(n) && (
-              <div className={cn(style.pill, style.natural)}>
+              <div className={cn(style.pill)}>
                 <span>Natural</span>
               </div>
             )}
@@ -101,7 +115,7 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
               {nIsSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
             </div>
             {
-              <div className={cn(style.pill, style.level)}>
+              <div className={cn(style.level)}>
                 {!nIsSpecies && (
                   <span>{n.date_of_registration.slice(0, 4)}</span>
                 )}

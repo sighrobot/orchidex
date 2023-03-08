@@ -7,25 +7,32 @@
   font-size: 10px;
   padding: 2px 4px;
   text-transform: uppercase;
+}
 
-  &.hypothetical {
-    background: black;
-  }
+.hypothetical {
+  background: black;
+}
 
-  &.intergeneric {
-    background: #dc267f;
-  }
+.intergeneric {
+  background: rgba(239, 133, 180, 1);
+}
 
-  &.primary {
-    background: #785ef0;
-  }
+.primary {
+  background: rgba(130, 168, 248, 1);
+}
 
-  &.natural {
-    background: #fe6100;
-  }
+.natural {
+  background: rgba(91, 175, 248, 1);
+}
 
-  &.species {
-    background: #ffb000;
-    background: #648fff;
-  }
+.species {
+  background: rgba(103, 187, 110, 1);
+}
+
+.intergeneric.primary {
+  background: linear-gradient(
+    to right,
+    rgba(239, 133, 180, 1),
+    rgba(130, 168, 248, 1)
+  );
 }

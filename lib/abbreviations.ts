@@ -1993,6 +1993,7 @@ export const GENUS_TO_ABBREVIATION = {
   Peaseara: 'Pasr.',
   Oncidumnia: 'Ocd.',
   Paphinia: 'Pna.',
+  Pecteilis: 'Pec.',
   Pectabenaria: 'Pe.',
   Oncigomada: 'Oncigom.',
   Paphinopea: 'Phnp.',
