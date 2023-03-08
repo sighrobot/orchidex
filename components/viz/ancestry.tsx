@@ -68,6 +68,43 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
           epithet: formatted.short.epithet,
         });
         const href = grexToHref({ ...n, id: n.id.split('-')[0] });
+
+        let pill = null;
+
+        if (isIntergeneric(n)) {
+          if (isNaturalHybrid(n)) {
+            pill = (
+              <div className={cn(style.pill)}>
+                <span>Natural Intergeneric</span>
+              </div>
+            );
+          } else if (isPrimary(n)) {
+            pill = (
+              <div className={cn(style.pill)}>
+                <span>Intergeneric Primary</span>
+              </div>
+            );
+          } else {
+            pill = (
+              <div className={cn(style.pill)}>
+                <span>Intergeneric</span>
+              </div>
+            );
+          }
+        } else if (isPrimary(n)) {
+          pill = (
+            <div className={cn(style.pill)}>
+              <span>Primary</span>
+            </div>
+          );
+        } else if (isNaturalHybrid(n)) {
+          pill = (
+            <div className={cn(style.pill)}>
+              <span>Natural</span>
+            </div>
+          );
+        }
+
         const content = (
           <div
             className={cn(style.node, {
@@ -90,25 +127,7 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
               </div>
             )}
 
-            {isIntergeneric(n) && isPrimary(n) ? (
-              <div className={cn(style.pill)}>
-                <span>Intergeneric Primary</span>
-              </div>
-            ) : isPrimary(n) ? (
-              <div className={cn(style.pill)}>
-                <span>Primary</span>
-              </div>
-            ) : isIntergeneric(n) ? (
-              <div className={cn(style.pill)}>
-                <span>Intergeneric</span>
-              </div>
-            ) : null}
-
-            {isNaturalHybrid(n) && (
-              <div className={cn(style.pill)}>
-                <span>Natural</span>
-              </div>
-            )}
+            {pill}
 
             <div className={style.name}>
               <em>{formatted.short.genus}</em>{' '}

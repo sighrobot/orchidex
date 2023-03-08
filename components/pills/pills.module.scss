@@ -5,8 +5,9 @@
 .pill {
   color: white;
   font-size: 10px;
-  padding: 2px 4px;
+  padding: 3px 5px;
   text-transform: uppercase;
+  font-weight: bold;
 }
 
 .hypothetical {
@@ -34,5 +35,13 @@
     to right,
     rgba(239, 133, 180, 1),
     rgba(130, 168, 248, 1)
+  );
+}
+
+.natural.intergeneric {
+  background: linear-gradient(
+    to right,
+    rgba(91, 175, 248, 1),
+    rgba(239, 133, 180, 1)
   );
 }

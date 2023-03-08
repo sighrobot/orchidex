@@ -1,4 +1,5 @@
 import styles from './pills.module.scss';
+import cn from 'classnames';
 
 type PillStates =
   | 'hypothetical'
@@ -8,13 +9,13 @@ type PillStates =
   | 'primary';
 
 type PillProps = {
-  type: PillStates;
+  types: PillStates[];
 };
 
-export const Pill = ({ type }: PillProps) => {
+export const Pill = ({ types }: PillProps) => {
   return (
-    <span className={`${styles.pill} ${styles[type.toLowerCase()]}`}>
-      {type}
+    <span className={cn(styles.pill, ...types.map((t) => styles[t]))}>
+      {types.join(' ')}
     </span>
   );
 };

@@ -44,8 +44,6 @@ export const Pills = ({ grex }) => {
     pills.push('hypothetical');
   }
 
-  const isPrimaryHybrid = isPrimary(grex);
-
   if (isSpecies(grex)) {
     pills.push('species');
   }
@@ -58,7 +56,7 @@ export const Pills = ({ grex }) => {
     pills.push('intergeneric');
   }
 
-  if (isPrimaryHybrid) {
+  if (isPrimary(grex)) {
     pills.push('primary');
   }
 
@@ -68,9 +66,7 @@ export const Pills = ({ grex }) => {
 
   return (
     <div className={styles.pills}>
-      {pills.map((p) => (
-        <Pill key={p} type={p} />
-      ))}
+      <Pill types={pills} />
     </div>
   );
 };
