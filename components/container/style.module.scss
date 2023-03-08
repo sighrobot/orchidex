@@ -11,8 +11,13 @@
 }
 
 .wrap {
-  max-width: 1500px;
+  max-width: 1540px;
   margin: 0 auto;
+  padding: 0 20px;
+
+  @media (max-width: 800px) {
+    padding: 0;
+  }
 }
 
 .heading {
