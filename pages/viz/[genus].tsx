@@ -2,13 +2,14 @@ import { Container } from 'components/container/container';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { ResponsiveTreeMapCanvas } from '@nivo/treemap';
-import { groupBy, startCase, uniqBy } from 'lodash';
+import { groupBy, uniqBy } from 'lodash';
 import { useTreemap } from 'lib/hooks/useTreemap';
 import { grexToHref } from 'components/name/name';
 import { useWcvp } from 'lib/hooks/useWcvp';
 import { Grex } from 'lib/types';
 
 import style from './style.module.scss';
+import { capitalize } from 'lib/utils';
 
 const DATA_THRESHOLD = 4000;
 
@@ -33,7 +34,7 @@ const Treemap = () => {
     genus,
   } as Grex);
   const speciesEpithets = wcvpSpecies.map((s) =>
-    s.taxon_name.replace(`${startCase(genus as string)} `, ''),
+    s.taxon_name.replace(`${capitalize(genus as string)} `, ''),
   );
 
   const { data = [], isLoading } = useTreemap({
@@ -216,7 +217,7 @@ const Treemap = () => {
     );
   }, [children]);
 
-  const capitalizedGenus = startCase(genus as string);
+  const capitalizedGenus = capitalize(genus as string);
 
   return (
     <Container
