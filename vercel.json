@@ -1,7 +1,0 @@
-{
-  "env": {
-    "ACCESS_KEY_ID": "@accesskeyid",
-    "SECRET_ACCESS_KEY": "@secretaccesskey",
-    "REGION": "@region"
-  }
-}
