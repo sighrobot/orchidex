@@ -1,0 +1,81 @@
+.treemap {
+  section {
+    padding: 0 10px;
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  p {
+    margin-top: 15px;
+    max-width: 600px;
+    margin-right: 40px;
+  }
+
+  fieldset {
+    padding: 0;
+    border: 0;
+    display: flex;
+    flex-direction: column;
+
+    & + fieldset {
+      margin-left: 20px;
+    }
+
+    &:last-child {
+      flex-grow: 1;
+    }
+  }
+}
+
+.controlWrap {
+  margin-top: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-grow: 1;
+
+  label {
+    font-size: 12px;
+    padding: 2px;
+    user-select: none;
+  }
+
+  label:not(.rangeLabel) {
+    cursor: pointer;
+    display: inline-block;
+    display: flex;
+    align-items: center;
+  }
+
+  input {
+    cursor: pointer;
+    margin: 0;
+    margin-right: 5px;
+  }
+
+  input[type='range'] {
+    display: block;
+    width: 100%;
+  }
+}
+
+.rangeLabel {
+  padding: 2.5px 0;
+
+  input {
+    margin-top: 5px;
+  }
+}
+
+.tooltip {
+  font-size: 14px;
+  padding: 5px;
+  background: white;
+  box-shadow: 1px 1px black;
+}
+
+.mapWrap {
+  height: 675px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

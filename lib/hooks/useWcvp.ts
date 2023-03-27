@@ -8,10 +8,13 @@ export const useWcvp = (grex: Grex) => {
   let url = '/api/wcvp';
 
   url += `?genus=${encodeURIComponent(grex.genus)}`;
-  url += `&epithet=${encodeURIComponent(grex.epithet)}`;
+
+  if (grex.epithet) {
+    url += `&epithet=${encodeURIComponent(grex.epithet)}`;
+  }
 
   const { data = [], isLoading } = useSWR(url, (url) =>
-    isSpecies(grex) ? fetcher(url) : [],
+    !grex.epithet || isSpecies(grex) ? fetcher(url) : [],
   );
 
   return { data, loading: isLoading };

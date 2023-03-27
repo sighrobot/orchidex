@@ -18,7 +18,7 @@ type NameProps = {
   as?: keyof JSX.IntrinsicElements;
 };
 
-export const grexToHref = (grex: Grex) => {
+export const grexToHref = (grex: Pick<Grex, 'genus' | 'epithet' | 'id'>) => {
   const formattedName = formatName(grex);
   const href = grex.id
     ? `/${kebabCase(formattedName.long.genus)}/${kebabCase(

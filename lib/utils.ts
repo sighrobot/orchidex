@@ -1,6 +1,8 @@
 import { normalize } from 'lib/string';
 import { NORMALIZED_SEARCH_FIELDS } from 'lib/constants';
 
+export const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+
 export const massageQueryTerm = (s = '', shouldNormalize = false) => {
   const massaged = s.toLowerCase().replace(/'/g, "''");
 

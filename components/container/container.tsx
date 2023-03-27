@@ -12,7 +12,7 @@ type ContainerProps = {
   title?: string;
   description?: string;
   isFullWidth?: boolean;
-  heading?: string;
+  heading?: React.ReactNode;
 };
 
 export const Padded = ({ className = '', children, ...rest }) => (
