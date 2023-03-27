@@ -77,7 +77,8 @@
 }
 
 .mapWrap {
-  height: 675px;
+  min-height: 675px;
+  height: calc(100vh - 230px);
   display: flex;
   align-items: center;
   justify-content: center;

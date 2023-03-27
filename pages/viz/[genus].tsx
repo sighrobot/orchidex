@@ -224,10 +224,10 @@ const Treemap = () => {
       className={style.treemap}
       heading={
         <>
-          <em>{capitalizedGenus}</em> parentage map
+          <em>{capitalizedGenus}</em> parentage
         </>
       }
-      title={`${capitalizedGenus} parentage map | Orchidex`}
+      title={`${capitalizedGenus} parentage | Orchidex`}
     >
       <section>
         <p>
