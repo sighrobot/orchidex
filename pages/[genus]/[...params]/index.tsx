@@ -20,6 +20,7 @@ import style from './style.module.scss';
 import { Grex as GrexType } from 'lib/types';
 
 import { useWcvp } from 'lib/hooks/useWcvp';
+import { ResponsiveTreeMapCanvas, TreeMapCanvas } from '@nivo/treemap';
 
 export async function getServerSideProps(context) {
   const { genus: g, params } = context.query;
@@ -129,21 +130,54 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
         <Tabs
           padding
           renderToSide={
-            !isSpecies(grex) && (
-              <aside className={style.sidebar}>
-                {!isNaturalHybrid(grex) && (
-                  <StatCard stat='registrant_genus_pct' grex={grex} />
-                )}
-                {!isNaturalHybrid(grex) && (
-                  <StatCard stat='year_genus_pct' grex={grex} />
-                )}
-                {grex.genus && grex.epithet && (
-                  <StatBox heading='Species Ancestry'>
-                    <SpeciesAncestry grex={grex} />
-                  </StatBox>
-                )}
-              </aside>
-            )
+            <aside className={style.sidebar}>
+              <StatBox heading='Genus Parentage'>
+                <p>
+                  Click below to view the <em>{grex.genus}</em> parentage map:
+                </p>
+                <br />
+                <Link href={`/viz/${grex.genus.toLowerCase()}`}>
+                  <div className={style.minimap}>
+                    <ResponsiveTreeMapCanvas
+                      isInteractive={false}
+                      innerPadding={1}
+                      borderWidth={0}
+                      value='value'
+                      enableLabel={false}
+                      identity='id'
+                      colors={(d: any) =>
+                        `rgba(218, 112, 214, ${
+                          (d.data.value / 21) * 0.75 + 0.25
+                        })`
+                      }
+                      data={{
+                        children: [
+                          { value: 21, id: 8 },
+                          { value: 13, id: 7 },
+                          { value: 8, id: 6 },
+                          { value: 5, id: 5 },
+                          { value: 3, id: 4 },
+                          { value: 2, id: 3 },
+                          { value: 1, id: 1 },
+                          { value: 1, id: 2 },
+                        ],
+                      }}
+                    />
+                  </div>
+                </Link>
+              </StatBox>
+              {!isSpecies(grex) && !isNaturalHybrid(grex) && (
+                <StatCard stat='registrant_genus_pct' grex={grex} />
+              )}
+              {!isSpecies(grex) && !isNaturalHybrid(grex) && (
+                <StatCard stat='year_genus_pct' grex={grex} />
+              )}
+              {!isSpecies(grex) && grex.genus && grex.epithet && (
+                <StatBox heading='Species Ancestry'>
+                  <SpeciesAncestry grex={grex} />
+                </StatBox>
+              )}
+            </aside>
           }
           config={[
             {

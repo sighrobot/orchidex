@@ -37,10 +37,12 @@ const Treemap = () => {
     s.taxon_name.replace(`${capitalize(genus as string)} `, ''),
   );
 
-  const { data = [], isLoading } = useTreemap({
+  const { data = [], isLoading: dataLoading } = useTreemap({
     genus: genus as string,
     parentType: parent,
   });
+
+  const isLoading = dataLoading || wcvpSpeciesLoading;
 
   const children = React.useMemo(() => {
     const preprocessed = uniqBy(
@@ -117,8 +119,6 @@ const Treemap = () => {
       );
   }, [data, genus, type, minProgeny, parent, speciesEpithets]);
 
-  console.log({ isLoading, wcvpSpeciesLoading });
-
   const handleParent = React.useCallback((e) => {
     if (e.target.name === 'both') {
       setParent(null);
@@ -135,7 +135,7 @@ const Treemap = () => {
   const map = React.useMemo(() => {
     return (
       <div className={style.mapWrap}>
-        {isLoading || wcvpSpeciesLoading ? (
+        {isLoading ? (
           'Loading...'
         ) : (
           <ResponsiveTreeMapCanvas
@@ -182,7 +182,7 @@ const Treemap = () => {
               if (!d.id || d.width < 9 || d.height < 9) {
                 return '';
               }
-              const slice = d.id.slice(0, Math.max(d.width / 8, 2));
+              const slice = d.id.slice(0, Math.max(d.width / 7, 2));
               if (
                 (d.value / data[0]?.c > 0.02 && d.width > 16) ||
                 d.width > 40 ||
@@ -222,12 +222,17 @@ const Treemap = () => {
   return (
     <Container
       className={style.treemap}
-      heading={<em>{capitalizedGenus}</em>}
-      title={`${genus} | Orchidex`}
+      heading={
+        <>
+          <em>{capitalizedGenus}</em> parentage map
+        </>
+      }
+      title={`${capitalizedGenus} parentage map | Orchidex`}
     >
       <section>
         <p>
-          This visualization shows the frequency with which{' '}
+          This visualization shows the frequency with which all{' '}
+          {isLoading ? '' : <strong>{data.length.toLocaleString()}</strong>}{' '}
           <em>{capitalizedGenus}</em> orchids are used in creating new hybrids.
         </p>
 

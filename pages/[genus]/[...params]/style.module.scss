@@ -20,3 +20,12 @@
   font-weight: normal;
   text-decoration: underline;
 }
+
+.minimap {
+  height: 50px;
+  transition: 200ms ease opacity;
+
+  &:hover {
+    opacity: 0.5;
+  }
+}
