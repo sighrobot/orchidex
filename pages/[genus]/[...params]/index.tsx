@@ -133,7 +133,7 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
             <aside className={style.sidebar}>
               <StatBox heading='Genus Parentage'>
                 <p>
-                  Click the map below to view <em>{grex.genus}</em> parentage:
+                  Click below to view the <em>{grex.genus}</em> parentage map:
                 </p>
                 <br />
                 <Link href={`/viz/${grex.genus.toLowerCase()}`}>
