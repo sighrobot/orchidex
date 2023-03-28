@@ -61,7 +61,9 @@ const Treemap = () => {
         ),
       ({ name }) => name,
     ).filter((g: any) => {
-      const isSpecies = g.name[0].toLowerCase() === g.name[0];
+      const isSpecies =
+        g.name[0].toLowerCase() === g.name[0] &&
+        !Number.isInteger(parseInt(g.name[0], 10));
       if (type === 'species') {
         return isSpecies;
       }
