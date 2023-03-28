@@ -5,24 +5,25 @@ import Script from 'next/script';
 function MyApp({ Component, pageProps }) {
   return (
     <>
-      <Component {...pageProps} />
-      <Analytics />
-
-      <Script
-        async
-        strategy='afterInteractive'
-        src={`https://www.googletagmanager.com/gtag/js?id=${process.env.GA}`}
-      />
-      <Script
-        strategy='afterInteractive'
-        dangerouslySetInnerHTML={{
-          __html: `window.dataLayer = window.dataLayer || [];
+      {process.env.NODE_ENV === 'production' && (
+        <>
+          <Script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=G-QKTW85LHH3`}
+          />
+          <Script
+            dangerouslySetInnerHTML={{
+              __html: `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 
-gtag('config', '${process.env.GA}');`,
-        }}
-      />
+gtag('config', 'G-QKTW85LHH3');`,
+            }}
+          />
+        </>
+      )}
+      <Component {...pageProps} />
+      <Analytics />
     </>
   );
 }
