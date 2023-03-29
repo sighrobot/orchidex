@@ -20,7 +20,7 @@ import style from './style.module.scss';
 import { Grex as GrexType } from 'lib/types';
 
 import { useWcvp } from 'lib/hooks/useWcvp';
-import { ResponsiveTreeMapCanvas, TreeMapCanvas } from '@nivo/treemap';
+import { ResponsiveTreeMapCanvas } from '@nivo/treemap';
 
 export async function getServerSideProps(context) {
   const { genus: g, params } = context.query;
@@ -74,10 +74,6 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
       ? wcvp[0]
       : wcvp.filter((w) => w.taxon_rank === 'Species')[0];
 
-  if (!grex) {
-    return <Container>loading&hellip;</Container>;
-  }
-
   React.useEffect(() => {
     const split = router.asPath.split('/');
     if (split.length === 3 || isNaN(parseInt(split[split.length - 1], 10))) {
@@ -88,6 +84,10 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
       );
     }
   }, [router.asPath]);
+
+  if (!grex) {
+    return <Container>loading&hellip;</Container>;
+  }
 
   const isGrexSpecies = isSpecies(grex);
 

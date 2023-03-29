@@ -20,6 +20,8 @@ const Treemap = () => {
     };
   });
 
+  const [numOrchids, setNumOrchids] = React.useState(0);
+
   const router = useRouter();
   const { genus = '' } = router.query;
 
@@ -44,23 +46,29 @@ const Treemap = () => {
 
   const isLoading = dataLoading || wcvpSpeciesLoading;
 
+  const combined = React.useMemo(
+    () =>
+      uniqBy(
+        data
+          .map((g) => ({
+            name: !parent
+              ? g.parent
+              : parent === 'seed'
+              ? g.seed_parent_epithet
+              : g.pollen_parent_epithet,
+            value: Math.max(g.c, 1),
+            zero: g.c === 0,
+          }))
+          .concat(
+            speciesEpithets.map((s) => ({ name: s, value: 1, zero: true })),
+          ),
+        ({ name }) => name,
+      ),
+    [parent, data, speciesEpithets],
+  );
+
   const children = React.useMemo(() => {
-    const preprocessed = uniqBy(
-      data
-        .map((g) => ({
-          name: !parent
-            ? g.parent
-            : parent === 'seed'
-            ? g.seed_parent_epithet
-            : g.pollen_parent_epithet,
-          value: Math.max(g.c, 1),
-          zero: g.c === 0,
-        }))
-        .concat(
-          speciesEpithets.map((s) => ({ name: s, value: 1, zero: true })),
-        ),
-      ({ name }) => name,
-    ).filter((g: any) => {
+    const preprocessed = combined.filter((g: any) => {
       const isSpecies =
         g.name[0].toLowerCase() === g.name[0] &&
         !Number.isInteger(parseInt(g.name[0], 10));
@@ -119,7 +127,13 @@ const Treemap = () => {
           ? 1
           : -1,
       );
-  }, [data, genus, type, minProgeny, parent, speciesEpithets]);
+  }, [combined, type, minProgeny]);
+
+  React.useEffect(() => {
+    if (numOrchids === 0 && !isLoading && combined.length) {
+      setNumOrchids(combined.length);
+    }
+  }, [combined.length, isLoading, numOrchids]);
 
   const handleParent = React.useCallback((e) => {
     if (e.target.name === 'both') {
@@ -206,7 +220,11 @@ const Treemap = () => {
             onClick={(d: any) => {
               if (!d.data.zero && !d.data.one) {
                 router.push(
-                  grexToHref({ id: '', genus: genus as string, epithet: d.id }),
+                  grexToHref({
+                    id: '',
+                    genus: genus as string,
+                    epithet: d.id,
+                  }),
                 );
               }
             }}
@@ -217,7 +235,7 @@ const Treemap = () => {
         )}
       </div>
     );
-  }, [children]);
+  }, [data, genus, isLoading, router, children]);
 
   const capitalizedGenus = capitalize(genus as string);
 
@@ -234,7 +252,7 @@ const Treemap = () => {
       <section>
         <p>
           This visualization shows the frequency with which all{' '}
-          {isLoading ? '' : <strong>{data.length.toLocaleString()}</strong>}{' '}
+          {numOrchids ? <strong>{numOrchids.toLocaleString()}</strong> : ''}{' '}
           <em>{capitalizedGenus}</em> orchids are used in creating new hybrids.
         </p>
 
