@@ -2,88 +2,99 @@ const readline = require('readline');
 const fs = require('fs');
 const { kebabCase } = require('lodash');
 
+const SITEMAPS_PATH = 'public/sitemaps';
+const MAX_NUM_URLS = 50000;
+const DATA_READ_PATH = 'data/rhs/data.tsv';
 const BASE_URL = 'https://orchidex.org';
+const XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
+const getNamespacedTagOpen = (tag) =>
+  `<${tag} xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
 
-const encode = (s) => encodeURIComponent(kebabCase(s));
+const writeLines = (lines, out) => {
+  out.write([...lines, ''].join('\n'));
+};
 
-const input = fs.createReadStream('data/rhs/data.tsv').setEncoding('utf-8');
-const face = readline.createInterface({ input });
+const makeLocXml = (tag, url) => {
+  return [`  <${tag}>`, `    <loc>${url}</loc>`, `  </${tag}>`];
+};
+
+const encodeKebab = (s) => encodeURIComponent(kebabCase(s));
+
+const reader = readline.createInterface({
+  input: fs.createReadStream(DATA_READ_PATH).setEncoding('utf-8'),
+});
+
+const getOut = (path) => fs.createWriteStream(path, { flags: 'w' });
 
 let count = 0;
-let page = 0;
+let page = -1;
 
-const outputs = [
-  fs.createWriteStream(`public/sitemaps/grex-${page}.xml`, {
-    flags: 'w',
-  }),
-];
-
-outputs[0].write('<?xml version="1.0" encoding="UTF-8"?>\n');
-outputs[0].write(
-  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n',
-);
-
+const outputs = [];
 const genuses = new Set();
 const registrants = new Set();
 
-face
-  .on('line', (line) => {
-    const split = line.split('\t');
-    const [id, genus, epithet, , , , reg, orig] = split;
+const handleLine = (line) => {
+  const split = line.split('\t');
+  const [id, genus, epithet, , , , reg, orig] = split;
 
-    if (genus[0] !== genus[0].toUpperCase() || !epithet) {
-      return;
-    }
+  if (genus[0] !== genus[0].toUpperCase() || !epithet) {
+    return;
+  }
 
-    genuses.add(genus);
-    registrants.add(reg);
-    registrants.add(orig);
+  genuses.add(genus);
+  registrants.add(reg);
+  registrants.add(orig);
 
-    if (count === 50000) {
-      page++;
+  if (count % MAX_NUM_URLS === 0) {
+    page++;
+    outputs.push(getOut(`${SITEMAPS_PATH}/grex-${page}.xml`));
+    writeLines([XML_HEADER, getNamespacedTagOpen('urlset')], outputs[page]);
+    count = 0;
+  }
 
-      outputs.push(
-        fs.createWriteStream(`public/sitemaps/grex-${page}.xml`, {
-          flags: 'w',
-        }),
-      );
+  const grexUrl = `${BASE_URL}/${encodeKebab(genus)}/${encodeKebab(
+    epithet,
+  )}/${id}`;
+  writeLines(makeLocXml('url', grexUrl), outputs[page]);
+  count++;
+};
 
-      outputs[page].write('<?xml version="1.0" encoding="UTF-8"?>\n');
-      outputs[page].write(
-        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n',
-      );
+const handleClose = () => {
+  for (let o of outputs) {
+    writeLines(['</urlset>'], o);
+  }
 
-      count = 0;
-    }
+  // REGISTRANT sitemap
+  const regOut = getOut(`${SITEMAPS_PATH}/reg.xml`);
+  writeLines([XML_HEADER, getNamespacedTagOpen('urlset')], regOut);
+  for (let r of registrants) {
+    const regUrl = `${BASE_URL}/registrant/${encodeURIComponent(r)}`;
+    writeLines(makeLocXml('url', regUrl), regOut);
+  }
+  writeLines(['</urlset>'], regOut);
 
-    outputs[page].write('  <url>\n');
-    outputs[page].write(
-      `    <loc>${BASE_URL}/${encode(genus)}/${encode(epithet)}/${id}</loc>\n`,
-    );
-    outputs[page].write('  </url>\n');
+  // STATIC sitemap
+  const staticOut = getOut(`${SITEMAPS_PATH}/static.xml`);
+  writeLines([XML_HEADER, getNamespacedTagOpen('urlset')], staticOut);
+  for (let u of ['', 'recent', 'search', 'about', 'data']) {
+    const url = `${BASE_URL}/${u}`;
+    writeLines(makeLocXml('url', url), staticOut);
+  }
+  writeLines(['</urlset>'], staticOut);
 
-    count++;
-  })
-  .on('close', () => {
-    for (let output of outputs) {
-      output.write('</urlset>\n');
-    }
+  // SITEMAP INDEX
+  const indexOut = getOut('public/sitemap_index.xml');
+  writeLines([XML_HEADER, getNamespacedTagOpen('sitemapindex')], indexOut);
+  writeLines(
+    makeLocXml('sitemap', `${BASE_URL}/sitemaps/static.xml`),
+    indexOut,
+  );
+  writeLines(makeLocXml('sitemap', `${BASE_URL}/sitemaps/reg.xml`), indexOut);
+  for (let i = 0; i <= page; i++) {
+    const url = `${BASE_URL}/sitemaps/grex-${i}.xml`;
+    writeLines(makeLocXml('sitemap', url), indexOut);
+  }
+  writeLines(['</sitemapindex>'], indexOut);
+};
 
-    const regOutput = fs.createWriteStream(`public/sitemaps/reg.xml`, {
-      flags: 'w',
-    });
-
-    regOutput.write('<?xml version="1.0" encoding="UTF-8"?>\n');
-    regOutput.write(
-      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n',
-    );
-
-    for (let r of registrants) {
-      regOutput.write('  <url>\n');
-      regOutput.write(
-        `    <loc>${BASE_URL}/registrant/${encodeURIComponent(r)}</loc>\n`,
-      );
-      regOutput.write('  </url>\n');
-    }
-    regOutput.write('</urlset>\n');
-  });
+reader.on('line', handleLine).on('close', handleClose);
