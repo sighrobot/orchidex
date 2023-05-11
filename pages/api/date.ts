@@ -16,13 +16,13 @@ export default async (req: NextRequest) => {
     const d = new Date();
     d.setDate(d.getDate() - 9);
 
-    expr += `SELECT * FROM rhs WHERE epithet != '' AND date(date_of_registration) >= '${d
-      .toISOString()
-      .slice(0, 10)}' ORDER BY date_of_registration DESC`;
+    expr += `SELECT * FROM rhs WHERE epithet != '' AND date(date_of_registration) != '' ORDER BY date_of_registration DESC`;
   }
 
   if (limit) {
     expr += ` LIMIT ${limit}`;
+  } else {
+    expr += ' LIMIT 80';
   }
 
   return query(expr);
