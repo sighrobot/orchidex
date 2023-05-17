@@ -1,5 +1,6 @@
 import type { Grex } from './types';
 import { GENUS_TO_ABBREVIATION } from './abbreviations';
+import { getDescriptor, orderTerms } from 'components/pills/pills';
 
 // https://bytes.grubhub.com/disabling-safari-autofill-for-a-single-line-address-input-b83137b5b1c7
 export const INPUT_NAME_SUFFIX = '__search__';
@@ -54,48 +55,41 @@ export const repairMalformedNaturalHybridEpithet = (
   return epithet;
 };
 
-export const description = ({
-  seed_parent_genus,
-  seed_parent_epithet,
-  pollen_parent_genus,
-  pollen_parent_epithet,
-  date_of_registration,
-  registrant_name,
-}: Grex) => {
-  if (
-    seed_parent_genus &&
-    pollen_parent_genus &&
-    date_of_registration &&
-    registrant_name
-  ) {
-    return `${abbreviateGenus({
-      genus: seed_parent_genus,
-    })} ${seed_parent_epithet} ${CROSS_CHAR} ${abbreviateGenus({
-      genus: pollen_parent_genus,
-    })} ${pollen_parent_epithet} registered by ${registrant_name} in ${date_of_registration.slice(
-      0,
-      4,
-    )}.`;
-  }
+export const description = (grex: Grex) => {
+  const {
+    genus,
+    epithet,
+    seed_parent_genus,
+    seed_parent_epithet,
+    pollen_parent_genus,
+    pollen_parent_epithet,
+    date_of_registration,
+    registrant_name,
+  } = grex;
+  const crossString = `${abbreviateGenus({
+    genus: seed_parent_genus,
+  })} ${seed_parent_epithet} ${CROSS_CHAR} ${abbreviateGenus({
+    genus: pollen_parent_genus,
+  })} ${pollen_parent_epithet}`;
 
-  if (seed_parent_genus && pollen_parent_genus && date_of_registration) {
-    return `${abbreviateGenus({
-      genus: seed_parent_genus,
-    })} ${seed_parent_epithet} ${CROSS_CHAR} ${abbreviateGenus({
-      genus: pollen_parent_genus,
-    })} ${pollen_parent_epithet} registered in ${date_of_registration.slice(
-      0,
-      4,
-    )}.`;
-  }
+  const dateString = `${new Date(date_of_registration)
+    .toString()
+    .slice(4, 15)}`;
 
   if (seed_parent_genus && pollen_parent_genus) {
-    return `${abbreviateGenus({
-      genus: seed_parent_genus,
-    })} ${seed_parent_epithet} ${CROSS_CHAR} ${abbreviateGenus({
-      genus: pollen_parent_genus,
-    })} ${pollen_parent_epithet}`;
+    if (date_of_registration) {
+      if (registrant_name) {
+        return `${genus} ${epithet} (${crossString}) is ${getDescriptor(
+          grex,
+        )} registered by ${registrant_name} on ${dateString}.`;
+      }
+
+      return `${genus} ${epithet} (${crossString}) is ${getDescriptor(
+        grex,
+      )} registered on ${dateString}.`;
+    }
+    return `${genus} ${epithet} (${crossString}) is ${getDescriptor(grex)}.`;
   }
 
-  return '';
+  return `${genus} ${epithet} is an orchid ${getDescriptor(grex)}.`;
 };

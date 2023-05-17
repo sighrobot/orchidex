@@ -36,6 +36,7 @@ export const Container = ({
         <meta name='twitter:title' content={title} />
         <meta property='og:title' content={title} />
 
+        <meta name='description' content={description} />
         <meta name='twitter:description' content={description} />
         <meta property='og:description' content={description} />
       </Head>

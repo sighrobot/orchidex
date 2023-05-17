@@ -37,28 +37,49 @@ export const isPrimary = (grex) =>
 export const isIntergeneric = (grex) =>
   grex.seed_parent_genus !== grex.pollen_parent_genus;
 
-export const Pills = ({ grex }) => {
-  const pills = [];
+export const orderTerms = (grex) => {
+  const terms = [];
 
   if (grex.hypothetical) {
-    pills.push('hypothetical');
+    terms.push('hypothetical');
   }
 
   if (isSpecies(grex)) {
-    pills.push('species');
+    terms.push('species');
   }
 
   if (isNaturalHybrid(grex)) {
-    pills.push('natural');
+    terms.push('natural');
   }
 
   if (isIntergeneric(grex)) {
-    pills.push('intergeneric');
+    terms.push('intergeneric');
   }
 
   if (isPrimary(grex)) {
-    pills.push('primary');
+    terms.push('primary');
   }
+
+  return terms;
+};
+
+export const getDescriptor = (grex) => {
+  const terms = orderTerms(grex);
+  if (terms.length === 0) {
+    return 'hybrid';
+  }
+
+  if (terms[0] === 'species') {
+    return 'species';
+  }
+
+  return `a${terms.includes('intergeneric') ? 'n' : ''} ${terms.join(
+    ' ',
+  )} hybrid`;
+};
+
+export const Pills = ({ grex }) => {
+  const pills = orderTerms(grex);
 
   if (pills.length === 0) {
     return null;
