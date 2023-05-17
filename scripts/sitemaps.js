@@ -3,7 +3,7 @@ const fs = require('fs');
 const { kebabCase } = require('lodash');
 
 const SITEMAPS_PATH = 'public/sitemaps';
-const MAX_NUM_URLS = 50000;
+const MAX_NUM_URLS = 40000;
 const DATA_READ_PATH = 'data/rhs/data.tsv';
 const BASE_URL = 'https://orchidex.org';
 const XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
