@@ -48,12 +48,12 @@ export const orderTerms = (grex) => {
     terms.push('species');
   }
 
-  if (isNaturalHybrid(grex)) {
-    terms.push('natural');
-  }
-
   if (isIntergeneric(grex)) {
     terms.push('intergeneric');
+  }
+
+  if (isNaturalHybrid(grex)) {
+    terms.push('natural');
   }
 
   if (isPrimary(grex)) {
@@ -66,7 +66,7 @@ export const orderTerms = (grex) => {
 export const getDescriptor = (grex) => {
   const terms = orderTerms(grex);
   if (terms.length === 0) {
-    return 'hybrid';
+    return 'a hybrid';
   }
 
   if (terms[0] === 'species') {
