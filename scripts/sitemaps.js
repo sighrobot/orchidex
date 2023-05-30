@@ -50,7 +50,7 @@ const handleLine = (line) => {
 
   if (count % MAX_NUM_URLS === 0) {
     page++;
-    outputs.push(getOut(`${SITEMAPS_PATH}/grex-${page}.xml`));
+    outputs.push(getOut(`${SITEMAPS_PATH}/grex--${page}.xml`));
     writeLines([XML_HEADER, getNamespacedTagOpen('urlset')], outputs[page]);
     count = 0;
   }
@@ -70,7 +70,7 @@ const handleClose = () => {
   }
 
   // REGISTRANT sitemap
-  const regOut = getOut(`${SITEMAPS_PATH}/reg.xml`);
+  const regOut = getOut(`${SITEMAPS_PATH}/registrant.xml`);
   writeLines([XML_HEADER, getNamespacedTagOpen('urlset')], regOut);
   for (let r of registrants) {
     const regUrl = `${BASE_URL}/registrant/${encodeURIComponent(r)}`;
@@ -79,7 +79,7 @@ const handleClose = () => {
   writeLines(['</urlset>'], regOut);
 
   // STATIC sitemap
-  const staticOut = getOut(`${SITEMAPS_PATH}/static.xml`);
+  const staticOut = getOut(`${SITEMAPS_PATH}/pages.xml`);
   writeLines([XML_HEADER, getNamespacedTagOpen('urlset')], staticOut);
   for (let u of ['', 'recent', 'search', 'about', 'data']) {
     const url = `${BASE_URL}/${u}`;
@@ -90,13 +90,13 @@ const handleClose = () => {
   // SITEMAP INDEX
   const indexOut = getOut('public/sitemap_index.xml');
   writeLines([XML_HEADER, getNamespacedTagOpen('sitemapindex')], indexOut);
+  writeLines(makeLocXml('sitemap', `${BASE_URL}/sitemaps/pages.xml`), indexOut);
   writeLines(
-    makeLocXml('sitemap', `${BASE_URL}/sitemaps/static.xml`),
+    makeLocXml('sitemap', `${BASE_URL}/sitemaps/registrant.xml`),
     indexOut,
   );
-  writeLines(makeLocXml('sitemap', `${BASE_URL}/sitemaps/reg.xml`), indexOut);
   for (let i = 0; i <= page; i++) {
-    const url = `${BASE_URL}/sitemaps/grex-${i}.xml`;
+    const url = `${BASE_URL}/sitemaps/grex--${i}.xml`;
     writeLines(makeLocXml('sitemap', url), indexOut);
   }
   writeLines(['</sitemapindex>'], indexOut);
