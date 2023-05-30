@@ -325,7 +325,7 @@
     <loc>https://orchidex.org/cattleya/bicolor/925</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/aurea/926</loc>
+    <loc>https://orchidex.org/cattleya/dowiana-aurea/926</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/amethystoglossa/927</loc>
@@ -1603,9 +1603,6 @@
     <loc>https://orchidex.org/paphiopedilum/elliottianum/1359</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/paphiopedilum/elliottianum/1359</loc>
-  </url>
-  <url>
     <loc>https://orchidex.org/paphiopedilum/sanderianum/1360</loc>
   </url>
   <url>
@@ -2674,7 +2671,7 @@
     <loc>https://orchidex.org/cattleya/eros-1895/1721</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/esther/1722</loc>
+    <loc>https://orchidex.org/cattleya/esther-1913/1722</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/euphrasia/1723</loc>
@@ -2779,7 +2776,7 @@
     <loc>https://orchidex.org/cattlianthe/hopkinsii/1758</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/ianthe/1759</loc>
+    <loc>https://orchidex.org/cattleya/ianthe-1913/1759</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/imperator-1897/1760</loc>
@@ -2788,7 +2785,7 @@
     <loc>https://orchidex.org/cattlianthe/john-baguley/1761</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/jucunda/1762</loc>
+    <loc>https://orchidex.org/cattleya/jucunda-jan-1914/1762</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattlianthe/julienne/1763</loc>
@@ -2986,7 +2983,7 @@
     <loc>https://orchidex.org/cattleya/pandora-1900/1832</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/paula/1833</loc>
+    <loc>https://orchidex.org/cattleya/paula-1915/1833</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/paynterii/1834</loc>
@@ -3827,12 +3824,6 @@
   </url>
   <url>
     <loc>https://orchidex.org/paphiopedilum/ellis-markendale/2147</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/paphiopedilum/ellis-markendale/2147</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/paphiopedilum/elmireanum/2148</loc>
   </url>
   <url>
     <loc>https://orchidex.org/paphiopedilum/elmireanum/2148</loc>
@@ -5131,7 +5122,7 @@
     <loc>https://orchidex.org/paphiopedilum/westoniense/2645</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/paphiopedilum/westpoint-beauty/2646</loc>
+    <loc>https://orchidex.org/paphiopedilum/west-point-beauty/2646</loc>
   </url>
   <url>
     <loc>https://orchidex.org/paphiopedilum/whalleyense/2650</loc>
@@ -6103,7 +6094,7 @@
     <loc>https://orchidex.org/cattleya/emiliae/3010</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/esther/3011</loc>
+    <loc>https://orchidex.org/cattleya/esther-1920/3011</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/ethelwald/3012</loc>
@@ -6490,7 +6481,7 @@
     <loc>https://orchidex.org/cattleya/tobina/3173</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/trident/3174</loc>
+    <loc>https://orchidex.org/cattleya/trident-1917/3174</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/trimyra/3175</loc>
@@ -6521,6 +6512,9 @@
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/vulcanus/3184</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/cattleya/walkure/3185</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/wavrinii-1903/3186</loc>
@@ -7192,6 +7186,9 @@
     <loc>https://orchidex.org/cattleya/mary/3431</loc>
   </url>
   <url>
+    <loc>https://orchidex.org/cattlianthe/roehampton/3434</loc>
+  </url>
+  <url>
     <loc>https://orchidex.org/cattleya/soulange-1934/3435</loc>
   </url>
   <url>
@@ -7468,7 +7465,7 @@
     <loc>https://orchidex.org/cattlianthe/chloringiana/3528</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/circe/3529</loc>
+    <loc>https://orchidex.org/cattleya/circe-1909/3529</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/dirce/3530</loc>
@@ -8095,7 +8092,7 @@
     <loc>https://orchidex.org/cattleya/arethusa/3742</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/argosy/3743</loc>
+    <loc>https://orchidex.org/cattleya/argosy-1912/3743</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/argus/3744</loc>
@@ -8281,7 +8278,7 @@
     <loc>https://orchidex.org/cattleya/ochracea/3808</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/olaf/3809</loc>
+    <loc>https://orchidex.org/cattleya/olaf-1918/3809</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/oweniae/3810</loc>
@@ -8314,7 +8311,7 @@
     <loc>https://orchidex.org/cattleya/verelii/3820</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/lycaste/x-sulphurea/3821</loc>
+    <loc>https://orchidex.org/lycaste/sulphurea/3821</loc>
   </url>
   <url>
     <loc>https://orchidex.org/lycaste/sulphurea/3822</loc>
@@ -8854,7 +8851,7 @@
     <loc>https://orchidex.org/rhynchostele/colonel-leith/4013</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/colossus-1912/4014</loc>
+    <loc>https://orchidex.org/oncidium/colosseum/4014</loc>
   </url>
   <url>
     <loc>https://orchidex.org/odontoglossum/cookeanum/4015</loc>
@@ -8917,7 +8914,7 @@
     <loc>https://orchidex.org/rhynchostele/duvivieranum/4034</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/elaine/4035</loc>
+    <loc>https://orchidex.org/oncidium/elaine-1906/4035</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncostele/eleanor/4036</loc>
@@ -9064,7 +9061,7 @@
     <loc>https://orchidex.org/oncidium/her-majesty/4084</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/hiawatha/4085</loc>
+    <loc>https://orchidex.org/oncidium/hiawatha-1908/4085</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/hibernicum/4086</loc>
@@ -9619,7 +9616,7 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/duse/4270</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/eileen/4271</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/eileen-1914/4271</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/elia/4272</loc>
@@ -9814,10 +9811,10 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/iolanthe/4335</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/irene/4336</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/irene-1914/4336</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/iris/4337</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/iris-1913/4337</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/iroquio/4338</loc>
@@ -10228,9 +10225,6 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/regalia/4473</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/regalia/4473</loc>
-  </url>
-  <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/renown/4474</loc>
   </url>
   <url>
@@ -10276,7 +10270,7 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/saint-enodoc/4488</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/salta/4489</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/salta-1917/4489</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/santiago-del-estero/4490</loc>
@@ -11134,7 +11128,7 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/herthadale/4774</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/hilda/4775</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/hilda-1916/4775</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/hippocrates/4776</loc>
@@ -11593,6 +11587,9 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/prianda/4927</loc>
   </url>
   <url>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/prince-of-wales-1914/4928</loc>
+  </url>
+  <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/prince-olaf/4929</loc>
   </url>
   <url>
@@ -11630,6 +11627,9 @@
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/ramuntcho/4941</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/regalia/4942</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/renape/4943</loc>
@@ -11686,7 +11686,7 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/salmono/4960</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/salta/4961</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/salta-1925/4961</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/sarah-bernhardt/4962</loc>
@@ -11764,7 +11764,7 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/sunset/4986</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/surprise/4987</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/surprise-1909/4987</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/sylvia-1916/4988</loc>
@@ -12208,7 +12208,7 @@
     <loc>https://orchidex.org/cattleya/arestor/5134</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/argosy/5135</loc>
+    <loc>https://orchidex.org/cattleya/argosy-1893/5135</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/aristocrat-1945/5136</loc>
@@ -12280,7 +12280,7 @@
     <loc>https://orchidex.org/cattleya/barton/5158</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattlianthe/basil/5159</loc>
+    <loc>https://orchidex.org/cattlianthe/basil-1909/5159</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattlianthe/basilica/5160</loc>
@@ -12370,7 +12370,7 @@
     <loc>https://orchidex.org/cattleya/brongniartii/5188</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/bronze-king/5189</loc>
+    <loc>https://orchidex.org/cattleya/bronze-king-1914/5189</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/brunhilde-1908/5190</loc>
@@ -12433,7 +12433,7 @@
     <loc>https://orchidex.org/cattleya/carnadero/5209</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/caroline/5210</loc>
+    <loc>https://orchidex.org/cattleya/caroline-1917/5210</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/casabianca/5211</loc>
@@ -12643,13 +12643,13 @@
     <loc>https://orchidex.org/cattleya/draco/5279</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/dragon/5280</loc>
+    <loc>https://orchidex.org/cattleya/dragon-1915/5280</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/drapsiana/5281</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/dryad/5282</loc>
+    <loc>https://orchidex.org/cattleya/dryad-1935/5282</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/duchess-of-york/5283</loc>
@@ -12667,13 +12667,13 @@
     <loc>https://orchidex.org/cattleya/edicapp/5287</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/edith/5288</loc>
+    <loc>https://orchidex.org/cattleya/edith-1896/5288</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/egret/5289</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/eileen/5290</loc>
+    <loc>https://orchidex.org/cattleya/eileen-1917/5290</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/eira-1919/5291</loc>
@@ -13039,6 +13039,9 @@
     <loc>https://orchidex.org/cattleya/io/5411</loc>
   </url>
   <url>
+    <loc>https://orchidex.org/cattleya/iras/5412</loc>
+  </url>
+  <url>
     <loc>https://orchidex.org/cattleya/irmentrude/5413</loc>
   </url>
   <url>
@@ -13261,7 +13264,7 @@
     <loc>https://orchidex.org/cattleya/los-andes/5486</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/lotus/5487</loc>
+    <loc>https://orchidex.org/cattleya/lotus-1918/5487</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/louise/5488</loc>
@@ -13381,7 +13384,7 @@
     <loc>https://orchidex.org/cattleya/maude-m-condon/5526</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/mauretania/5527</loc>
+    <loc>https://orchidex.org/cattleya/mauretania-1916/5527</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/maurine-dalton-1945/5528</loc>
@@ -13459,7 +13462,7 @@
     <loc>https://orchidex.org/cattleya/mithra/5552</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/mogul/5553</loc>
+    <loc>https://orchidex.org/cattleya/mogul-1919/5553</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/mona-1924/5554</loc>
@@ -13609,7 +13612,7 @@
     <loc>https://orchidex.org/cattleya/octho/5602</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/olaf/5603</loc>
+    <loc>https://orchidex.org/cattleya/olaf-1908/5603</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/oliver-lines-1922/5604</loc>
@@ -13681,7 +13684,7 @@
     <loc>https://orchidex.org/cattleya/pax/5626</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/peacock/5627</loc>
+    <loc>https://orchidex.org/cattleya/peacock-1915/5627</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/peasmarsh/5628</loc>
@@ -13705,7 +13708,7 @@
     <loc>https://orchidex.org/cattleya/petrone-1922/5634</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/phillipa/5635</loc>
+    <loc>https://orchidex.org/cattleya/phillipa-1923/5635</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/pharaoh/5636</loc>
@@ -13732,7 +13735,7 @@
     <loc>https://orchidex.org/cattleya/piqua/5643</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/pluto/5644</loc>
+    <loc>https://orchidex.org/cattleya/pluto-1914/5644</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattlianthe/plynlimmon/5645</loc>
@@ -13852,7 +13855,7 @@
     <loc>https://orchidex.org/cattlianthe/richmond-lady/5683</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/rienzi/5684</loc>
+    <loc>https://orchidex.org/cattleya/rienzi-1926/5684</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/rivoli/5685</loc>
@@ -13909,7 +13912,7 @@
     <loc>https://orchidex.org/cattlianthe/rotunda/5702</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/roulers/5703</loc>
+    <loc>https://orchidex.org/cattleya/roulers-1924/5703</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/royal-purple/5704</loc>
@@ -14056,10 +14059,7 @@
     <loc>https://orchidex.org/cattleya/summertime/5751</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/summertime/5751</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/cattleya/sunstar/5752</loc>
+    <loc>https://orchidex.org/cattleya/sunstar-1924/5752</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/supreme/5753</loc>
@@ -14083,7 +14083,7 @@
     <loc>https://orchidex.org/cattleya/sylph-1933/5759</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/tacitus/5760</loc>
+    <loc>https://orchidex.org/cattleya/tacitus-1908/5760</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/tagus/5761</loc>
@@ -14111,9 +14111,6 @@
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/thomas-c-kirkwood/5769</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/cattleya/thor/5770</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/thor/5770</loc>
@@ -14179,7 +14176,7 @@
     <loc>https://orchidex.org/cattleya/ventura/5790</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/venusta/5791</loc>
+    <loc>https://orchidex.org/cattleya/venusta-1913/5791</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/verona-1922/5792</loc>
@@ -18067,7 +18064,7 @@
     <loc>https://orchidex.org/paphiopedilum/elfin/7086</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/paphiopedilum/elga/7087</loc>
+    <loc>https://orchidex.org/paphiopedilum/elgar/7087</loc>
   </url>
   <url>
     <loc>https://orchidex.org/paphiopedilum/elissa/7088</loc>
@@ -18080,12 +18077,6 @@
   </url>
   <url>
     <loc>https://orchidex.org/paphiopedilum/ellerdale/7091</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/paphiopedilum/ellerdale/7091</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/paphiopedilum/ellis-needham/7092</loc>
   </url>
   <url>
     <loc>https://orchidex.org/paphiopedilum/ellis-needham/7092</loc>
@@ -20839,7 +20830,7 @@
     <loc>https://orchidex.org/paphiopedilum/mulberry/8009</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/paphiopedilum/multicolor-1/8010</loc>
+    <loc>https://orchidex.org/paphiopedilum/multicolor-1917/8010</loc>
   </url>
   <url>
     <loc>https://orchidex.org/paphiopedilum/muriel-ii/8011</loc>
@@ -24187,7 +24178,7 @@
     <loc>https://orchidex.org/cattleya/bartola/9127</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattlianthe/basil/9128</loc>
+    <loc>https://orchidex.org/cattlianthe/basil-1908/9128</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattlianthe/basillace/9129</loc>
@@ -24313,7 +24304,7 @@
     <loc>https://orchidex.org/cattleya/borealis/9169</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/b-perfect/9170</loc>
+    <loc>https://orchidex.org/cattleya/perfect/9170</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/brava/9171</loc>
@@ -24349,7 +24340,7 @@
     <loc>https://orchidex.org/cattleya/bronze-dragon/9181</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/bronze-king/9182</loc>
+    <loc>https://orchidex.org/cattleya/bronze-king-1917/9182</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/bronze-prince/9183</loc>
@@ -24655,7 +24646,7 @@
     <loc>https://orchidex.org/cattleya/cintra/9283</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/circe/9284</loc>
+    <loc>https://orchidex.org/cattleya/circe-1917/9284</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/cisseus/9285</loc>
@@ -24727,7 +24718,7 @@
     <loc>https://orchidex.org/cattleya/colorado/9307</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/columbus/9308</loc>
+    <loc>https://orchidex.org/cattleya/columbus-1915/9308</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/commander-in-chief/9309</loc>
@@ -25003,7 +24994,7 @@
     <loc>https://orchidex.org/cattleya/drapmartin/9399</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/dryad/9400</loc>
+    <loc>https://orchidex.org/cattleya/dryad-1914/9400</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/dubarry/9401</loc>
@@ -25054,7 +25045,7 @@
     <loc>https://orchidex.org/cattleya/edenbridge/9416</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/edith/9417</loc>
+    <loc>https://orchidex.org/cattleya/edith-1916/9417</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/edith-blyth/9418</loc>
@@ -25078,7 +25069,7 @@
     <loc>https://orchidex.org/cattleya/eglamoor/9424</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/eileen/9425</loc>
+    <loc>https://orchidex.org/cattleya/eileen-1915/9425</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/elaine/9426</loc>
@@ -25391,6 +25382,9 @@
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/florentia/9529</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/cattleya/florian/9530</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/florine-beardslee/9531</loc>
@@ -25891,7 +25885,7 @@
     <loc>https://orchidex.org/cattleya/ian/9696</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/ianthe/9697</loc>
+    <loc>https://orchidex.org/cattleya/ianthe-1920/9697</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/iberia/9698</loc>
@@ -26083,13 +26077,13 @@
     <loc>https://orchidex.org/cattleya/juarez/9760</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/jucunda/9761</loc>
+    <loc>https://orchidex.org/cattleya/jucunda-may-1914/9761</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/judith/9762</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/julia/9763</loc>
+    <loc>https://orchidex.org/cattleya/julia-1914/9763</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/juliet-1941/9764</loc>
@@ -26689,7 +26683,7 @@
     <loc>https://orchidex.org/cattleya/maureen-1926/9963</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/mauretania/9964</loc>
+    <loc>https://orchidex.org/cattleya/mauretania-1912/9964</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/maxim/9965</loc>
@@ -26863,7 +26857,7 @@
     <loc>https://orchidex.org/cattleya/modoc/10021</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/mogul/10022</loc>
+    <loc>https://orchidex.org/cattleya/mogul-1928/10022</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/mohongo/10023</loc>
@@ -26902,7 +26896,7 @@
     <loc>https://orchidex.org/cattleya/mont-kemmel/10034</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/montreal/10035</loc>
+    <loc>https://orchidex.org/cattleya/montreal-1918/10035</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/montrose/10036</loc>
@@ -27241,7 +27235,7 @@
     <loc>https://orchidex.org/cattleya/oriana/10148</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/orient/10149</loc>
+    <loc>https://orchidex.org/cattleya/orient-1911/10149</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/oriflamme/10150</loc>
@@ -27280,7 +27274,7 @@
     <loc>https://orchidex.org/cattleya/osprey/10161</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/ossian/10162</loc>
+    <loc>https://orchidex.org/cattleya/ossian-1914/10162</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/otay/10163</loc>
@@ -27364,7 +27358,7 @@
     <loc>https://orchidex.org/cattleya/paxinos/10190</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/peacock/10191</loc>
+    <loc>https://orchidex.org/cattleya/peacock-1925/10191</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/peetersii-1907/10192</loc>
@@ -27847,7 +27841,7 @@
     <loc>https://orchidex.org/cattleya/rottingdean/10352</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/roulers/10353</loc>
+    <loc>https://orchidex.org/cattleya/roulers-1918/10353</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/roumania/10354</loc>
@@ -28213,7 +28207,7 @@
     <loc>https://orchidex.org/cattleya/sunglow-1922/10476</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/sunstar/10477</loc>
+    <loc>https://orchidex.org/cattleya/sunstar-1914/10477</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/superbo-elegans/10478</loc>
@@ -28228,7 +28222,7 @@
     <loc>https://orchidex.org/cattleya/suvla/10481</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/swallow/10482</loc>
+    <loc>https://orchidex.org/cattleya/swallow-1917/10482</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/swan-1931/10483</loc>
@@ -28334,6 +28328,9 @@
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/thomas-e-proctor/10517</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/cattleya/thor/10518</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/thordis/10519</loc>
@@ -28501,7 +28498,7 @@
     <loc>https://orchidex.org/cattleya/valerie-1925/10573</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/vancouver/10574</loc>
+    <loc>https://orchidex.org/cattleya/vancouver-1912/10574</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/vaucluse/10575</loc>
@@ -28573,7 +28570,7 @@
     <loc>https://orchidex.org/cattlianthe/vesuve/10597</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/vesuvius-1905/10598</loc>
+    <loc>https://orchidex.org/cattleya/vesuvius/10598</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/victor/10599</loc>
@@ -29494,7 +29491,7 @@
     <loc>https://orchidex.org/oncidium/admiral/10907</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/adonis-1917/10908</loc>
+    <loc>https://orchidex.org/oncidium/adonis-1917-1/10908</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/adrastia/10909</loc>
@@ -29674,7 +29671,7 @@
     <loc>https://orchidex.org/oncidium/ashworthii/10967</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/aspasia/10968</loc>
+    <loc>https://orchidex.org/oncidium/aspasia-1913/10968</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cyrtocidium/atalanta-1920/10969</loc>
@@ -30703,7 +30700,7 @@
     <loc>https://orchidex.org/oncidium/le-vesuve/11310</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/lilian/11311</loc>
+    <loc>https://orchidex.org/oncidium/lilian-1932/11311</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/lily-pons/11312</loc>
@@ -31276,7 +31273,7 @@
     <loc>https://orchidex.org/oncidium/radiance/11501</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cyrtocidium/ramilies/11502</loc>
+    <loc>https://orchidex.org/cyrtocidium/ramillies/11502</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/ramona/11503</loc>
@@ -32032,7 +32029,7 @@
     <loc>https://orchidex.org/oncidium/antimachus/11753</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/antinous/11754</loc>
+    <loc>https://orchidex.org/oncidium/antinous-1919/11754</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/anzac-1916/11755</loc>
@@ -32554,7 +32551,7 @@
     <loc>https://orchidex.org/oncidium/cobra/11927</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/cobret/11928</loc>
+    <loc>https://orchidex.org/oncidium/colret/11928</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/cock-robin/11929</loc>
@@ -32713,7 +32710,7 @@
     <loc>https://orchidex.org/oncidium/crisponel/11980</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/crispothell/11981</loc>
+    <loc>https://orchidex.org/oncidium/crispothello/11981</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/crispo-wiganianum/11982</loc>
@@ -32995,7 +32992,7 @@
     <loc>https://orchidex.org/oncidium/edusa/12074</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cyrtocidium/edwardinum/12075</loc>
+    <loc>https://orchidex.org/cyrtocidium/edwardimium/12075</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/egeria-1912/12076</loc>
@@ -34102,7 +34099,7 @@
     <loc>https://orchidex.org/oncidium/minnehaha/12443</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/minos-1918/12444</loc>
+    <loc>https://orchidex.org/oncidium/minos-1914/12444</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/mirabeau/12445</loc>
@@ -34468,7 +34465,7 @@
     <loc>https://orchidex.org/oncidium/pandora/12565</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/panther-1920/12566</loc>
+    <loc>https://orchidex.org/oncidium/panther-1916/12566</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/paris/12567</loc>
@@ -34720,7 +34717,7 @@
     <loc>https://orchidex.org/oncidium/rajah-1929/12649</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/ramilles/12650</loc>
+    <loc>https://orchidex.org/oncidium/ramilles-1928/12650</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/ramornie/12651</loc>
@@ -35164,7 +35161,7 @@
     <loc>https://orchidex.org/oncidium/theodore/12798</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/the-prince/12799</loc>
+    <loc>https://orchidex.org/oncidium/the-prince-1921/12799</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/the-regent/12800</loc>
@@ -35302,7 +35299,7 @@
     <loc>https://orchidex.org/oncidium/umbriel/12845</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/una/12846</loc>
+    <loc>https://orchidex.org/oncidium/una-1906/12846</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/unita/12847</loc>
@@ -35641,7 +35638,7 @@
     <loc>https://orchidex.org/oncidopsis/anniston/12960</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/aphrodite-1917/12961</loc>
+    <loc>https://orchidex.org/oncidium/aphrodite-1917-2/12961</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/ardens/12962</loc>
@@ -36025,7 +36022,7 @@
     <loc>https://orchidex.org/oncidopsis/maureen/13088</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cyrtoniopsis/mc-nabiana/13089</loc>
+    <loc>https://orchidex.org/cyrtoniopsis/mac-nabiana/13089</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidopsis/meda/13090</loc>
@@ -36625,10 +36622,10 @@
     <loc>https://orchidex.org/cattleya/dorcas/13289</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/eileen/13290</loc>
+    <loc>https://orchidex.org/cattleya/eileen-1916/13290</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/enid-1920/13291</loc>
+    <loc>https://orchidex.org/cattleya/enid-1916/13291</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/enidoris/13292</loc>
@@ -37045,7 +37042,7 @@
     <loc>https://orchidex.org/cattleya/gatton-glory-1909/13429</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/gem/13430</loc>
+    <loc>https://orchidex.org/cattleya/gem-1914/13430</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/gertrud-jeidels/13431</loc>
@@ -37423,7 +37420,7 @@
     <loc>https://orchidex.org/cattleya/richmond-1921/13555</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/rienzi/13556</loc>
+    <loc>https://orchidex.org/cattleya/rienzi-1914/13556</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/ringmer-1932/13557</loc>
@@ -37948,7 +37945,7 @@
     <loc>https://orchidex.org/oncidopsis/numila/13730</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidopsis/nysa/13731</loc>
+    <loc>https://orchidex.org/oncidopsis/nysa-1923/13731</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidopsis/oberon/13732</loc>
@@ -38107,7 +38104,7 @@
     <loc>https://orchidex.org/cattlianthe/chapmanii/13783</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/gladys-1894/13784</loc>
+    <loc>https://orchidex.org/cattleya/gladys-1914/13784</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/invicta/13785</loc>
@@ -38839,7 +38836,7 @@
     <loc>https://orchidex.org/cattleya/penarth/14029</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/pluto/14030</loc>
+    <loc>https://orchidex.org/cattleya/pluto-1918/14030</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/potasset/14031</loc>
@@ -39061,7 +39058,7 @@
     <loc>https://orchidex.org/cattleya/alexina/14104</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattlianthe/ashsteadensis/14105</loc>
+    <loc>https://orchidex.org/cattlianthe/ashteadensis/14105</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/brocar/14106</loc>
@@ -44299,12 +44296,6 @@
     <loc>https://orchidex.org/paphiopedilum/ellute/15851</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/paphiopedilum/ellute/15851</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/paphiopedilum/elly/15852</loc>
-  </url>
-  <url>
     <loc>https://orchidex.org/paphiopedilum/elly/15852</loc>
   </url>
   <url>
@@ -49300,7 +49291,7 @@
     <loc>https://orchidex.org/oncidium/apelles/17663</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/aphrodite/17664</loc>
+    <loc>https://orchidex.org/oncidium/aphrodite-1917-1/17664</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/arcturus/17665</loc>
@@ -50167,7 +50158,7 @@
     <loc>https://orchidex.org/oncidium/triomphe-d-or/17954</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/oncidium/triton/17955</loc>
+    <loc>https://orchidex.org/oncidium/triton-1928/17955</loc>
   </url>
   <url>
     <loc>https://orchidex.org/oncidium/trogan/17956</loc>
@@ -50426,9 +50417,6 @@
   </url>
   <url>
     <loc>https://orchidex.org/gomesa/adrar/18041</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/oncidium/auriferum/18042</loc>
   </url>
   <url>
     <loc>https://orchidex.org/gomesa/braceyanum/18043</loc>
@@ -51124,9 +51112,6 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/calliope/18273</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/canada/18274</loc>
-  </url>
-  <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/canute/18275</loc>
   </url>
   <url>
@@ -51676,7 +51661,7 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/lois-ryerson/18457</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/lotus/18458</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/lotos/18458</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/louisia/18459</loc>
@@ -52096,7 +52081,7 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/summer-gleam/18597</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/surprise/18598</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/surprise-1946/18598</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/sweet-dimple/18599</loc>
@@ -53278,7 +53263,7 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/irene-yasuda/18991</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/iris/18992</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/iris-1945/18992</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/iris-e-nicolai/18993</loc>
@@ -54901,9 +54886,6 @@
     <loc>https://orchidex.org/cattleya/bravura/19533</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/bretagne/19534</loc>
-  </url>
-  <url>
     <loc>https://orchidex.org/cattleya/bridal-gift/19535</loc>
   </url>
   <url>
@@ -55570,9 +55552,6 @@
     <loc>https://orchidex.org/cattleya/florian/19757</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/florian/19757</loc>
-  </url>
-  <url>
     <loc>https://orchidex.org/cattleya/florid/19758</loc>
   </url>
   <url>
@@ -55666,7 +55645,7 @@
     <loc>https://orchidex.org/cattleya/gayana/19788</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/gem/19789</loc>
+    <loc>https://orchidex.org/cattleya/gem-1953/19789</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/general-enid/19790</loc>
@@ -56146,7 +56125,7 @@
     <loc>https://orchidex.org/cattleya/judith-1947/19949</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/julia/19950</loc>
+    <loc>https://orchidex.org/cattleya/julia-1951/19950</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattlianthe/juliana-embree/19951</loc>
@@ -56989,7 +56968,7 @@
     <loc>https://orchidex.org/cattleya/ossa/20230</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/ossian/20231</loc>
+    <loc>https://orchidex.org/cattleya/ossian-1948/20231</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/oswaldo-cruz/20232</loc>
@@ -57565,7 +57544,7 @@
     <loc>https://orchidex.org/cattleya/suzette/20424</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/swallow/20425</loc>
+    <loc>https://orchidex.org/cattleya/swallow-1951/20425</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/swandean/20426</loc>
@@ -57818,9 +57797,6 @@
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/waldens-ridge/20509</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/cattleya/walkure/20510</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/walkure/20510</loc>
@@ -59071,7 +59047,7 @@
     <loc>https://orchidex.org/cattleya/carolina-wren/20925</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/caroline/20926</loc>
+    <loc>https://orchidex.org/cattleya/caroline-1919/20926</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/caroline-manda/20927</loc>
@@ -59620,7 +59596,7 @@
     <loc>https://orchidex.org/laeliocattleya/dorothy-s-horner/21108</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/dragon/21109</loc>
+    <loc>https://orchidex.org/cattleya/dragon-1946/21109</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/doctor-g-t-moore/21110</loc>
@@ -60829,7 +60805,7 @@
     <loc>https://orchidex.org/cattleya/jannette-anderson/21511</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/j-ansaldo/21512</loc>
+    <loc>https://orchidex.org/cattleya/j-ansaldo-1919/21512</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/jan-steen/21513</loc>
@@ -61469,9 +61445,6 @@
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/malibu/21725</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/cattleya/malta-1942/21726</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/malta-1942/21726</loc>
@@ -63310,6 +63283,9 @@
     <loc>https://orchidex.org/cattleya/summer-breeze-1956/22337</loc>
   </url>
   <url>
+    <loc>https://orchidex.org/cattleya/summertime/22338</loc>
+  </url>
+  <url>
     <loc>https://orchidex.org/cattleya/summertown/22339</loc>
   </url>
   <url>
@@ -63391,7 +63367,7 @@
     <loc>https://orchidex.org/cattleya/tableau/22365</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/tacitus/22366</loc>
+    <loc>https://orchidex.org/cattleya/tacitus-1960/22366</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/tafal/22367</loc>
@@ -66133,9 +66109,6 @@
     <loc>https://orchidex.org/papilionanda/leona/23282</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/papilionanda/leona/23282</loc>
-  </url>
-  <url>
     <loc>https://orchidex.org/vanda/liholiho/23283</loc>
   </url>
   <url>
@@ -67267,7 +67240,7 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/high-sierra/23659</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/hilda/23660</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/hilda-1940/23660</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/hoodbells/23661</loc>
@@ -69340,7 +69313,7 @@
     <loc>https://orchidex.org/rhyncholaeliocattleya/shaenshah/24350</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/rhyncholaeliocattleya/sheerwater-passage/24351</loc>
+    <loc>https://orchidex.org/rhyncholaeliocattleya/shearwater-passage/24351</loc>
   </url>
   <url>
     <loc>https://orchidex.org/rhyncholaeliocattleya/sheikhi/24352</loc>
@@ -72202,7 +72175,7 @@
     <loc>https://orchidex.org/cattleya/triclotho/25306</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/trident/25307</loc>
+    <loc>https://orchidex.org/cattleya/trident-1939/25307</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/trinidad/25308</loc>
@@ -72310,7 +72283,7 @@
     <loc>https://orchidex.org/cattlianthe/warpaint/25342</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/washington/25343</loc>
+    <loc>https://orchidex.org/cattleya/washington-1917/25343</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/watsonville/25344</loc>
@@ -83182,7 +83155,7 @@
     <loc>https://orchidex.org/cattleya/warsilee/28998</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/washington/28999</loc>
+    <loc>https://orchidex.org/cattleya/washington-1950/28999</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/weeki-wachee-princess/29000</loc>
@@ -91540,9 +91513,6 @@
     <loc>https://orchidex.org/papilionanda/leonard-reilly/31801</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/papilionanda/leonard-reilly/31801</loc>
-  </url>
-  <url>
     <loc>https://orchidex.org/vanda/leprechaun/31802</loc>
   </url>
   <url>
@@ -92753,12 +92723,6 @@
   </url>
   <url>
     <loc>https://orchidex.org/vanda/rios-sapphire/32211</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/vanda/rios-sapphire/32211</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/vanda/robert-berryman/32212</loc>
   </url>
   <url>
     <loc>https://orchidex.org/vanda/robert-berryman/32212</loc>
@@ -99601,7 +99565,7 @@
     <loc>https://orchidex.org/lycida/gusto/34492</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/lycaste/x-lucianii/34493</loc>
+    <loc>https://orchidex.org/lycaste/lucianii/34493</loc>
   </url>
   <url>
     <loc>https://orchidex.org/lymanara/mandai-grace/34495</loc>
@@ -101444,9 +101408,6 @@
   </url>
   <url>
     <loc>https://orchidex.org/paphiopedilum/elizabeth-keeley/35108</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/paphiopedilum/ellora/35109</loc>
   </url>
   <url>
     <loc>https://orchidex.org/paphiopedilum/ellora/35109</loc>
@@ -107755,13 +107716,7 @@
     <loc>https://orchidex.org/vanda/rios-telstar/37213</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/vanda/rios-telstar/37213</loc>
-  </url>
-  <url>
     <loc>https://orchidex.org/vanda/rio-undoso/37214</loc>
-  </url>
-  <url>
-    <loc>https://orchidex.org/vanda/roasmalee/37215</loc>
   </url>
   <url>
     <loc>https://orchidex.org/vanda/roasmalee/37215</loc>
@@ -114235,7 +114190,7 @@
     <loc>https://orchidex.org/laeliocattleya/eunice/39376</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/cattleya/eva-shill/39377</loc>
+    <loc>https://orchidex.org/cattleya/nerissa-1919/39377</loc>
   </url>
   <url>
     <loc>https://orchidex.org/cattleya/eximia/39378</loc>
@@ -118141,9 +118096,6 @@
     <loc>https://orchidex.org/paphiopedilum/eloge/40689</loc>
   </url>
   <url>
-    <loc>https://orchidex.org/paphiopedilum/eloge/40689</loc>
-  </url>
-  <url>
     <loc>https://orchidex.org/paphiopedilum/elspeth/40690</loc>
   </url>
   <url>
@@ -119999,5 +119951,53 @@
   </url>
   <url>
     <loc>https://orchidex.org/paphiopedilum/oro-blanco/41309</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/oscar-sherman/41310</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/oshkosh/41311</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/our-creation/41312</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/our-love/41313</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/overraeus/41314</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/owls-tree/41315</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/pacemaker/41316</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/pacesetter/41317</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/pacheco-pass/41318</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/pacific-atlas/41319</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/pacific-beauty/41320</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/pacific-glen/41321</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/pacific-glow/41322</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/pacific-red/41323</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/pacific-swallow/41324</loc>
+  </url>
+  <url>
+    <loc>https://orchidex.org/paphiopedilum/pacific-world/41325</loc>
   </url>
 </urlset>

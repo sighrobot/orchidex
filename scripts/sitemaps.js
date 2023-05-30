@@ -28,6 +28,7 @@ const getOut = (path) => fs.createWriteStream(path, { flags: 'w' });
 
 let count = 0;
 let page = -1;
+let lastId = 0;
 
 const outputs = [];
 const genuses = new Set();
@@ -37,7 +38,9 @@ const handleLine = (line) => {
   const split = line.split('\t');
   const [id, genus, epithet, , , , reg, orig] = split;
 
-  if (genus[0] !== genus[0].toUpperCase() || !epithet) {
+  const thisId = parseInt(id, 10);
+
+  if (genus[0] !== genus[0].toUpperCase() || !epithet || thisId === lastId) {
     return;
   }
 
@@ -57,6 +60,8 @@ const handleLine = (line) => {
   )}/${id}`;
   writeLines(makeLocXml('url', grexUrl), outputs[page]);
   count++;
+
+  lastId = parseInt(id, 10);
 };
 
 const handleClose = () => {
