@@ -137,7 +137,7 @@ const get = async (id) => {
 };
 
 const LAST_GOOD = 1044679;
-const END_AFTER = 300;
+const END_AFTER = 1000;
 let nullsInARow = 0;
 
 const skip = [169023, 900000];
