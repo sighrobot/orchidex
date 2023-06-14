@@ -11,7 +11,12 @@ import { Grex } from 'lib/types';
 import style from './style.module.scss';
 import { capitalize } from 'lib/utils';
 
-const DATA_THRESHOLD = 4000;
+type MapData = {
+  name: string;
+  value: number;
+  zero?: boolean;
+  one?: boolean;
+};
 
 const Treemap = () => {
   React.useEffect(() => {
@@ -47,7 +52,7 @@ const Treemap = () => {
 
   const isLoading = dataLoading || wcvpSpeciesLoading;
 
-  const combined = React.useMemo(
+  const combined: MapData[] = React.useMemo(
     () =>
       uniqBy(
         data
@@ -84,16 +89,15 @@ const Treemap = () => {
       return true;
     });
 
-    const groupedByCount = groupBy(preprocessed, (d: any) =>
+    const groupedByCount = groupBy<MapData>(preprocessed, (d: any) =>
       d.zero ? 0 : d.value,
     );
 
     const shouldCondense =
-      typeof window === 'undefined'
-        ? DATA_THRESHOLD
-        : window.innerWidth / preprocessed.length < 0.3;
+      typeof window === 'undefined' ||
+      window.innerWidth / preprocessed.length < 0.3;
 
-    const final = [];
+    const final: MapData[] = [];
 
     Object.keys(groupedByCount).forEach((c) => {
       if (!shouldCondense || parseInt(c, 10) > 1) {

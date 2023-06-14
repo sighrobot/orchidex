@@ -11,7 +11,7 @@ export const Magic = ({
   onSubmit,
 }: {
   inlineMenu?: boolean;
-  onChange?: (grex: Grex) => void;
+  onChange?: (grex: Grex | null) => void;
   onSubmit?: (partialGrex: Partial<Grex>) => void;
 }) => {
   const [value, setValue] = React.useState<string>('');
@@ -26,7 +26,7 @@ export const Magic = ({
       setResults([]);
       setValue('');
       setSelected(null);
-      onSubmit(partialGrex);
+      onSubmit?.(partialGrex);
     }
   };
 
@@ -35,7 +35,7 @@ export const Magic = ({
     setResults([]);
     setValue('');
     setSelected(null);
-    onChange(g);
+    onChange?.(g);
   };
 
   const dbed = React.useCallback(
