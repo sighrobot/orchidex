@@ -25,7 +25,7 @@ export const GrexCard = ({
   grex,
   seedParent,
   pollenParent,
-  hideDate,
+  hideDate = false,
   hideReg,
   hideLink,
   heading = false,

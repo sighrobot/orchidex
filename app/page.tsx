@@ -1,3 +1,5 @@
+'use client';
+
 import { Container, Padded } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
 import { H3 } from 'components/layout';
@@ -7,11 +9,12 @@ import { CROSS_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { useDate } from 'lib/hooks/useDate';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React from 'react';
-import style from './index.module.scss';
+import style from '../pages/index.module.scss';
+import { APP_DESCRIPTION } from './constants';
 
-export default function Index() {
+export default function HomePage() {
   const router = useRouter();
   const recent = useDate({ limit: 3 });
   const [simpleState, setSimpleState] = React.useState({});
@@ -31,7 +34,7 @@ export default function Index() {
 
   const handleSubmitSimple = (s) => {
     let url = '/search';
-    const params = [];
+    const params: string[] = [];
 
     SEARCH_FIELDS.forEach((f) => {
       if (s[f]) {
@@ -48,7 +51,7 @@ export default function Index() {
 
   const handleSubmitCross = () => {
     let url = '/search';
-    const params = [];
+    const params: string[] = [];
 
     CROSS_FIELDS.forEach((f) => {
       if (crossState[f]) {
@@ -70,11 +73,7 @@ export default function Index() {
     >
       <Padded className={style.homeHero}>
         <h1 className={style.heroTitle}>Discover orchids.</h1>
-        <p className={style.heroDescription}>
-          Orchidex is a new platform for exploring the world of orchid species
-          and hybrids. Visualize their complex ancestries and learn about the
-          people and organizations who grow and discover them.
-        </p>
+        <p className={style.heroDescription}>{APP_DESCRIPTION}</p>
       </Padded>
 
       <section className={style.columns}>

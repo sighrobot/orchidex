@@ -9,7 +9,7 @@ import { useSpeciesAncestry } from 'lib/hooks/useAncestry';
 import { Grex } from 'lib/types';
 import { Magic } from 'components/search/magic';
 import { fetchGrex } from 'lib/hooks/useGrex';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { abbreviateGenus } from 'lib/string';
 
 // const grex = {

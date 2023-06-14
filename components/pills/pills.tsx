@@ -1,4 +1,4 @@
-import { Pill } from 'components/pills/pill';
+import { Pill, PillStates } from 'components/pills/pill';
 import { CROSS_CHAR, UNKNOWN_CHAR } from 'lib/string';
 import { Grex } from 'lib/types';
 import styles from './pills.module.scss';
@@ -7,8 +7,8 @@ const hasParents = (grex: Grex) =>
   grex.seed_parent_epithet && grex.pollen_parent_epithet;
 
 const isParentNaturalHybrid = (grex: Grex) =>
-  grex.seed_parent_epithet[0] === UNKNOWN_CHAR ||
-  grex.pollen_parent_epithet[0] === UNKNOWN_CHAR;
+  grex.seed_parent_epithet?.[0] === UNKNOWN_CHAR ||
+  grex.pollen_parent_epithet?.[0] === UNKNOWN_CHAR;
 
 export const isNaturalHybrid = (grex: Grex) =>
   grex.epithet[0] === CROSS_CHAR ||
@@ -19,10 +19,10 @@ export const isNaturalHybrid = (grex: Grex) =>
     !Number.isInteger(parseInt(grex.epithet[0], 10)) &&
     grex.epithet[0] == grex.epithet[0].toLowerCase());
 
-export const isSpecies = (grex: Grex) =>
+export const isSpecies = (grex: Grex): boolean =>
   !isParentNaturalHybrid(grex) &&
   !isNaturalHybrid(grex) &&
-  grex.epithet &&
+  !!grex.epithet &&
   !Number.isInteger(parseInt(grex.epithet[0], 10)) &&
   grex.epithet[0] === grex.epithet[0].toLowerCase();
 
@@ -38,7 +38,7 @@ export const isIntergeneric = (grex) =>
   grex.seed_parent_genus !== grex.pollen_parent_genus;
 
 export const orderTerms = (grex) => {
-  const terms = [];
+  const terms: PillStates[] = [];
 
   if (grex.hypothetical) {
     terms.push('hypothetical');

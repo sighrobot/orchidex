@@ -1,5 +1,5 @@
 import React from 'react';
-import Router, { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { orderBy } from 'lodash';
 import { Container } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
@@ -12,8 +12,9 @@ import { ButtonSimple } from 'components/button-simple/button-simple';
 import { H3 } from 'components/layout';
 
 import style from './style.module.scss';
+import { Grex } from 'lib/types';
 
-export async function fetchSearch(params = []) {
+export async function fetchSearch(params: string[] = []): Promise<Grex[]> {
   const fetched = await fetch(`${APP_URL}/api/search?${params.join('&')}`);
   return fetched.json();
 }
@@ -32,10 +33,15 @@ export async function getServerSideProps(context) {
 
 export default function Search({ initialState = {}, initialSimple = true }) {
   const router = useRouter();
-  const { query } = router;
+  const searchParams = useSearchParams();
+  const query = React.useMemo(
+    () => (searchParams ? Object.fromEntries(searchParams.entries()) : {}),
+    [searchParams],
+  );
+
   const [simple, setSimple] = React.useState(initialSimple);
   const [state, setState] = React.useState(initialState);
-  const [results, setResults] = React.useState(null);
+  const [results, setResults] = React.useState<Grex[] | null>(null);
 
   const handleChange = (e) =>
     setState((s) => ({
@@ -45,7 +51,7 @@ export default function Search({ initialState = {}, initialSimple = true }) {
 
   const handleSubmit = (s) => {
     let url = '/search';
-    const params = [];
+    const params: string[] = [];
 
     SEARCH_FIELDS.forEach((f) => {
       if (s[f]) {
@@ -56,13 +62,13 @@ export default function Search({ initialState = {}, initialSimple = true }) {
     if (params.length > 0) {
       url += `?${params.join('&')}`;
 
-      Router.replace(url);
+      router.replace(url);
     }
   };
 
   const handleSubmitCross = () => {
     let url = '/search';
-    const params = [];
+    const params: string[] = [];
 
     CROSS_FIELDS.forEach((f) => {
       if (state[f]) {
@@ -73,14 +79,14 @@ export default function Search({ initialState = {}, initialSimple = true }) {
     if (params.length > 0) {
       url += `?${params.join('&')}`;
 
-      Router.replace(url);
+      router.replace(url);
     }
   };
 
   React.useEffect(() => {
     if (Object.keys(query).length > 0) {
       const nextState = {};
-      const params = [];
+      const params: string[] = [];
       const nextSimple = CROSS_FIELDS.some((f) => query[f]);
 
       (nextSimple ? CROSS_FIELDS : SEARCH_FIELDS).forEach((f) => {

@@ -12,7 +12,7 @@ import { AncestryViz } from 'components/viz/ancestry';
 import List from 'components/viz/list';
 import { fetchGrexByName, useSpeciesAncestry } from 'lib/hooks/useAncestry';
 import { Name } from 'components/name/name';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Tabs } from 'components/tabs/tabs';
 import { isNaturalHybrid, isSpecies } from 'components/pills/pills';
 import { StatBox, StatCard } from 'components/stat/stat';
@@ -26,7 +26,7 @@ export async function getServerSideProps(context) {
   const { genus: g, params } = context.query;
   const [e, id] = params;
 
-  let grex: GrexType;
+  let grex: GrexType | undefined = undefined;
 
   if (parseInt(id, 10)) {
     grex = await fetchGrex(id);
@@ -66,6 +66,8 @@ export const SpeciesAncestry = ({ grex }) => {
 
 export const Grex = ({ grex, seedParent, pollenParent }) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
   const progeny = useProgeny(grex);
   const name = formatName(grex);
   const { data: wcvp = [] } = useWcvp(grex);
@@ -75,7 +77,7 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
       : wcvp.filter((w) => w.taxon_rank === 'Species')[0];
 
   React.useEffect(() => {
-    const split = router.asPath.split('/');
+    const split = pathname?.split('/') ?? [''];
     if (split.length === 3 || isNaN(parseInt(split[split.length - 1], 10))) {
       router.replace(
         `/${kebabCase(name.long.genus)}/${kebabCase(name.long.epithet)}/${
@@ -83,7 +85,7 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
         }`,
       );
     }
-  }, [router.asPath]);
+  }, [pathname]);
 
   if (!grex) {
     return <Container>loading&hellip;</Container>;
@@ -205,7 +207,7 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
         />
       </div>
 
-      {router.query.debug && (
+      {searchParams?.get('debug') && (
         <table>
           <tbody>
             {Object.keys(grex).map((k) => {

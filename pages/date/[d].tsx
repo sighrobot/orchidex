@@ -1,13 +1,13 @@
 import { orderBy, groupBy } from 'lodash';
 
 import { Container } from 'components/container/container';
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 import { useDate } from 'lib/hooks/useDate';
 import { GrexCard } from 'components/grex/grex';
 
 export const RegisteredOnDate = () => {
-  const router = useRouter();
-  const d = (router.query.d || '') as string;
+  const searchParams = useSearchParams();
+  const d = (searchParams?.get('d') || '') as string;
 
   const dateStr = new Date(`${d}T00:00:00`).toString().slice(3, 15);
 

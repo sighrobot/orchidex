@@ -2,7 +2,7 @@ import { orderBy, groupBy } from 'lodash';
 
 import { Container } from 'components/container/container';
 
-import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 import { useRegistrant } from 'lib/hooks/useRegistrant';
 import { GrexCard } from 'components/grex/grex';
 import { Hero } from 'components/hero';
@@ -17,12 +17,17 @@ import { Grex } from 'lib/types';
 import { Tabs } from 'components/tabs/tabs';
 
 export const Registrant = () => {
-  const router = useRouter();
-  const d = (router.query.d as string) ?? '';
+  const searchParams = useSearchParams();
+  const d = (searchParams?.get('d') as string) ?? '';
 
   const rawData = useRegistrant({ name: d });
 
-  const statMap = {
+  const statMap: {
+    intergeneric: number;
+    primary: number;
+    genera: Set<string>;
+    firstYear: number | null;
+  } = {
     intergeneric: 0,
     primary: 0,
     genera: new Set(),

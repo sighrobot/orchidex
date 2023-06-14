@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 
 import style from './style.module.scss';
 
 export const Header = () => {
-  const router = useRouter();
+  const pathname = usePathname();
 
   return (
     <header className={style.header}>
@@ -21,7 +21,7 @@ export const Header = () => {
       <nav>
         <Link
           href='/recent'
-          className={router.pathname === '/recent' ? 'active' : undefined}
+          className={pathname === '/recent' ? 'active' : undefined}
         >
           Recent
         </Link>
@@ -31,7 +31,7 @@ export const Header = () => {
         {/* <Link
           href='/learn/hybridizer'
           className={
-            router.pathname === '/learn/hybridizer' ? 'active' : undefined
+            pathname === '/learn/hybridizer' ? 'active' : undefined
           }
         >
           Hybridize

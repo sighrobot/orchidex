@@ -3,7 +3,7 @@ import { capitalize } from 'lodash';
 
 import { SEARCH_FIELDS } from 'lib/constants';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import searchStyle from './search.module.scss';
 import { ButtonSimple } from 'components/button-simple/button-simple';
@@ -25,6 +25,7 @@ export const SearchGrex = ({
   state,
 }: SearchGrexProps) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [expanded, setExpanded] = React.useState(false);
 
   const handleSubmit = (e) => {
@@ -36,7 +37,7 @@ export const SearchGrex = ({
   return (
     <form className={searchStyle.search} onSubmit={handleSubmit}>
       {SEARCH_FIELDS.map((f, idx) => {
-        const show = expanded || idx < 2 || state[f] || router.query[f];
+        const show = expanded || idx < 2 || state[f] || searchParams?.[f];
 
         if (show) {
           return (

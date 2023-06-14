@@ -1,5 +1,5 @@
 import { Container } from 'components/container/container';
-import { useRouter } from 'next/router';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React from 'react';
 import { ResponsiveTreeMapCanvas } from '@nivo/treemap';
 import { groupBy, uniqBy } from 'lodash';
@@ -23,7 +23,8 @@ const Treemap = () => {
   const [numOrchids, setNumOrchids] = React.useState(0);
 
   const router = useRouter();
-  const { genus = '' } = router.query;
+  const searchParams = useSearchParams();
+  const genus = searchParams?.get('genus') ?? '';
 
   const [minProgeny, setMinProgeny] = React.useState(0);
 
@@ -96,7 +97,7 @@ const Treemap = () => {
 
     Object.keys(groupedByCount).forEach((c) => {
       if (!shouldCondense || parseInt(c, 10) > 1) {
-        final.push(...groupedByCount[c]);
+        final.push(...(groupedByCount[c] as []));
       }
     });
 

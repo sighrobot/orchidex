@@ -1,7 +1,7 @@
 import styles from './pills.module.scss';
 import cn from 'classnames';
 
-type PillStates =
+export type PillStates =
   | 'hypothetical'
   | 'species'
   | 'natural'
