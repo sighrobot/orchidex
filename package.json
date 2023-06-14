@@ -10,15 +10,15 @@
   "dependencies": {
     "@nivo/core": "0.80.0",
     "@nivo/treemap": "0.80.0",
-    "@vercel/analytics": "^0.1.8",
+    "@vercel/analytics": "1.0.1",
     "cache-lru": "1.1.11",
     "classnames": "2.3.2",
     "d3-org-chart": "2.7.0",
     "lodash": "4.17.21",
-    "next": "13.1.6",
+    "next": "13.4.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "swr": "^2.0.3"
+    "swr": "2.1.5"
   },
   "devDependencies": {
     "@types/lodash": "4.14.191",
