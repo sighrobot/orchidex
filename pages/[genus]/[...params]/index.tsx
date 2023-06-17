@@ -148,9 +148,7 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
                       enableLabel={false}
                       identity='id'
                       colors={(d: any) =>
-                        `rgba(218, 112, 214, ${
-                          (d.data.value / 21) * 0.75 + 0.25
-                        })`
+                        `rgba(0,0,0, ${(d.data.value / 21) * 0.75 + 0.25})`
                       }
                       data={{
                         children: [
@@ -160,8 +158,8 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
                           { value: 5, id: 5 },
                           { value: 3, id: 4 },
                           { value: 2, id: 3 },
-                          { value: 1, id: 1 },
                           { value: 1, id: 2 },
+                          { value: 1, id: 1 },
                         ],
                       }}
                     />
