@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "next build && yarn run postbuild-sitemaps",
+    "start": "next start",
+    "postbuild-sitemaps": "mkdir .next/static/sitemaps && node scripts/sitemaps.js"
   },
   "dependencies": {
     "@nivo/core": "0.80.0",

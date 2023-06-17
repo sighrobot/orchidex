@@ -1,2 +1,2 @@
 User-agent: *
-Sitemap: https://orchidex.org/sitemap_index.xml
+Sitemap: https://orchidex.org/_next/static/sitemap_index.xml

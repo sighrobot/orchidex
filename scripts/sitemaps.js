@@ -2,7 +2,8 @@ const readline = require('readline');
 const fs = require('fs');
 const { kebabCase } = require('lodash');
 
-const SITEMAPS_PATH = 'public/sitemaps';
+// const SITEMAPS_PATH = 'public/sitemaps';
+const SITEMAPS_PATH = '.next/static/sitemaps';
 const MAX_NUM_URLS = 40000;
 const DATA_READ_PATH = 'data/rhs/data.tsv';
 const BASE_URL = 'https://orchidex.org';
@@ -88,15 +89,18 @@ const handleClose = () => {
   writeLines(['</urlset>'], staticOut);
 
   // SITEMAP INDEX
-  const indexOut = getOut('public/sitemap_index.xml');
+  const indexOut = getOut('.next/static/sitemap_index.xml');
   writeLines([XML_HEADER, getNamespacedTagOpen('sitemapindex')], indexOut);
-  writeLines(makeLocXml('sitemap', `${BASE_URL}/sitemaps/pages.xml`), indexOut);
   writeLines(
-    makeLocXml('sitemap', `${BASE_URL}/sitemaps/registrant.xml`),
+    makeLocXml('sitemap', `${BASE_URL}/_next/static/sitemaps/pages.xml`),
+    indexOut,
+  );
+  writeLines(
+    makeLocXml('sitemap', `${BASE_URL}/_next/static/sitemaps/registrant.xml`),
     indexOut,
   );
   for (let i = 0; i <= page; i++) {
-    const url = `${BASE_URL}/sitemaps/grex--${i}.xml`;
+    const url = `${BASE_URL}/_next/static/sitemaps/grex--${i}.xml`;
     writeLines(makeLocXml('sitemap', url), indexOut);
   }
   writeLines(['</sitemapindex>'], indexOut);
