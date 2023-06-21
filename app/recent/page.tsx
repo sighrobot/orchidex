@@ -1,22 +1,32 @@
+import { Metadata } from 'next';
 import { groupBy, orderBy } from 'lodash';
-
-import { Container } from 'components/container/container';
-import { useDate } from 'lib/hooks/useDate';
 import { GrexCard } from 'components/grex/grex';
+import { H2, H3 } from 'components/layout';
+import { Padded } from 'components/container/container';
+import { APP_TITLE, APP_URL } from 'app/constants';
+import { Grex } from 'lib/types';
 
 import style from './style.module.scss';
-import { H3 } from 'components/layout';
 
-export default function Index() {
-  const recent = useDate();
+async function fetchRecent(): Promise<Grex[]> {
+  const res = await fetch(`${APP_URL}/api/date`);
+  return res.json();
+}
+
+export const metadata: Metadata = {
+  description: 'View a list of the most recent orchid hybrid registrations.',
+  title: `Recent registrations | ${APP_TITLE}`,
+};
+
+export default async function Recent() {
+  const recent = await fetchRecent();
   const grouped = groupBy(recent, 'date_of_registration');
 
   return (
-    <Container
-      className={style.recent}
-      title='Recent - Orchidex'
-      heading='Recently registered'
-    >
+    <div className={style.recent}>
+      <Padded>
+        <H2 className={style.heading}>Recent registrations</H2>
+      </Padded>
       {Object.keys(grouped).map((d, idx) => {
         return (
           <section key={d}>
@@ -36,6 +46,6 @@ export default function Index() {
           </section>
         );
       })}
-    </Container>
+    </div>
   );
 }
