@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Padded } from 'components/container/container';
+import { Padded } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
 import { H3 } from 'components/layout';
 import { SearchGrex } from 'components/search/grex';
@@ -67,10 +67,7 @@ export default function HomePage() {
   };
 
   return (
-    <Container
-      className={style.homeContainer}
-      title='Orchidex: Discover orchids.'
-    >
+    <>
       <Padded className={style.homeHero}>
         <h1 className={style.heroTitle}>Discover orchids.</h1>
         <p className={style.heroDescription}>{APP_DESCRIPTION}</p>
@@ -102,6 +99,6 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
-    </Container>
+    </>
   );
 }

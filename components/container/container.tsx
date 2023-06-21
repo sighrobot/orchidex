@@ -2,9 +2,9 @@ import { Header } from 'components/header/header';
 import Head from 'next/head';
 import Link from 'next/link';
 import cn from 'classnames';
+import { H2 } from 'components/layout';
 
 import style from './style.module.scss';
-import { H2 } from 'components/layout';
 
 type ContainerProps = {
   className?: string;
