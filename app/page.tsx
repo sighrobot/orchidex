@@ -11,7 +11,7 @@ import { INPUT_NAME_SUFFIX } from 'lib/string';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import style from '../pages/index.module.scss';
+import style from './index.module.scss';
 import { APP_DESCRIPTION } from './constants';
 
 export default function HomePage() {

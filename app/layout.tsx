@@ -1,4 +1,4 @@
-import '../styles/globals.css';
+import React from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { IBM_Plex_Sans } from 'next/font/google';
 import { Metadata } from 'next';
@@ -6,8 +6,8 @@ import { Header } from 'components/header/header';
 import Disclaimer from 'components/disclaimer';
 import { APP_DESCRIPTION, APP_TITLE, APP_URL } from './constants';
 
-import style from './style.module.scss';
-import React from 'react';
+import '../styles/globals.css';
+import style from './layout.module.scss';
 
 const ibmPlexSans = IBM_Plex_Sans({
   display: 'swap',
