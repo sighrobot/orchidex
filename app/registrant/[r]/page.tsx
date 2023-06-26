@@ -1,13 +1,10 @@
+'use client';
+
 import { orderBy, groupBy } from 'lodash';
 
-import { Container } from 'components/container/container';
-
-import { useSearchParams } from 'next/navigation';
-import { useRegistrant } from 'lib/hooks/useRegistrant';
 import { GrexCard } from 'components/grex/grex';
 import { Hero } from 'components/hero';
 
-import style from './style.module.scss';
 import { isIntergeneric, isPrimary } from 'components/pills/pills';
 import List from 'components/viz/list';
 import { ButtonSimple } from 'components/button-simple/button-simple';
@@ -15,12 +12,22 @@ import React from 'react';
 import { StatCard } from 'components/stat/stat';
 import { Grex } from 'lib/types';
 import { Tabs } from 'components/tabs/tabs';
+import { APP_URL } from 'app/constants';
 
-export const Registrant = () => {
-  const searchParams = useSearchParams();
-  const d = (searchParams?.get('d') as string) ?? '';
+import style from './style.module.scss';
 
-  const rawData = useRegistrant({ name: d });
+async function fetchRegistrant(name): Promise<object[]> {
+  const res = await fetch(
+    `${APP_URL}/api/registrant/${encodeURIComponent(name)}`,
+  );
+  return res.json();
+}
+
+export default async function Registrant({
+  params: { r: rawR } = { r: '' },
+} = {}) {
+  const d = decodeURIComponent(rawR);
+  const rawData = await fetchRegistrant(d);
 
   const statMap: {
     intergeneric: number;
@@ -59,7 +66,7 @@ export const Registrant = () => {
   const originations = rawData.filter((g) => g.originator_name === d);
 
   return (
-    <Container title={`${d} | Orchidex`}>
+    <>
       <Hero heading={d}>
         <div className={style.quickStats}>
           <span>
@@ -152,6 +159,7 @@ export const Registrant = () => {
                     getCount={(d) => d.score}
                     showBars={false}
                   />
+
                   <section className={style.list}>
                     {orderBy(onDate, ['date_of_registration'], ['desc']).map(
                       (grexOnDate, idx) => {
@@ -221,6 +229,7 @@ export const Registrant = () => {
                     getCount={(d) => d.score}
                     showBars={false}
                   />
+
                   <section className={style.list}>
                     {orderBy(onDate, ['date_of_registration'], ['desc']).map(
                       (grexOnDate, idx) => {
@@ -240,8 +249,6 @@ export const Registrant = () => {
           },
         ]}
       />
-    </Container>
+    </>
   );
-};
-
-export default Registrant;
+}

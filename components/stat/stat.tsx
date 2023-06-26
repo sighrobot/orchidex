@@ -1,11 +1,11 @@
 import { useStat } from 'lib/hooks/useStat';
 import { getStatText, getStatTitle } from 'lib/stats';
 import { Grex, Stat } from 'lib/types';
-import style from './style.module.scss';
 import cn from 'classnames';
 import List from 'components/viz/list';
 import Link from 'next/link';
 import { Meter } from 'components/meter/meter';
+import style from './style.module.scss';
 
 export const StatBox = ({ className = '', children, heading }) => (
   <div className={cn(style.box, className)}>

@@ -7,6 +7,7 @@ import Disclaimer from 'components/disclaimer';
 import { APP_DESCRIPTION, APP_TITLE, APP_URL } from './constants';
 
 import style from './style.module.scss';
+import React from 'react';
 
 const ibmPlexSans = IBM_Plex_Sans({
   display: 'swap',
