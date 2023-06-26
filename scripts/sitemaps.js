@@ -82,7 +82,7 @@ const handleClose = () => {
   // STATIC sitemap
   const staticOut = getOut(`${SITEMAPS_PATH}/pages.xml`);
   writeLines([XML_HEADER, getNamespacedTagOpen('urlset')], staticOut);
-  for (let u of ['', 'recent', 'search', 'about', 'data']) {
+  for (let u of ['', 'recent', 'search', 'about', 'about/data']) {
     const url = `${BASE_URL}/${u}`;
     writeLines(makeLocXml('url', url), staticOut);
   }

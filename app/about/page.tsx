@@ -61,7 +61,7 @@ export default function About() {
               <H3>Where does the data come from?</H3>
             </dt>
             <dd>
-              Please see the <Link href='/data'>Data page</Link> for more
+              Please see the <Link href='/about/data'>Data page</Link> for more
               information.
             </dd>
 

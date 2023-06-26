@@ -1,16 +1,24 @@
-import { Container } from 'components/container/container';
-import { H3, SupportBanner } from 'components/layout';
+import { H2, H3 } from 'components/layout';
 import Link from 'next/link';
+import { Metadata } from 'next';
+import { Padded } from 'components/container/container';
+import { APP_TITLE } from 'app/constants';
+
 import style from './style.module.scss';
+
+export const metadata: Metadata = {
+  description: `Information about the data displayed on ${APP_TITLE}. Learn about its provenance, attribution, and quality, or find out how to report an issue.`,
+  title: `About our data | ${APP_TITLE}`,
+};
 
 export default function Data() {
   return (
-    <Container
-      className={style.data}
-      title='About our data - Orchidex'
-      heading='About our data'
-    >
-      <article>
+    <>
+      <Padded>
+        <H2>About our data</H2>
+      </Padded>
+
+      <article className={style.article}>
         <H3>Provenance</H3>
         <p>
           The primary data source is The International Orchid Register, as
@@ -20,7 +28,7 @@ export default function Data() {
         </p>
       </article>
 
-      <article>
+      <article className={style.article}>
         <H3>Attribution</H3>
         <p>
           When possible, direct hyperlinks are provided from pages on this site
@@ -29,7 +37,7 @@ export default function Data() {
         </p>
       </article>
 
-      <article>
+      <article className={style.article}>
         <H3>Quality</H3>
         <p>
           Every effort has been made to present data as true to source as
@@ -41,7 +49,7 @@ export default function Data() {
         </p>
       </article>
 
-      <article>
+      <article className={style.article}>
         <H3>Report an issue</H3>
         <p>
           If you believe there is an error on this site with respect to the
@@ -51,6 +59,6 @@ export default function Data() {
           Screenshots are highly encouraged!
         </p>
       </article>
-    </Container>
+    </>
   );
 }
