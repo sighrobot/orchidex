@@ -1,44 +1,27 @@
-'use client';
-
-import { orderBy, groupBy } from 'lodash';
-
-import { GrexCard } from 'components/grex/grex';
-import { Hero } from 'components/hero';
+import React from 'react';
+import { Grex } from 'lib/types';
 
 import { isIntergeneric, isPrimary } from 'components/pills/pills';
-import List from 'components/viz/list';
-import { ButtonSimple } from 'components/button-simple/button-simple';
-import React from 'react';
-import { StatCard } from 'components/stat/stat';
-import { Grex } from 'lib/types';
-import { Tabs } from 'components/tabs/tabs';
-import { APP_URL } from 'app/constants';
+import { fetchRegistrant } from './layout';
+import RegistrantView from './view';
 
-import style from './style.module.scss';
+export type StatMap = {
+  intergeneric: number;
+  primary: number;
+  genera: Set<string>;
+  firstYear: number | null;
+  registrations: Grex[];
+  originations: Grex[];
+};
 
-async function fetchRegistrant(name): Promise<object[]> {
-  const res = await fetch(
-    `${APP_URL}/api/registrant/${encodeURIComponent(name)}`,
-  );
-  return res.json();
-}
-
-export default async function Registrant({
-  params: { r: rawR } = { r: '' },
-} = {}) {
-  const d = decodeURIComponent(rawR);
-  const rawData = await fetchRegistrant(d);
-
-  const statMap: {
-    intergeneric: number;
-    primary: number;
-    genera: Set<string>;
-    firstYear: number | null;
-  } = {
+export const createRegistrantStatMap = (name: string, rawData: Grex[]) => {
+  const statMap: StatMap = {
     intergeneric: 0,
     primary: 0,
     genera: new Set(),
     firstYear: null,
+    registrations: [],
+    originations: [],
   };
 
   rawData.forEach((g) => {
@@ -60,195 +43,29 @@ export default async function Registrant({
       statMap.firstYear =
         statMap.firstYear === null ? year : Math.min(statMap.firstYear, year);
     }
+
+    if (g.registrant_name === name) {
+      statMap.registrations.push(g);
+    }
+
+    if (g.originator_name === name) {
+      statMap.originations.push(g);
+    }
   });
 
-  const registrations = rawData.filter((g) => g.registrant_name === d);
-  const originations = rawData.filter((g) => g.originator_name === d);
+  return statMap;
+};
+
+export default async function RegistrantPage({
+  params: { r: rawR } = { r: '' },
+} = {}) {
+  const name = decodeURIComponent(rawR);
+  const rawData = (await fetchRegistrant(name)) as Grex[];
+  const statMap = createRegistrantStatMap(name, rawData);
 
   return (
     <>
-      <Hero heading={d}>
-        <div className={style.quickStats}>
-          <span>
-            <strong>{rawData.length.toLocaleString()}</strong>{' '}
-            {rawData.length === 1 ? 'record' : 'records'} across{' '}
-            <strong>{statMap.genera.size}</strong>{' '}
-            {statMap.genera.size === 1 ? 'genus' : 'genera'}
-          </span>
-        </div>
-        <div className={style.quickStats}>
-          First registered in <strong>{statMap.firstYear}</strong>
-        </div>
-      </Hero>
-
-      <Tabs
-        renderToSide={
-          <aside className={style.sidebar}>
-            <StatCard
-              activeId={d}
-              stat='seed_parent_registrants'
-              grex={{ registrant_name: d } as Grex}
-            />
-            <StatCard
-              activeId={d}
-              stat='seed_parent_originators'
-              grex={{ registrant_name: d } as Grex}
-            />
-            <StatCard
-              activeId={d}
-              stat='pollen_parent_registrants'
-              grex={{ registrant_name: d } as Grex}
-            />
-            <StatCard
-              activeId={d}
-              stat='pollen_parent_originators'
-              grex={{ registrant_name: d } as Grex}
-            />
-          </aside>
-        }
-        config={[
-          {
-            label: 'Registrant',
-            count: registrations.length,
-            disabled: registrations.length === 0,
-            component: () => {
-              const [genus, setGenus] = React.useState('All genera');
-              const handleFilterGenus = (genus) => setGenus(genus);
-              const onDate = registrations.filter(
-                (g) => genus === 'All genera' || g.genus === genus,
-              );
-
-              const groupedRaw = groupBy(registrations, 'genus');
-              return (
-                <section className={style.columns}>
-                  <List
-                    activeId={genus}
-                    className={style.genusFacet}
-                    data={Object.keys(groupedRaw)
-                      .map((genus) => ({
-                        score: groupedRaw[genus].length,
-                        grex: groupedRaw[genus][0],
-                        id: genus,
-                      }))
-                      .concat([
-                        {
-                          score: registrations.length,
-                          grex: { genus: 'All genera', epithet: '' },
-                          id: 'All genera',
-                        },
-                      ])}
-                    renderField={({ grex: g = {} }) => (
-                      <ButtonSimple
-                        onClick={() => handleFilterGenus(g.genus)}
-                        style={{
-                          textOverflow: 'ellipsis',
-                          overflow: 'hidden',
-                          whiteSpace: 'nowrap',
-                          width: '100%',
-                          textAlign: 'left',
-                          textDecoration: 'none',
-                        }}
-                      >
-                        {g.genus === 'All genera' ? (
-                          g.genus
-                        ) : (
-                          <em>{g.genus}</em>
-                        )}
-                      </ButtonSimple>
-                    )}
-                    getCount={(d) => d.score}
-                    showBars={false}
-                  />
-
-                  <section className={style.list}>
-                    {orderBy(onDate, ['date_of_registration'], ['desc']).map(
-                      (grexOnDate, idx) => {
-                        return (
-                          <GrexCard
-                            key={`${grexOnDate.id}-${idx}`}
-                            grex={grexOnDate}
-                            activeRegId={d}
-                          />
-                        );
-                      },
-                    )}
-                  </section>
-                </section>
-              );
-            },
-          },
-          {
-            label: `Originator`,
-            count: originations.length,
-            disabled: originations.length === 0,
-            component: () => {
-              const [genus, setGenus] = React.useState('All genera');
-              const handleFilterGenus = (genus) => setGenus(genus);
-              const onDate = originations.filter(
-                (g) => genus === 'All genera' || g.genus === genus,
-              );
-
-              const groupedRaw = groupBy(originations, 'genus');
-              return (
-                <section className={style.columns}>
-                  <List
-                    activeId={genus}
-                    className={style.genusFacet}
-                    data={Object.keys(groupedRaw)
-                      .map((genus) => ({
-                        score: groupedRaw[genus].length,
-                        grex: groupedRaw[genus][0],
-                        id: genus,
-                      }))
-                      .concat([
-                        {
-                          score: originations.length,
-                          grex: { genus: 'All genera', epithet: '' },
-                          id: 'All genera',
-                        },
-                      ])}
-                    renderField={({ grex: g = {} }) => (
-                      <ButtonSimple
-                        onClick={() => handleFilterGenus(g.genus)}
-                        style={{
-                          textOverflow: 'ellipsis',
-                          overflow: 'hidden',
-                          whiteSpace: 'nowrap',
-                          width: '100%',
-                          textAlign: 'left',
-                          textDecoration: 'none',
-                        }}
-                      >
-                        {g.genus === 'All genera' ? (
-                          g.genus
-                        ) : (
-                          <em>{g.genus}</em>
-                        )}
-                      </ButtonSimple>
-                    )}
-                    getCount={(d) => d.score}
-                    showBars={false}
-                  />
-
-                  <section className={style.list}>
-                    {orderBy(onDate, ['date_of_registration'], ['desc']).map(
-                      (grexOnDate, idx) => {
-                        return (
-                          <GrexCard
-                            key={`${grexOnDate.id}-${idx}`}
-                            grex={grexOnDate}
-                            activeRegId={d}
-                          />
-                        );
-                      },
-                    )}
-                  </section>
-                </section>
-              );
-            },
-          },
-        ]}
-      />
+      <RegistrantView name={name} rawData={rawData} statMap={statMap} />
     </>
   );
 }
