@@ -64,7 +64,12 @@ export const SpeciesAncestry = ({ grex }) => {
   );
 };
 
-export const Grex = ({ grex, seedParent, pollenParent }) => {
+export const Grex = ({
+  grex,
+  seedParent,
+  pollenParent,
+  isHypothetical = false,
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -105,6 +110,8 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
           seedParent={seedParent}
           pollenParent={pollenParent}
           hideLink
+          hideDate={isHypothetical}
+          hideReg={isHypothetical}
         />
         {wcvpSpecies && (
           <div style={{ marginTop: '5px' }}>
@@ -122,10 +129,12 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
             {wcvpSpecies.primary_author} {wcvpSpecies.first_published}
           </div>
         )}
-        <Resources
-          grex={grex}
-          blueNantaSpeciesId={wcvpSpecies?.plant_name_id}
-        />
+        {!isHypothetical && (
+          <Resources
+            grex={grex}
+            blueNantaSpeciesId={wcvpSpecies?.plant_name_id}
+          />
+        )}
       </Padded>
 
       <div className={style.content}>
@@ -133,45 +142,51 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
           padding
           renderToSide={
             <aside className={style.sidebar}>
-              <StatBox heading='Genus Parentage'>
-                <p>
-                  Click below to view the <em>{grex.genus}</em> parentage map:
-                </p>
-                <br />
-                <Link href={`/viz/${grex.genus.toLowerCase()}`}>
-                  <div className={style.minimap}>
-                    <ResponsiveTreeMapCanvas
-                      isInteractive={false}
-                      innerPadding={1}
-                      borderWidth={0}
-                      value='value'
-                      enableLabel={false}
-                      identity='id'
-                      colors={(d: any) =>
-                        `rgba(0,0,0, ${(d.data.value / 21) * 0.75 + 0.25})`
-                      }
-                      data={{
-                        children: [
-                          { value: 21, id: 8 },
-                          { value: 13, id: 7 },
-                          { value: 8, id: 6 },
-                          { value: 5, id: 5 },
-                          { value: 3, id: 4 },
-                          { value: 2, id: 3 },
-                          { value: 1, id: 2 },
-                          { value: 1, id: 1 },
-                        ],
-                      }}
-                    />
-                  </div>
-                </Link>
-              </StatBox>
-              {!isSpecies(grex) && !isNaturalHybrid(grex) && (
-                <StatCard stat='registrant_genus_pct' grex={grex} />
+              {!isHypothetical && (
+                <StatBox heading='Genus Parentage'>
+                  <p>
+                    Click below to view the <em>{grex.genus}</em> parentage map:
+                  </p>
+                  <br />
+                  <Link href={`/viz/${grex.genus.toLowerCase()}`}>
+                    <div className={style.minimap}>
+                      <ResponsiveTreeMapCanvas
+                        isInteractive={false}
+                        innerPadding={1}
+                        borderWidth={0}
+                        value='value'
+                        enableLabel={false}
+                        identity='id'
+                        colors={(d: any) =>
+                          `rgba(0,0,0, ${(d.data.value / 21) * 0.75 + 0.25})`
+                        }
+                        data={{
+                          children: [
+                            { value: 21, id: 8 },
+                            { value: 13, id: 7 },
+                            { value: 8, id: 6 },
+                            { value: 5, id: 5 },
+                            { value: 3, id: 4 },
+                            { value: 2, id: 3 },
+                            { value: 1, id: 2 },
+                            { value: 1, id: 1 },
+                          ],
+                        }}
+                      />
+                    </div>
+                  </Link>
+                </StatBox>
               )}
-              {!isSpecies(grex) && !isNaturalHybrid(grex) && (
-                <StatCard stat='year_genus_pct' grex={grex} />
-              )}
+              {!isHypothetical &&
+                !isSpecies(grex) &&
+                !isNaturalHybrid(grex) && (
+                  <StatCard stat='registrant_genus_pct' grex={grex} />
+                )}
+              {!isHypothetical &&
+                !isSpecies(grex) &&
+                !isNaturalHybrid(grex) && (
+                  <StatCard stat='year_genus_pct' grex={grex} />
+                )}
               {!isSpecies(grex) && grex.genus && grex.epithet && (
                 <StatBox heading='Species Ancestry'>
                   <SpeciesAncestry grex={grex} />
@@ -184,7 +199,13 @@ export const Grex = ({ grex, seedParent, pollenParent }) => {
               label: 'Ancestry',
               disabled: isGrexSpecies,
               disablePadding: true,
-              component: () => <AncestryViz grex={grex} />,
+              component: () => (
+                <AncestryViz
+                  grex={grex}
+                  seedParent={seedParent}
+                  pollenParent={pollenParent}
+                />
+              ),
             },
             {
               label: `Progeny`,

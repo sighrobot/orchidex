@@ -10,16 +10,46 @@ import {
   isSpecies,
 } from 'components/pills/pills';
 import cn from 'classnames';
-import style from './ancestry.module.scss';
-import pillStyle from '../pills/pills.module.scss';
 import Link from 'next/link';
 import { grexToHref } from 'components/name/name';
+import { Grex } from 'lib/types';
+import pillStyle from '../pills/pills.module.scss';
+
+import style from './ancestry.module.scss';
 
 let chart = null;
 
-export const AncestryViz = ({ grex, maxDepth = false }) => {
+export const AncestryViz = ({
+  grex,
+  seedParent,
+  pollenParent,
+  maxDepth = false,
+}: {
+  grex: Grex;
+  seedParent?: Grex;
+  pollenParent?: Grex;
+  maxDepth?: boolean;
+}) => {
   const d3Container = useRef(null);
-  const ancestry = useAncestry(grex, maxDepth ? 1000 : 3);
+  const regularAncestry = useAncestry(grex, maxDepth ? 1000 : 3);
+  const seedParentAncestry = useAncestry(seedParent || {}, 3);
+  const pollenParentAncestry = useAncestry(pollenParent || {}, 3);
+  const parentAncestry = {
+    nodes: [grex, ...seedParentAncestry.nodes, ...pollenParentAncestry.nodes],
+    links: [
+      { source: seedParent?.id, target: grex.id },
+      { source: pollenParent?.id, target: grex.id },
+      ...seedParentAncestry.links,
+      ...pollenParentAncestry.links,
+    ],
+    nodeMap: {
+      [grex.id]: grex,
+      ...seedParentAncestry.nodeMap,
+      ...pollenParentAncestry.nodeMap,
+    },
+  };
+  const ancestry =
+    seedParent && pollenParent ? parentAncestry : regularAncestry;
 
   React.useEffect(() => {
     const { OrgChart } = require('d3-org-chart');
@@ -114,11 +144,13 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
               [pillStyle.natural]: isNaturalHybrid(n),
               [pillStyle.primary]: isPrimary(n),
               [pillStyle.intergeneric]: isIntergeneric(n),
+              [pillStyle.hypothetical]: n.hypothetical,
               [style.normal]:
                 !nIsSpecies &&
                 !isNaturalHybrid(n) &&
                 !isPrimary(n) &&
-                !isIntergeneric(n),
+                !isIntergeneric(n) &&
+                !n.hypothetical,
             })}
           >
             {nIsSpecies && (
@@ -135,7 +167,7 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
             </div>
             {
               <div className={cn(style.level)}>
-                {!nIsSpecies && (
+                {!nIsSpecies && !n.hypothetical && (
                   <span>{n.date_of_registration.slice(0, 4)}</span>
                 )}
                 {n.l && <span>{n.l}º</span>}
@@ -160,8 +192,13 @@ export const AncestryViz = ({ grex, maxDepth = false }) => {
       })
       .layout('bottom');
 
-    chart.render().expandAll();
-    chart.fit();
+    // parentAncestry crashes because it loads in two parts
+    // and the chart tries to render with incomplete data
+    // ...i'm sorry for what i've done :(
+    try {
+      chart.render().expandAll();
+      chart.fit();
+    } catch {}
 
     return () => {
       chart = null;
