@@ -7,7 +7,7 @@ import { fetchGrex } from 'lib/hooks/useGrex';
 import { useProgeny } from 'lib/hooks/useProgeny';
 import Link from 'next/link';
 import { Resources } from 'components/resources/resources';
-import { description, formatName } from 'lib/string';
+import { description, formatName, CROSS_CHAR } from 'lib/string';
 import { AncestryViz } from 'components/viz/ancestry';
 import List from 'components/viz/list';
 import { fetchGrexByName, useSpeciesAncestry } from 'lib/hooks/useAncestry';
@@ -16,11 +16,11 @@ import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Tabs } from 'components/tabs/tabs';
 import { isNaturalHybrid, isSpecies } from 'components/pills/pills';
 import { StatBox, StatCard } from 'components/stat/stat';
-import style from './style.module.scss';
 import { Grex as GrexType } from 'lib/types';
-
 import { useWcvp } from 'lib/hooks/useWcvp';
 import { ResponsiveTreeMapCanvas } from '@nivo/treemap';
+
+import style from './style.module.scss';
 
 export async function getServerSideProps(context) {
   const { genus: g, params } = context.query;
@@ -75,6 +75,8 @@ export const Grex = ({
   const pathname = usePathname();
   const progeny = useProgeny(grex);
   const name = formatName(grex);
+  const seedParentName = formatName(seedParent);
+  const pollenParentName = formatName(pollenParent);
   const { data: wcvp = [] } = useWcvp(grex);
   const wcvpSpecies =
     wcvp.length === 1
@@ -100,7 +102,11 @@ export const Grex = ({
 
   return (
     <Container
-      title={`${name.short.full} | Orchidex`}
+      title={`${
+        grex.hypothetical
+          ? `Hybridize - ${seedParentName.short.full} ${CROSS_CHAR} ${pollenParentName.short.full}`
+          : name.long.full
+      } | Orchidex`}
       description={description(grex)}
     >
       <Padded>
@@ -112,6 +118,7 @@ export const Grex = ({
           hideLink
           hideDate={isHypothetical}
           hideReg={isHypothetical}
+          hideName={isHypothetical}
         />
         {wcvpSpecies && (
           <div style={{ marginTop: '5px' }}>

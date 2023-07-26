@@ -15,6 +15,7 @@ type GrexProps = {
   hideDate?: boolean;
   hideReg?: boolean;
   hideLink?: boolean;
+  hideName?: boolean;
   heading?: boolean;
   onClick?: (grex: Grex) => void;
   activeRegId?: string;
@@ -28,6 +29,7 @@ export const GrexCard = ({
   hideDate = false,
   hideReg,
   hideLink,
+  hideName,
   heading = false,
   onClick,
   activeRegId,
@@ -47,7 +49,9 @@ export const GrexCard = ({
       onClick={handleClick}
     >
       <Pills grex={grex} />
-      <Name as='h2' link={!shouldRenderAsButton && !hideLink} grex={grex} />
+      {!hideName && (
+        <Name as='h2' link={!shouldRenderAsButton && !hideLink} grex={grex} />
+      )}
       <Parentage
         hideLink={shouldRenderAsButton}
         grex={grex}

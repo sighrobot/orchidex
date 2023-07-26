@@ -65,12 +65,17 @@ export const description = (grex: Grex) => {
     pollen_parent_epithet,
     date_of_registration,
     registrant_name,
+    hypothetical,
   } = grex;
   const crossString = `${abbreviateGenus({
     genus: seed_parent_genus,
   })} ${seed_parent_epithet} ${CROSS_CHAR} ${abbreviateGenus({
     genus: pollen_parent_genus,
   })} ${pollen_parent_epithet}`;
+
+  if (hypothetical) {
+    return `${crossString} is ${getDescriptor(grex)}.`;
+  }
 
   const dateString = `${new Date(date_of_registration)
     .toString()
@@ -88,6 +93,7 @@ export const description = (grex: Grex) => {
         grex,
       )} registered on ${dateString}.`;
     }
+
     return `${genus} ${epithet} (${crossString}) is ${getDescriptor(grex)}.`;
   }
 
