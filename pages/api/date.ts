@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 
 export const config = { runtime: 'edge' };
 
-export default async (req: NextRequest) => {
+export const getByDate = async (req: NextRequest) => {
   const { searchParams } = new URL(req.url);
   const date = searchParams.get('d');
   const limit = searchParams.get('limit');
@@ -13,9 +13,6 @@ export default async (req: NextRequest) => {
   if (date) {
     expr += `SELECT * FROM rhs WHERE epithet != '' AND date_of_registration = '${date}'`;
   } else {
-    const d = new Date();
-    d.setDate(d.getDate() - 9);
-
     expr += `SELECT * FROM rhs WHERE epithet != '' AND date(date_of_registration) != '' ORDER BY date_of_registration DESC`;
   }
 
@@ -27,3 +24,5 @@ export default async (req: NextRequest) => {
 
   return query(expr);
 };
+
+export default getByDate;
