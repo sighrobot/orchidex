@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   title: `Recent registrations | ${APP_TITLE}`,
 };
 
+export const revalidate = 86400;
+
 export default async function Recent() {
   const recent = await fetchRecent();
   const grouped = groupBy(recent, 'date_of_registration');
