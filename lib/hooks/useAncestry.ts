@@ -241,7 +241,7 @@ export const useAncestry = (grex, level = 2) => {
         setAncestry({ nodes: [grex], links: [], nodeMap });
       }
     })();
-  }, [grex, data]);
+  }, [grex, data, level]);
 
   return ancestry;
 };

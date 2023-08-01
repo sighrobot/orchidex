@@ -1,7 +1,7 @@
 import { renderToString } from 'react-dom/server';
 import React, { useRef } from 'react';
 import { useAncestry } from 'lib/hooks/useAncestry';
-import { orderBy } from 'lodash';
+import { debounce, orderBy } from 'lodash';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
 import {
   isIntergeneric,
@@ -30,10 +30,20 @@ export const AncestryViz = ({
   pollenParent?: Grex;
   maxDepth?: boolean;
 }) => {
+  const [depth, setDepth] = React.useState<number>(maxDepth ? 1000 : 4);
+  const [layout, setLayout] = React.useState<string>('bottom');
+
+  const handleChangeDepth = debounce(
+    (e) => setDepth(parseInt(e.target.value, 10)),
+    350,
+  );
+
+  const handleChangeLayout = (e) => setLayout(e.target.value);
+
   const d3Container = useRef(null);
-  const regularAncestry = useAncestry(grex, maxDepth ? 1000 : 3);
-  const seedParentAncestry = useAncestry(seedParent || {}, 3);
-  const pollenParentAncestry = useAncestry(pollenParent || {}, 3);
+  const regularAncestry = useAncestry(grex, depth);
+  const seedParentAncestry = useAncestry(seedParent || {}, depth);
+  const pollenParentAncestry = useAncestry(pollenParent || {}, depth);
   const parentAncestry = {
     nodes: [grex, ...seedParentAncestry.nodes, ...pollenParentAncestry.nodes],
     links: [
@@ -190,7 +200,7 @@ export const AncestryViz = ({
           ),
         );
       })
-      .layout('bottom');
+      .layout(layout);
 
     // parentAncestry crashes because it loads in two parts
     // and the chart tries to render with incomplete data
@@ -203,13 +213,35 @@ export const AncestryViz = ({
     return () => {
       chart = null;
     };
-  }, [d3Container.current, ancestry]);
+  }, [d3Container.current, ancestry, layout]);
 
   return (
     <div className={style.viz}>
-      {/* <menu>
-        <button onClick={() => chart.fit()}>Reset view</button>
-      </menu> */}
+      <menu>
+        <label>
+          {depth}º
+          <input
+            type='range'
+            min={1}
+            max={8}
+            onChange={handleChangeDepth}
+            defaultValue={depth}
+          />
+        </label>
+
+        <label>
+          Layout:
+          <select onChange={handleChangeLayout} value={layout}>
+            <option value='bottom'>Bottom</option>
+            <option value='right'>Right</option>
+            <option value='left'>Left</option>
+            <option value='top'>Top</option>
+          </select>
+        </label>
+
+        <button onClick={() => chart.fit()}>Reset zoom</button>
+      </menu>
+
       <div className={style.vizContainer} ref={d3Container} />
     </div>
   );
