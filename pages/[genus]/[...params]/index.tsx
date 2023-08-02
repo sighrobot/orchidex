@@ -155,7 +155,7 @@ export const Grex = ({
                     Click below to view the <em>{grex.genus}</em> parentage map:
                   </p>
                   <br />
-                  <Link href={`/viz/${grex.genus.toLowerCase()}`}>
+                  <Link href={`/learn/parentage/${grex.genus.toLowerCase()}`}>
                     <div className={style.minimap}>
                       <ResponsiveTreeMapCanvas
                         isInteractive={false}
@@ -220,7 +220,7 @@ export const Grex = ({
               component: () => (
                 <>
                   {orderBy(
-                    progeny.filter((d) => d.synonym_flag.includes('not')),
+                    progeny, // used to filter out synonyms ... ?
                     ['date_of_registration', 'genus', 'epithet'],
                     ['desc'],
                   ).map((grexOnDate) => {
