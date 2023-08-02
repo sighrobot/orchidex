@@ -1,15 +1,24 @@
-import { Container } from 'components/container/container';
-import { useRouter, useSearchParams } from 'next/navigation';
+'use client';
+
 import React from 'react';
+import { useRouter } from 'next/navigation';
 import { ResponsiveTreeMapCanvas } from '@nivo/treemap';
 import { groupBy, uniqBy } from 'lodash';
+
+import { H2 } from 'components/layout';
 import { useTreemap } from 'lib/hooks/useTreemap';
 import { grexToHref } from 'components/name/name';
 import { useWcvp } from 'lib/hooks/useWcvp';
 import { Grex } from 'lib/types';
+import { capitalize } from 'lib/utils';
+import { APP_URL } from 'app/constants';
 
 import style from './style.module.scss';
-import { capitalize } from 'lib/utils';
+
+async function fetchGenera(): Promise<{ g: string; c: number; d: string }[]> {
+  const res = await fetch(`${APP_URL}/api/genera`);
+  return res.json();
+}
 
 type MapData = {
   name: string;
@@ -18,18 +27,15 @@ type MapData = {
   one?: boolean;
 };
 
-const Treemap = () => {
+export default function Treemap({ genus }: { genus: string }) {
   React.useEffect(() => {
     (HTMLCanvasElement as any).prototype.getBBox = function () {
       return { width: this.offsetWidth, height: this.offsetHeight };
     };
   });
-
   const [numOrchids, setNumOrchids] = React.useState(0);
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const genus = searchParams?.get('genus') ?? '';
 
   const [minProgeny, setMinProgeny] = React.useState(0);
 
@@ -132,7 +138,7 @@ const Treemap = () => {
           ? 1
           : -1,
       );
-  }, [combined, type, minProgeny]);
+  }, [combined.length, type, minProgeny]); // using combined.length prevents genera input lag (?)
 
   React.useEffect(() => {
     if (numOrchids === 0 && !isLoading && combined.length) {
@@ -242,24 +248,60 @@ const Treemap = () => {
     );
   }, [data, genus, isLoading, router, children]);
 
-  const capitalizedGenus = capitalize(genus as string);
+  const capitalizedGenus = capitalize(genus);
+
+  const [generaInput, setGeneraInput] = React.useState<string>('');
+  const [genera, setGenera] = React.useState<string[]>([]);
+
+  const handleChangeGenus = (e) => {
+    if (
+      e.target.value[0] !== generaInput[0] &&
+      genera.includes(e.target.value.toLowerCase())
+    ) {
+      router.push(`/learn/parentage/${e.target.value.toLowerCase()}`);
+      setGeneraInput('');
+    } else {
+      setGeneraInput(e.target.value);
+    }
+  };
+
+  React.useEffect(() => {
+    (async () => {
+      const fetched = await fetchGenera();
+      setGenera(fetched.map(({ g }) => g.toLowerCase()));
+    })();
+  }, [genus]);
 
   return (
-    <Container
-      className={style.treemap}
-      heading={
-        <>
-          <em>{capitalizedGenus}</em> parentage
-        </>
-      }
-      title={`${capitalizedGenus} parentage | Orchidex`}
-    >
-      <section>
-        <p>
-          This visualization shows the frequency with which all{' '}
-          {numOrchids ? <strong>{numOrchids.toLocaleString()}</strong> : ''}{' '}
-          <em>{capitalizedGenus}</em> orchids are used in creating new hybrids.
-        </p>
+    <div className={style.treemap}>
+      <div className={style.pageHeader}>
+        <div>
+          {genera.length > 0 && (
+            <datalist id='genera'>
+              {genera.map((g) => (
+                <option key={g}>{capitalize(g)}</option>
+              ))}
+            </datalist>
+          )}
+
+          <input
+            list='genera'
+            placeholder={generaInput.length === 0 ? 'Search genera' : undefined} // Safari/FF placeholder glitch
+            value={generaInput.toLowerCase()}
+            onChange={handleChangeGenus}
+          />
+
+          <H2>
+            <em>{capitalizedGenus}</em> parentage
+          </H2>
+
+          <p>
+            This visualization shows the frequency with which all{' '}
+            {numOrchids ? <strong>{numOrchids.toLocaleString()}</strong> : ''}{' '}
+            <em>{capitalizedGenus}</em> orchids are used in creating new
+            hybrids.
+          </p>
+        </div>
 
         <div className={style.controlWrap}>
           <fieldset>
@@ -330,7 +372,7 @@ const Treemap = () => {
 
           <fieldset>
             <label className={style.rangeLabel}>
-              Hide &lt; <strong>{minProgeny}</strong> progeny{' '}
+              with at least <strong>{minProgeny}</strong> progeny{' '}
               <input
                 type='range'
                 min={-data[0]?.c}
@@ -342,11 +384,9 @@ const Treemap = () => {
             </label>
           </fieldset>
         </div>
-      </section>
+      </div>
 
       {map}
-    </Container>
+    </div>
   );
-};
-
-export default Treemap;
+}

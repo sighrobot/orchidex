@@ -1,17 +1,26 @@
+.pageHeader {
+  padding: 10px 10px 30px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+
+  input {
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+}
+
 .treemap {
   canvas {
     cursor: pointer;
   }
-  section {
-    padding: 0 10px;
-    display: flex;
-    flex-wrap: wrap;
-  }
 
   p {
     margin-top: 15px;
-    max-width: 600px;
+    max-width: 525px;
     margin-right: 40px;
+    font-size: 14px;
   }
 
   fieldset {
@@ -32,9 +41,7 @@
 
 .controlWrap {
   margin-top: 15px;
-  margin-bottom: 20px;
   display: flex;
-  flex-grow: 1;
 
   label {
     font-size: 12px;
@@ -57,14 +64,16 @@
 
   input[type='range'] {
     display: block;
-    width: 100%;
+    width: 138px;
   }
 }
 
 .rangeLabel {
   padding: 2.5px 0;
+  text-align: right;
 
   input {
+    margin: 0;
     margin-top: 5px;
   }
 }
