@@ -2,7 +2,6 @@ const readline = require('readline');
 const fs = require('fs');
 const { kebabCase } = require('lodash');
 
-// const SITEMAPS_PATH = 'public/sitemaps';
 const SITEMAPS_PATH = '.next/static/sitemaps';
 const MAX_NUM_URLS = 40000;
 const DATA_READ_PATH = 'data/rhs/data.tsv';
@@ -32,7 +31,7 @@ let page = -1;
 let lastId = 0;
 
 const outputs = [];
-const genuses = new Set();
+const genera = new Set();
 const registrants = new Set();
 
 const handleLine = (line) => {
@@ -45,7 +44,7 @@ const handleLine = (line) => {
     return;
   }
 
-  genuses.add(genus);
+  genera.add(genus);
   registrants.add(reg);
   registrants.add(orig);
 
@@ -79,6 +78,17 @@ const handleClose = () => {
   }
   writeLines(['</urlset>'], regOut);
 
+  // LEARN-PARENTAGE sitemap
+  const generaOut = getOut(`${SITEMAPS_PATH}/learn-parentage.xml`);
+  writeLines([XML_HEADER, getNamespacedTagOpen('urlset')], generaOut);
+  for (let g of genera) {
+    const genUrl = `${BASE_URL}/learn/parentage/${encodeURIComponent(
+      g.toLowerCase(),
+    )}`;
+    writeLines(makeLocXml('url', genUrl), generaOut);
+  }
+  writeLines(['</urlset>'], generaOut);
+
   // STATIC sitemap
   const staticOut = getOut(`${SITEMAPS_PATH}/pages.xml`);
   writeLines([XML_HEADER, getNamespacedTagOpen('urlset')], staticOut);
@@ -97,6 +107,13 @@ const handleClose = () => {
   );
   writeLines(
     makeLocXml('sitemap', `${BASE_URL}/_next/static/sitemaps/registrant.xml`),
+    indexOut,
+  );
+  writeLines(
+    makeLocXml(
+      'sitemap',
+      `${BASE_URL}/_next/static/sitemaps/learn-parentage.xml`,
+    ),
     indexOut,
   );
   for (let i = 0; i <= page; i++) {
