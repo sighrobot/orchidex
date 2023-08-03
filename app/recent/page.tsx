@@ -13,7 +13,7 @@ async function fetchRecent(): Promise<Grex[]> {
   return res.json();
 }
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   description: 'View a list of the most recent orchid hybrid registrations.',

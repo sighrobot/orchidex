@@ -1,23 +1,19 @@
-import { query } from "lib/datasette2";
-import { NextResponse } from "next/server";
+import { query } from 'lib/datasette2';
+import { NextResponse } from 'next/server';
 
-export const runtime = "edge";
+export const runtime = 'edge';
 
 export async function GET(req) {
-  const { d: date, limit } = Object.fromEntries(req.nextUrl.searchParams);
+  const { limit } = Object.fromEntries(req.nextUrl.searchParams);
 
   let expr = "SELECT * FROM rhs WHERE epithet != '' AND ";
 
-  if (date) {
-    expr += `date_of_registration = '${date}'`;
-  } else {
-    expr += `date_of_registration != '' AND date_of_registration > '2023-07-20' ORDER BY date_of_registration DESC`;
-  }
+  expr += `date_of_registration != '' AND date_of_registration > '2023-07-20' ORDER BY date_of_registration DESC`;
 
   if (limit) {
     expr += ` LIMIT ${limit}`;
   } else {
-    expr += " LIMIT 100";
+    expr += ' LIMIT 100';
   }
 
   const fetched = await query(expr);
