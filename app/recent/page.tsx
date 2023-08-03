@@ -13,12 +13,12 @@ async function fetchRecent(): Promise<Grex[]> {
   return res.json();
 }
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   description: 'View a list of the most recent orchid hybrid registrations.',
   title: `Recent registrations | ${APP_TITLE}`,
 };
-
-export const revalidate = 86400;
 
 export default async function Recent() {
   const recent = await fetchRecent();

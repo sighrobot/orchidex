@@ -1,6 +1,8 @@
 import { query } from "lib/datasette2";
 import { NextResponse } from "next/server";
 
+export const runtime = "edge";
+
 export async function GET(req) {
   const { d: date, limit } = Object.fromEntries(req.nextUrl.searchParams);
 
