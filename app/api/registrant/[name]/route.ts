@@ -4,7 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 export const runtime = 'edge';
 
 export async function GET(req: NextRequest) {
-  const raw = decodeURIComponent(req.nextUrl.pathname.split('/').at(-1) ?? '');
+  const { searchParams } = new URL(req.nextUrl);
+  const raw = searchParams.get('name') ?? '';
   const r = raw.replace(/'/g, "''");
 
   if (!r) {

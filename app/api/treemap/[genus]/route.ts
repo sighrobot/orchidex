@@ -1,19 +1,19 @@
 import { query } from 'lib/datasette2';
 import { capitalize } from 'lib/utils';
+import { NextRequest, NextResponse } from 'next/server';
 
-import type { NextRequest } from 'next/server';
+export const runtime = 'edge';
 
-export const config = { runtime: 'edge' };
-
-export default async (req: NextRequest) => {
-  const { searchParams } = new URL(req.url);
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.nextUrl);
   const g = searchParams.get('genus');
+  const parentType = searchParams.get('parentType');
   const genus = capitalize(g);
 
-  const parentType = searchParams.get('parentType');
+  let q = '';
 
   if (!parentType) {
-    return query(`SELECT parent, SUM(c) as c
+    q = `SELECT parent, SUM(c) as c
     FROM (
       SELECT 
         seed_parent_epithet as parent,
@@ -56,13 +56,12 @@ export default async (req: NextRequest) => {
           pollen_parent_genus = '${genus}'
       )
     ORDER BY
-      c DESC;`);
-  }
+      c DESC;`;
+  } else {
+    const parentGenusType = `${parentType}_parent_genus`;
+    const parentEpithetType = `${parentType}_parent_epithet`;
 
-  const parentGenusType = `${parentType}_parent_genus`;
-  const parentEpithetType = `${parentType}_parent_epithet`;
-
-  return query(`SELECT
+    q = `SELECT
   rhs.${parentEpithetType},
   COUNT(*) c
 FROM
@@ -89,5 +88,11 @@ WHERE
     ${parentGenusType} = '${genus}'
   )
 ORDER BY
-  c DESC`);
-};
+  c DESC`;
+  }
+
+  const fetched = await query(q);
+  const json = await fetched?.json();
+
+  return NextResponse.json(json, { status: 200 });
+}
