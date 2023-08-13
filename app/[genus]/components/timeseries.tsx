@@ -15,6 +15,6 @@ export default function Timeseries({
   const { data } = useHybridsTimeseries({ genus });
 
   return (
-    <VegaLite id={id} height={96} spec={getSpec({ genus, values: data })} />
+    <VegaLite id={id} height={128} spec={getSpec({ genus, values: data })} />
   );
 }
