@@ -4,11 +4,15 @@ import { NextResponse } from 'next/server';
 export const runtime = 'edge';
 
 export async function GET(req) {
-  const { limit } = Object.fromEntries(req.nextUrl.searchParams);
+  const { limit, genus } = Object.fromEntries(req.nextUrl.searchParams);
 
   let expr = "SELECT * FROM rhs WHERE epithet != '' AND ";
 
-  expr += `date_of_registration != '' AND date_of_registration > '2023-07-20' ORDER BY date_of_registration DESC`;
+  if (genus) {
+    expr += `lower(genus) = '${genus}' AND `;
+  }
+
+  expr += `date_of_registration != '' ORDER BY date_of_registration DESC`;
 
   if (limit) {
     expr += ` LIMIT ${limit}`;
@@ -19,12 +23,16 @@ export async function GET(req) {
   const fetched = await query(expr);
   const json = await fetched?.json();
 
-  const aWeekBefore = new Date(`${json[0].date_of_registration}T00:00:00`);
-  aWeekBefore.setDate(aWeekBefore.getDate() - 8);
+  let last7Days = json;
 
-  const last7Days = json.filter((j) => {
-    return new Date(`${j.date_of_registration}T00:00:00`) > aWeekBefore;
-  });
+  if (!genus && json?.[0]) {
+    const aWeekBefore = new Date(`${json[0].date_of_registration}T00:00:00`);
+    aWeekBefore.setDate(aWeekBefore.getDate() - 8);
+
+    last7Days = json.filter((j) => {
+      return new Date(`${j.date_of_registration}T00:00:00`) > aWeekBefore;
+    });
+  }
 
   return NextResponse.json(last7Days, { status: 200 });
 }

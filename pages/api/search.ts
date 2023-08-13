@@ -28,6 +28,6 @@ export default async (req: NextRequest) => {
         .join(' and ');
 
   return query(
-    `SELECT * FROM rhs WHERE ${condx} order by date_of_registration desc limit 1000`,
+    `SELECT * FROM rhs WHERE epithet != '' AND ${condx} order by date_of_registration desc limit 1000`
   );
 };

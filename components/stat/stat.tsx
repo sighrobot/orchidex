@@ -70,12 +70,14 @@ export const StatContent = ({
               <em>N/A</em>
             ) : activeId && activeId === g.registrant_name ? (
               <strong>{g.registrant_name}</strong>
-            ) : (
+            ) : g.registrant_name !== 'O/U' ? (
               <Link
                 href={`/registrant/${encodeURIComponent(g.registrant_name)}`}
               >
                 {g.registrant_name}
               </Link>
+            ) : (
+              g.registrant_name
             )
           }
           getCount={(d) => d.score}

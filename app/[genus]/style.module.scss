@@ -1,0 +1,74 @@
+.genus {
+  p {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    display: -webkit-box;
+    font-size: 14px;
+    margin-top: 10px;
+    max-width: 500px;
+    overflow: hidden;
+  }
+
+  cite {
+    display: inline-block;
+    font-size: 12px;
+    font-style: normal;
+    margin-top: 10px;
+
+    & + cite {
+      font-size: 8px;
+
+      a {
+        text-decoration: none;
+      }
+    }
+
+    a {
+      color: gray;
+      text-decoration: underline;
+    }
+  }
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  column-gap: 20px;
+  flex-wrap: wrap;
+
+  section {
+    flex-grow: 1;
+  }
+
+  section + * {
+    flex-basis: 60%;
+    margin-top: 22px;
+    flex-grow: 1;
+    min-width: 300px;
+  }
+}
+
+.lists {
+  display: flex;
+  width: 100%;
+  margin-top: 40px;
+  flex-wrap: wrap;
+  column-gap: 80px;
+
+  > *:first-child {
+    flex-grow: 1;
+  }
+
+  > *:nth-child(2) {
+    min-width: 300px;
+  }
+
+  > *:nth-child(3) {
+    max-width: 350px;
+  }
+
+  li {
+    padding-right: 0;
+    padding-left: 0;
+  }
+}

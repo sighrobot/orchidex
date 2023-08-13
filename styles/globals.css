@@ -26,6 +26,9 @@ body {
 * {
   box-sizing: border-box;
   font-family: inherit;
+}
+
+*:not(svg *) {
   font-size: inherit;
 }
 

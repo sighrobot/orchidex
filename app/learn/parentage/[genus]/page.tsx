@@ -2,9 +2,8 @@ import React from 'react';
 import { Metadata } from 'next';
 
 import { APP_TITLE } from 'app/constants';
-
+import { capitalize } from 'lib/utils';
 import Treemap from 'components/viz/treemap';
-import { capitalize } from 'lodash';
 
 export async function generateMetadata({
   params,

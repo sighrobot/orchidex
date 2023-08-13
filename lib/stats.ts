@@ -14,8 +14,8 @@
 
 // This was the only registered hybrid of <year>
 
-import { capitalize } from 'lodash';
 import { Grex, Stat } from './types';
+import { capitalize } from './utils';
 
 export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
   switch (stat) {
@@ -91,14 +91,14 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
       return `SELECT
         (CAST(count(*) AS FLOAT) / (SELECT count(*) FROM rhs WHERE substr(date_of_registration, 0, 5) = '${grex.date_of_registration.slice(
           0,
-          4,
+          4
         )}') ) as pct
     FROM rhs
     WHERE genus = '${
       grex.genus
     }' AND epithet != '' AND substr(date_of_registration, 0, 5) = '${grex.date_of_registration.slice(
         0,
-        4,
+        4
       )}'
   `;
     default:

@@ -1,10 +1,9 @@
 import React from 'react';
-import { capitalize } from 'lodash';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 import { SEARCH_FIELDS } from 'lib/constants';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
-import { useRouter, useSearchParams } from 'next/navigation';
-
+import { capitalize } from 'lib/utils';
 import searchStyle from './search.module.scss';
 import { ButtonSimple } from 'components/button-simple/button-simple';
 

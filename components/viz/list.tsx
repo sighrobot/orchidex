@@ -62,18 +62,18 @@ const List = ({
     () =>
       countByField
         ? orderBy(Object.keys(counts), (k) => counts[k], order).filter(
-            (k) => counts[k] > 0,
+            (k) => counts[k] > 0
           )
         : orderBy(
             data,
             [getCount, ({ grex: g }) => `${g.genus} ${g.epithet}`],
-            [order, 'asc'],
+            [order, 'asc']
           ),
-    [data, getCount, counts, countByField, order],
+    [data, getCount, counts, countByField, order]
   );
   const total = React.useMemo(
     () => sorted.reduce((acc, s) => acc + s.score, 0),
-    [counts],
+    [counts]
   );
 
   const copiedValue = sorted
@@ -87,7 +87,7 @@ const List = ({
     <div className={cn(style.vizList, className)}>
       {title && <H3>{title}</H3>}
       <ul>
-        {sorted.slice(0, limit).map((k) => {
+        {sorted.slice(0, limit).map((k, idx) => {
           return (
             <li
               key={k.grex.id}
@@ -95,7 +95,7 @@ const List = ({
                 activeId && k.id === activeId ? style.active : undefined
               }
             >
-              <div>{renderField(k)}</div>
+              <div>{renderField(k, idx)}</div>
               <div>{renderCount(getCount ? getCount(k) : counts[k])}</div>
               {showBars && (
                 <Meter

@@ -19,7 +19,10 @@
     "next": "13.4.10",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "swr": "2.2.0"
+    "swr": "2.2.0",
+    "vega": "^5.25.0",
+    "vega-embed": "^6.22.2",
+    "vega-lite": "^5.14.1"
   },
   "devDependencies": {
     "@types/lodash": "4.14.191",

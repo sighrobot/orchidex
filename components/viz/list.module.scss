@@ -2,6 +2,10 @@
   max-width: 400px;
   padding: 20px 0;
 
+  a {
+    text-decoration: underline;
+  }
+
   ul {
     padding: 0;
   }
@@ -23,6 +27,7 @@
   div:nth-child(2) {
     margin-left: auto;
     white-space: nowrap;
+    font-size: 14px;
   }
 }
 

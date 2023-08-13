@@ -54,7 +54,8 @@ export const Reg = ({ grex, activeId, hideDate, hideLink }: RegProps) => {
         )}{' '}
         {grex.originator_name !== grex.registrant_name && '('}
         {grex.originator_name !== grex.registrant_name &&
-          (activeId !== grex.originator_name ? (
+          (grex.originator_name !== 'O/U' &&
+          activeId !== grex.originator_name ? (
             <Link
               className='originator'
               href={`/registrant/${encodeURIComponent(grex.originator_name)}`}

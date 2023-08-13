@@ -89,7 +89,7 @@ export const Grex = ({
       router.replace(
         `/${kebabCase(name.long.genus)}/${kebabCase(name.long.epithet)}/${
           grex.id
-        }`,
+        }`
       );
     }
   }, [pathname]);
@@ -150,38 +150,16 @@ export const Grex = ({
           renderToSide={
             <aside className={style.sidebar}>
               {!isHypothetical && (
-                <StatBox heading='Genus Parentage'>
+                <StatBox heading='Genus Info'>
                   <p>
-                    Click below to view the <em>{grex.genus}</em> parentage map:
+                    <Link
+                      href={`/${grex.genus.toLowerCase()}`}
+                      style={{ textDecoration: 'underline' }}
+                    >
+                      Learn more about <em>{grex.genus}</em> species and
+                      hybrids!
+                    </Link>
                   </p>
-                  <br />
-                  <Link href={`/learn/parentage/${grex.genus.toLowerCase()}`}>
-                    <div className={style.minimap}>
-                      <ResponsiveTreeMapCanvas
-                        isInteractive={false}
-                        innerPadding={1}
-                        borderWidth={0}
-                        value='value'
-                        enableLabel={false}
-                        identity='id'
-                        colors={(d: any) =>
-                          `rgba(0,0,0, ${(d.data.value / 21) * 0.75 + 0.25})`
-                        }
-                        data={{
-                          children: [
-                            { value: 21, id: 8 },
-                            { value: 13, id: 7 },
-                            { value: 8, id: 6 },
-                            { value: 5, id: 5 },
-                            { value: 3, id: 4 },
-                            { value: 2, id: 3 },
-                            { value: 1, id: 2 },
-                            { value: 1, id: 1 },
-                          ],
-                        }}
-                      />
-                    </div>
-                  </Link>
                 </StatBox>
               )}
               {!isHypothetical &&
@@ -222,7 +200,7 @@ export const Grex = ({
                   {orderBy(
                     progeny, // used to filter out synonyms ... ?
                     ['date_of_registration', 'genus', 'epithet'],
-                    ['desc'],
+                    ['desc']
                   ).map((grexOnDate) => {
                     return <GrexCard key={grexOnDate.id} grex={grexOnDate} />;
                   })}

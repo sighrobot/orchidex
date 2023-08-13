@@ -3,15 +3,10 @@ import { groupBy, orderBy } from 'lodash';
 import { GrexCard } from 'components/grex/grex';
 import { H2, H3 } from 'components/layout';
 import { Padded } from 'components/container/container';
-import { APP_TITLE, APP_URL } from 'app/constants';
-import { Grex } from 'lib/types';
+import { APP_TITLE } from 'app/constants';
+import { fetchRecent } from 'lib/fetchers/recent';
 
 import style from './style.module.scss';
-
-async function fetchRecent(): Promise<Grex[]> {
-  const res = await fetch(`${APP_URL}/api/date`);
-  return res.json();
-}
 
 export const dynamic = 'force-dynamic';
 

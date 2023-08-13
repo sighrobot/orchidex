@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ResponsiveTreeMapCanvas } from '@nivo/treemap';
 import { groupBy, uniqBy } from 'lodash';
@@ -11,14 +12,9 @@ import { grexToHref } from 'components/name/name';
 import { useWcvp } from 'lib/hooks/useWcvp';
 import { Grex } from 'lib/types';
 import { capitalize } from 'lib/utils';
-import { APP_URL } from 'app/constants';
 
+import GenusInput from 'components/genus-input';
 import style from './style.module.scss';
-
-async function fetchGenera(): Promise<{ g: string; c: number; d: string }[]> {
-  const res = await fetch(`${APP_URL}/api/genera`);
-  return res.json();
-}
 
 type MapData = {
   name: string;
@@ -48,7 +44,7 @@ export default function Treemap({ genus }: { genus: string }) {
     genus,
   } as Grex);
   const speciesEpithets = wcvpSpecies.map((s) =>
-    s.taxon_name.replace(`${capitalize(genus as string)} `, ''),
+    s.taxon_name.replace(`${capitalize(genus as string)} `, '')
   );
 
   const { data = [], isLoading: dataLoading } = useTreemap({
@@ -72,11 +68,11 @@ export default function Treemap({ genus }: { genus: string }) {
             zero: g.c === 0,
           }))
           .concat(
-            speciesEpithets.map((s) => ({ name: s, value: 1, zero: true })),
+            speciesEpithets.map((s) => ({ name: s, value: 1, zero: true }))
           ),
-        ({ name }) => name,
+        ({ name }) => name
       ),
-    [parent, data, speciesEpithets],
+    [parent, data, speciesEpithets]
   );
 
   const children = React.useMemo(() => {
@@ -96,7 +92,7 @@ export default function Treemap({ genus }: { genus: string }) {
     });
 
     const groupedByCount = groupBy<MapData>(preprocessed, (d: any) =>
-      d.zero ? 0 : d.value,
+      d.zero ? 0 : d.value
     );
 
     const shouldCondense =
@@ -126,7 +122,7 @@ export default function Treemap({ genus }: { genus: string }) {
                 value: groupedByCount[0]?.length,
                 zero: true,
               },
-            ],
+            ]
       )
       .filter((s) => (s.zero ? 0 : s.one ? 1 : s.value) >= minProgeny)
       .sort((a, b) =>
@@ -136,7 +132,7 @@ export default function Treemap({ genus }: { genus: string }) {
             : -1
           : a.zero || a.one || a.value < b.value
           ? 1
-          : -1,
+          : -1
       );
   }, [combined.length, type, minProgeny]); // using combined.length prevents genera input lag (?)
 
@@ -156,7 +152,7 @@ export default function Treemap({ genus }: { genus: string }) {
 
   const handleType = React.useCallback(
     (e) => setType(e.target.name),
-    [setType],
+    [setType]
   );
 
   const map = React.useMemo(() => {
@@ -235,7 +231,7 @@ export default function Treemap({ genus }: { genus: string }) {
                     id: '',
                     genus: genus as string,
                     epithet: d.id,
-                  }),
+                  })
                 );
               }
             }}
@@ -250,46 +246,11 @@ export default function Treemap({ genus }: { genus: string }) {
 
   const capitalizedGenus = capitalize(genus);
 
-  const [generaInput, setGeneraInput] = React.useState<string>('');
-  const [genera, setGenera] = React.useState<string[]>([]);
-
-  const handleChangeGenus = (e) => {
-    if (
-      e.target.value[0] !== generaInput[0] &&
-      genera.includes(e.target.value.toLowerCase())
-    ) {
-      router.push(`/learn/parentage/${e.target.value.toLowerCase()}`);
-      setGeneraInput('');
-    } else {
-      setGeneraInput(e.target.value);
-    }
-  };
-
-  React.useEffect(() => {
-    (async () => {
-      const fetched = await fetchGenera();
-      setGenera(fetched.map(({ g }) => g.toLowerCase()));
-    })();
-  }, [genus]);
-
   return (
     <div className={style.treemap}>
       <div className={style.pageHeader}>
         <div>
-          {genera.length > 0 && (
-            <datalist id='genera'>
-              {genera.map((g) => (
-                <option key={g}>{capitalize(g)}</option>
-              ))}
-            </datalist>
-          )}
-
-          <input
-            list='genera'
-            placeholder={generaInput.length === 0 ? 'Search genera' : undefined} // Safari/FF placeholder glitch
-            value={generaInput.toLowerCase()}
-            onChange={handleChangeGenus}
-          />
+          <GenusInput value={genus} basePath='/learn/parentage' />
 
           <H2>
             <em>{capitalizedGenus}</em> parentage
@@ -298,8 +259,10 @@ export default function Treemap({ genus }: { genus: string }) {
           <p>
             This visualization shows the frequency with which all{' '}
             {numOrchids ? <strong>{numOrchids.toLocaleString()}</strong> : ''}{' '}
-            <em>{capitalizedGenus}</em> orchids are used in creating new
-            hybrids.
+            <Link href={`/${genus}`}>
+              <em>{capitalizedGenus}</em>
+            </Link>{' '}
+            orchids are used in creating new hybrids.
           </p>
         </div>
 
