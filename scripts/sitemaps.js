@@ -56,7 +56,7 @@ const handleLine = (line) => {
   }
 
   const grexUrl = `${BASE_URL}/${encodeKebab(genus)}/${encodeKebab(
-    epithet,
+    epithet
   )}/${id}`;
   writeLines(makeLocXml('url', grexUrl), outputs[page]);
   count++;
@@ -83,11 +83,20 @@ const handleClose = () => {
   writeLines([XML_HEADER, getNamespacedTagOpen('urlset')], generaOut);
   for (let g of genera) {
     const genUrl = `${BASE_URL}/learn/parentage/${encodeURIComponent(
-      g.toLowerCase(),
+      g.toLowerCase()
     )}`;
     writeLines(makeLocXml('url', genUrl), generaOut);
   }
   writeLines(['</urlset>'], generaOut);
+
+  // GENUS sitemap
+  const genusPageOut = getOut(`${SITEMAPS_PATH}/genus.xml`);
+  writeLines([XML_HEADER, getNamespacedTagOpen('urlset')], genusPageOut);
+  for (let g of genera) {
+    const genUrl = `${BASE_URL}/${encodeURIComponent(g.toLowerCase())}`;
+    writeLines(makeLocXml('url', genUrl), genusPageOut);
+  }
+  writeLines(['</urlset>'], genusPageOut);
 
   // STATIC sitemap
   const staticOut = getOut(`${SITEMAPS_PATH}/pages.xml`);
@@ -103,18 +112,22 @@ const handleClose = () => {
   writeLines([XML_HEADER, getNamespacedTagOpen('sitemapindex')], indexOut);
   writeLines(
     makeLocXml('sitemap', `${BASE_URL}/_next/static/sitemaps/pages.xml`),
-    indexOut,
+    indexOut
   );
   writeLines(
     makeLocXml('sitemap', `${BASE_URL}/_next/static/sitemaps/registrant.xml`),
-    indexOut,
+    indexOut
   );
   writeLines(
     makeLocXml(
       'sitemap',
-      `${BASE_URL}/_next/static/sitemaps/learn-parentage.xml`,
+      `${BASE_URL}/_next/static/sitemaps/learn-parentage.xml`
     ),
-    indexOut,
+    indexOut
+  );
+  writeLines(
+    makeLocXml('sitemap', `${BASE_URL}/_next/static/sitemaps/genus.xml`),
+    indexOut
   );
   for (let i = 0; i <= page; i++) {
     const url = `${BASE_URL}/_next/static/sitemaps/grex--${i}.xml`;
