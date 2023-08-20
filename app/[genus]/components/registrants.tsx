@@ -17,6 +17,7 @@ export default function RegistrantList({ genus }: { genus: string }) {
 
   return (
     <List
+      isLoading={isLoading}
       data={data.map((d) => {
         return {
           score: d.c,
@@ -39,6 +40,7 @@ export default function RegistrantList({ genus }: { genus: string }) {
       getCount={(d) => d.score}
       limit={25}
       showBars={false}
+      numItemsToLoad={25}
     />
   );
 }

@@ -19,7 +19,7 @@ export default function List<T>({
   items: T[];
   numItemsToLoad?: number;
   renderEmpty?: () => React.ReactNode;
-  renderItem: (item: T) => React.ReactNode;
+  renderItem: (item: T, idx: number) => React.ReactNode;
 }) {
   const memoizedItems = React.useMemo(() => {
     return isLoading ? Array(numItemsToLoad).fill(0) : items;
@@ -34,7 +34,7 @@ export default function List<T>({
             {isLoading ? (
               <Loader index={idx} height={itemMinHeight} />
             ) : (
-              renderItem(item)
+              renderItem(item, idx)
             )}
           </li>
         );

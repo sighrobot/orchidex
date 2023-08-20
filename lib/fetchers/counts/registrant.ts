@@ -21,7 +21,7 @@ export async function fetchRegistrantCounts({
 }
 
 export function useRegistrantCounts({ genus }: FetchRegistrantCountsProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [data, setData] = React.useState<{ r: string; c: number }[]>([]);
 
   React.useEffect(() => {

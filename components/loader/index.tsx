@@ -1,6 +1,6 @@
 import style from './style.module.scss';
 
-const ANIMATION_DELAY_BASE_MS = 200;
+const ANIMATION_DELAY_BASE_MS = 100;
 
 export default function Loader({
   index = 1,

@@ -1,30 +1,30 @@
+import React from 'react';
 import cn from 'classnames';
 import { H3 } from 'components/layout';
+import List from 'components/list';
 import { Meter } from 'components/meter/meter';
-import { formatName } from 'lib/string';
 import { orderBy } from 'lodash';
 
-import React from 'react';
 import style from './list.module.scss';
 
-const type = 'text/plain';
-
-type ListProps = {
+type VizListProps = {
   activeId?: string;
   className?: string;
   data: any;
   getCount: any;
   getFields?: any;
   order?: 'asc' | 'desc' | boolean;
-  renderField?: (f: any) => React.ReactNode;
+  renderField?: (f: any, idx: number) => React.ReactNode;
   renderCount?: (c: number) => string;
   limit?: number;
   title?: string;
   countByField?: boolean;
   showBars?: boolean;
+  isLoading?: boolean;
+  numItemsToLoad?: number;
 };
 
-const List = ({
+const VizList = ({
   activeId,
   className,
   data,
@@ -37,7 +37,9 @@ const List = ({
   title,
   countByField,
   showBars = true,
-}: ListProps) => {
+  isLoading,
+  numItemsToLoad,
+}: VizListProps) => {
   const counts = React.useMemo(() => {
     const c = {};
 
@@ -76,50 +78,31 @@ const List = ({
     [counts]
   );
 
-  const copiedValue = sorted
-    .map((d) => {
-      const fn = formatName(d.grex);
-      return `${renderCount(d.score).replace(' ', '')} ${fn.short.epithet}`;
-    })
-    .join(', ');
-
   return (
     <div className={cn(style.vizList, className)}>
       {title && <H3>{title}</H3>}
-      <ul>
-        {sorted.slice(0, limit).map((k, idx) => {
-          return (
-            <li
-              key={k.grex.id}
-              className={
-                activeId && k.id === activeId ? style.active : undefined
-              }
-            >
-              <div>{renderField(k, idx)}</div>
-              <div>{renderCount(getCount ? getCount(k) : counts[k])}</div>
-              {showBars && (
-                <Meter
-                  className={style.meter}
-                  value={(getCount ? getCount(k) : counts[k]) / total}
-                />
-              )}
-            </li>
-          );
-        })}
-      </ul>
-      {/* <ButtonSimple
-        onClick={() => {
-          const data = [
-            new ClipboardItem({ [type]: new Blob([copiedValue], { type }) }),
-          ];
-          navigator.clipboard.write(data);
-        }}
-        style={{ textAlign: 'right', display: 'block' }}
-      >
-        Copy text as cells
-      </ButtonSimple> */}
+
+      <List
+        className={style.list}
+        isLoading={isLoading}
+        items={sorted.slice(0, limit)}
+        renderItem={(k, idx) => (
+          <>
+            <div>{renderField(k, idx)}</div>
+            <div>{renderCount(getCount ? getCount(k) : counts[k])}</div>
+            {showBars && (
+              <Meter
+                className={style.meter}
+                value={(getCount ? getCount(k) : counts[k]) / total}
+              />
+            )}
+          </>
+        )}
+        itemMinHeight={23}
+        numItemsToLoad={numItemsToLoad}
+      />
     </div>
   );
 };
 
-export default List;
+export default VizList;

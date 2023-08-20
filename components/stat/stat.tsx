@@ -28,11 +28,13 @@ export const StatContent = ({
   grex,
   data,
   activeId,
+  isLoading,
 }: {
   stat: Stat;
   grex: Grex;
   data: any;
   activeId: string;
+  isLoading?: boolean;
 }) => {
   switch (stat) {
     case 'registrant_genus_pct':
@@ -50,10 +52,12 @@ export const StatContent = ({
     case 'pollen_parent_registrants':
     case 'seed_parent_originators':
     case 'pollen_parent_originators': {
-      const sum = data.reduce((acc, { c }) => acc + c, 0);
-      return data.length > 0 ? (
+      // const sum = data.reduce((acc, { c }) => acc + c, 0);
+      return (
         <List
+          numItemsToLoad={2}
           className={style.statList}
+          isLoading={isLoading}
           data={data.map((d) => {
             return {
               score: d.c,
@@ -83,12 +87,13 @@ export const StatContent = ({
           getCount={(d) => d.score}
           limit={5}
         />
-      ) : (
-        <em>
-          The {stat.split('_')[0]} parents of hybrids registered by {activeId}{' '}
-          have no recorded registrants.
-        </em>
       );
+      // ) : (
+      //   <em>
+      //     The {stat.split('_')[0]} parents of hybrids registered by {activeId}{' '}
+      //     have no recorded registrants.
+      //   </em>
+      // );
     }
     default:
       return null;
@@ -109,10 +114,13 @@ export const StatCard = ({
 
   return (
     <StatBox className={style.stat} heading={t}>
-      {loading && 'Loading...'}
-      {!loading && (
-        <StatContent activeId={activeId} stat={stat} grex={grex} data={data} />
-      )}
+      <StatContent
+        isLoading={loading}
+        activeId={activeId}
+        stat={stat}
+        grex={grex}
+        data={data}
+      />
     </StatBox>
   );
 };

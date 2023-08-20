@@ -194,17 +194,17 @@ export default function RegistrantView({
                   />
 
                   <section className={style.list}>
-                    {orderBy(onDate, ['date_of_registration'], ['desc']).map(
-                      (grexOnDate, idx) => {
-                        return (
-                          <GrexCard
-                            key={`${grexOnDate.id}-${idx}`}
-                            grex={grexOnDate}
-                            activeRegId={name}
-                          />
-                        );
-                      }
-                    )}
+                    <List<Grex>
+                      itemMinHeight={72}
+                      items={orderBy(
+                        onDate,
+                        ['date_of_registration'],
+                        ['desc']
+                      )}
+                      renderItem={(item) => (
+                        <GrexCard grex={item} activeRegId={name} />
+                      )}
+                    />
                   </section>
                 </section>
               );
