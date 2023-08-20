@@ -11,8 +11,9 @@ import { APP_URL } from 'lib/constants';
 import { ButtonSimple } from 'components/button-simple/button-simple';
 import { H3 } from 'components/layout';
 
-import style from './style.module.scss';
 import { Grex } from 'lib/types';
+import List from 'components/list';
+import style from './style.module.scss';
 
 export async function fetchSearch(params: string[] = []): Promise<Grex[]> {
   const fetched = await fetch(`${APP_URL}/api/search?${params.join('&')}`);
@@ -36,12 +37,13 @@ export default function Search({ initialState = {}, initialSimple = true }) {
   const searchParams = useSearchParams();
   const query = React.useMemo(
     () => (searchParams ? Object.fromEntries(searchParams.entries()) : {}),
-    [searchParams],
+    [searchParams]
   );
 
   const [simple, setSimple] = React.useState(initialSimple);
   const [state, setState] = React.useState(initialState);
   const [results, setResults] = React.useState<Grex[] | null>(null);
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   const handleChange = (e) =>
     setState((s) => ({
@@ -98,11 +100,13 @@ export default function Search({ initialState = {}, initialSimple = true }) {
 
       setState(nextState);
       setSimple(nextSimple);
+      setIsLoading(true);
 
       (async () => {
         const data = await fetchSearch(params);
 
         setResults(data);
+        setIsLoading(false);
       })();
     } else {
       setResults(null);
@@ -170,13 +174,17 @@ export default function Search({ initialState = {}, initialSimple = true }) {
           </H3>
         )}
 
-        {orderBy(
-          results,
-          ['date_of_registration', 'genus', 'epithet'],
-          ['desc'],
-        ).map((r) => {
-          return <GrexCard key={r.id} grex={r} />;
-        })}
+        <List<Grex>
+          isLoading={isLoading}
+          itemMinHeight={72}
+          items={orderBy(
+            results,
+            ['date_of_registration', 'genus', 'epithet'],
+            ['desc']
+          )}
+          numItemsToLoad={10}
+          renderItem={(item) => <GrexCard key={item.id} grex={item} />}
+        />
       </section>
     </Container>
   );

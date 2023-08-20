@@ -1,0 +1,24 @@
+.loader {
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-name: fade;
+  animation-timing-function: ease-in-out;
+  // background: yellow;
+  background: linear-gradient(
+    to right,
+    rgba(218, 112, 214, 0.33),
+    rgba(255, 140, 0, 0.5),
+    rgba(218, 112, 214, 0.33)
+  );
+  opacity: 0.05;
+
+  @keyframes fade {
+    0%,
+    100% {
+      opacity: 0.05;
+    }
+    50% {
+      opacity: 0.2;
+    }
+  }
+}

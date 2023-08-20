@@ -7,16 +7,14 @@ import { fetchGenusMeta } from 'lib/fetchers/wikipedia';
 import { capitalize } from 'lib/utils';
 import { H2, H3 } from 'components/layout';
 import { Padded } from 'components/container/container';
+import GenusInput from 'components/genus-input';
 import RecentCards from './components/recent';
 import Timeseries from './components/timeseries';
 
 import style from './style.module.scss';
 import RegistrantList from './components/registrants';
-import { ParentageCTA } from 'app/learn/page';
-import { StatCard } from 'components/stat/stat';
+
 import { Sidebar } from './components/sidebar';
-import GenusInput from 'components/genus-input';
-import Router from 'next/dist/server/router';
 
 export async function generateMetadata({
   params,

@@ -1,11 +1,10 @@
+import cn from 'classnames';
 import { Name } from 'components/name/name';
 import { Parentage } from 'components/parentage/parentage';
 import { Pills } from 'components/pills/pills';
 import { Reg } from 'components/reg/reg';
-import type { Grex } from 'lib/types';
-import cn from 'classnames';
-
 import styles from './style.module.scss';
+import type { Grex } from 'lib/types';
 
 type GrexProps = {
   asButton?: boolean;

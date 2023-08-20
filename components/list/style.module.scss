@@ -1,0 +1,12 @@
+.list {
+  list-style-type: none;
+  padding: 0;
+
+  li {
+    padding: 20px 0;
+
+    & + li {
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+  }
+}

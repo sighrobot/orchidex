@@ -11,12 +11,14 @@ import { INPUT_NAME_SUFFIX } from 'lib/string';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React from 'react';
-import style from './index.module.scss';
+import { Grex } from 'lib/types';
+import List from 'components/list';
 import { APP_DESCRIPTION } from './constants';
+import style from './index.module.scss';
 
 export default function HomePage() {
   const router = useRouter();
-  const recent = useDate({ limit: 3 });
+  const { isLoading, data: recent = [] } = useDate({ limit: 3 });
   const [simpleState, setSimpleState] = React.useState({});
   const [crossState, setCrossState] = React.useState({});
 
@@ -91,9 +93,14 @@ export default function HomePage() {
 
         <div className={style.recent}>
           <H3>Recently registered</H3>
-          {recent.slice(0, 3).map((r) => {
-            return <GrexCard key={r.id} grex={r} />;
-          })}
+
+          <List<Grex>
+            isLoading={isLoading}
+            itemMinHeight={72}
+            items={recent.slice(0, 3)}
+            renderItem={(item) => <GrexCard key={item.id} grex={item} />}
+          />
+
           <Link className={style.more} href='/recent'>
             View more recents &raquo;
           </Link>

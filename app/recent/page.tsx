@@ -7,6 +7,8 @@ import { APP_TITLE } from 'app/constants';
 import { fetchRecent } from 'lib/fetchers/recent';
 
 import style from './style.module.scss';
+import List from 'components/list';
+import { Grex } from 'lib/types';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,11 +36,14 @@ export default async function Recent() {
                   {grouped[d].length.toLocaleString()})
                 </H3>
               </summary>
-              <div>
-                {orderBy(grouped[d], ['genus', 'epithet']).map((r) => {
-                  return <GrexCard key={r.id} grex={r} hideDate />;
-                })}
-              </div>
+
+              <List<Grex>
+                items={orderBy(grouped[d], ['genus', 'epithet'])}
+                itemMinHeight={72}
+                renderItem={(item) => (
+                  <GrexCard key={item.id} grex={item} hideDate />
+                )}
+              />
             </details>
           </section>
         );

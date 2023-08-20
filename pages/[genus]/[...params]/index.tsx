@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { Resources } from 'components/resources/resources';
 import { description, formatName, CROSS_CHAR } from 'lib/string';
 import { AncestryViz } from 'components/viz/ancestry';
-import List from 'components/viz/list';
+import VizList from 'components/viz/list';
 import { fetchGrexByName, useSpeciesAncestry } from 'lib/hooks/useAncestry';
 import { Name } from 'components/name/name';
 import { useRouter, useSearchParams, usePathname } from 'next/navigation';
@@ -18,7 +18,7 @@ import { isNaturalHybrid, isSpecies } from 'components/pills/pills';
 import { StatBox, StatCard } from 'components/stat/stat';
 import { Grex as GrexType } from 'lib/types';
 import { useWcvp } from 'lib/hooks/useWcvp';
-import { ResponsiveTreeMapCanvas } from '@nivo/treemap';
+import List from 'components/list';
 
 import style from './style.module.scss';
 
@@ -38,9 +38,7 @@ export async function getServerSideProps(context) {
     return { props: { grex } };
   }
 
-  return {
-    notFound: true,
-  };
+  return { notFound: true };
 }
 
 export const SpeciesAncestry = ({ grex }) => {
@@ -51,7 +49,7 @@ export const SpeciesAncestry = ({ grex }) => {
   }
 
   return (
-    <List
+    <VizList
       className={style.speciesAncestry}
       data={data}
       getFields={(sa) => [sa.grex.epithet]}
@@ -73,7 +71,7 @@ export const Grex = ({
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const progeny = useProgeny(grex);
+  const { isLoading: isProgenyLoading, data: progeny = [] } = useProgeny(grex);
   const name = formatName(grex);
   const seedParentName = formatName(seedParent);
   const pollenParentName = formatName(pollenParent);
@@ -194,17 +192,19 @@ export const Grex = ({
             },
             {
               label: `Progeny`,
-              count: progeny.length,
+              count: 100,
               component: () => (
-                <>
-                  {orderBy(
-                    progeny, // used to filter out synonyms ... ?
+                <List<GrexType>
+                  items={orderBy(
+                    progeny,
                     ['date_of_registration', 'genus', 'epithet'],
                     ['desc']
-                  ).map((grexOnDate) => {
-                    return <GrexCard key={grexOnDate.id} grex={grexOnDate} />;
-                  })}
-                </>
+                  )}
+                  renderItem={(item) => <GrexCard grex={item} />}
+                  itemMinHeight={72}
+                  numItemsToLoad={5}
+                  isLoading={isProgenyLoading}
+                />
               ),
             },
           ]}

@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import useSWR from 'swr';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -7,13 +7,13 @@ type UseDateProps = {
 };
 
 export const useDate = ({ limit }: UseDateProps = {}) => {
-  let url = "/api/date";
+  let url = '/api/date';
 
   if (limit) {
     url += `?limit=${limit}`;
   }
 
-  const { data = [] } = useSWR(url, fetcher);
+  const { data } = useSWR(url, fetcher);
 
-  return data;
+  return { isLoading: !data, data };
 };

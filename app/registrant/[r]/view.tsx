@@ -5,7 +5,7 @@ import { orderBy, groupBy } from 'lodash';
 import { GrexCard } from 'components/grex/grex';
 import { Hero } from 'components/hero';
 
-import List from 'components/viz/list';
+import VizList from 'components/viz/list';
 import { ButtonSimple } from 'components/button-simple/button-simple';
 import React from 'react';
 import { StatCard } from 'components/stat/stat';
@@ -13,6 +13,7 @@ import { Grex } from 'lib/types';
 import { Tabs } from 'components/tabs/tabs';
 
 import style from './style.module.scss';
+import List from 'components/list';
 
 type RegistrantViewProps = {
   name: string;
@@ -77,13 +78,13 @@ export default function RegistrantView({
               const [genus, setGenus] = React.useState('All genera');
               const handleFilterGenus = (genus) => setGenus(genus);
               const onDate = registrations.filter(
-                (g) => genus === 'All genera' || g.genus === genus,
+                (g) => genus === 'All genera' || g.genus === genus
               );
 
               const groupedRaw = groupBy(registrations, 'genus');
               return (
                 <section className={style.columns}>
-                  <List
+                  <VizList
                     activeId={genus}
                     className={style.genusFacet}
                     data={Object.keys(groupedRaw)
@@ -123,17 +124,17 @@ export default function RegistrantView({
                   />
 
                   <section className={style.list}>
-                    {orderBy(onDate, ['date_of_registration'], ['desc']).map(
-                      (grexOnDate, idx) => {
-                        return (
-                          <GrexCard
-                            key={`${grexOnDate.id}-${idx}`}
-                            grex={grexOnDate}
-                            activeRegId={name}
-                          />
-                        );
-                      },
-                    )}
+                    <List<Grex>
+                      itemMinHeight={72}
+                      items={orderBy(
+                        onDate,
+                        ['date_of_registration'],
+                        ['desc']
+                      )}
+                      renderItem={(item) => (
+                        <GrexCard grex={item} activeRegId={name} />
+                      )}
+                    />
                   </section>
                 </section>
               );
@@ -147,13 +148,13 @@ export default function RegistrantView({
               const [genus, setGenus] = React.useState('All genera');
               const handleFilterGenus = (genus) => setGenus(genus);
               const onDate = originations.filter(
-                (g) => genus === 'All genera' || g.genus === genus,
+                (g) => genus === 'All genera' || g.genus === genus
               );
 
               const groupedRaw = groupBy(originations, 'genus');
               return (
                 <section className={style.columns}>
-                  <List
+                  <VizList
                     activeId={genus}
                     className={style.genusFacet}
                     data={Object.keys(groupedRaw)
@@ -202,7 +203,7 @@ export default function RegistrantView({
                             activeRegId={name}
                           />
                         );
-                      },
+                      }
                     )}
                   </section>
                 </section>

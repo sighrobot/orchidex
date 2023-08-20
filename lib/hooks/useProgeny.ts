@@ -9,7 +9,7 @@ export const useProgeny = (grex: Grex) => {
   url += `?genus=${encodeURIComponent(grex.genus)}`;
   url += `&epithet=${encodeURIComponent(grex.epithet)}`;
 
-  const { data = [], isLoading } = useSWR(url, fetcher);
+  const { data } = useSWR(url, fetcher);
 
-  return data;
+  return { isLoading: !data, data };
 };
