@@ -192,7 +192,7 @@ export const Grex = ({
             },
             {
               label: `Progeny`,
-              count: 100,
+              count: progeny.length,
               component: () => (
                 <List<GrexType>
                   items={orderBy(
