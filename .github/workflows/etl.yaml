@@ -23,6 +23,8 @@ jobs:
         run: yarn --frozen-lockfile
 
       - name: Scrape delta data
+        env:
+          POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         run: node scripts/update.js $(($(tail -n1 data/rhs/data.tsv  | tr '\t' '\n' | head -n1) + 1)) data/rhs/delta.tsv
 
       - name: Concatenate whole and delta sets
