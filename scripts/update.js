@@ -166,25 +166,29 @@ let i = startIndex;
     if (i <= skip[0] || i >= skip[1]) {
       try {
         const got = await get(i);
-        const split = got.split('\t');
 
         if (got !== null) {
+          const split = got.split('\t');
+
           await sql.query(
             `INSERT INTO rhs (${FIELDS.concat(EXT_FIELDS)
               .map((f) => f.toLowerCase().split(' ').join('_'))
-              .join(', ')}) VALUES (${split.map((s) => `'${s}'`).join(', ')})`
+              .join(', ')}) VALUES (${split
+              .map((s) => `'${s.replace(/'/g, "''")}'`)
+              .join(', ')})`
           );
 
           console.log(`${split.slice(0, 3).join(' ')}`);
           stream.write(`${got}\n`);
           nullsInARow = 0;
         } else {
+          console.log(`${i} could not fetch`);
           nullsInARow++;
         }
       } catch (e) {
         // process.stdout.clearLine();
         // process.stdout.cursorTo(0);
-        console.log(`${i} could not fetch`, e);
+        console.log(e);
         nullsInARow++;
       }
     }
