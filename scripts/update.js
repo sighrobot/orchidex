@@ -1,30 +1,31 @@
-const fs = require("fs");
-const jsdom = require("jsdom");
-const request = require("superagent");
+const fs = require('fs');
+const jsdom = require('jsdom');
+const request = require('superagent');
+const { sql } = require('@vercel/postgres');
 
 const { JSDOM } = jsdom;
 
-const normalize = (s = "") =>
+const normalize = (s = '') =>
   s
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase();
 
 const URL = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp`;
 const FIELDS = [
-  "ID",
-  "Genus",
-  "Epithet",
-  "Synonym Flag",
-  "Synonym Genus Name",
-  "Synonym Epithet Name",
-  "Registrant Name",
-  "Originator Name",
-  "Date of registration",
-  "Seed parent Genus",
-  "Seed parent Epithet",
-  "Pollen parent Genus",
-  "Pollen parent Epithet",
+  'ID',
+  'Genus',
+  'Epithet',
+  'Synonym Flag',
+  'Synonym Genus Name',
+  'Synonym Epithet Name',
+  'Registrant Name',
+  'Originator Name',
+  'Date of registration',
+  'Seed parent Genus',
+  'Seed parent Epithet',
+  'Pollen parent Genus',
+  'Pollen parent Epithet',
 ];
 
 const args = process.argv.slice(2);
@@ -38,14 +39,14 @@ if (!startIndex) {
 }
 
 if (!outFilename) {
-  console.error("Error: no out file specified");
+  console.error('Error: no out file specified');
   return;
 }
 
 console.log(
-  "\nStarting at",
+  '\nStarting at',
   startIndex,
-  "and writing to",
+  'and writing to',
   `${outFilename}...\n`
 );
 
@@ -62,19 +63,19 @@ const get = async (id) => {
       data[0] = id.toString();
 
       const mainTableRows = document.querySelectorAll(
-        ".mcl.results.fifty50 tr"
+        '.mcl.results.fifty50 tr'
       );
 
       mainTableRows.forEach((row) => {
         const fieldIdx = FIELDS.indexOf(
-          row.querySelector("td:first-of-type").textContent
+          row.querySelector('td:first-of-type').textContent
         );
 
-        const textContent = row.querySelector("td:last-of-type").textContent;
+        const textContent = row.querySelector('td:last-of-type').textContent;
 
         if (fieldIdx === 8) {
           // date
-          const [d, m, y] = textContent.split("/");
+          const [d, m, y] = textContent.split('/');
           data[fieldIdx] = `${y}-${m}-${d}`;
         } else {
           data[fieldIdx] = textContent;
@@ -82,25 +83,25 @@ const get = async (id) => {
       });
 
       const secondaryTableRows = Array.from(
-        document.querySelectorAll(".results.spread.thirds tr")
+        document.querySelectorAll('.results.spread.thirds tr')
       );
 
       if (secondaryTableRows.length > 0) {
         let seedParentColIdx = -1;
         let pollenParentColIdx = -1;
 
-        secondaryTableRows[0].querySelectorAll("th").forEach((th, colIdx) => {
-          if (th.textContent === "Seed parent") {
+        secondaryTableRows[0].querySelectorAll('th').forEach((th, colIdx) => {
+          if (th.textContent === 'Seed parent') {
             seedParentColIdx = colIdx;
           }
 
-          if (th.textContent === "Pollen parent") {
+          if (th.textContent === 'Pollen parent') {
             pollenParentColIdx = colIdx;
           }
         });
 
         secondaryTableRows.slice(1).forEach((row, idx) => {
-          const cells = row.querySelectorAll("th, td");
+          const cells = row.querySelectorAll('th, td');
           const subFieldName = cells[0].textContent;
 
           cells.forEach((cell, cellIdx) => {
@@ -131,7 +132,7 @@ const get = async (id) => {
       data.push(normalize(data[10]));
       data.push(normalize(data[12]));
 
-      return resolve(data.join("\t"));
+      return resolve(data.join('\t'));
     }, 100);
   });
 };
@@ -142,20 +143,20 @@ let nullsInARow = 0;
 
 const skip = [169023, 900000];
 
-const stream = fs.createWriteStream(outFilename, { flags: "w" });
+const stream = fs.createWriteStream(outFilename, { flags: 'w' });
 
 const EXT_FIELDS = [
-  "epithet_normalized",
-  "registrant_name_normalized",
-  "originator_name_normalized",
-  "seed_parent_epithet_normalized",
-  "pollen_parent_epithet_normalized",
+  'epithet_normalized',
+  'registrant_name_normalized',
+  'originator_name_normalized',
+  'seed_parent_epithet_normalized',
+  'pollen_parent_epithet_normalized',
 ];
 
 stream.write(
   `${FIELDS.concat(EXT_FIELDS)
-    .map((f) => f.toLowerCase().split(" ").join("_"))
-    .join("\t")}\n`
+    .map((f) => f.toLowerCase().split(' ').join('_'))
+    .join('\t')}\n`
 );
 
 let i = startIndex;
@@ -165,10 +166,16 @@ let i = startIndex;
     if (i <= skip[0] || i >= skip[1]) {
       try {
         const got = await get(i);
-        const split = got.split("\t");
+        const split = got.split('\t');
 
         if (got !== null) {
-          console.log(`${split.slice(0, 3).join(" ")}`);
+          await sql.query(
+            `INSERT INTO rhs (${FIELDS.concat(EXT_FIELDS)
+              .map((f) => f.toLowerCase().split(' ').join('_'))
+              .join(', ')}) VALUES (${split.map((s) => `'${s}'`).join(', ')})`
+          );
+
+          console.log(`${split.slice(0, 3).join(' ')}`);
           stream.write(`${got}\n`);
           nullsInARow = 0;
         } else {
@@ -177,7 +184,7 @@ let i = startIndex;
       } catch (e) {
         // process.stdout.clearLine();
         // process.stdout.cursorTo(0);
-        console.log(`${i} could not fetch`);
+        console.log(`${i} could not fetch`, e);
         nullsInARow++;
       }
     }
