@@ -1,22 +1,26 @@
-import { query } from 'lib/datasette';
+import { query } from 'lib/pg';
 
-export default async (req, res) => {
+export const config = { runtime: 'edge' };
+
+export default async function GetStats(req, res) {
   const records = await query(`SELECT count(*) as records FROM rhs`);
   const synonyms = await query(
-    "SELECT count(*) as synonyms FROM rhs where synonym_flag like '%is  a%'",
+    "SELECT count(*) as synonyms FROM rhs where synonym_flag like '%is  a%'"
   );
   const species = await query(
-    "SELECT count(*) as species FROM rhs where epithet != '' and substring(epithet, 1, 1) = lower(substring(epithet, 1, 1))",
+    "SELECT count(*) as species FROM rhs where epithet != '' and substring(epithet, 1, 1) = lower(substring(epithet, 1, 1))"
   );
 
   const naturalHybrids = await query(
-    "SELECT count(*) as naturalHybrids FROM rhs where registrant_name like '%a natural hybrid%'",
+    "SELECT count(*) as naturalHybrids FROM rhs where registrant_name like '%a natural hybrid%'"
   );
 
-  res.status(200).json({
-    ...records[0],
-    ...synonyms[0],
-    ...species[0],
-    ...naturalHybrids[0],
-  });
-};
+  return new Response(
+    JSON.stringify({
+      ...records[0],
+      ...synonyms[0],
+      ...species[0],
+      ...naturalHybrids[0],
+    })
+  );
+}

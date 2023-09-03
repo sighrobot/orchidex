@@ -1,4 +1,4 @@
-import { query } from 'lib/datasette2';
+import { query } from 'lib/pg';
 import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';
@@ -23,8 +23,7 @@ export async function GET(req) {
 
   const sql = `${select} ${where.join(' AND ')} ${aggr.join(' ')}`;
 
-  const fetched = await query(sql);
-  const json = await fetched?.json();
+  const json = await query(sql);
 
   return NextResponse.json(json, { status: 200 });
 }

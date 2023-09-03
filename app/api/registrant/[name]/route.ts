@@ -1,4 +1,4 @@
-import { query } from 'lib/datasette2';
+import { query } from 'lib/pg';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
@@ -12,10 +12,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json([], { status: 200 });
   }
 
-  const fetched = await query(
+  const json = await query(
     `SELECT * FROM rhs WHERE epithet != '' AND (registrant_name = '${r}' OR originator_name = '${r}') ORDER BY date_of_registration DESC`
   );
-  const json = await fetched?.json();
 
   return NextResponse.json(json, { status: 200 });
 }
