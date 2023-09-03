@@ -1,4 +1,4 @@
-import { query } from 'lib/datasette2';
+import { query } from 'lib/pg';
 import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';
@@ -6,7 +6,18 @@ export const runtime = 'edge';
 export async function GET(req) {
   const { limit, genus } = Object.fromEntries(req.nextUrl.searchParams);
 
-  let expr = "SELECT * FROM rhs WHERE epithet != '' AND ";
+  let expr = `SELECT
+      id,
+      genus,
+      epithet,
+      date_of_registration,
+      registrant_name,
+      originator_name,
+      seed_parent_genus,
+      seed_parent_epithet,
+      pollen_parent_genus,
+      pollen_parent_epithet
+    FROM rhs WHERE epithet != '' AND `;
 
   if (genus) {
     expr += `lower(genus) = '${genus}' AND `;
@@ -20,8 +31,7 @@ export async function GET(req) {
     expr += ' LIMIT 100';
   }
 
-  const fetched = await query(expr);
-  const json = await fetched?.json();
+  const json = await query(expr);
 
   let last7Days = json;
 
