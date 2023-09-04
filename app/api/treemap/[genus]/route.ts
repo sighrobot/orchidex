@@ -1,4 +1,4 @@
-import { query } from 'lib/datasette2';
+import { query } from 'lib/pg';
 import { capitalize } from 'lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
   let q = '';
 
   if (!parentType) {
-    q = `SELECT parent, SUM(c) as c
+    q = `SELECT parent, SUM(c)::INT as c
     FROM (
       SELECT 
         seed_parent_epithet as parent,
@@ -56,14 +56,14 @@ export async function GET(req: NextRequest) {
           pollen_parent_genus = '${genus}'
       )
     ORDER BY
-      c DESC;`;
+      c DESC`;
   } else {
     const parentGenusType = `${parentType}_parent_genus`;
     const parentEpithetType = `${parentType}_parent_epithet`;
 
     q = `SELECT
   rhs.${parentEpithetType},
-  COUNT(*) c
+  COUNT(*)::INT c
 FROM
   rhs
 WHERE
@@ -91,8 +91,7 @@ ORDER BY
   c DESC`;
   }
 
-  const fetched = await query(q);
-  const json = await fetched?.json();
+  const json = await query(q);
 
   return NextResponse.json(json, { status: 200 });
 }
