@@ -27,6 +27,7 @@ CREATE TABLE rhs (
     pollen_parent_epithet_normalized TEXT
 );
 \COPY rhs FROM 'rhs/data.tsv' DELIMITER E'\t' CSV HEADER;
+CREATE INDEX idx_rhs_genus_epithet ON rhs (genus, epithet);
 
 -- WCVP
 DROP TABLE IF EXISTS wcvp;

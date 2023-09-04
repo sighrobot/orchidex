@@ -1,11 +1,11 @@
-import { query } from 'lib/datasette2';
+import { query } from 'lib/pg';
 import { UNKNOWN_CHAR } from 'lib/string';
 import { massageQueryTerm } from 'lib/utils';
 import { NextRequest } from 'next/server';
 
 export const config = { runtime: 'edge' };
 
-export default async (req: NextRequest) => {
+export default async function GetAncestry2(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const genus = searchParams.get('genus');
   const epithet = searchParams.get('epithet');
@@ -16,7 +16,7 @@ export default async (req: NextRequest) => {
 
   const epithetClause = epithet.includes(UNKNOWN_CHAR)
     ? `like '${massageQueryTerm(
-        epithet.replace(new RegExp(UNKNOWN_CHAR, 'g'), '_'),
+        epithet.replace(new RegExp(UNKNOWN_CHAR, 'g'), '_')
       )}'`
     : `= '${massageQueryTerm(epithet)}'`;
 
@@ -33,21 +33,23 @@ export default async (req: NextRequest) => {
       rhs.*
     FROM
       rhs
-      JOIN ancestry ON (
-        (
-          rhs.genus = ancestry.seed_parent_genus
-          AND rhs.epithet = ancestry.seed_parent_epithet
-        )
-        OR (
-          rhs.genus = ancestry.pollen_parent_genus
-          AND rhs.epithet = ancestry.pollen_parent_epithet
-        )
+    JOIN ancestry ON (
+      (
+        rhs.genus = ancestry.seed_parent_genus
+        AND rhs.epithet = ancestry.seed_parent_epithet
       )
+      OR (
+        rhs.genus = ancestry.pollen_parent_genus
+        AND rhs.epithet = ancestry.pollen_parent_epithet
+      )
+    )
   )
   SELECT
     *
   FROM
-    ancestry;`;
+    ancestry`;
 
-  return query(q);
-};
+  const json = await query(q);
+
+  return new Response(JSON.stringify(json));
+}

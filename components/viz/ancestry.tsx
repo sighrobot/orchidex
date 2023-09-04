@@ -35,7 +35,7 @@ export const AncestryViz = ({
 
   const handleChangeDepth = debounce(
     (e) => setDepth(parseInt(e.target.value, 10)),
-    350,
+    350
   );
 
   const handleChangeLayout = (e) => setLayout(e.target.value);
@@ -76,7 +76,7 @@ export const AncestryViz = ({
       .svgHeight(
         window.innerHeight < 800
           ? window.innerHeight * 0.5
-          : window.innerHeight * 0.75,
+          : window.innerHeight * 0.75
       )
       .scaleExtent([0.05, 1])
       .container(d3Container.current)
@@ -178,7 +178,7 @@ export const AncestryViz = ({
             {
               <div className={cn(style.level)}>
                 {!nIsSpecies && !n.hypothetical && (
-                  <span>{n.date_of_registration.slice(0, 4)}</span>
+                  <span>{n.date_of_registration?.slice(0, 4)}</span>
                 )}
                 {n.l && <span>{n.l}º</span>}
               </div>
@@ -197,7 +197,7 @@ export const AncestryViz = ({
             </Link>
           ) : (
             content
-          ),
+          )
         );
       })
       .layout(layout);
