@@ -1,3 +1,4 @@
+import { SEARCH_FIELDS } from 'lib/constants';
 import { query } from 'lib/pg';
 import { NextResponse } from 'next/server';
 
@@ -6,18 +7,9 @@ export const runtime = 'edge';
 export async function GET(req) {
   const { limit, genus } = Object.fromEntries(req.nextUrl.searchParams);
 
-  let expr = `SELECT
-      id,
-      genus,
-      epithet,
-      date_of_registration,
-      registrant_name,
-      originator_name,
-      seed_parent_genus,
-      seed_parent_epithet,
-      pollen_parent_genus,
-      pollen_parent_epithet
-    FROM rhs WHERE epithet != '' AND `;
+  let expr = `SELECT id, ${SEARCH_FIELDS.join(
+    ', '
+  )} FROM rhs WHERE epithet != '' AND `;
 
   if (genus) {
     expr += `lower(genus) = '${genus}' AND `;

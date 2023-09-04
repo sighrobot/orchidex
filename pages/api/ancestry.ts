@@ -1,3 +1,4 @@
+import { SEARCH_FIELDS } from 'lib/constants';
 import { query } from 'lib/pg';
 import { UNKNOWN_CHAR } from 'lib/string';
 import { massageQueryTerm } from 'lib/utils';
@@ -22,7 +23,9 @@ export default async function getAncestry(req: NextRequest) {
     })
     .join(' OR ');
 
-  const json = await query(`SELECT * FROM rhs WHERE ${q}`);
+  const json = await query(
+    `SELECT id, ${SEARCH_FIELDS.join(', ')} FROM rhs WHERE ${q}`
+  );
 
   return new Response(JSON.stringify(json));
 }
