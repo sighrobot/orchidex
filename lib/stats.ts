@@ -17,90 +17,94 @@
 import { Grex, Stat } from './types';
 import { capitalize } from './utils';
 
+const escape = (s) => s.replace(/'/g, "''");
+
 export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
+  const escaped = escape(grex.registrant_name);
+
   switch (stat) {
     case 'registrant_genus_pct':
       return `
         SELECT
-            (CAST(count(*) AS FLOAT) / (SELECT count(*) FROM rhs WHERE registrant_name = "${grex.registrant_name}") ) as pct
+            (CAST(count(*) AS FLOAT) / (SELECT count(*) FROM rhs WHERE registrant_name = '${escaped}') ) as pct
         FROM rhs
         WHERE genus = '${grex.genus}' AND epithet != ''
-        AND registrant_name = "${grex.registrant_name}"
+        AND registrant_name = '${escaped}'
       `;
     case 'seed_parent_registrants':
       return `SELECT 
-      rhs2.registrant_name AS r2,
-      COUNT(*) AS c
+      rhs2.registrant_name r2,
+      COUNT(*)::INT c
     FROM 
       rhs rhs1
       JOIN rhs rhs2 
         ON rhs1.seed_parent_genus = rhs2.genus 
         AND rhs1.seed_parent_epithet = rhs2.epithet 
-        AND r2 != ''
-        AND r2 not like 'This is a natural hybrid%'
-    WHERE  rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
+        AND rhs2.registrant_name != ''
+        AND rhs2.registrant_name not like 'This is a natural hybrid%'
+    WHERE  rhs1.registrant_name = '${escaped}' OR rhs1.originator_name = '${escaped}'
     GROUP BY 
-      r2 order by c desc, r2 LIMIT 5;
+    rhs2.registrant_name ORDER BY c DESC, r2 LIMIT 5;
     `;
     case 'pollen_parent_registrants':
-      return `SELECT 
-        rhs2.registrant_name AS r2, 
-        COUNT(*) AS c
-      FROM 
-        rhs rhs1
-        JOIN rhs rhs2 
-          ON rhs1.pollen_parent_genus = rhs2.genus 
-          AND rhs1.pollen_parent_epithet = rhs2.epithet 
-          AND r2 != ''
-          AND r2 not like 'This is a natural hybrid%'
-      WHERE rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
-      GROUP BY 
-        r2 order by c desc, r2 LIMIT 5;
-      `;
-    case 'seed_parent_originators':
-      return `SELECT 
-        rhs2.originator_name AS r2, 
-        COUNT(*) AS c
-      FROM 
-        rhs rhs1
-        JOIN rhs rhs2 
-          ON rhs1.seed_parent_genus = rhs2.genus 
-          AND rhs1.seed_parent_epithet = rhs2.epithet 
-          AND r2 != ''
-          AND r2 not like 'This is a natural hybrid%'
-      WHERE rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
-      GROUP BY 
-        r2 order by c desc, r2 LIMIT 5;
-      `;
-    case 'pollen_parent_originators':
-      return `SELECT 
-          rhs2.originator_name AS r2, 
-          COUNT(*) AS c
-        FROM 
+      return `SELECT
+          rhs2.registrant_name r2,
+          COUNT(*)::INT c
+        FROM
           rhs rhs1
-          JOIN rhs rhs2 
-            ON rhs1.pollen_parent_genus = rhs2.genus 
-            AND rhs1.pollen_parent_epithet = rhs2.epithet 
-            AND r2 != ''
-            AND r2 not like 'This is a natural hybrid%'
-        WHERE rhs1.registrant_name = "${grex.registrant_name}" OR rhs1.originator_name = "${grex.registrant_name}"
-        GROUP BY 
-          r2 order by c desc, r2 LIMIT 5;
+          JOIN rhs rhs2
+            ON rhs1.pollen_parent_genus = rhs2.genus
+            AND rhs1.pollen_parent_epithet = rhs2.epithet
+            AND rhs2.registrant_name != ''
+            AND rhs2.registrant_name not like 'This is a natural hybrid%'
+        WHERE rhs1.registrant_name = '${escaped}' OR rhs1.originator_name = '${escaped}'
+        GROUP BY
+        rhs2.registrant_name ORDER BY c DESC, r2 LIMIT 5;
         `;
+    case 'seed_parent_originators':
+      return `SELECT
+          rhs2.originator_name r2,
+          COUNT(*)::INT c
+        FROM
+          rhs rhs1
+          JOIN rhs rhs2
+            ON rhs1.seed_parent_genus = rhs2.genus
+            AND rhs1.seed_parent_epithet = rhs2.epithet
+            AND rhs2.originator_name != ''
+            AND rhs2.originator_name not like 'This is a natural hybrid%'
+        WHERE rhs1.registrant_name = '${escaped}' OR rhs1.originator_name = '${escaped}'
+        GROUP BY
+        rhs2.originator_name ORDER BY c DESC, r2 LIMIT 5;
+        `;
+    case 'pollen_parent_originators':
+      return `SELECT
+            rhs2.originator_name r2,
+            COUNT(*)::INT c
+          FROM
+            rhs rhs1
+            JOIN rhs rhs2
+              ON rhs1.pollen_parent_genus = rhs2.genus
+              AND rhs1.pollen_parent_epithet = rhs2.epithet
+              AND rhs2.originator_name != ''
+              AND rhs2.originator_name not like 'This is a natural hybrid%'
+          WHERE rhs1.registrant_name = '${escaped}' OR rhs1.originator_name = '${escaped}'
+          GROUP BY
+          rhs2.originator_name order by c desc, r2 LIMIT 5;
+          `;
     case 'year_genus_pct':
       return `SELECT
-        (CAST(count(*) AS FLOAT) / (SELECT count(*) FROM rhs WHERE substr(date_of_registration, 0, 5) = '${grex.date_of_registration.slice(
-          0,
-          4
-        )}') ) as pct
-    FROM rhs
-    WHERE genus = '${
-      grex.genus
-    }' AND epithet != '' AND substr(date_of_registration, 0, 5) = '${grex.date_of_registration.slice(
+          (CAST(count(*) AS FLOAT) / (SELECT count(*)::INT FROM rhs WHERE substr(date_of_registration, 0, 5) = '${grex.date_of_registration.slice(
+            0,
+            4
+          )}') ) as pct
+      FROM rhs
+      WHERE genus = '${
+        grex.genus
+      }' AND epithet != '' AND substr(date_of_registration, 0, 5) = '${grex.date_of_registration.slice(
         0,
         4
       )}'
-  `;
+    `;
     default:
       return '';
   }

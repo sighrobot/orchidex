@@ -1,8 +1,8 @@
-import { query } from 'lib/datasette';
+import { query } from 'lib/pg';
 import { getStatSql } from 'lib/stats';
 import { Grex, Stat } from 'lib/types';
 
-export default async (req, res) => {
+export default async function GetStat(req, res) {
   const data = JSON.parse(req.body);
 
   const grex: Grex = data.grex;
@@ -14,4 +14,6 @@ export default async (req, res) => {
     const json = await query(q);
     return res.status(200).json(json);
   }
-};
+
+  return res.status(200).json([]);
+}
