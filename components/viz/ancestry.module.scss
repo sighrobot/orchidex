@@ -77,7 +77,7 @@
 
     input {
       margin: 0;
-      width: 70px;
+      width: 140px;
     }
 
     select,
@@ -89,6 +89,14 @@
     input,
     button {
       cursor: pointer;
+    }
+  }
+
+  .vizContainer {
+    height: 600px;
+
+    @media (max-width: 500px) {
+      height: 33vh;
     }
   }
 }
