@@ -85,6 +85,15 @@ export const AncestryViz = ({
   const router = useRouter();
   const [depth, setDepth] = React.useState<number>(maxDepth ? 1000 : 4);
 
+  const handleNodeClick = React.useCallback(
+    (e) => {
+      const g = e.target.data() as Grex;
+      const href = grexToHref({ ...g, id: g.id.split('-')[0] });
+      router.push(href);
+    },
+    [router]
+  );
+
   const handleChangeDepth = debounce((e) => {
     setDepth(parseInt(e.target.value, 10));
   }, 350);
@@ -184,8 +193,8 @@ export const AncestryViz = ({
           selector: 'edge',
           style: {
             events: 'no',
-            width: 1,
-            'line-color': 'black',
+            width: 4,
+            'line-color': '#ccc',
             'curve-style': 'taxi',
             'taxi-direction': 'upward',
             'edge-distances': 'node-position',
@@ -194,12 +203,8 @@ export const AncestryViz = ({
       ],
     }).fit();
 
-    cy.on('click', 'node', (e) => {
-      const g = e.target.data() as Grex;
-      const href = grexToHref({ ...g, id: g.id.split('-')[0] });
-      router.push(href);
-    });
-  }, [ancestry, router]);
+    cy.on('click', 'node', handleNodeClick);
+  }, [ancestry, handleNodeClick]);
 
   return (
     <div className={style.viz}>
