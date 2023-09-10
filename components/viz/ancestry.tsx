@@ -203,7 +203,7 @@ export const AncestryViz = ({
       ],
     }).fit();
 
-    cy.on('click', 'node', handleNodeClick);
+    cy.on('vclick', 'node', handleNodeClick);
   }, [ancestry, handleNodeClick]);
 
   return (
