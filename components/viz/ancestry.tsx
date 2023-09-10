@@ -83,7 +83,7 @@ export const AncestryViz = ({
   maxDepth?: boolean;
 }) => {
   const router = useRouter();
-  const [depth, setDepth] = React.useState<number>(maxDepth ? 1000 : 4);
+  const [depth, setDepth] = React.useState<number>(maxDepth ? 1000 : 3);
 
   const handleNodeClick = React.useCallback(
     (e) => {
@@ -214,7 +214,7 @@ export const AncestryViz = ({
           <input
             type='range'
             min={1}
-            max={8}
+            max={12}
             onChange={handleChangeDepth}
             defaultValue={depth}
           />
