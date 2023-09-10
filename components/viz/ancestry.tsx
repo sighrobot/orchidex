@@ -1,7 +1,10 @@
-import { renderToString } from 'react-dom/server';
 import React, { useRef } from 'react';
-import { useAncestry } from 'lib/hooks/useAncestry';
+import { useRouter } from 'next/navigation';
 import { debounce, orderBy } from 'lodash';
+import cytoscape from 'cytoscape';
+import dagre from 'cytoscape-dagre';
+
+import { useAncestry } from 'lib/hooks/useAncestry';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
 import {
   isIntergeneric,
@@ -9,15 +12,64 @@ import {
   isPrimary,
   isSpecies,
 } from 'components/pills/pills';
-import cn from 'classnames';
-import Link from 'next/link';
 import { grexToHref } from 'components/name/name';
 import { Grex } from 'lib/types';
-import pillStyle from '../pills/pills.module.scss';
 
 import style from './ancestry.module.scss';
 
-let chart = null;
+// Dynamic Width (Build Regex)
+const wrap = (s, w) =>
+  s.replace(new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1\n');
+
+function getGrexColor(g: Grex): string {
+  const species = isSpecies(g);
+  const natural = isNaturalHybrid(g);
+  const primary = isPrimary(g);
+  const intergeneric = isIntergeneric(g);
+  const hypothetical = g.hypothetical;
+
+  if (intergeneric) {
+    if (primary) {
+      return `linear-gradient(
+        to bottom right,
+        rgba(239, 133, 180, 1),
+        rgba(130, 168, 248, 1)
+      )`;
+    }
+
+    if (natural) {
+      return `linear-gradient(
+        to right,
+        rgba(239, 133, 180, 1),
+        rgba(91, 175, 248, 1)
+      )`;
+    }
+
+    return 'rgba(239, 133, 180, 1)';
+  }
+
+  if (primary) {
+    return 'rgba(130, 168, 248, 1)';
+  }
+
+  if (natural) {
+    return 'rgba(91, 175, 248, 1)';
+  }
+
+  if (species) {
+    return 'rgba(103, 187, 110, 1)';
+  }
+
+  if (hypothetical) {
+    return 'black';
+  }
+
+  return 'rgba(184, 151, 248, 1)';
+}
+
+let cy;
+
+cytoscape.use(dagre);
 
 export const AncestryViz = ({
   grex,
@@ -30,17 +82,14 @@ export const AncestryViz = ({
   pollenParent?: Grex;
   maxDepth?: boolean;
 }) => {
+  const router = useRouter();
   const [depth, setDepth] = React.useState<number>(maxDepth ? 1000 : 4);
-  const [layout, setLayout] = React.useState<string>('bottom');
 
-  const handleChangeDepth = debounce(
-    (e) => setDepth(parseInt(e.target.value, 10)),
-    350
-  );
+  const handleChangeDepth = debounce((e) => {
+    setDepth(parseInt(e.target.value, 10));
+  }, 350);
 
-  const handleChangeLayout = (e) => setLayout(e.target.value);
-
-  const d3Container = useRef(null);
+  const cyContainer = useRef(null);
   const regularAncestry = useAncestry(grex, depth);
   const seedParentAncestry = useAncestry(seedParent || {}, depth);
   const pollenParentAncestry = useAncestry(pollenParent || {}, depth);
@@ -62,158 +111,95 @@ export const AncestryViz = ({
     seedParent && pollenParent ? parentAncestry : regularAncestry;
 
   React.useEffect(() => {
-    const { OrgChart } = require('d3-org-chart');
-
-    if (!ancestry.nodes[0]) {
-      return;
-    }
-
-    if (!chart) {
-      chart = new OrgChart();
-    }
-
-    chart
-      .svgHeight(
-        window.innerHeight < 800
-          ? window.innerHeight * 0.5
-          : window.innerHeight * 0.75
-      )
-      .scaleExtent([0.05, 1])
-      .container(d3Container.current)
-      .duration(200)
-      .compact(false)
-      .nodeWidth((d) => 160)
-      .nodeHeight((a) => 108)
-      .childrenMargin((d) => 100)
-      .siblingsMargin((d) => 50)
-      .buttonContent(() => null)
-      .data([
-        ...orderBy(ancestry.links, ['type'], ['desc']).map((l) => {
-          return {
-            ...ancestry.nodeMap[l.source],
-            type: l.type,
-            id: l.source,
-            parentId: l.target,
-          };
-        }),
+    cy = cytoscape({
+      layout: { name: 'dagre', rankSep: 100 },
+      autoungrabify: true,
+      container: cyContainer.current,
+      maxZoom: 1,
+      elements: [
+        ...ancestry.nodes.map((n) => ({ data: n })),
+        ...orderBy(ancestry.links, ['type'], ['desc']).map((l) => ({
+          data: l,
+        })),
+      ],
+      style: [
         {
-          ...ancestry.nodeMap[ancestry.nodes[0].id],
-          id: ancestry.nodes[0].id,
+          selector: 'node',
+          style: {
+            height: 148,
+            width: 220,
+            'background-gradient-direction': 'to-bottom-right',
+            color: 'white',
+            'font-family': 'IBM Plex Sans',
+            'font-size': 24,
+            'line-height': 1,
+            'min-zoomed-font-size': 12,
+            shape: 'roundrectangle',
+            'text-wrap': 'wrap',
+            'text-valign': 'center',
+            'border-color': 'black',
+            'border-width': 1,
+
+            'background-color': (n) => {
+              const g = n.data() as Grex;
+              return isIntergeneric(g) && isPrimary(g) ? '' : getGrexColor(g);
+            },
+            'background-fill': (n) => {
+              const g = n.data() as Grex;
+              return isIntergeneric(g) && isPrimary(g) ? 'linear-gradient' : '';
+            },
+            'background-gradient-stop-colors': (n) => {
+              const g = n.data() as Grex;
+              return isIntergeneric(g)
+                ? isPrimary(g)
+                  ? ['rgba(239, 133, 180, 1)', 'rgba(130, 168, 248, 1)']
+                  : ['rgba(239, 133, 180, 1)', 'rgba(91, 175, 248, 1)']
+                : [];
+            },
+            label: (n) => {
+              const g = n.data() as Grex;
+              const formatted = formatName(g);
+              const repairedEpithet = repairMalformedNaturalHybridEpithet({
+                epithet: formatted.short.epithet,
+              });
+              const name = isSpecies(g)
+                ? `${formatted.short.genus} ${repairedEpithet}`
+                : formatted.short.full;
+              const nameLines = wrap(name, 17).split('\n');
+              const blankLines = Array(4 - nameLines.length).fill('');
+              const year = g.date_of_registration
+                ? g.date_of_registration.slice(0, 4)
+                : '';
+              const lastLine = !g.l
+                ? `${year}                     ☺`
+                : `${
+                    g.date_of_registration ? year : '          '
+                  }                    ${g.l ? `${g.l}º` : ''}`;
+
+              return [...nameLines, ...blankLines, lastLine].join('\n');
+            },
+          },
         },
-      ])
-      .nodeContent(({ data: n }) => {
-        const formatted = formatName(n);
-        const nIsSpecies = isSpecies(n);
-        const repairedEpithet = repairMalformedNaturalHybridEpithet({
-          epithet: formatted.short.epithet,
-        });
-        const href = grexToHref({ ...n, id: n.id.split('-')[0] });
+        {
+          selector: 'edge',
+          style: {
+            events: 'no',
+            width: 1,
+            'line-color': 'black',
+            'curve-style': 'taxi',
+            'taxi-direction': 'upward',
+            'edge-distances': 'node-position',
+          },
+        },
+      ],
+    }).fit();
 
-        let pill = null;
-
-        if (isIntergeneric(n)) {
-          if (isNaturalHybrid(n)) {
-            pill = (
-              <div className={cn(style.pill)}>
-                <span>Natural Intergeneric</span>
-              </div>
-            );
-          } else if (isPrimary(n)) {
-            pill = (
-              <div className={cn(style.pill)}>
-                <span>Intergeneric Primary</span>
-              </div>
-            );
-          } else {
-            pill = (
-              <div className={cn(style.pill)}>
-                <span>Intergeneric</span>
-              </div>
-            );
-          }
-        } else if (isPrimary(n)) {
-          pill = (
-            <div className={cn(style.pill)}>
-              <span>Primary</span>
-            </div>
-          );
-        } else if (isNaturalHybrid(n)) {
-          pill = (
-            <div className={cn(style.pill)}>
-              <span>Natural</span>
-            </div>
-          );
-        }
-
-        const content = (
-          <div
-            className={cn(style.node, {
-              [style.root]: !n.type,
-              [style[n.type]]: n.type,
-              [pillStyle.species]: nIsSpecies,
-              [pillStyle.natural]: isNaturalHybrid(n),
-              [pillStyle.primary]: isPrimary(n),
-              [pillStyle.intergeneric]: isIntergeneric(n),
-              [pillStyle.hypothetical]: n.hypothetical,
-              [style.normal]:
-                !nIsSpecies &&
-                !isNaturalHybrid(n) &&
-                !isPrimary(n) &&
-                !isIntergeneric(n) &&
-                !n.hypothetical,
-            })}
-          >
-            {nIsSpecies && (
-              <div className={cn(style.pill)}>
-                <span>Species</span>
-              </div>
-            )}
-
-            {pill}
-
-            <div className={style.name}>
-              <em>{formatted.short.genus}</em>{' '}
-              {nIsSpecies ? <em>{repairedEpithet}</em> : repairedEpithet}
-            </div>
-            {
-              <div className={cn(style.level)}>
-                {!nIsSpecies && !n.hypothetical && (
-                  <span>{n.date_of_registration?.slice(0, 4)}</span>
-                )}
-                {n.l && <span>{n.l}º</span>}
-              </div>
-            }
-          </div>
-        );
-
-        return renderToString(
-          n.type ? (
-            <Link
-              className={style.nodeLink}
-              href={href}
-              target={maxDepth ? '_blank' : undefined}
-            >
-              {content}
-            </Link>
-          ) : (
-            content
-          )
-        );
-      })
-      .layout(layout);
-
-    // parentAncestry crashes because it loads in two parts
-    // and the chart tries to render with incomplete data
-    // ...i'm sorry for what i've done :(
-    try {
-      chart.render().expandAll();
-      chart.fit();
-    } catch {}
-
-    return () => {
-      chart = null;
-    };
-  }, [d3Container.current, ancestry, layout]);
+    cy.on('click', 'node', (e) => {
+      const g = e.target.data() as Grex;
+      const href = grexToHref({ ...g, id: g.id.split('-')[0] });
+      router.push(href);
+    });
+  }, [ancestry, router]);
 
   return (
     <div className={style.viz}>
@@ -229,20 +215,10 @@ export const AncestryViz = ({
           />
         </label>
 
-        <label>
-          Layout:
-          <select onChange={handleChangeLayout} value={layout}>
-            <option value='bottom'>Bottom</option>
-            <option value='right'>Right</option>
-            <option value='left'>Left</option>
-            <option value='top'>Top</option>
-          </select>
-        </label>
-
-        <button onClick={() => chart.fit()}>Reset zoom</button>
+        <button onClick={() => cy.fit()}>Reset zoom</button>
       </menu>
 
-      <div className={style.vizContainer} ref={d3Container} />
+      <div className={style.vizContainer} ref={cyContainer} />
     </div>
   );
 };
