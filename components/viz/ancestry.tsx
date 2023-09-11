@@ -180,7 +180,7 @@ export const AncestryViz = ({
                 ? g.date_of_registration.slice(0, 4)
                 : '';
               const lastLine = !g.l
-                ? `${year}                     ☺`
+                ? `${year}                    𓆺`
                 : `${
                     g.date_of_registration ? year : '          '
                   }                    ${g.l ? `${g.l}º` : ''}`;
