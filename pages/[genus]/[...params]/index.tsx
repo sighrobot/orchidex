@@ -44,14 +44,12 @@ export async function getServerSideProps(context) {
 export const SpeciesAncestry = ({ grex }) => {
   const { data, isLoading } = useSpeciesAncestry(grex);
 
-  if (isLoading) {
-    return <>Loading...</>;
-  }
-
   return (
     <VizList
       className={style.speciesAncestry}
+      isLoading={isLoading}
       data={data}
+      numItemsToLoad={10}
       getFields={(sa) => [sa.grex.epithet]}
       renderField={({ grex: g = {} }) => (
         <Name className={style.speciesAncestryName} grex={g} shouldAbbreviate />
