@@ -12,7 +12,7 @@ import { AncestryViz } from 'components/viz/ancestry';
 import VizList from 'components/viz/list';
 import { fetchGrexByName, useSpeciesAncestry } from 'lib/hooks/useAncestry';
 import { Name } from 'components/name/name';
-import { useRouter, useSearchParams, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { Tabs } from 'components/tabs/tabs';
 import { isNaturalHybrid, isSpecies } from 'components/pills/pills';
 import { StatBox, StatCard } from 'components/stat/stat';
@@ -69,7 +69,6 @@ export const Grex = ({
   isHypothetical = false,
 }) => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const pathname = usePathname();
   const { isLoading: isProgenyLoading, data: progeny = [] } = useProgeny(grex);
   const name = formatName(grex);
@@ -210,68 +209,6 @@ export const Grex = ({
           ]}
         />
       </div>
-
-      {searchParams?.get('debug') && (
-        <table>
-          <tbody>
-            {Object.keys(grex).map((k) => {
-              const field = grex[k];
-              let href;
-              let rel;
-              let target;
-
-              switch (k) {
-                case 'id':
-                  href = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${field}`;
-                  rel = 'noopener noreferrer';
-                  target = '_blank';
-                  break;
-                case 'genus':
-                  href = `/?genus="${field}"`;
-                  break;
-                case 'epithet':
-                  href = `/?epithet="${field}"`;
-                  break;
-                case 'registrant_name':
-                  href = `/?registrant_name="${field}"`;
-                  break;
-                case 'date_of_registration':
-                  href = `/date/${field}`;
-                  break;
-                case 'seed_parent_genus':
-                  href = `/?seed_parent_genus="${field}"`;
-                  break;
-                case 'seed_parent_epithet':
-                  href = `/?seed_parent_epithet="${field}"`;
-                  break;
-                case 'pollen_parent_genus':
-                  href = `/?pollen_parent_genus="${field}"`;
-                  break;
-                case 'pollen_parent_epithet':
-                  href = `/?pollen_parent_epithet="${field}"`;
-                  break;
-                default:
-                  break;
-              }
-
-              return (
-                <tr key={k}>
-                  <th>{k.replace(/_/g, ' ')}:</th>
-                  <td>
-                    {href ? (
-                      <Link href={href} target={target} rel={rel}>
-                        {grex[k]}
-                      </Link>
-                    ) : (
-                      grex[k]
-                    )}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      )}
     </Container>
   );
 };
