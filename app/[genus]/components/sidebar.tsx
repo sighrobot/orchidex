@@ -1,15 +1,13 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 import { Padded } from 'components/container/container';
-import { StatCard } from 'components/stat/stat';
-
-import style from './sidebar.module.scss';
-import Image from 'next/image';
 import { H3 } from 'components/layout';
 import { capitalize } from 'lib/utils';
-import { Grex } from 'lib/types';
+
+import style from './sidebar.module.scss';
 
 function ParentageCTA({ genus = '' }: { genus?: string }) {
   const capitalizedGenus = capitalize(genus);
@@ -45,17 +43,6 @@ export function Sidebar({ genus }: { genus: string }) {
           Search all
         </Link>
       </Padded>
-
-      <StatCard
-        grex={
-          {
-            id: 'foo',
-            genus: capitalize(genus),
-            date_of_registration: '2023-01-01',
-          } as Grex
-        }
-        stat='year_genus_pct'
-      />
 
       <ParentageCTA genus={genus} />
     </Padded>
