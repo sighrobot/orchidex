@@ -29,3 +29,14 @@
     opacity: 0.5;
   }
 }
+
+.dialog {
+  background: white;
+  border: none;
+  position: fixed;
+  padding: 0 5px;
+  top: 0;
+  height: 100%;
+  width: 100vw;
+  z-index: 2;
+}

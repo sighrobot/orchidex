@@ -66,6 +66,7 @@ export const Grex = ({
   pollenParent,
   isHypothetical = false,
 }) => {
+  const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
   const { isLoading: isProgenyLoading, data: progeny = [] } = useProgeny(grex);
@@ -89,11 +90,25 @@ export const Grex = ({
     }
   }, [pathname]);
 
+  const handleFullScreenOpen = () => setIsDialogOpen(true);
+  const handleFullScreenClose = () => setIsDialogOpen(false);
+
   if (!grex) {
     return <Container>loading&hellip;</Container>;
   }
 
   const isGrexSpecies = isSpecies(grex);
+
+  const Viz = (
+    <AncestryViz
+      grex={grex}
+      seedParent={seedParent}
+      pollenParent={pollenParent}
+      isFullScreen={isDialogOpen}
+      onFullScreenOpen={handleFullScreenOpen}
+      onFullScreenClose={handleFullScreenClose}
+    />
+  );
 
   return (
     <Container
@@ -179,13 +194,7 @@ export const Grex = ({
               label: 'Ancestry',
               disabled: isGrexSpecies,
               disablePadding: true,
-              component: () => (
-                <AncestryViz
-                  grex={grex}
-                  seedParent={seedParent}
-                  pollenParent={pollenParent}
-                />
-              ),
+              component: () => !isDialogOpen && Viz,
             },
             {
               label: `Progeny`,
@@ -207,6 +216,10 @@ export const Grex = ({
           ]}
         />
       </div>
+
+      <dialog className={style.dialog} open={isDialogOpen}>
+        {isDialogOpen && Viz}
+      </dialog>
     </Container>
   );
 };
