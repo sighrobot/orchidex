@@ -277,12 +277,12 @@ export const AncestryViz = ({
           )}
 
           <label>
-            Depth:
+            Generations:
             <select onChange={handleChangeDepth} defaultValue={depth}>
-              {Array(10)
+              {Array(9)
                 .fill(null)
                 .map((_, idx) => {
-                  return <option value={idx + 1}>{idx + 1}º</option>;
+                  return <option value={idx + 1}>{idx + 2}</option>;
                 })}
             </select>
           </label>
