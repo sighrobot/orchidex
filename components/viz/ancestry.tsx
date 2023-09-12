@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { debounce, orderBy } from 'lodash';
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
+import cn from 'classnames';
 
 import { useAncestry } from 'lib/hooks/useAncestry';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
@@ -14,6 +15,7 @@ import {
 } from 'components/pills/pills';
 import { grexToHref } from 'components/name/name';
 import { Grex } from 'lib/types';
+import { H3 } from 'components/layout';
 
 import style from './ancestry.module.scss';
 
@@ -76,23 +78,40 @@ export const AncestryViz = ({
   seedParent,
   pollenParent,
   maxDepth = false,
+  isFullScreen,
+  onFullScreenOpen,
+  onFullScreenClose,
 }: {
   grex: Grex;
   seedParent?: Grex;
   pollenParent?: Grex;
   maxDepth?: boolean;
+  onFullScreenOpen?: () => void;
+  isFullScreen?: boolean;
+  onFullScreenClose?: () => void;
 }) => {
   const router = useRouter();
   const [depth, setDepth] = React.useState<number>(maxDepth ? 1000 : 3);
+  const [inspected, setInspected] = React.useState<Grex>();
 
   const handleNodeClick = React.useCallback(
     (e) => {
-      const g = e.target.data() as Grex;
-      const href = grexToHref({ ...g, id: g.id.split('-')[0] });
-      router.push(href);
+      if (!isFullScreen) {
+        const g = e.target.data() as Grex;
+        const href = grexToHref({ ...g, id: g.id.split('-')[0] });
+        router.push(href);
+      }
     },
-    [router]
+    [router, isFullScreen]
   );
+
+  const handleNodeSelect = React.useCallback((e) => {
+    setInspected(e.target.data() as Grex);
+  }, []);
+
+  const handleNodeUnselect = React.useCallback(() => {
+    setInspected(undefined);
+  }, []);
 
   const handleChangeDepth = debounce((e) => {
     setDepth(parseInt(e.target.value, 10));
@@ -189,6 +208,15 @@ export const AncestryViz = ({
             },
           },
         },
+        // {
+        //   selector: 'node:selected',
+        //   style: isFullScreen
+        //     ? {
+        //         'border-color': 'black',
+        //         'border-width': 25,
+        //       }
+        //     : {},
+        // },
         {
           selector: 'edge',
           style: {
@@ -203,27 +231,74 @@ export const AncestryViz = ({
       ],
     }).fit();
 
-    cy.on('vclick', 'node', handleNodeClick);
-  }, [ancestry, handleNodeClick]);
+    cy.removeAllListeners();
+
+    if (isFullScreen) {
+      // cy.on('select', 'node', handleNodeSelect);
+      // cy.on('unselect', 'node', handleNodeUnselect);
+    } else {
+      cy.on('vclick', 'node', handleNodeClick);
+    }
+  }, [
+    ancestry,
+    handleNodeClick,
+    isFullScreen,
+    handleNodeSelect,
+    handleNodeUnselect,
+  ]);
+
+  const MenuWrap = ({ children }) =>
+    isFullScreen ? (
+      <div
+        style={{
+          position: 'absolute',
+          right: 0,
+          left: 0,
+          padding: '0 10px',
+          background: 'rgba(255, 255, 255,0.8)',
+          zIndex: 2,
+        }}
+      >
+        {children}
+      </div>
+    ) : (
+      children
+    );
 
   return (
     <div className={style.viz}>
-      <menu>
-        <label>
-          {depth}º
-          <input
-            type='range'
-            min={1}
-            max={12}
-            onChange={handleChangeDepth}
-            defaultValue={depth}
-          />
-        </label>
+      <MenuWrap>
+        <menu>
+          {isFullScreen && (
+            <H3>
+              <em>{formatName(grex).long.genus}</em>{' '}
+              {formatName(grex).long.epithet}
+            </H3>
+          )}
 
-        <button onClick={() => cy.fit()}>Reset zoom</button>
-      </menu>
+          <label>
+            Depth:
+            <select onChange={handleChangeDepth} defaultValue={depth}>
+              {Array(10)
+                .fill(null)
+                .map((_, idx) => {
+                  return <option value={idx + 1}>{idx + 1}º</option>;
+                })}
+            </select>
+          </label>
 
-      <div className={style.vizContainer} ref={cyContainer} />
+          <button onClick={() => cy.fit()}>&#x27F3;&nbsp;Reset</button>
+          <button onClick={isFullScreen ? onFullScreenClose : onFullScreenOpen}>
+            {isFullScreen ? <>&times;</> : <>&#x26F6;</>}&nbsp;
+            {isFullScreen ? 'Close' : 'Expand'}
+          </button>
+        </menu>
+      </MenuWrap>
+
+      <div
+        className={cn(style.vizContainer, { [style.expanded]: isFullScreen })}
+        ref={cyContainer}
+      />
     </div>
   );
 };
