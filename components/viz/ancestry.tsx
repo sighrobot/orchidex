@@ -142,8 +142,12 @@ export const AncestryViz = ({
     cy = cytoscape({
       layout: { name: 'dagre', rankSep: 100 },
       autoungrabify: true,
+      userZoomingEnabled: isFullScreen,
+      userPanningEnabled: isFullScreen,
+      boxSelectionEnabled: false,
       container: cyContainer.current,
       maxZoom: 1,
+      minZoom: isFullScreen ? 1 / (depth + 1) : undefined,
       elements: [
         ...ancestry.nodes.map((n) => ({ data: n })),
         ...orderBy(ancestry.links, ['type'], ['desc']).map((l) => ({
@@ -229,7 +233,7 @@ export const AncestryViz = ({
           },
         },
       ],
-    }).fit();
+    }).fit(isFullScreen ? 40 : 0);
 
     cy.removeAllListeners();
 
@@ -245,30 +249,28 @@ export const AncestryViz = ({
     isFullScreen,
     handleNodeSelect,
     handleNodeUnselect,
+    depth,
   ]);
 
-  const MenuWrap = ({ children }) =>
-    isFullScreen ? (
-      <div
-        style={{
-          position: 'absolute',
-          right: 0,
-          left: 0,
-          padding: '0 10px',
-          background: 'rgba(255, 255, 255,0.8)',
-          zIndex: 2,
-        }}
-      >
-        {children}
-      </div>
-    ) : (
-      children
-    );
+  const MenuWrap = ({ children }) => (
+    <div
+      style={{
+        position: 'absolute',
+        right: 0,
+        left: 0,
+        // padding: '0 10px',
+        background: isFullScreen ? 'rgba(255, 255, 255,0.8)' : '',
+        zIndex: 2,
+      }}
+    >
+      {children}
+    </div>
+  );
 
   return (
     <div className={style.viz}>
       <MenuWrap>
-        <menu>
+        <div className={style.menuOuter}>
           {isFullScreen && (
             <H3>
               <em>{formatName(grex).long.genus}</em>{' '}
@@ -276,23 +278,32 @@ export const AncestryViz = ({
             </H3>
           )}
 
-          <label>
-            Generations:
-            <select onChange={handleChangeDepth} defaultValue={depth}>
-              {Array(9)
-                .fill(null)
-                .map((_, idx) => {
-                  return <option value={idx + 1}>{idx + 2}</option>;
-                })}
-            </select>
-          </label>
+          <menu>
+            {isFullScreen && (
+              <label>
+                Generations:
+                <select onChange={handleChangeDepth} defaultValue={depth}>
+                  {Array(9)
+                    .fill(null)
+                    .map((_, idx) => {
+                      return <option value={idx + 1}>{idx + 2}</option>;
+                    })}
+                </select>
+              </label>
+            )}
 
-          <button onClick={() => cy.fit()}>&#x27F3;&nbsp;Reset</button>
-          <button onClick={isFullScreen ? onFullScreenClose : onFullScreenOpen}>
-            {isFullScreen ? <>&times;</> : <>&#x26F6;</>}&nbsp;
-            {isFullScreen ? 'Close' : 'Expand'}
-          </button>
-        </menu>
+            {isFullScreen && (
+              <button onClick={() => cy.fit(40)}>&#x27F3;&nbsp;Reset</button>
+            )}
+
+            <button
+              onClick={isFullScreen ? onFullScreenClose : onFullScreenOpen}
+            >
+              {isFullScreen ? <>&times;</> : <>&#x26F6;</>}&nbsp;
+              {isFullScreen ? 'Close' : 'Expand Ancestry'}
+            </button>
+          </menu>
+        </div>
       </MenuWrap>
 
       <div

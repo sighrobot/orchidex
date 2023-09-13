@@ -8,10 +8,6 @@
   }
 }
 
-.normal {
-  background: rgba(184, 151, 248, 1);
-}
-
 .node {
   font-size: 16px;
   font-family: 'IBM Plex Sans';
@@ -58,12 +54,14 @@
 }
 
 .viz {
+  position: relative;
+
   menu {
     align-items: center;
     display: flex;
     font-size: 14px;
-    flex-wrap: wrap;
     margin: 0;
+    margin-left: auto;
     padding: 10px 0;
 
     > * + * {
@@ -103,15 +101,22 @@
   }
 
   .vizContainer {
-    padding-top: 10px;
+    padding-top: 50px;
     height: 600px;
 
     @media (max-width: 500px) {
-      height: 33vh;
+      height: 40vh;
     }
 
     &.expanded {
+      padding-top: 0;
       height: 100vh;
     }
   }
+}
+
+.menuOuter {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
 }
