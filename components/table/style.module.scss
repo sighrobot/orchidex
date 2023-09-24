@@ -1,0 +1,44 @@
+.table {
+  border-collapse: collapse;
+  width: 100%;
+
+  &:not(.loading) {
+    tr:nth-child(2n) {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    tr:hover {
+      background: lightyellow;
+    }
+  }
+
+  th,
+  td {
+    padding: 20px 20px;
+    padding-left: 0;
+
+    &:first-child {
+      padding-left: 0;
+    }
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+
+  th {
+    font-size: 75%;
+    color: gray;
+    text-align: left;
+    text-transform: uppercase;
+  }
+}
+
+.pageControls {
+  text-align: right;
+  font-size: 85%;
+
+  button {
+    cursor: pointer;
+  }
+}
