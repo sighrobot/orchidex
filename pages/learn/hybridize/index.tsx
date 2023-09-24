@@ -2,7 +2,6 @@ import React from 'react';
 import { Container } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
 import { Name } from 'components/name/name';
-import { SearchParentage } from 'components/search/parentage';
 import { AncestryViz } from 'components/viz/ancestry';
 import List from 'components/viz/list';
 import { useSpeciesAncestry } from 'lib/hooks/useAncestry';
@@ -82,7 +81,7 @@ const Hybridizer = ({ seed, pollen }) => {
   const handleSubmit = () => {
     setGrex(state);
     router.replace(
-      `/learn/hybridizer?seed=${seedParent.id}&pollen=${pollenParent.id}`,
+      `/learn/hybridizer?seed=${seedParent.id}&pollen=${pollenParent.id}`
     );
   };
 

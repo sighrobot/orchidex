@@ -6,9 +6,10 @@ import { Padded } from 'components/container/container';
 import { APP_TITLE } from 'app/constants';
 import { fetchRecent } from 'lib/fetchers/recent';
 
-import style from './style.module.scss';
 import List from 'components/list';
 import { Grex } from 'lib/types';
+
+import style from './style.module.scss';
 
 export const dynamic = 'force-dynamic';
 

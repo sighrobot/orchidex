@@ -39,7 +39,10 @@ export function Sidebar({ genus }: { genus: string }) {
   return (
     <Padded>
       <Padded className={style.searchAllWrapper}>
-        <Link className={style.searchAll} href={`/search?genus="${genus}"`}>
+        <Link
+          className={style.searchAll}
+          href={`/search/advanced?genus="${genus}"`}
+        >
           Search all
         </Link>
       </Padded>

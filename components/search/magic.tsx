@@ -3,7 +3,7 @@ import { GrexCard } from 'components/grex/grex';
 import { parseMagicQuery } from 'lib/magic-search';
 import { Grex } from 'lib/types';
 import { throttle } from 'lodash';
-import { fetchSearch } from 'pages/search';
+import { fetchSearch } from 'pages/search/advanced';
 
 export const Magic = ({
   inlineMenu,
@@ -53,7 +53,7 @@ export const Magic = ({
         setResults(search);
       }
     }, 500),
-    [],
+    []
   );
 
   React.useEffect(() => {

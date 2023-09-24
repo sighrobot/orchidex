@@ -36,16 +36,3 @@
   text-decoration: underline;
   font-weight: 500;
 }
-
-.search {
-  flex-basis: 50%;
-  margin-right: 80px;
-
-  @media (max-width: 800px) {
-    margin-right: 0;
-  }
-
-  h3 {
-    margin-bottom: 30px;
-  }
-}

@@ -1,11 +1,12 @@
 import React from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 
 import { SEARCH_FIELDS } from 'lib/constants';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
 import { capitalize } from 'lib/utils';
-import searchStyle from './search.module.scss';
 import { ButtonSimple } from 'components/button-simple/button-simple';
+
+import searchStyle from './search.module.scss';
 
 type SearchGrexState = {
   genus?: string;
@@ -23,7 +24,6 @@ export const SearchGrex = ({
   onSubmit = () => {},
   state,
 }: SearchGrexProps) => {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const [expanded, setExpanded] = React.useState(false);
 

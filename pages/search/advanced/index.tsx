@@ -14,6 +14,7 @@ import { H3 } from 'components/layout';
 import { Grex } from 'lib/types';
 import List from 'components/list';
 import style from './style.module.scss';
+import Link from 'next/link';
 
 export async function fetchSearch(params: string[] = []): Promise<Grex[]> {
   const fetched = await fetch(`${APP_URL}/api/search?${params.join('&')}`);
@@ -52,7 +53,7 @@ export default function Search({ initialState = {}, initialSimple = true }) {
     }));
 
   const handleSubmit = (s) => {
-    let url = '/search';
+    let url = '/search/advanced';
     const params: string[] = [];
 
     SEARCH_FIELDS.forEach((f) => {
@@ -69,7 +70,7 @@ export default function Search({ initialState = {}, initialSimple = true }) {
   };
 
   const handleSubmitCross = () => {
-    let url = '/search';
+    let url = '/search/advanced';
     const params: string[] = [];
 
     CROSS_FIELDS.forEach((f) => {
@@ -135,12 +136,25 @@ export default function Search({ initialState = {}, initialSimple = true }) {
   strArr.push(...stuff2);
 
   const title = `${
-    strArr.length > 0 ? `${strArr.join(' ')} | Search` : 'Search'
+    strArr.length > 0
+      ? `${strArr.join(' ')} | Advanced search`
+      : 'Advanced search'
   } |
   Orchidex`;
 
   return (
-    <Container className={style.search} title={title} heading='Search'>
+    <Container
+      className={style.search}
+      title={title}
+      heading={
+        <>
+          <div className={style.backToSimple}>
+            <Link href='/search'>&laquo; Back to simple search</Link>
+          </div>
+          <div>Advanced search</div>
+        </>
+      }
+    >
       <section>
         <div
           style={{ display: 'flex', marginBottom: '5px', maxWidth: '400px' }}

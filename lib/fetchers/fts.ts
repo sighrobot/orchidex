@@ -23,7 +23,11 @@ export function useFTS({ q, offset }: FetchFTSProps) {
   const [data, setData] = React.useState<Grex[]>([]);
 
   React.useEffect(() => {
-    if (!q) return;
+    if (!q) {
+      setIsLoading(false);
+      setData([]);
+      return;
+    }
     setIsLoading(true);
     fetchFTS({ q, offset }).then((json) => {
       setData(json);
