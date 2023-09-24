@@ -8,7 +8,7 @@ import { StatMap, createRegistrantStatMap } from './page';
 const buildDescription = (
   name: string,
   statMap: StatMap,
-  registrantGrexes: Grex[],
+  registrantGrexes: Grex[]
 ) => {
   const tokens: string[] = [];
 
@@ -22,7 +22,7 @@ const buildDescription = (
   const thisYear = new Date().getFullYear();
   const endYear = parseInt(
     registrantGrexes[0].date_of_registration.slice(0, 4),
-    10,
+    10
   );
 
   const didEndThisYear = endYear === thisYear;
@@ -53,7 +53,7 @@ const buildDescription = (
 
 export async function fetchRegistrant(name: string): Promise<object[]> {
   const res = await fetch(
-    `${APP_URL}/api/registrant/${encodeURIComponent(name)}`,
+    `${APP_URL}/api/registrant/${encodeURIComponent(name)}`
   );
   return res.json();
 }

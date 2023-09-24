@@ -17,7 +17,7 @@ export default function SearchBar({ value = '' }: SearchBarProps) {
   const handleSearchText = (e) => setSearchText(e.target.value);
   const handleSearch = (e) => {
     e.preventDefault();
-    router.push(`/search?q=${encodeURIComponent(searchText)}`);
+    router.push(`/search/${encodeURIComponent(searchText)}`);
   };
 
   return (
@@ -34,7 +34,7 @@ export default function SearchBar({ value = '' }: SearchBarProps) {
           value={searchText}
         />
         <aside>
-          <Link href='/search/advanced'>Try advanced search &raquo;</Link>
+          <Link href='/search-advanced'>Try advanced search &raquo;</Link>
         </aside>
       </div>
       <button disabled={!searchText} type='submit'>

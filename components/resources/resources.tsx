@@ -40,7 +40,7 @@ export const Resources = ({ grex, blueNantaSpeciesId }: ResourcesProps) => {
       <a
         {...SHARED_PROPS}
         href={`https://www.google.com/search?q=${encodeURIComponent(
-          `"${grex.genus} ${grex.epithet}"`,
+          `"${grex.genus} ${grex.epithet}"`
         )}&tbm=isch`}
       >
         Google Images

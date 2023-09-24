@@ -105,7 +105,7 @@ const handleClose = () => {
     '',
     'recent',
     'search',
-    'search/advanced',
+    'search-advanced',
     'about',
     'about/data',
   ]) {

@@ -1,7 +1,7 @@
 import { APP_TITLE } from 'app/constants';
 import { Metadata } from 'next';
 
-export async function generateMetadata(foo): Promise<Metadata> {
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: `Search | ${APP_TITLE}`,
     description:
@@ -9,6 +9,6 @@ export async function generateMetadata(foo): Promise<Metadata> {
   };
 }
 
-export default async function SearchLayout({ children }) {
+export default function Layout({ children }) {
   return <>{children}</>;
 }
