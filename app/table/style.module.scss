@@ -1,0 +1,25 @@
+.table {
+  td:not(:first-child) {
+    font-size: 85%;
+  }
+}
+
+.name {
+  //   max-width: 250px;
+  //   overflow: hidden;
+  //   text-overflow: ellipsis;
+  //   white-space: nowrap;
+  width: 25%;
+}
+
+.pill {
+  //   max-width: 130px;
+  //   max-width: 85px;
+}
+
+.ellipsis {
+  //   max-width: 100px;
+  // overflow: hidden;
+  //   text-overflow: ellipsis;
+  // white-space: nowrap;
+}
