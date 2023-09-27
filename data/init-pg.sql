@@ -31,6 +31,7 @@ CREATE INDEX idx_rhs_genus_epithet ON rhs (genus, epithet);
 ALTER TABLE rhs ADD seed_parent_id TEXT;
 ALTER TABLE rhs ADD pollen_parent_id TEXT;
 
+-- populate seed_parent_id
 UPDATE rhs
 SET seed_parent_id=subquery.seed_parent_id
 FROM (
@@ -40,8 +41,12 @@ FROM (
         ON r1.seed_parent_genus = r2.genus
         AND r1.seed_parent_epithet = r2.epithet
 ) AS subquery
-WHERE rhs.id=subquery.id;
+WHERE rhs.id=subquery.id
+    AND rhs.epithet != ''
+    AND rhs.date_of_registration != ''
+    AND rhs.seed_parent_id is NULL;
 
+-- populate pollen_parent_id
 UPDATE rhs
 SET pollen_parent_id=subquery.pollen_parent_id
 FROM (
@@ -51,8 +56,10 @@ FROM (
         ON r1.pollen_parent_genus = r2.genus
         AND r1.pollen_parent_epithet = r2.epithet
 ) AS subquery
-WHERE rhs.id=subquery.id;
-
+WHERE rhs.id=subquery.id
+    AND rhs.epithet != ''
+    AND rhs.date_of_registration != ''
+    AND rhs.pollen_parent_id is NULL;
 
 -- WCVP
 DROP TABLE IF EXISTS wcvp;
