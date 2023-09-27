@@ -28,6 +28,31 @@ CREATE TABLE rhs (
 );
 \COPY rhs FROM 'rhs/data.tsv' DELIMITER E'\t' CSV HEADER;
 CREATE INDEX idx_rhs_genus_epithet ON rhs (genus, epithet);
+ALTER TABLE rhs ADD seed_parent_id TEXT;
+ALTER TABLE rhs ADD pollen_parent_id TEXT;
+
+UPDATE rhs
+SET seed_parent_id=subquery.seed_parent_id
+FROM (
+    SELECT r1.id, r2.id AS seed_parent_id
+    FROM rhs r1
+    LEFT JOIN rhs r2
+        ON r1.seed_parent_genus = r2.genus
+        AND r1.seed_parent_epithet = r2.epithet
+) AS subquery
+WHERE rhs.id=subquery.id;
+
+UPDATE rhs
+SET pollen_parent_id=subquery.pollen_parent_id
+FROM (
+    SELECT r1.id, r2.id AS pollen_parent_id
+    FROM rhs r1
+    LEFT JOIN rhs r2
+        ON r1.pollen_parent_genus = r2.genus
+        AND r1.pollen_parent_epithet = r2.epithet
+) AS subquery
+WHERE rhs.id=subquery.id;
+
 
 -- WCVP
 DROP TABLE IF EXISTS wcvp;
