@@ -196,5 +196,45 @@ let i = startIndex;
     i++;
   }
 
+  // fill in seed_parent_id
+  // THIS QUERY MUST STAY IN SYNC WITH data/init-pg.sql !!!
+  await sql.query(
+    `
+    UPDATE rhs
+    SET seed_parent_id=subquery.seed_parent_id
+    FROM (
+        SELECT r1.id, r2.id AS seed_parent_id
+        FROM rhs r1
+        LEFT JOIN rhs r2
+            ON r1.seed_parent_genus = r2.genus
+            AND r1.seed_parent_epithet = r2.epithet
+    ) AS subquery
+    WHERE rhs.id=subquery.id
+        AND rhs.epithet != ''
+        AND rhs.date_of_registration != ''
+        AND rhs.seed_parent_id is NULL
+    `.trim()
+  );
+
+  // fill in pollen_parent_id
+  // THIS QUERY MUST STAY IN SYNC WITH data/init-pg.sql !!!
+  await sql.query(
+    `
+    UPDATE rhs
+    SET pollen_parent_id=subquery.pollen_parent_id
+    FROM (
+        SELECT r1.id, r2.id AS pollen_parent_id
+        FROM rhs r1
+        LEFT JOIN rhs r2
+            ON r1.pollen_parent_genus = r2.genus
+            AND r1.pollen_parent_epithet = r2.epithet
+    ) AS subquery
+    WHERE rhs.id=subquery.id
+        AND rhs.epithet != ''
+        AND rhs.date_of_registration != ''
+        AND rhs.pollen_parent_id is NULL
+    `.trim()
+  );
+
   stream.end();
 })();
