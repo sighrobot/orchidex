@@ -24,8 +24,10 @@ export const Parentage = ({
   }
 
   const {
+    seed_parent_id,
     seed_parent_genus,
     seed_parent_epithet,
+    pollen_parent_id,
     pollen_parent_genus,
     pollen_parent_epithet,
   } = grex;
@@ -36,8 +38,9 @@ export const Parentage = ({
         <Name
           shouldAbbreviate={shouldAbbreviateParentage}
           link={!hideLink}
-          linkAsSearch={!seedParent}
+          linkAsSearch={!seedParent && !seed_parent_id}
           grex={{
+            id: seed_parent_id,
             genus: seed_parent_genus,
             epithet: seed_parent_epithet,
             ...seedParent,
@@ -51,8 +54,9 @@ export const Parentage = ({
         <Name
           shouldAbbreviate={shouldAbbreviateParentage}
           link={!hideLink}
-          linkAsSearch={!pollenParent}
+          linkAsSearch={!pollenParent && !pollen_parent_id}
           grex={{
+            id: pollen_parent_id,
             genus: pollen_parent_genus,
             epithet: pollen_parent_epithet,
             ...pollenParent,

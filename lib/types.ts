@@ -16,6 +16,8 @@ export type Grex = {
   seed_parent_epithet?: string;
   pollen_parent_genus?: string;
   pollen_parent_epithet?: string;
+  seed_parent_id?: string;
+  pollen_parent_id?: string;
 };
 
 export type Stat =

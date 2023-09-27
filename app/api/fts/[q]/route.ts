@@ -1,3 +1,4 @@
+import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { query } from 'lib/pg';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -15,16 +16,8 @@ export async function GET(req: NextRequest) {
   const sql = `
     WITH input AS (SELECT '${q}' AS q)
       SELECT
-        id,
-        genus,
-        epithet,
-        registrant_name,
-        originator_name,
-        date_of_registration,
-        seed_parent_genus,
-        seed_parent_epithet,
-        pollen_parent_genus,
-        pollen_parent_epithet,
+        ${ID_FIELDS.join(', ')},
+        ${SEARCH_FIELDS.join(', ')},
         1 - (input.q <<-> (COALESCE(epithet, '') || ' ' || 
           COALESCE(registrant_name, '') || ' ' ||
           COALESCE(genus, ''))) AS score

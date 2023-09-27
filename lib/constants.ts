@@ -6,6 +6,8 @@ export const APP_URL =
 
 export const CROSS_FIELDS = ['g1', 'e1', 'g2', 'e2'];
 
+export const ID_FIELDS = ['id', 'seed_parent_id', 'pollen_parent_id'];
+
 export const SEARCH_FIELDS = [
   'genus',
   'epithet',

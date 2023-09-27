@@ -1,4 +1,4 @@
-import { SEARCH_FIELDS } from 'lib/constants';
+import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { query } from 'lib/pg';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   }
 
   const json = await query(
-    `SELECT id, ${SEARCH_FIELDS.join(
+    `SELECT ${ID_FIELDS.join(', ')}, ${SEARCH_FIELDS.join(
       ', '
     )} FROM rhs WHERE epithet != '' AND (registrant_name = '${r}' OR originator_name = '${r}') ORDER BY date_of_registration DESC`
   );
