@@ -12,8 +12,6 @@ export const Header = () => {
         </Link>
       </h1>
 
-      <mark className={style.beta}>Beta</mark>
-
       <nav>
         <Link href='/recent'>Recent</Link>
         <Link href='/search'>Search</Link>

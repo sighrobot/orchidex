@@ -8,19 +8,28 @@
   button {
     font-size: 18px;
     height: 50px;
-    border: 1px solid gray;
+    border: 1px solid black;
   }
 
   input {
     appearance: none;
+    outline-color: black;
     padding: 0 10px;
     width: 100%;
   }
 
   button {
-    border-left: none;
+    color: white;
     cursor: pointer;
-    width: 80px;
+    background: black;
+    border-left: none;
+    font-size: 14px;
+    width: 60px;
+
+    &[disabled] {
+      background: white;
+      color: #ccc;
+    }
   }
 
   .lockup {

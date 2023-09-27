@@ -1,7 +1,7 @@
 .header {
   width: 150px;
   flex-shrink: 0;
-  padding: 20px 10px;
+  padding: 15px 10px;
   display: flex;
   width: 100%;
   align-items: center;
@@ -22,10 +22,10 @@
     display: flex;
 
     a {
+      color: black;
       display: inline-block;
-      text-transform: uppercase;
+      font-size: 14px;
       font-weight: 500;
-      font-size: 12px;
     }
 
     a:not(:first-child) {
@@ -36,25 +36,17 @@
 
 .brand {
   a {
-    font-size: 20px;
+    align-items: center;
+    display: flex;
+    font-size: 18px;
     text-decoration: none;
   }
 }
 
 .orchi {
-  color: orchid;
+  color: fuchsia;
 }
 
 .dex {
-  color: #3f454e;
-}
-
-.beta {
-  position: relative;
-  top: 2.5px;
-  font-size: 8px;
-  text-transform: uppercase;
-  padding: 0 1px;
-  font-weight: 500;
-  margin-left: 2px;
+  color: black;
 }

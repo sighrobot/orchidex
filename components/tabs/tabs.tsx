@@ -7,6 +7,7 @@ type TabsConfig = {
   label: string;
   count?: number;
   disabled?: boolean;
+  hidden?: boolean;
   component: React.FunctionComponent;
   disablePadding?: boolean;
 };
@@ -41,6 +42,7 @@ export const Tabs = ({
     <div className={style.tabs}>
       <nav>
         {config.map((c, idx) => {
+          if (c.hidden) return null;
           return (
             <button
               key={c.label}

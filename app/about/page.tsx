@@ -46,18 +46,6 @@ export default function About() {
             </dd>
 
             <dt>
-              <H3>
-                Why is this project in <mark>beta</mark>?
-              </H3>
-            </dt>
-            <dd>
-              As more people visit and interact with the site for the first
-              time, technical and editorial issues may arise. In the spirit of
-              discovery, we welcome any and all feedback as we work to keep
-              Orchidex running smoothly.
-            </dd>
-
-            <dt>
               <H3>Where does the data come from?</H3>
             </dt>
             <dd>

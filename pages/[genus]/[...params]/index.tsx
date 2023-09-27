@@ -80,15 +80,17 @@ export const Grex = ({
       : wcvp.filter((w) => w.taxon_rank === 'Species')[0];
 
   React.useEffect(() => {
-    const split = pathname?.split('/') ?? [''];
-    if (split.length === 3 || isNaN(parseInt(split[split.length - 1], 10))) {
-      router.replace(
-        `/${kebabCase(name.long.genus)}/${kebabCase(name.long.epithet)}/${
-          grex.id
-        }`
-      );
+    if (!isHypothetical) {
+      const split = pathname?.split('/') ?? [''];
+      if (split.length === 3 || isNaN(parseInt(split[split.length - 1], 10))) {
+        router.replace(
+          `/${kebabCase(name.long.genus)}/${kebabCase(name.long.epithet)}/${
+            grex.id
+          }`
+        );
+      }
     }
-  }, [pathname]);
+  }, [pathname, isHypothetical]);
 
   const handleFullScreenOpen = () => setIsDialogOpen(true);
   const handleFullScreenClose = () => setIsDialogOpen(false);
@@ -198,6 +200,7 @@ export const Grex = ({
             },
             {
               label: `Progeny`,
+              hidden: isHypothetical,
               count: progeny.length,
               component: () => (
                 <List<GrexType>

@@ -30,6 +30,10 @@ function getGrexColor(g: Grex): string {
   const intergeneric = isIntergeneric(g);
   const hypothetical = g.hypothetical;
 
+  if (hypothetical) {
+    return 'black';
+  }
+
   if (intergeneric) {
     if (primary) {
       return `linear-gradient(
@@ -62,10 +66,6 @@ function getGrexColor(g: Grex): string {
     return 'rgba(103, 187, 110, 1)';
   }
 
-  if (hypothetical) {
-    return 'black';
-  }
-
   return 'rgba(184, 151, 248, 1)';
 }
 
@@ -92,12 +92,13 @@ export const AncestryViz = ({
 }) => {
   const router = useRouter();
   const [depth, setDepth] = React.useState<number>(maxDepth ? 1000 : 3);
-  const [inspected, setInspected] = React.useState<Grex>();
+  const [inspected, setInspected] = React.useState<Grex>(); // TODO: hook this up someday
 
   const handleNodeClick = React.useCallback(
     (e) => {
       if (!isFullScreen) {
         const g = e.target.data() as Grex;
+        if (g.hypothetical) return;
         const href = grexToHref({ ...g, id: g.id.split('-')[0] });
         router.push(href);
       }
@@ -122,7 +123,13 @@ export const AncestryViz = ({
   const seedParentAncestry = useAncestry(seedParent || {}, depth);
   const pollenParentAncestry = useAncestry(pollenParent || {}, depth);
   const parentAncestry = {
-    nodes: [grex, ...seedParentAncestry.nodes, ...pollenParentAncestry.nodes],
+    nodes: [
+      grex,
+      seedParent,
+      pollenParent,
+      ...seedParentAncestry.nodes,
+      ...pollenParentAncestry.nodes,
+    ],
     links: [
       { source: seedParent?.id, target: grex.id },
       { source: pollenParent?.id, target: grex.id },
@@ -178,7 +185,9 @@ export const AncestryViz = ({
             },
             'background-fill': (n) => {
               const g = n.data() as Grex;
-              return isIntergeneric(g) && isPrimary(g) ? 'linear-gradient' : '';
+              return isIntergeneric(g) && isPrimary(g)
+                ? 'linear-gradient'
+                : 'solid';
             },
             'background-gradient-stop-colors': (n) => {
               const g = n.data() as Grex;
@@ -258,8 +267,7 @@ export const AncestryViz = ({
         position: 'absolute',
         right: 0,
         left: 0,
-        // padding: '0 10px',
-        background: isFullScreen ? 'rgba(255, 255, 255,0.8)' : '',
+        background: isFullScreen ? 'rgba(255, 255, 255,0.8)' : undefined,
         zIndex: 2,
       }}
     >
