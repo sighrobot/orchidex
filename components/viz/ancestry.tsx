@@ -170,6 +170,7 @@ export const AncestryViz = ({
             'background-gradient-direction': 'to-bottom-right',
             color: 'white',
             'font-family': 'IBM Plex Sans',
+            'font-weight': 300,
             'font-size': 24,
             'line-height': 1,
             'min-zoomed-font-size': 12,

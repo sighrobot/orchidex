@@ -13,7 +13,7 @@ export const ibmPlexSans = IBM_Plex_Sans({
   display: 'swap',
   style: ['normal', 'italic'],
   subsets: ['latin'],
-  weight: ['400', '500'],
+  weight: ['300', '400'],
 });
 
 export const metadata: Metadata = {

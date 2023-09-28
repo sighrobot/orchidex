@@ -8,6 +8,7 @@ body {
 body {
   background: #eee;
   font-size: 16px;
+  font-weight: 300;
   width: 100vw;
   height: 100vh;
   background: linear-gradient(
@@ -38,6 +39,16 @@ h3,
 h4,
 h5,
 h6,
+strong {
+  font-weight: 400;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 p,
 ul {
   margin: 0;
@@ -50,10 +61,4 @@ a {
 
 a:hover {
   text-decoration: underline;
-}
-
-path.link {
-  stroke: gray;
-  stroke-width: 2;
-  stroke-opacity: 0.25;
 }

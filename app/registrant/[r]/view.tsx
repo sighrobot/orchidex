@@ -1,19 +1,18 @@
 'use client';
 
+import React from 'react';
 import { orderBy, groupBy } from 'lodash';
 
 import { GrexCard } from 'components/grex/grex';
 import { Hero } from 'components/hero';
-
 import VizList from 'components/viz/list';
 import { ButtonSimple } from 'components/button-simple/button-simple';
-import React from 'react';
 import { StatCard } from 'components/stat/stat';
 import { Grex } from 'lib/types';
 import { Tabs } from 'components/tabs/tabs';
+import List from 'components/list';
 
 import style from './style.module.scss';
-import List from 'components/list';
 
 type RegistrantViewProps = {
   name: string;

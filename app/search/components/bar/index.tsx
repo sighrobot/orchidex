@@ -34,7 +34,9 @@ export default function SearchBar({ value = '' }: SearchBarProps) {
           value={searchText}
         />
         <aside>
-          <Link href='/search-advanced'>Try advanced search &raquo;</Link>
+          <strong>
+            <Link href='/search-advanced'>Try advanced search &raquo;</Link>
+          </strong>
         </aside>
       </div>
       <button disabled={!searchText} type='submit'>
