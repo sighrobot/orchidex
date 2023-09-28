@@ -147,7 +147,7 @@ export const getStatText = ({
     }
     case 'year_genus_pct': {
       const thisYear = new Date().getFullYear().toString();
-      const year = grex.date_of_registration.slice(0, 4);
+      const year = grex.date_of_registration?.slice(0, 4);
       const isLow = value < 0.01;
 
       const segments = [
