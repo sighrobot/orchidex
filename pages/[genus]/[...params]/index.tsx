@@ -71,8 +71,6 @@ export const Grex = ({
   const pathname = usePathname();
   const { isLoading: isProgenyLoading, data: progeny = [] } = useProgeny(grex);
   const name = formatName(grex);
-  const seedParentName = formatName(seedParent);
-  const pollenParentName = formatName(pollenParent);
   const { data: wcvp = [] } = useWcvp(grex);
   const wcvpSpecies =
     wcvp.length === 1
@@ -116,7 +114,9 @@ export const Grex = ({
     <Container
       title={`${
         grex.hypothetical
-          ? `Hybridize - ${seedParentName.short.full} ${CROSS_CHAR} ${pollenParentName.short.full}`
+          ? `Hybridize - ${formatName(seedParent).short.full} ${CROSS_CHAR} ${
+              formatName(pollenParent).short.full
+            }`
           : name.long.full
       } | Orchidex`}
       description={description(grex)}
@@ -220,9 +220,11 @@ export const Grex = ({
         />
       </div>
 
-      <dialog className={style.dialog} open={isDialogOpen}>
-        {isDialogOpen && Viz}
-      </dialog>
+      {isDialogOpen && (
+        <dialog open className={style.dialog}>
+          {Viz}
+        </dialog>
+      )}
     </Container>
   );
 };

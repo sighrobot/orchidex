@@ -1,9 +1,11 @@
+import Link from 'next/link';
+import cn from 'classnames';
+import { kebabCase } from 'lodash';
+
 import { formatName } from 'lib/string';
 import { Grex } from 'lib/types';
-import { kebabCase } from 'lodash';
-import Link from 'next/link';
+
 import style from './style.module.scss';
-import cn from 'classnames';
 
 type NameProps = {
   className?: string;
@@ -15,14 +17,14 @@ type NameProps = {
   link?: boolean;
   linkAsSearch?: boolean;
   shouldAbbreviate?: boolean;
-  as?: keyof JSX.IntrinsicElements;
+  as?: React.FC | keyof JSX.IntrinsicElements;
 };
 
 export const grexToHref = (grex: Pick<Grex, 'genus' | 'epithet' | 'id'>) => {
   const formattedName = formatName(grex);
   const href = grex.id
     ? `/${kebabCase(formattedName.long.genus)}/${kebabCase(
-        formattedName.long.epithet,
+        formattedName.long.epithet
       )}/${grex.id}`
     : `/${encodeURIComponent(grex.genus)}/${encodeURIComponent(grex.epithet)}`;
   return href;
@@ -49,7 +51,7 @@ export const Name = ({
     const href = linkAsSearch
       ? `/${encodeURIComponent(grex.genus)}/${encodeURIComponent(grex.epithet)}`
       : `/${kebabCase(formattedName.long.genus)}/${kebabCase(
-          formattedName.long.epithet,
+          formattedName.long.epithet
         )}/${grex.id}`;
 
     const isSpecies =
@@ -71,7 +73,7 @@ export const Name = ({
             as={
               linkAsSearch
                 ? `/${encodeURIComponent(
-                    formattedName.long.genus,
+                    formattedName.long.genus
                   )}/${encodeURIComponent(formattedName.long.epithet)}`
                 : undefined
             }

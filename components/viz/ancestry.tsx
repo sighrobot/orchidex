@@ -13,7 +13,7 @@ import {
   isPrimary,
   isSpecies,
 } from 'components/pills/pills';
-import { grexToHref } from 'components/name/name';
+import { Name, grexToHref } from 'components/name/name';
 import { Grex } from 'lib/types';
 import { H3 } from 'components/layout';
 
@@ -280,12 +280,7 @@ export const AncestryViz = ({
     <div className={style.viz}>
       <MenuWrap>
         <div className={style.menuOuter}>
-          {isFullScreen && (
-            <H3>
-              <em>{formatName(grex).long.genus}</em>{' '}
-              {formatName(grex).long.epithet}
-            </H3>
-          )}
+          {isFullScreen && <Name grex={grex} as={H3} />}
 
           <menu>
             {isFullScreen && (
