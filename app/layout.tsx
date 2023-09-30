@@ -1,7 +1,8 @@
 import React from 'react';
-import { Analytics } from '@vercel/analytics/react';
-import { IBM_Plex_Sans } from 'next/font/google';
 import { Metadata } from 'next';
+import { IBM_Plex_Sans } from 'next/font/google';
+import Script from 'next/script';
+import { Analytics } from '@vercel/analytics/react';
 
 import Disclaimer from 'components/disclaimer';
 import { APP_DESCRIPTION, APP_TITLE, APP_URL } from 'lib/constants';
@@ -35,11 +36,27 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={ibmPlexSans.className}>
+        {process.env.NODE_ENV === 'production' && (
+          <>
+            <Script
+              async
+              src={`https://www.googletagmanager.com/gtag/js?id=G-QKTW85LHH3`}
+            />
+            <Script>
+              {`window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-QKTW85LHH3');`}
+            </Script>
+          </>
+        )}
+
         <div className={style.container}>
           {children}
           <Disclaimer />
         </div>
       </body>
+
       <Analytics />
     </html>
   );
