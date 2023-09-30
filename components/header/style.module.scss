@@ -108,6 +108,10 @@
     top: -7px; // ☰ is short
     right: 0;
     bottom: 0;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
   }
 
   nav {
