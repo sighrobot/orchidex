@@ -1,6 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
 import { APP_TITLE } from 'lib/constants';
 import { fetchGenusMeta } from 'lib/fetchers/wikipedia';
@@ -8,6 +9,7 @@ import { capitalize } from 'lib/utils';
 import { H2, H3 } from 'components/layout';
 import { Padded } from 'components/container/container';
 import GenusInput from 'components/genus-input';
+import { GENUS_TO_ABBREVIATION } from 'lib/abbreviations';
 import RecentCards from './components/recent';
 import Timeseries from './components/timeseries';
 
@@ -33,6 +35,10 @@ export async function generateMetadata({
 export default async function Genus({
   params: { genus } = { genus: '' },
 } = {}) {
+  if (!GENUS_TO_ABBREVIATION[capitalize(genus)]) {
+    notFound();
+  }
+
   const wikiMeta = await fetchGenusMeta(genus);
   const capitalizedGenus = capitalize(genus);
 

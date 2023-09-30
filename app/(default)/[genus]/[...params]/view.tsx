@@ -1,16 +1,18 @@
+'use client';
+
 import React from 'react';
 import { capitalize, kebabCase, orderBy } from 'lodash';
 
 import { Container, Padded } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
-import { fetchGrex } from 'lib/hooks/useGrex';
+
 import { useProgeny } from 'lib/hooks/useProgeny';
 import Link from 'next/link';
 import { Resources } from 'components/resources/resources';
-import { description, formatName, CROSS_CHAR } from 'lib/string';
+import { formatName } from 'lib/string';
 import { AncestryViz } from 'components/viz/ancestry';
 import VizList from 'components/viz/list';
-import { fetchGrexByName, useSpeciesAncestry } from 'lib/hooks/useAncestry';
+import { useSpeciesAncestry } from 'lib/hooks/useAncestry';
 import { Name } from 'components/name/name';
 import { useRouter, usePathname } from 'next/navigation';
 import { Tabs } from 'components/tabs/tabs';
@@ -21,25 +23,6 @@ import { useWcvp } from 'lib/hooks/useWcvp';
 import List from 'components/list';
 
 import style from './style.module.scss';
-
-export async function getServerSideProps(context) {
-  const { genus: g, params } = context.query;
-  const [e, id] = params;
-
-  let grex: GrexType | undefined = undefined;
-
-  if (parseInt(id, 10)) {
-    grex = await fetchGrex(id);
-  } else if (g && e) {
-    grex = await fetchGrexByName({ genus: g, epithet: e });
-  }
-
-  if (grex) {
-    return { props: { grex } };
-  }
-
-  return { notFound: true };
-}
 
 export const SpeciesAncestry = ({ grex }) => {
   const { data, isLoading } = useSpeciesAncestry(grex);
@@ -60,12 +43,17 @@ export const SpeciesAncestry = ({ grex }) => {
   );
 };
 
-export const Grex = ({
+export default function GrexView({
   grex,
   seedParent,
   pollenParent,
-  isHypothetical = false,
-}) => {
+  isHypothetical,
+}: {
+  grex: GrexType;
+  seedParent?: GrexType;
+  pollenParent?: GrexType;
+  isHypothetical?: boolean;
+}) {
   const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
@@ -111,16 +99,7 @@ export const Grex = ({
   );
 
   return (
-    <Container
-      title={`${
-        grex.hypothetical
-          ? `Hybridize - ${formatName(seedParent).short.full} ${CROSS_CHAR} ${
-              formatName(pollenParent).short.full
-            }`
-          : name.long.full
-      } | Orchidex`}
-      description={description(grex)}
-    >
+    <>
       <Padded>
         <GrexCard
           heading
@@ -225,8 +204,6 @@ export const Grex = ({
           {Viz}
         </dialog>
       )}
-    </Container>
+    </>
   );
-};
-
-export default Grex;
+}
