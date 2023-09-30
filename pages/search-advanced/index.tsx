@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { orderBy } from 'lodash';
 
-import { Container } from 'components/container/container';
+import { Container, Padded } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
 import { CROSS_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
@@ -11,7 +11,7 @@ import { SearchParentage } from 'components/search/parentage';
 import { SearchGrex } from 'components/search/grex';
 import { APP_URL } from 'lib/constants';
 import { ButtonSimple } from 'components/button-simple/button-simple';
-import { H3 } from 'components/layout';
+import { H2, H3 } from 'components/layout';
 import { Grex } from 'lib/types';
 import List from 'components/list';
 
@@ -144,18 +144,14 @@ export default function Search({ initialState = {}, initialSimple = true }) {
   Orchidex`;
 
   return (
-    <Container
-      className={style.search}
-      title={title}
-      heading={
-        <>
-          <div className={style.backToSimple}>
-            <Link href='/search'>&laquo; Back to simple search</Link>
-          </div>
-          <div>Advanced search</div>
-        </>
-      }
-    >
+    <Container className={style.search} title={title}>
+      <Padded>
+        <H2>Advanced search</H2>
+        <div className={style.backToSimple}>
+          <Link href='/search'>&laquo; Back to simple search</Link>
+        </div>
+      </Padded>
+
       <section>
         <div
           style={{ display: 'flex', marginBottom: '5px', maxWidth: '400px' }}

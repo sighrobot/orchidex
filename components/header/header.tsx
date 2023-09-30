@@ -15,9 +15,10 @@ export const Header = ({ hasSearch }) => {
           </Link>
         </h1>
 
-        {hasSearch && <SearchBar className={style.search} hasButton={false} />}
-
         <nav>
+          {hasSearch && (
+            <SearchBar className={style.search} hasButton={false} />
+          )}
           <Link href='/recent'>Recent</Link>
           <Link href='/search'>Search</Link>
           <Link href='/about'>About</Link>

@@ -10,6 +10,7 @@ import { useFTS } from 'lib/fetchers/fts';
 import { Grex } from 'lib/types';
 import SearchBar, { AdvSearchCTA } from '../components/bar';
 
+import style from './style.module.scss';
 import type { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
 
 export default function SearchPage({ params }: { params?: Params }) {
@@ -35,7 +36,7 @@ export default function SearchPage({ params }: { params?: Params }) {
       <SearchBar value={inputValue} />
       <AdvSearchCTA />
 
-      <Padded>
+      <Padded className={style.results}>
         {!fts.isLoading && results.length > 0 && (
           <H3>
             {results.length.toLocaleString()}

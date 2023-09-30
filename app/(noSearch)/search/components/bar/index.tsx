@@ -46,16 +46,11 @@ export default function SearchBar({
         autoCorrect='off'
         name={`home${INPUT_NAME_SUFFIX}`}
         onChange={handleSearchText}
-        placeholder='Search by orchid or registrant name'
+        placeholder='Search orchid or registrant name'
         spellCheck={false}
         type='search'
         value={searchText}
       />
-      {hasButton && (
-        <button disabled={!searchText} type='submit'>
-          Go
-        </button>
-      )}
     </form>
   );
 }

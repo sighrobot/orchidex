@@ -29,6 +29,7 @@
   nav {
     margin-left: auto;
     display: flex;
+    align-items: center;
 
     a {
       color: black;
@@ -61,15 +62,12 @@
 }
 
 .search {
-  margin-left: 20px !important;
+  margin-right: 10px !important;
 
   input[type='search'] {
-    background: rgba(255, 0, 255, 0.1);
-    border: none;
-    border-radius: 5px;
     font-size: 13px;
     padding: 0 10px;
     height: 30px;
-    width: 260px;
+    width: 230px;
   }
 }

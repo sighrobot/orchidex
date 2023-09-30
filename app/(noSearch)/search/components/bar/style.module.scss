@@ -11,31 +11,24 @@
 
   input {
     appearance: none;
+    background: rgba(255, 0, 255, 0.1);
+    border: none;
+    border-radius: 5px;
     outline-color: black;
-    padding: 0 10px;
+    padding: 0 15px;
     width: 100%;
-  }
 
-  button {
-    color: white;
-    cursor: pointer;
-    background: black;
-    border-left: none;
-    font-size: 14px;
-    width: 60px;
-
-    &[disabled] {
-      background: white;
-      color: #ccc;
+    &::placeholder {
+      color: gray;
+      opacity: initial;
     }
   }
 }
 
 .advSearchCta {
-  padding: 0 13px;
-  margin-top: 5px;
   font-size: 85%;
-  margin-bottom: 40px;
+  margin-top: 5px;
+  padding: 0 15px;
 
   a {
     color: gray;
