@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -5,6 +7,14 @@ import { useRouter } from 'next/navigation';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
 
 import style from './style.module.scss';
+
+export const AdvSearchCTA = () => (
+  <aside className={style.advSearchCta}>
+    <strong>
+      <Link href='/search-advanced'>Try advanced search &raquo;</Link>
+    </strong>
+  </aside>
+);
 
 type SearchBarProps = { value?: string };
 
@@ -22,23 +32,16 @@ export default function SearchBar({ value = '' }: SearchBarProps) {
 
   return (
     <form className={style.search} onSubmit={handleSearch}>
-      <div className={style.lockup}>
-        <input
-          autoCapitalize='off'
-          autoCorrect='off'
-          name={`home${INPUT_NAME_SUFFIX}`}
-          onChange={handleSearchText}
-          placeholder='Search by orchid or registrant name'
-          spellCheck={false}
-          type='search'
-          value={searchText}
-        />
-        <aside>
-          <strong>
-            <Link href='/search-advanced'>Try advanced search &raquo;</Link>
-          </strong>
-        </aside>
-      </div>
+      <input
+        autoCapitalize='off'
+        autoCorrect='off'
+        name={`home${INPUT_NAME_SUFFIX}`}
+        onChange={handleSearchText}
+        placeholder='Search by orchid or registrant name'
+        spellCheck={false}
+        type='search'
+        value={searchText}
+      />
       <button disabled={!searchText} type='submit'>
         Go
       </button>

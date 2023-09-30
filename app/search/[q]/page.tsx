@@ -8,7 +8,7 @@ import { H2, H3 } from 'components/layout';
 import List from 'components/list';
 import { useFTS } from 'lib/fetchers/fts';
 import { Grex } from 'lib/types';
-import SearchBar from '../components/bar';
+import SearchBar, { AdvSearchCTA } from '../components/bar';
 
 import type { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
 
@@ -33,6 +33,7 @@ export default function SearchPage({ params }: { params?: Params }) {
       </Padded>
 
       <SearchBar value={inputValue} />
+      <AdvSearchCTA />
 
       <Padded>
         {!fts.isLoading && results.length > 0 && (

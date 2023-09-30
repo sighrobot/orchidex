@@ -10,7 +10,7 @@ import { useDate } from 'lib/hooks/useDate';
 import { Grex } from 'lib/types';
 import List from 'components/list';
 import { APP_DESCRIPTION } from './constants';
-import SearchBar from './search/components/bar';
+import SearchBar, { AdvSearchCTA } from './search/components/bar';
 
 import style from './index.module.scss';
 
@@ -25,6 +25,7 @@ export default function HomePage() {
       </Padded>
 
       <SearchBar />
+      <AdvSearchCTA />
 
       <section className={style.columns}>
         <div className={style.recent}>
