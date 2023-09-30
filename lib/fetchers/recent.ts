@@ -1,4 +1,4 @@
-import { APP_URL } from 'app/constants';
+import { APP_URL } from 'lib/constants';
 import { Grex } from 'lib/types';
 import React from 'react';
 

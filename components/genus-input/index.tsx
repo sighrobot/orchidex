@@ -1,6 +1,6 @@
 'use client';
 
-import { APP_URL } from 'app/constants';
+import { APP_URL } from 'lib/constants';
 import { capitalize } from 'lib/utils';
 import { useRouter } from 'next/navigation';
 import React from 'react';

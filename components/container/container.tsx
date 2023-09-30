@@ -42,7 +42,7 @@ export const Container = ({
       </Head>
 
       <div className={style.wrap}>
-        <Header />
+        <Header hasSearch />
 
         <main>
           {heading && (

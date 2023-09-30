@@ -1,5 +1,6 @@
-import '../styles/globals.css';
+import '../app/globals.css';
 import { Analytics } from '@vercel/analytics/react';
+import { HeaderLayout } from 'components/layouts';
 import Script from 'next/script';
 
 function MyApp({ Component, pageProps }) {

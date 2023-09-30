@@ -1,4 +1,4 @@
-import { APP_URL } from 'app/constants';
+import { APP_URL } from 'lib/constants';
 import React from 'react';
 
 type FetchRegistrantCountsProps = { genus?: string };

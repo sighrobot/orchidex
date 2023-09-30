@@ -2,12 +2,12 @@ import React from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import { IBM_Plex_Sans } from 'next/font/google';
 import { Metadata } from 'next';
-import { Header } from 'components/header/header';
-import Disclaimer from 'components/disclaimer';
-import { APP_DESCRIPTION, APP_TITLE, APP_URL } from './constants';
 
-import '../styles/globals.css';
-import style from './layout.module.scss';
+import Disclaimer from 'components/disclaimer';
+import { APP_DESCRIPTION, APP_TITLE, APP_URL } from 'lib/constants';
+
+import './globals.css';
+import style from './style.module.scss';
 
 export const ibmPlexSans = IBM_Plex_Sans({
   display: 'swap',
@@ -36,12 +36,7 @@ export default function RootLayout({
     <html lang='en'>
       <body className={ibmPlexSans.className}>
         <div className={style.container}>
-          <div className={style.wrap}>
-            <Header />
-
-            <main>{children}</main>
-          </div>
-
+          {children}
           <Disclaimer />
         </div>
       </body>

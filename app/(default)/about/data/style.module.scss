@@ -1,0 +1,16 @@
+.article {
+  & + article {
+    margin-top: 40px;
+  }
+
+  a {
+    text-decoration: underline;
+    font-weight: 400;
+  }
+
+  p {
+    margin-top: 10px;
+    max-width: 600px;
+    line-height: 1.5;
+  }
+}
