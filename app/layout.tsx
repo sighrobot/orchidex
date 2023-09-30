@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import { IBM_Plex_Sans } from 'next/font/google';
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/react';
+import cn from 'classnames';
 
 import Disclaimer from 'components/disclaimer';
 import { APP_DESCRIPTION, APP_TITLE, APP_URL } from 'lib/constants';
@@ -34,8 +35,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang='en'>
-      <body className={ibmPlexSans.className}>
+    <html className={style.html} lang='en'>
+      <body className={cn(style.body, ibmPlexSans.className)}>
         {process.env.NODE_ENV === 'production' && (
           <>
             <Script

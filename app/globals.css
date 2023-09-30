@@ -1,35 +1,6 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family: 'IBM Plex Sans', Helvetica;
-}
-
-body {
-  background: #eee;
-  font-size: 16px;
-  font-weight: 300;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(
-    to bottom right,
-    white 40%,
-    rgba(218, 112, 214, 0.25),
-    rgba(255, 140, 0, 0.3)
-  );
-  background-attachment: fixed;
-}
-
-#__next {
-  width: 100vw;
-}
-
 * {
   box-sizing: border-box;
   font-family: inherit;
-}
-
-*:not(svg *) {
   font-size: inherit;
 }
 
