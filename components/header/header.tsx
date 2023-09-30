@@ -4,6 +4,22 @@ import SearchBar from 'app/(noSearch)/search/components/bar';
 
 import style from './style.module.scss';
 
+const NAV_LINKS = [
+  { path: 'recent', label: 'Recent' },
+  { path: 'search', label: 'Search' },
+  { path: 'about', label: 'About' },
+];
+
+const LinkList = () => (
+  <ul className={style.linkList}>
+    {NAV_LINKS.map((l) => (
+      <li key={l.path}>
+        <Link href={`/${l.path}`}>{l.label}</Link>
+      </li>
+    ))}
+  </ul>
+);
+
 export const Header = ({ hasSearch }) => {
   return (
     <header className={style.header}>
@@ -15,15 +31,15 @@ export const Header = ({ hasSearch }) => {
           </Link>
         </h1>
 
-        <nav>
+        <div className={style.navLockup}>
           {hasSearch && (
             <SearchBar className={style.search} hasButton={false} />
           )}
-          <Link href='/recent'>Recent</Link>
-          <Link href='/search'>Search</Link>
-          <Link href='/about'>About</Link>
 
-          {/* <Link
+          <nav className={style.nav}>
+            <LinkList />
+
+            {/* <Link
           href='/learn/hybridizer'
           className={
             pathname === '/learn/hybridizer' ? 'active' : undefined
@@ -31,8 +47,16 @@ export const Header = ({ hasSearch }) => {
         >
           Hybridize
         </Link> */}
-        </nav>
+          </nav>
+        </div>
       </div>
+
+      <details className={style.mobileNav}>
+        <summary>&#9776;</summary>
+        <nav>
+          <LinkList />
+        </nav>
+      </details>
     </header>
   );
 };
