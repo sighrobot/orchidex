@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
-const select = 'SELECT registrant_name r, COUNT(*) c FROM rhs WHERE';
+const select = 'SELECT registrant_name r, COUNT(*)::int c FROM rhs WHERE';
 const aggr = ['GROUP BY r', 'ORDER BY c DESC'];
 
 export async function GET(req: NextRequest) {
