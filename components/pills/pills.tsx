@@ -17,7 +17,7 @@ export const isNaturalHybrid = (grex: Grex) =>
     !isParentNaturalHybrid(grex) &&
     grex.epithet &&
     !Number.isInteger(parseInt(grex.epithet[0], 10)) &&
-    grex.epithet[0] == grex.epithet[0].toLowerCase());
+    grex.epithet[0] === grex.epithet[0].toLowerCase());
 
 export const isSpecies = (grex: Grex): boolean =>
   !isParentNaturalHybrid(grex) &&
@@ -74,7 +74,7 @@ export const getDescriptor = (grex) => {
   }
 
   return `a${terms.includes('intergeneric') ? 'n' : ''} ${terms.join(
-    ' ',
+    ' '
   )} hybrid`;
 };
 

@@ -1,51 +1,49 @@
 .pills {
-  margin-bottom: 2.5px;
-}
+  .pill {
+    color: white;
+    font-size: 8px;
+    font-weight: 400;
+    padding: 2px 4px;
+    text-transform: uppercase;
+  }
 
-.pill {
-  color: white;
-  font-size: 10px;
-  font-weight: 400;
-  padding: 3px 5px;
-  text-transform: uppercase;
-}
+  .interactive {
+    cursor: pointer;
+  }
 
-.interactive {
-  cursor: pointer;
-}
+  .hypothetical {
+    background: black;
+  }
 
-.hypothetical {
-  background: black;
-}
+  .intergeneric {
+    background: rgba(239, 133, 180, 1);
+  }
 
-.intergeneric {
-  background: rgba(239, 133, 180, 1);
-}
+  .primary {
+    background: rgba(130, 168, 248, 1);
+  }
 
-.primary {
-  background: rgba(130, 168, 248, 1);
-}
+  .natural {
+    background: rgba(91, 175, 248, 1);
+  }
 
-.natural {
-  background: rgba(91, 175, 248, 1);
-}
+  .species {
+    background: rgba(103, 187, 110, 1);
+  }
 
-.species {
-  background: rgba(103, 187, 110, 1);
-}
+  .intergeneric.primary {
+    background: linear-gradient(
+      to bottom right,
+      rgba(239, 133, 180, 1),
+      rgba(130, 168, 248, 1)
+    );
+  }
 
-.intergeneric.primary {
-  background: linear-gradient(
-    to bottom right,
-    rgba(239, 133, 180, 1),
-    rgba(130, 168, 248, 1)
-  );
-}
-
-.natural.intergeneric {
-  background: linear-gradient(
-    to right,
-    rgba(239, 133, 180, 1),
-    rgba(91, 175, 248, 1)
-  );
+  .natural.intergeneric {
+    background: linear-gradient(
+      to right,
+      rgba(239, 133, 180, 1),
+      rgba(91, 175, 248, 1)
+    );
+  }
 }
