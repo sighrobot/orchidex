@@ -55,6 +55,7 @@ export const Reg = ({ grex, activeId, hideDate, hideLink }: RegProps) => {
         {grex.originator_name !== grex.registrant_name && '('}
         {grex.originator_name !== grex.registrant_name &&
           (grex.originator_name !== 'O/U' &&
+          !hideLink &&
           activeId !== grex.originator_name ? (
             <Link
               className='originator'

@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { debounce, orderBy } from 'lodash';
@@ -31,7 +33,7 @@ function getGrexColor(g: Grex): string {
   const hypothetical = g.hypothetical;
 
   if (hypothetical) {
-    return 'black';
+    return 'white';
   }
 
   if (intergeneric) {
@@ -168,7 +170,10 @@ export const AncestryViz = ({
             height: 148,
             width: 220,
             'background-gradient-direction': 'to-bottom-right',
-            color: 'white',
+            color: (n) => {
+              const g = n.data() as Grex;
+              return g.hypothetical ? 'black' : 'white';
+            },
             'font-family': getComputedStyle(document.body).fontFamily,
             'font-weight': 300,
             'font-size': 24,
@@ -178,15 +183,24 @@ export const AncestryViz = ({
             'text-wrap': 'wrap',
             'text-valign': 'center',
             'border-color': 'black',
-            'border-width': 1,
+            'border-width': (n) => {
+              const g = n.data() as Grex;
+              return g.hypothetical ? 2 : 1;
+            },
+            'border-style': (n) => {
+              const g = n.data() as Grex;
+              return g.hypothetical ? 'dashed' : 'solid';
+            },
 
             'background-color': (n) => {
               const g = n.data() as Grex;
-              return isIntergeneric(g) && isPrimary(g) ? '' : getGrexColor(g);
+              return isIntergeneric(g) && isPrimary(g) && !g.hypothetical
+                ? ''
+                : getGrexColor(g);
             },
             'background-fill': (n) => {
               const g = n.data() as Grex;
-              return isIntergeneric(g) && isPrimary(g)
+              return isIntergeneric(g) && isPrimary(g) && !g.hypothetical
                 ? 'linear-gradient'
                 : 'solid';
             },

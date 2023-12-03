@@ -1,27 +1,27 @@
 .search {
   display: flex;
   margin: 0;
+}
 
-  input,
-  button {
-    font-size: 18px;
-    height: 50px;
-    border: 1px solid black;
-  }
+.input {
+  appearance: none;
+  background: rgba(255, 0, 255, 0.1);
+  background: linear-gradient(
+    to right,
+    rgba(255, 0, 255, 0.15),
+    rgba(255, 128, 0, 0.2)
+  );
+  border: 1px solid black;
+  border-radius: 5px;
+  font-size: 18px;
+  outline-color: black;
+  padding: 0 15px;
+  height: 50px;
+  width: 100%;
 
-  input {
-    appearance: none;
-    background: rgba(255, 0, 255, 0.1);
-    border: none;
-    border-radius: 5px;
-    outline-color: black;
-    padding: 0 15px;
-    width: 100%;
-
-    &::placeholder {
-      color: gray;
-      opacity: initial;
-    }
+  &::placeholder {
+    color: gray;
+    opacity: initial;
   }
 }
 

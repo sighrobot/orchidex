@@ -1,145 +1,86 @@
+'use client';
+
 import React from 'react';
-import { Container } from 'components/container/container';
-import { GrexCard } from 'components/grex/grex';
-import { Name } from 'components/name/name';
-import { AncestryViz } from 'components/viz/ancestry';
-import List from 'components/viz/list';
-import { useSpeciesAncestry } from 'lib/hooks/useAncestry';
+import { Padded } from 'components/container/container';
+import GrexAutocomplete from 'components/search/grex-autocomplete';
 import { Grex } from 'lib/types';
-import { Magic } from 'components/search/magic';
-import { fetchGrex } from 'lib/hooks/useGrex';
-import { useRouter } from 'next/navigation';
-import { abbreviateGenus } from 'lib/string';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useGrex } from 'lib/hooks/useGrex';
 
-// const grex = {
-//   id: "0123456789",
-//   genus: "Phraglax",
-//   epithet: "Ghost Berry",
-//   seed_parent_genus: "Phragmipedium",
-//   seed_parent_epithet: "Acker's Berry",
-//   pollen_parent_genus: "Dendrophylax",
-//   pollen_parent_epithet: "Gripp's Ghost",
-//   hypothetical: true,
-// };
+import style from './style.module.scss';
 
-export async function getServerSideProps(context) {
-  const { seed: s, pollen: p } = context.query;
-
-  const [seed, pollen] = await Promise.all([fetchGrex(s), fetchGrex(p)]);
-
-  if (seed && pollen) {
-    return { props: { seed, pollen } };
-  }
-
-  return { props: {} };
-}
-
-const INITIAL_STATE = {
-  id: 'hypothetical',
-  genus: 'Hypothesis',
-  epithet: 'Grex',
-  seed_parent_genus: '',
-  seed_parent_epithet: '',
-  pollen_parent_genus: '',
-  pollen_parent_epithet: '',
-  hypothetical: true,
-};
-
-const Hybridizer = ({ seed, pollen }) => {
+export default function Form2() {
   const router = useRouter();
-  const [grex, setGrex] = React.useState(null);
-  const [state, setState] = React.useState(INITIAL_STATE);
-  const [seedParent, setSeedParent] = React.useState<Grex | null>(seed);
-  const [pollenParent, setPollenParent] = React.useState<Grex | null>(pollen);
-  const { data: speciesAncestry } = useSpeciesAncestry(grex);
+  const searchParams = useSearchParams();
+  const { s, p } = Object.fromEntries(searchParams?.entries());
 
-  const handleSeedChange = (g: Grex) => {
-    const field: Pick<Grex, 'seed_parent_genus' | 'seed_parent_epithet'> = {};
+  const ss = useGrex({ id: s });
+  const pp = useGrex({ id: p });
 
-    if (g) {
-      field.seed_parent_genus = g.genus;
-      field.seed_parent_epithet = g.epithet;
-    }
+  const [seed, setSeed] = React.useState<Grex>();
+  const [pollen, setPollen] = React.useState<Grex>();
 
-    setSeedParent(g);
-    setState((s) => ({ ...s, ...field }));
-  };
-
-  const handlePollenChange = (g: Grex) => {
-    const field: Pick<Grex, 'pollen_parent_genus' | 'pollen_parent_epithet'> =
-      {};
-
-    if (g) {
-      field.pollen_parent_genus = g.genus;
-      field.pollen_parent_epithet = g.epithet;
-    }
-
-    setPollenParent(g);
-    setState((s) => ({ ...s, ...field }));
-  };
-
-  const handleSubmit = () => {
-    setGrex(state);
+  const handleSeedParentChange = (g: Grex) => {
+    const params = new URLSearchParams(searchParams ?? undefined);
+    params.set('s', g.id);
     router.replace(
-      `/learn/hybridizer?seed=${seedParent.id}&pollen=${pollenParent.id}`
+      `${window.location.origin}${
+        window.location.pathname
+      }?${params.toString()}`
+    );
+  };
+  const handlePollenParentChange = (g) => {
+    const params = new URLSearchParams(searchParams ?? undefined);
+    params.set('p', g.id);
+    router.replace(
+      `${window.location.origin}${
+        window.location.pathname
+      }?${params.toString()}`
+    );
+  };
+  const handleReverse = (e) => {
+    e.preventDefault();
+    const params = new URLSearchParams(searchParams ?? undefined);
+
+    params.set('s', searchParams?.get('p') ?? '');
+    params.set('p', searchParams?.get('s') ?? '');
+
+    if (!params.get('s')) {
+      params.delete('s');
+    }
+
+    if (!params.get('p')) {
+      params.delete('p');
+    }
+
+    router.replace(
+      `${window.location.origin}${
+        window.location.pathname
+      }?${params.toString()}`
     );
   };
 
-  React.useEffect(() => {
-    if (seed && pollen) {
-      handleSeedChange(seed);
-      handlePollenChange(pollen);
-    }
-  }, [seed, pollen]);
-
-  const title =
-    seed && pollen
-      ? `${abbreviateGenus(seedParent)} ${
-          seedParent.epithet
-        } × ${abbreviateGenus(pollenParent)} ${
-          pollenParent.epithet
-        } | Hybridizer | Orchidex`
-      : 'Hybridizer | Orchidex';
-
   return (
-    <Container
-      // title={`${grex.genus} ${grex.epithet} | Orchidex`}
-      title={title}
-      heading='Hybridizer'
-    >
-      <Magic inlineMenu onChange={handleSeedChange} />
+    <Padded className={style.controls}>
+      <article>
+        <GrexAutocomplete
+          grex={ss}
+          name='Seed Parent'
+          onChange={handleSeedParentChange}
+        />
+      </article>
 
-      {seedParent ? <GrexCard grex={seedParent} /> : '?'}
-
-      <div>&times;</div>
-
-      {pollenParent ? <GrexCard grex={pollenParent} /> : '?'}
-
-      <Magic inlineMenu onChange={handlePollenChange} />
-
-      <button type='submit' onClick={handleSubmit}>
-        Hybridize!
+      <button className={style.crossChar} onClick={handleReverse}>
+        &#8651; Swap
       </button>
 
-      <br />
-      <br />
-      <br />
-
-      {grex && <GrexCard hideLink grex={grex} />}
-
-      {grex && <AncestryViz grex={grex} />}
-
-      <List
-        data={speciesAncestry}
-        getFields={(sa) => [sa.grex.epithet]}
-        renderField={({ grex: g = {} }) => <Name grex={g} shouldAbbreviate />}
-        getCount={(d) => d.score}
-        renderCount={(score) =>
-          `${(Math.round(score * 1000) / 10).toFixed(1)} %`
-        }
-      />
-    </Container>
+      <article>
+        <GrexAutocomplete
+          grex={pp}
+          name='Pollen Parent'
+          onChange={handlePollenParentChange}
+        />
+      </article>
+    </Padded>
   );
-};
-
-export default Hybridizer;
+}

@@ -9,6 +9,9 @@
     "postbuild-sitemaps": "mkdir .next/static/sitemaps && node scripts/sitemaps.js"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/material": "^5.14.18",
     "@nivo/core": "0.80.0",
     "@nivo/treemap": "0.80.0",
     "@vercel/analytics": "1.1.1",

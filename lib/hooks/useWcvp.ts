@@ -14,7 +14,7 @@ export const useWcvp = (grex: Grex) => {
   }
 
   const { data = [], isLoading } = useSWR(url, (url) =>
-    !grex.epithet || isSpecies(grex) ? fetcher(url) : [],
+    !grex.epithet || isSpecies(grex) ? fetcher(url) : []
   );
 
   return { data, loading: isLoading };

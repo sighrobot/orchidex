@@ -21,15 +21,6 @@
   text-decoration: underline;
 }
 
-.minimap {
-  height: 55px;
-  transition: 200ms ease opacity;
-
-  &:hover {
-    opacity: 0.5;
-  }
-}
-
 .dialog {
   background: white;
   border: none;

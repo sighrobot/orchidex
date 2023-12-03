@@ -100,17 +100,18 @@ export default function GrexView({
 
   return (
     <>
-      <Padded>
-        <GrexCard
-          heading
-          grex={grex}
-          seedParent={seedParent}
-          pollenParent={pollenParent}
-          hideLink
-          hideDate={isHypothetical}
-          hideReg={isHypothetical}
-          hideName={isHypothetical}
-        />
+      <Padded className={style.heading}>
+        {!isHypothetical && (
+          <GrexCard
+            heading
+            grex={grex}
+            seedParent={seedParent}
+            pollenParent={pollenParent}
+            hideLink
+            hideDate={isHypothetical}
+            hideReg={isHypothetical}
+          />
+        )}
         {wcvpSpecies && (
           <div style={{ marginTop: '5px' }}>
             {[

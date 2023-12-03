@@ -1,7 +1,9 @@
-import GrexView from 'app/(default)/[genus]/[...params]/view';
+import { Padded } from 'components/container/container';
 import { fetchGrex } from 'lib/hooks/useGrex';
-import { Grex as GrexType } from 'lib/types';
-import { notFound } from 'next/navigation';
+import { Grex, Grex as GrexType } from 'lib/types';
+import { H2 } from 'components/layout';
+import GrexView from 'app/(default)/[genus]/[...params]/view';
+import Form from './form';
 
 export default async function Hybridize(props: {
   grex: Partial<GrexType>;
@@ -21,27 +23,35 @@ export default async function Hybridize(props: {
     pollenParent = await fetchGrex(p);
   }
 
-  if (seedParent && pollenParent) {
-    return (
-      <GrexView
-        grex={{
-          id: '0000',
-          hypothetical: true,
-          genus: 'Hypothesis',
-          epithet: 'Grex',
-          seed_parent_id: s as string,
-          seed_parent_genus: seedParent.genus,
-          seed_parent_epithet: seedParent.epithet,
-          pollen_parent_id: p as string,
-          pollen_parent_genus: pollenParent.genus,
-          pollen_parent_epithet: pollenParent.epithet,
-        }}
-        seedParent={seedParent}
-        pollenParent={pollenParent}
-        isHypothetical
-      />
-    );
-  }
+  return (
+    <>
+      <Padded>
+        <H2>Hybridize</H2>
+      </Padded>
 
-  notFound();
+      <Form />
+
+      {seedParent && pollenParent && (
+        <GrexView
+          grex={
+            {
+              id: `${seedParent.id}-${pollenParent.id}`,
+              hypothetical: true,
+              genus: 'Hypothesis',
+              epithet: 'Grex',
+              seed_parent_id: s as string,
+              seed_parent_genus: seedParent.genus,
+              seed_parent_epithet: seedParent.epithet,
+              pollen_parent_id: p as string,
+              pollen_parent_genus: pollenParent.genus,
+              pollen_parent_epithet: pollenParent.epithet,
+            } as Grex
+          }
+          seedParent={seedParent}
+          pollenParent={pollenParent}
+          isHypothetical
+        />
+      )}
+    </>
+  );
 }
