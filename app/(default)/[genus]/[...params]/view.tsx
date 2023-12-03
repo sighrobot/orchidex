@@ -47,12 +47,10 @@ export default function GrexView({
   grex,
   seedParent,
   pollenParent,
-  isHypothetical,
 }: {
   grex: GrexType;
   seedParent?: GrexType;
   pollenParent?: GrexType;
-  isHypothetical?: boolean;
 }) {
   const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false);
   const router = useRouter();
@@ -66,7 +64,7 @@ export default function GrexView({
       : wcvp.filter((w) => w.taxon_rank === 'Species')[0];
 
   React.useEffect(() => {
-    if (!isHypothetical) {
+    if (!grex.hypothetical) {
       const split = pathname?.split('/') ?? [''];
       if (split.length === 3 || isNaN(parseInt(split[split.length - 1], 10))) {
         router.replace(
@@ -76,7 +74,7 @@ export default function GrexView({
         );
       }
     }
-  }, [pathname, isHypothetical]);
+  }, [pathname, grex.hypothetical]);
 
   const handleFullScreenOpen = () => setIsDialogOpen(true);
   const handleFullScreenClose = () => setIsDialogOpen(false);
@@ -101,15 +99,13 @@ export default function GrexView({
   return (
     <>
       <Padded className={style.heading}>
-        {!isHypothetical && (
+        {!grex.hypothetical && (
           <GrexCard
             heading
             grex={grex}
             seedParent={seedParent}
             pollenParent={pollenParent}
             hideLink
-            hideDate={isHypothetical}
-            hideReg={isHypothetical}
           />
         )}
         {wcvpSpecies && (
@@ -128,7 +124,7 @@ export default function GrexView({
             {wcvpSpecies.primary_author} {wcvpSpecies.first_published}
           </div>
         )}
-        {!isHypothetical && (
+        {!grex.hypothetical && (
           <Resources
             grex={grex}
             blueNantaSpeciesId={wcvpSpecies?.plant_name_id}
@@ -141,7 +137,7 @@ export default function GrexView({
           padding
           renderToSide={
             <aside className={style.sidebar}>
-              {!isHypothetical && (
+              {!grex.hypothetical && (
                 <StatBox heading='Genus Info'>
                   <p>
                     <Link
@@ -154,12 +150,12 @@ export default function GrexView({
                   </p>
                 </StatBox>
               )}
-              {!isHypothetical &&
+              {!grex.hypothetical &&
                 !isSpecies(grex) &&
                 !isNaturalHybrid(grex) && (
                   <StatCard stat='registrant_genus_pct' grex={grex} />
                 )}
-              {!isHypothetical &&
+              {!grex.hypothetical &&
                 !isSpecies(grex) &&
                 !isNaturalHybrid(grex) && (
                   <StatCard stat='year_genus_pct' grex={grex} />
@@ -180,7 +176,7 @@ export default function GrexView({
             },
             {
               label: `Progeny`,
-              hidden: isHypothetical,
+              hidden: grex.hypothetical,
               count: progeny.length,
               component: () => (
                 <List<GrexType>

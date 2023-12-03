@@ -1,21 +1,15 @@
 'use client';
 
 import React from 'react';
-import { IBM_Plex_Sans } from 'next/font/google';
 import Autocomplete from '@mui/material/Autocomplete';
 import { TextField, ThemeProvider, createTheme } from '@mui/material';
 import { Grex } from 'lib/types';
 import { useFTS } from 'lib/fetchers/fts';
 import { GrexCard } from 'components/grex/grex';
+import { ibmPlexSans } from 'lib/utils';
 
 import style from './style.module.scss';
-
-const ibmPlexSans = IBM_Plex_Sans({
-  display: 'swap',
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-  weight: ['300', '400'],
-});
+import { formatName } from 'lib/string';
 
 const THEME = createTheme({
   typography: { fontFamily: [ibmPlexSans.style.fontFamily].join(',') },
@@ -32,6 +26,7 @@ export default function GrexAutocomplete({
   name,
   onChange,
 }: GrexAutocompleteProps) {
+  const [open, setOpen] = React.useState<boolean>(false);
   const [q, setQ] = React.useState<string>('');
   const fts = useFTS({
     q: q.length > 1 ? q : '',
@@ -39,8 +34,13 @@ export default function GrexAutocomplete({
     isDebounced: true,
   });
 
-  const handleInputChange = (e) => setQ(e?.target?.value ?? '');
-  const handleChange = (_, g) => onChange(g);
+  const grexName = grex ? formatName(grex).long.full : '';
+
+  const handleInputChange = (e) => setQ(e?.target?.value ?? grexName ?? '');
+  const handleChange = (_, g) => {
+    setOpen(false);
+    onChange(g);
+  };
 
   return (
     <div className={style.autocomplete}>
@@ -48,28 +48,36 @@ export default function GrexAutocomplete({
         <Autocomplete<Grex>
           className={ibmPlexSans.className}
           autoHighlight
-          disableClearable
+          // onOpen={() => setOpen(true)}
+          // clearOnBlur={false}
+          disableClearable={true as unknown as false} // weird type bug
           filterOptions={(options) => options}
           getOptionLabel={(g) => g.id}
           inputValue={q}
+          // open={open}
           isOptionEqualToValue={(o, g) => o.id === g.id}
           onChange={handleChange}
           onInputChange={handleInputChange}
           options={fts.data}
           renderInput={(params) => <TextField {...params} label={name} />}
-          renderOption={(props, option, { selected }) => (
+          renderOption={(props, option) => (
             <li {...props} key={option.id}>
               <GrexCard hideLinks grex={option} />
             </li>
           )}
           size='small'
+          fullWidth
           value={grex}
+          loading={fts.isLoading}
+          noOptionsText={
+            q ? `No results for '${q}'` : 'Search orchid or registrant name'
+          }
         />
       </ThemeProvider>
 
       {grex && (
         <div className={style.selected}>
-          <GrexCard grex={grex} />
+          <GrexCard grex={grex} hideName />
         </div>
       )}
     </div>

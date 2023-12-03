@@ -1,82 +1,91 @@
 'use client';
 
 import React from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Padded } from 'components/container/container';
 import GrexAutocomplete from 'components/search/grex-autocomplete';
 import { Grex } from 'lib/types';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useGrex } from 'lib/hooks/useGrex';
 
 import style from './style.module.scss';
 
-export default function Form2() {
+const PARAM_SEED = 's';
+const PARAM_POLLEN = 'p';
+
+export default function Form() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { s, p } = Object.fromEntries(searchParams?.entries());
+  const seedParentId = searchParams?.get(PARAM_SEED);
+  const pollenParentId = searchParams?.get(PARAM_POLLEN);
+  const seedParent = useGrex({ id: seedParentId });
+  const pollenParent = useGrex({ id: pollenParentId });
 
-  const ss = useGrex({ id: s });
-  const pp = useGrex({ id: p });
-
-  const [seed, setSeed] = React.useState<Grex>();
-  const [pollen, setPollen] = React.useState<Grex>();
-
-  const handleSeedParentChange = (g: Grex) => {
-    const params = new URLSearchParams(searchParams ?? undefined);
-    params.set('s', g.id);
-    router.replace(
+  const handleParams = (params: URLSearchParams, action: 'push' | 'replace') =>
+    router[action](
       `${window.location.origin}${
         window.location.pathname
       }?${params.toString()}`
     );
-  };
-  const handlePollenParentChange = (g) => {
-    const params = new URLSearchParams(searchParams ?? undefined);
-    params.set('p', g.id);
-    router.replace(
-      `${window.location.origin}${
-        window.location.pathname
-      }?${params.toString()}`
-    );
-  };
-  const handleReverse = (e) => {
-    e.preventDefault();
-    const params = new URLSearchParams(searchParams ?? undefined);
 
-    params.set('s', searchParams?.get('p') ?? '');
-    params.set('p', searchParams?.get('s') ?? '');
+  const replaceParams = (params: URLSearchParams) =>
+    handleParams(params, 'replace');
+  const pushParams = (params: URLSearchParams) => handleParams(params, 'push');
 
-    if (!params.get('s')) {
-      params.delete('s');
+  const handleParentChange = (grexId: string, param: string) => {
+    const newParams = new URLSearchParams(searchParams ?? undefined);
+    newParams.set(param, grexId);
+
+    if (seedParent && pollenParent) {
+      pushParams(newParams);
+    } else {
+      replaceParams(newParams);
+    }
+  };
+
+  const handleSeedParentChange = (g: Grex) =>
+    handleParentChange(g.id, PARAM_SEED);
+  const handlePollenParentChange = (g: Grex) =>
+    handleParentChange(g.id, PARAM_POLLEN);
+
+  const handleSwap = () => {
+    const newParams = new URLSearchParams(searchParams ?? undefined);
+
+    newParams.set(PARAM_SEED, searchParams?.get(PARAM_POLLEN) ?? '');
+    newParams.set(PARAM_POLLEN, searchParams?.get(PARAM_SEED) ?? '');
+
+    if (!newParams.get(PARAM_SEED)) {
+      newParams.delete(PARAM_SEED);
+    }
+    if (!newParams.get(PARAM_POLLEN)) {
+      newParams.delete(PARAM_POLLEN);
     }
 
-    if (!params.get('p')) {
-      params.delete('p');
-    }
-
-    router.replace(
-      `${window.location.origin}${
-        window.location.pathname
-      }?${params.toString()}`
-    );
+    replaceParams(newParams);
   };
 
   return (
     <Padded className={style.controls}>
-      <article>
+      <article className={style.input}>
         <GrexAutocomplete
-          grex={ss}
+          grex={seedParent}
           name='Seed Parent'
           onChange={handleSeedParentChange}
         />
       </article>
 
-      <button className={style.crossChar} onClick={handleReverse}>
-        &#8651; Swap
-      </button>
+      <div className={style.swapWrap}>
+        <button
+          className={style.swap}
+          disabled={!seedParent && !pollenParent}
+          onClick={handleSwap}
+        >
+          &#8651; Swap
+        </button>
+      </div>
 
-      <article>
+      <article className={style.input}>
         <GrexAutocomplete
-          grex={pp}
+          grex={pollenParent}
           name='Pollen Parent'
           onChange={handlePollenParentChange}
         />

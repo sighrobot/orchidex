@@ -5,13 +5,14 @@ import { H2 } from 'components/layout';
 import GrexView from 'app/(default)/[genus]/[...params]/view';
 import Form from './form';
 
-export default async function Hybridize(props: {
-  grex: Partial<GrexType>;
-  seedParent: GrexType;
-  pollenParent: GrexType;
+import style from './style.module.scss';
+
+export default async function Hybridize({
+  searchParams,
+}: {
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const { s, p } = props.searchParams;
+  const { s, p } = searchParams;
   let seedParent: GrexType | undefined = undefined;
   let pollenParent: GrexType | undefined = undefined;
 
@@ -31,7 +32,7 @@ export default async function Hybridize(props: {
 
       <Form />
 
-      {seedParent && pollenParent && (
+      {seedParent && pollenParent ? (
         <GrexView
           grex={
             {
@@ -49,8 +50,12 @@ export default async function Hybridize(props: {
           }
           seedParent={seedParent}
           pollenParent={pollenParent}
-          isHypothetical
         />
+      ) : (
+        <aside className={style.empty}>
+          To view the ancestry of a hypothetical hybrid, select the seed and
+          pollen parents above.
+        </aside>
       )}
     </>
   );
