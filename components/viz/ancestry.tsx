@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { debounce, orderBy } from 'lodash';
@@ -19,6 +21,10 @@ import { H3 } from 'components/layout';
 
 import style from './ancestry.module.scss';
 
+const DEGREE_CHAR = 'º';
+const TERMINAL_NODE_CHAR = '𓆺';
+const HYPOTHETICAL_NODE_FOOTER = `                        ${TERMINAL_NODE_CHAR}`;
+
 // Dynamic Width (Build Regex)
 const wrap = (s, w) =>
   s.replace(new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1\n');
@@ -31,7 +37,7 @@ function getGrexColor(g: Grex): string {
   const hypothetical = g.hypothetical;
 
   if (hypothetical) {
-    return 'black';
+    return 'white';
   }
 
   if (intergeneric) {
@@ -77,7 +83,6 @@ export const AncestryViz = ({
   grex,
   seedParent,
   pollenParent,
-  maxDepth = false,
   isFullScreen,
   onFullScreenOpen,
   onFullScreenClose,
@@ -85,13 +90,12 @@ export const AncestryViz = ({
   grex: Grex;
   seedParent?: Grex;
   pollenParent?: Grex;
-  maxDepth?: boolean;
   onFullScreenOpen?: () => void;
   isFullScreen?: boolean;
   onFullScreenClose?: () => void;
 }) => {
   const router = useRouter();
-  const [depth, setDepth] = React.useState<number>(maxDepth ? 1000 : 3);
+  const [depth, setDepth] = React.useState<number>(3);
   const [inspected, setInspected] = React.useState<Grex>(); // TODO: hook this up someday
 
   const handleNodeClick = React.useCallback(
@@ -120,8 +124,8 @@ export const AncestryViz = ({
 
   const cyContainer = useRef(null);
   const regularAncestry = useAncestry(grex, depth);
-  const seedParentAncestry = useAncestry(seedParent || {}, depth);
-  const pollenParentAncestry = useAncestry(pollenParent || {}, depth);
+  const seedParentAncestry = useAncestry(seedParent || {}, depth - 1);
+  const pollenParentAncestry = useAncestry(pollenParent || {}, depth - 1);
   const parentAncestry = {
     nodes: [
       grex,
@@ -168,7 +172,10 @@ export const AncestryViz = ({
             height: 148,
             width: 220,
             'background-gradient-direction': 'to-bottom-right',
-            color: 'white',
+            color: (n) => {
+              const g = n.data() as Grex;
+              return g.hypothetical ? 'black' : 'white';
+            },
             'font-family': getComputedStyle(document.body).fontFamily,
             'font-weight': 300,
             'font-size': 24,
@@ -178,15 +185,24 @@ export const AncestryViz = ({
             'text-wrap': 'wrap',
             'text-valign': 'center',
             'border-color': 'black',
-            'border-width': 1,
+            'border-width': (n) => {
+              const g = n.data() as Grex;
+              return g.hypothetical ? 2 : 1;
+            },
+            'border-style': (n) => {
+              const g = n.data() as Grex;
+              return g.hypothetical ? 'dashed' : 'solid';
+            },
 
             'background-color': (n) => {
               const g = n.data() as Grex;
-              return isIntergeneric(g) && isPrimary(g) ? '' : getGrexColor(g);
+              return isIntergeneric(g) && isPrimary(g) && !g.hypothetical
+                ? ''
+                : getGrexColor(g);
             },
             'background-fill': (n) => {
               const g = n.data() as Grex;
-              return isIntergeneric(g) && isPrimary(g)
+              return isIntergeneric(g) && isPrimary(g) && !g.hypothetical
                 ? 'linear-gradient'
                 : 'solid';
             },
@@ -212,13 +228,23 @@ export const AncestryViz = ({
               const year = g.date_of_registration
                 ? g.date_of_registration.slice(0, 4)
                 : '';
-              const lastLine = !g.l
-                ? `${year}                    𓆺`
-                : `${
-                    g.date_of_registration ? year : '          '
-                  }                    ${g.l ? `${g.l}º` : ''}`;
 
-              return [...nameLines, ...blankLines, lastLine].join('\n');
+              let nodeFooter: string;
+              const nodeLevel = grex.hypothetical ? (g.l ?? 0) + 1 : g.l;
+              const terminalNodeFooter = `${year}                    ${TERMINAL_NODE_CHAR}`;
+              const regularNodeFooter = `${
+                g.date_of_registration ? year : '          '
+              }                    ${
+                nodeLevel ? `${nodeLevel}${DEGREE_CHAR}` : ''
+              }`;
+
+              nodeFooter = g.hypothetical
+                ? HYPOTHETICAL_NODE_FOOTER
+                : !!nodeLevel
+                ? regularNodeFooter
+                : terminalNodeFooter;
+
+              return [...nameLines, ...blankLines, nodeFooter].join('\n');
             },
           },
         },
@@ -260,6 +286,7 @@ export const AncestryViz = ({
     handleNodeSelect,
     handleNodeUnselect,
     depth,
+    grex.hypothetical,
   ]);
 
   const MenuWrap = ({ children }) => (

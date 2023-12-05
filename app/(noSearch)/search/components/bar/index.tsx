@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { InputHTMLAttributes } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import cn from 'classnames';
@@ -17,17 +17,44 @@ export const AdvSearchCTA = () => (
   </aside>
 );
 
+type SearchInputProps = {
+  className?: string;
+  name?: string;
+  onChange: InputHTMLAttributes<HTMLInputElement>['onChange'];
+  placeholder?: string;
+  type?: string;
+  value: string;
+};
+
+export const SearchInput = ({
+  className,
+  onChange,
+  placeholder = 'Search orchid or registrant name',
+  name = `home${INPUT_NAME_SUFFIX}`,
+  type = 'search',
+  value,
+}: SearchInputProps) => {
+  return (
+    <input
+      className={cn(style.input, className)}
+      autoCapitalize='off'
+      autoCorrect='off'
+      name={name}
+      onChange={onChange}
+      placeholder={placeholder}
+      spellCheck={false}
+      type={type}
+      value={value}
+    />
+  );
+};
+
 type SearchBarProps = {
   className?: string;
-  hasButton?: boolean;
   value?: string;
 };
 
-export default function SearchBar({
-  className,
-  hasButton = true,
-  value = '',
-}: SearchBarProps) {
+export default function SearchBar({ className, value = '' }: SearchBarProps) {
   const router = useRouter();
   const [searchText, setSearchText] = React.useState<string>(value);
 
@@ -41,16 +68,7 @@ export default function SearchBar({
 
   return (
     <form className={cn(style.search, className)} onSubmit={handleSearch}>
-      <input
-        autoCapitalize='off'
-        autoCorrect='off'
-        name={`home${INPUT_NAME_SUFFIX}`}
-        onChange={handleSearchText}
-        placeholder='Search orchid or registrant name'
-        spellCheck={false}
-        type='search'
-        value={searchText}
-      />
+      <SearchInput onChange={handleSearchText} value={searchText} />
     </form>
   );
 }

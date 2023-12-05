@@ -1,26 +1,68 @@
 import { Grex } from 'lib/types';
+import { debounce } from 'lodash';
 import React from 'react';
 
-type FetchFTSProps = { q: string; offset?: number };
+type FetchFTSProps = {
+  q: string;
+  limit?: number;
+  offset?: number;
+  isDebounced?: boolean;
+  signal?: AbortController['signal'];
+};
 
-function makeUrl({ q, offset }: FetchFTSProps = { q: '' }) {
-  let url = `/api/fts/${encodeURIComponent(q)}`;
+function makeUrl({ q, limit, offset }: FetchFTSProps = { q: '' }) {
+  let url = `/api/fts/${encodeURIComponent(q)}?`;
+
+  if (limit) {
+    url += `&limit=${limit}`;
+  }
 
   if (offset) {
-    url += `?offset=${offset}`;
+    url += `&offset=${offset}`;
   }
   return url;
 }
 
-export async function fetchFTS({ q, offset }: FetchFTSProps = { q: '' }) {
-  const url = makeUrl({ q, offset });
-  const fetched = await fetch(url);
+export async function fetchFTS(
+  { q, limit, offset, signal }: FetchFTSProps = { q: '' }
+) {
+  const url = makeUrl({ q, limit, offset });
+  const fetched = await fetch(url, { signal });
   return fetched.json();
 }
 
-export function useFTS({ q, offset }: FetchFTSProps) {
+export function useFTS({
+  q,
+  limit,
+  offset,
+  isDebounced = false,
+}: FetchFTSProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [data, setData] = React.useState<Grex[]>([]);
+
+  const controller = React.useRef<AbortController>();
+
+  const debouncedChangeHandler = React.useMemo(
+    () =>
+      debounce(
+        (q, limit, offset) => {
+          controller.current?.abort();
+          controller.current = new AbortController();
+
+          fetchFTS({
+            q,
+            limit,
+            offset,
+            signal: controller.current.signal,
+          }).then((json) => {
+            setData(json);
+            setIsLoading(false);
+          });
+        },
+        isDebounced ? 200 : 0
+      ),
+    [isDebounced]
+  );
 
   React.useEffect(() => {
     if (!q) {
@@ -29,11 +71,9 @@ export function useFTS({ q, offset }: FetchFTSProps) {
       return;
     }
     setIsLoading(true);
-    fetchFTS({ q, offset }).then((json) => {
-      setData(json);
-      setIsLoading(false);
-    });
-  }, [q, offset]);
+
+    debouncedChangeHandler(q, limit, offset);
+  }, [q, limit, offset, debouncedChangeHandler]);
 
   return { isLoading, data };
 }
