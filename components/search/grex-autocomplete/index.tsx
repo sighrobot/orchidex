@@ -7,9 +7,9 @@ import { Grex } from 'lib/types';
 import { useFTS } from 'lib/fetchers/fts';
 import { GrexCard } from 'components/grex/grex';
 import { ibmPlexSans } from 'lib/utils';
+import { formatName } from 'lib/string';
 
 import style from './style.module.scss';
-import { formatName } from 'lib/string';
 
 const THEME = createTheme({
   typography: { fontFamily: [ibmPlexSans.style.fontFamily].join(',') },
@@ -36,6 +36,10 @@ export default function GrexAutocomplete({
 
   const grexName = grex ? formatName(grex).long.full : '';
 
+  React.useEffect(() => {
+    setQ(grexName);
+  }, [grexName]);
+
   const handleInputChange = (e) => setQ(e?.target?.value ?? grexName ?? '');
   const handleChange = (_, g) => {
     setOpen(false);
@@ -48,14 +52,11 @@ export default function GrexAutocomplete({
         <Autocomplete<Grex>
           className={ibmPlexSans.className}
           autoHighlight
-          // onOpen={() => setOpen(true)}
-          // clearOnBlur={false}
           disableClearable={true as unknown as false} // weird type bug
           filterOptions={(options) => options}
           getOptionLabel={(g) => g.id}
           inputValue={q}
-          // open={open}
-          isOptionEqualToValue={(o, g) => o.id === g.id}
+          isOptionEqualToValue={(o, g) => o.id === g?.id}
           onChange={handleChange}
           onInputChange={handleInputChange}
           options={fts.data}

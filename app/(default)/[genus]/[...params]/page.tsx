@@ -8,7 +8,7 @@ import GrexView from './view';
 export async function maybeGetGrex(g: string, e: string, id: string) {
   let grex: Grex | undefined;
   if (parseInt(id, 10)) {
-    grex = await fetchGrex(id);
+    [grex] = await fetchGrex(id);
   } else if (g && e) {
     grex = await fetchGrexByName({ genus: g, epithet: e });
   }

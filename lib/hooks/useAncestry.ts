@@ -23,7 +23,7 @@ export const fetchGrexByName = async ({ genus, epithet }): Promise<Grex> => {
 
   try {
     const fetched = await fetch(
-      `${APP_URL}/api/search?genus=${quotedGenus}&epithet=${quotedEpithet}`,
+      `${APP_URL}/api/search?genus=${quotedGenus}&epithet=${quotedEpithet}`
     );
     const json = await fetched.json();
 
@@ -59,7 +59,7 @@ const getNextGeneration = async (names = []) => {
   // https://stackoverflow.com/a/44687374/2502505
   let [lists, chunkSize] = [namesNeed, 24];
   lists = [...Array(Math.ceil(lists.length / chunkSize))].map((_) =>
-    lists.splice(0, chunkSize),
+    lists.splice(0, chunkSize)
   );
 
   const fetches = await Promise.all(
@@ -67,8 +67,8 @@ const getNextGeneration = async (names = []) => {
       fetch('/api/ancestry', {
         method: 'POST',
         body: JSON.stringify(list),
-      }),
-    ),
+      })
+    )
   );
 
   const gen = [];
@@ -109,8 +109,8 @@ const levels = async (grex, level = 1) => {
         generation.map((g) => [
           { genus: g.seed_parent_genus, epithet: g.seed_parent_epithet },
           { genus: g.pollen_parent_genus, epithet: g.pollen_parent_epithet },
-        ]),
-      ).filter((f) => f.genus && f.epithet),
+        ])
+      ).filter((f) => f.genus && f.epithet)
     );
 
     if (generation.length === 0) {
@@ -130,7 +130,7 @@ export const useSpeciesAncestry = (grex: Grex | null) => {
   }
 
   let ancestry = data
-    ? Object.keys(data.scores).map((k) => ({
+    ? Object.keys(data.scores ?? {}).map((k) => ({
         score: data.scores[k],
         grex: data.map[k],
       }))
@@ -149,8 +149,8 @@ export const useAncestry = (grex, level = 2) => {
   const fetcher = () =>
     fetch(
       `/api/ancestry2?genus=${encodeURIComponent(
-        grex.genus,
-      )}&epithet=${encodeURIComponent(grex.epithet)}`,
+        grex.genus
+      )}&epithet=${encodeURIComponent(grex.epithet)}`
     ).then((resp) => resp.json());
   const { data = [] } = useSWR([grex.genus, grex.epithet], fetcher);
 

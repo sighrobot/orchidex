@@ -47,10 +47,12 @@ export default function GrexView({
   grex,
   seedParent,
   pollenParent,
+  shouldRedirect = true,
 }: {
   grex: GrexType;
   seedParent?: GrexType;
   pollenParent?: GrexType;
+  shouldRedirect?: boolean;
 }) {
   const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false);
   const router = useRouter();
@@ -64,7 +66,7 @@ export default function GrexView({
       : wcvp.filter((w) => w.taxon_rank === 'Species')[0];
 
   React.useEffect(() => {
-    if (!grex.hypothetical) {
+    if (!grex.hypothetical && shouldRedirect) {
       const split = pathname?.split('/') ?? [''];
       if (split.length === 3 || isNaN(parseInt(split[split.length - 1], 10))) {
         router.replace(
@@ -74,7 +76,7 @@ export default function GrexView({
         );
       }
     }
-  }, [pathname, grex.hypothetical]);
+  }, [pathname, grex.hypothetical, shouldRedirect]);
 
   const handleFullScreenOpen = () => setIsDialogOpen(true);
   const handleFullScreenClose = () => setIsDialogOpen(false);

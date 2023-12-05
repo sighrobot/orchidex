@@ -18,17 +18,16 @@ export async function GET(req: NextRequest) {
       SELECT
         ${ID_FIELDS.join(', ')},
         ${SEARCH_FIELDS.join(', ')},
-        1 - (input.q <<-> (COALESCE(epithet, '') || ' ' || 
-          COALESCE(genus, '') || ' ' ||
+        1 - (input.q <<-> (COALESCE(genus, '') || ' ' || 
+          COALESCE(epithet, '') || ' ' ||
           COALESCE(registrant_name, ''))) AS score
     FROM rhs, input
-    WHERE epithet != '' AND input.q <% (COALESCE(epithet, '') || ' ' ||
-      COALESCE(genus, '') || ' ' ||
+    WHERE epithet != '' AND input.q <% (COALESCE(genus, '') || ' ' ||
+      COALESCE(epithet, '') || ' ' ||
       COALESCE(registrant_name, ''))
-    ORDER BY input.q <<-> (COALESCE(epithet, '') || ' ' ||
-      COALESCE(genus, '') || ' ' ||
-      COALESCE(registrant_name, '')),
-epithet 
+    ORDER BY  input.q <<-> (COALESCE(genus, '') || ' ' ||
+      COALESCE(epithet, '') || ' ' ||
+      COALESCE(registrant_name, ''))
     LIMIT ${limit}
     ${offset ? `OFFSET ${offset}` : ''}`;
 

@@ -6,6 +6,7 @@ import { Padded } from 'components/container/container';
 import GrexAutocomplete from 'components/search/grex-autocomplete';
 import { Grex } from 'lib/types';
 import { useGrex } from 'lib/hooks/useGrex';
+import { H2 } from 'components/layout';
 
 import style from './style.module.scss';
 
@@ -17,8 +18,8 @@ export default function Form() {
   const searchParams = useSearchParams();
   const seedParentId = searchParams?.get(PARAM_SEED);
   const pollenParentId = searchParams?.get(PARAM_POLLEN);
-  const seedParent = useGrex({ id: seedParentId });
-  const pollenParent = useGrex({ id: pollenParentId });
+  const [seedParent] = useGrex({ id: seedParentId });
+  const [pollenParent] = useGrex({ id: pollenParentId });
 
   const handleParams = (params: URLSearchParams, action: 'push' | 'replace') =>
     router[action](
@@ -64,32 +65,45 @@ export default function Form() {
   };
 
   return (
-    <Padded className={style.controls}>
-      <article className={style.input}>
-        <GrexAutocomplete
-          grex={seedParent}
-          name='Seed Parent'
-          onChange={handleSeedParentChange}
-        />
-      </article>
+    <>
+      <aside className={style.hybridize}>
+        <H2>
+          Hybridize{' '}
+          <sup className={style.beta}>
+            <mark>BETA</mark>
+          </sup>
+        </H2>
 
-      <div className={style.swapWrap}>
-        <button
-          className={style.swap}
-          disabled={!seedParent && !pollenParent}
-          onClick={handleSwap}
-        >
-          &#8651; Swap
-        </button>
-      </div>
+        <p>Use this tool to explore the ancestry of a theoretical hybrid. </p>
 
-      <article className={style.input}>
-        <GrexAutocomplete
-          grex={pollenParent}
-          name='Pollen Parent'
-          onChange={handlePollenParentChange}
-        />
-      </article>
-    </Padded>
+        <Padded className={style.controls}>
+          <article className={style.input}>
+            <GrexAutocomplete
+              grex={seedParent}
+              name='Seed Parent'
+              onChange={handleSeedParentChange}
+            />
+          </article>
+
+          <div className={style.swapWrap}>
+            <button
+              className={style.swap}
+              disabled={!seedParent && !pollenParent}
+              onClick={handleSwap}
+            >
+              &#8651; Swap
+            </button>
+          </div>
+
+          <article className={style.input}>
+            <GrexAutocomplete
+              grex={pollenParent}
+              name='Pollen Parent'
+              onChange={handlePollenParentChange}
+            />
+          </article>
+        </Padded>
+      </aside>
+    </>
   );
 }
