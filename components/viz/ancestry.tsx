@@ -21,6 +21,10 @@ import { H3 } from 'components/layout';
 
 import style from './ancestry.module.scss';
 
+const DEGREE_CHAR = 'º';
+const TERMINAL_NODE_CHAR = '𓆺';
+const HYPOTHETICAL_NODE_FOOTER = `                        ${TERMINAL_NODE_CHAR}`;
+
 // Dynamic Width (Build Regex)
 const wrap = (s, w) =>
   s.replace(new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1\n');
@@ -79,7 +83,6 @@ export const AncestryViz = ({
   grex,
   seedParent,
   pollenParent,
-  maxDepth = false,
   isFullScreen,
   onFullScreenOpen,
   onFullScreenClose,
@@ -87,13 +90,12 @@ export const AncestryViz = ({
   grex: Grex;
   seedParent?: Grex;
   pollenParent?: Grex;
-  maxDepth?: boolean;
   onFullScreenOpen?: () => void;
   isFullScreen?: boolean;
   onFullScreenClose?: () => void;
 }) => {
   const router = useRouter();
-  const [depth, setDepth] = React.useState<number>(maxDepth ? 1000 : 3);
+  const [depth, setDepth] = React.useState<number>(3);
   const [inspected, setInspected] = React.useState<Grex>(); // TODO: hook this up someday
 
   const handleNodeClick = React.useCallback(
@@ -122,8 +124,8 @@ export const AncestryViz = ({
 
   const cyContainer = useRef(null);
   const regularAncestry = useAncestry(grex, depth);
-  const seedParentAncestry = useAncestry(seedParent || {}, depth);
-  const pollenParentAncestry = useAncestry(pollenParent || {}, depth);
+  const seedParentAncestry = useAncestry(seedParent || {}, depth - 1);
+  const pollenParentAncestry = useAncestry(pollenParent || {}, depth - 1);
   const parentAncestry = {
     nodes: [
       grex,
@@ -226,13 +228,23 @@ export const AncestryViz = ({
               const year = g.date_of_registration
                 ? g.date_of_registration.slice(0, 4)
                 : '';
-              const lastLine = !g.l
-                ? `${year}                    𓆺`
-                : `${
-                    g.date_of_registration ? year : '          '
-                  }                    ${g.l ? `${g.l}º` : ''}`;
 
-              return [...nameLines, ...blankLines, lastLine].join('\n');
+              let nodeFooter: string;
+              const nodeLevel = grex.hypothetical ? (g.l ?? 0) + 1 : g.l;
+              const terminalNodeFooter = `${year}                    ${TERMINAL_NODE_CHAR}`;
+              const regularNodeFooter = `${
+                g.date_of_registration ? year : '          '
+              }                    ${
+                nodeLevel ? `${nodeLevel}${DEGREE_CHAR}` : ''
+              }`;
+
+              nodeFooter = g.hypothetical
+                ? HYPOTHETICAL_NODE_FOOTER
+                : !!nodeLevel
+                ? regularNodeFooter
+                : terminalNodeFooter;
+
+              return [...nameLines, ...blankLines, nodeFooter].join('\n');
             },
           },
         },
@@ -274,6 +286,7 @@ export const AncestryViz = ({
     handleNodeSelect,
     handleNodeUnselect,
     depth,
+    grex.hypothetical,
   ]);
 
   const MenuWrap = ({ children }) => (
