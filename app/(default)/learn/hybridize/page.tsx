@@ -33,16 +33,6 @@ export default async function Hybridize({
     [existingGrex] = await fetchGrexChild(s as string, p as string);
   }
 
-  const selectedParents = [selectedSeedParent, selectedPollenParent];
-
-  // ensures that ancestry is displayed canonically when an `existingGrex` is found
-  const displayedSeedParent = existingGrex
-    ? selectedParents.find((p: Grex) => p.id === existingGrex?.seed_parent_id)
-    : selectedSeedParent;
-  const displayedPollenParent = existingGrex
-    ? selectedParents.find((p: Grex) => p.id === existingGrex?.pollen_parent_id)
-    : selectedPollenParent;
-
   return (
     <>
       <Form />
@@ -65,8 +55,8 @@ export default async function Hybridize({
               pollen_parent_epithet: selectedPollenParent.epithet,
             } as Grex)
           }
-          seedParent={displayedSeedParent}
-          pollenParent={displayedPollenParent}
+          seedParent={existingGrex ? undefined : selectedSeedParent}
+          pollenParent={existingGrex ? undefined : selectedPollenParent}
         />
       ) : (
         <aside className={style.empty}>
