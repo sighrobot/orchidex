@@ -1,10 +1,8 @@
 import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
-import { query } from 'lib/pg';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { query } from 'lib/storage/pg';
 
-export const runtime = 'edge';
-
-export async function GET(req) {
+export async function GET(req: NextRequest) {
   const { limit, genus } = Object.fromEntries(req.nextUrl.searchParams);
 
   let expr = `SELECT ${ID_FIELDS.join(', ')}, ${SEARCH_FIELDS.join(

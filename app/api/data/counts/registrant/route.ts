@@ -1,7 +1,5 @@
-import { query } from 'lib/pg';
 import { NextRequest, NextResponse } from 'next/server';
-
-export const runtime = 'edge';
+import { query } from 'lib/storage/pg';
 
 const select = 'SELECT registrant_name r, COUNT(*)::int c FROM rhs WHERE';
 const aggr = ['GROUP BY r', 'ORDER BY c DESC'];

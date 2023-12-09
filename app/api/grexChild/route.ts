@@ -1,10 +1,8 @@
+import { NextRequest, NextResponse } from 'next/server';
 import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
-import { query } from 'lib/pg';
-import { NextResponse } from 'next/server';
+import { query } from 'lib/storage/pg';
 
-export const runtime = 'edge';
-
-export async function GET(req) {
+export async function GET(req: NextRequest) {
   const { s, p } = Object.fromEntries(req.nextUrl.searchParams);
   const idArrayItems = [s, p].join(',');
 

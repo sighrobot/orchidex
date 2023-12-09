@@ -1,16 +1,15 @@
-import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
-import { query } from 'lib/pg';
 import { NextRequest, NextResponse } from 'next/server';
+import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
+import { query } from 'lib/storage/pg';
 
-export const runtime = 'edge';
-
-export async function GET(req: NextRequest) {
-  const {
-    q: rawQ,
-    limit = 100,
-    offset,
-  } = Object.fromEntries(req.nextUrl.searchParams);
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { q: string } }
+) {
+  const { q: rawQ } = params;
   const q = rawQ.replace(/'/g, "''");
+
+  const { limit = 100, offset } = Object.fromEntries(req.nextUrl.searchParams);
 
   // https://alexklibisz.com/2022/02/18/optimizing-postgres-trigram-search#a-blazing-fast-search-query
   const sql = `

@@ -1,12 +1,10 @@
+import { NextRequest, NextResponse } from 'next/server';
 import { SEARCH_FIELDS } from 'lib/constants';
-import { query } from 'lib/pg';
 import { UNKNOWN_CHAR } from 'lib/string';
 import { massageQueryTerm } from 'lib/utils';
-import { NextRequest } from 'next/server';
+import { query } from 'lib/storage/pg';
 
-export const config = { runtime: 'edge' };
-
-export default async function getAncestry(req: NextRequest) {
+export async function POST(req: NextRequest) {
   const names = await req.json();
 
   const q = names
@@ -27,5 +25,5 @@ export default async function getAncestry(req: NextRequest) {
     `SELECT id, ${SEARCH_FIELDS.join(', ')} FROM rhs WHERE ${q}`
   );
 
-  return new Response(JSON.stringify(json));
+  return NextResponse.json(json, { status: 200 });
 }

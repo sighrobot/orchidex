@@ -1,8 +1,6 @@
-import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
-import { query } from 'lib/pg';
 import { NextRequest, NextResponse } from 'next/server';
-
-export const runtime = 'edge';
+import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
+import { query } from 'lib/storage/pg';
 
 export async function GET(req: NextRequest) {
   const { genus, epithet: e } = Object.fromEntries(req.nextUrl.searchParams);

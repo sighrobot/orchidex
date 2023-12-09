@@ -1,14 +1,14 @@
-import { query } from 'lib/pg';
-import { capitalize } from 'lib/utils';
 import { NextRequest, NextResponse } from 'next/server';
+import { capitalize } from 'lib/utils';
+import { query } from 'lib/storage/pg';
 
-export const runtime = 'edge';
-
-export async function GET(req: NextRequest) {
+export async function GET(
+  req: NextRequest,
+  { params }: { params: { genus: string } }
+) {
   const { searchParams } = new URL(req.nextUrl);
-  const g = searchParams.get('genus');
   const parentType = searchParams.get('parentType');
-  const genus = capitalize(g);
+  const genus = capitalize(params.genus);
 
   let q = '';
 

@@ -1,17 +1,15 @@
-import { query } from 'lib/pg';
+import { NextRequest, NextResponse } from 'next/server';
 import { UNKNOWN_CHAR } from 'lib/string';
 import { massageQueryTerm } from 'lib/utils';
-import { NextRequest } from 'next/server';
+import { query } from 'lib/storage/pg';
 
-export const config = { runtime: 'edge' };
-
-export default async function GetAncestry2(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.nextUrl);
   const genus = searchParams.get('genus');
   const epithet = searchParams.get('epithet');
 
   if (!genus || !epithet) {
-    return new Response(JSON.stringify([]));
+    return NextResponse.json([], { status: 200 });
   }
 
   const epithetClause = epithet.includes(UNKNOWN_CHAR)
@@ -51,5 +49,5 @@ export default async function GetAncestry2(req: NextRequest) {
 
   const json = await query(q);
 
-  return new Response(JSON.stringify(json));
+  return NextResponse.json(json, { status: 200 });
 }

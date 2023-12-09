@@ -1,12 +1,9 @@
-import { query } from 'lib/pg';
 import { capitalize } from 'lib/utils';
+import { query } from 'lib/storage/pg';
+import { NextResponse, type NextRequest } from 'next/server';
 
-import type { NextRequest } from 'next/server';
-
-export const config = { runtime: 'edge' };
-
-export default async function GetWcvp(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.nextUrl);
   const g = searchParams.get('genus');
   const epithet = searchParams.get('epithet');
   const genus = capitalize(g);
@@ -33,5 +30,5 @@ where
 
   const json = await query(q);
 
-  return new Response(JSON.stringify(json));
+  return NextResponse.json(json, { status: 200 });
 }
