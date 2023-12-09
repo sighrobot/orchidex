@@ -1,14 +1,12 @@
 const fs = require('fs');
 const jsdom = require('jsdom');
-const request = require('superagent');
 const { normalize, SEARCH_URL, URL, FIELDS, EXT_FIELDS } = require('./utils');
 
 const { JSDOM } = jsdom;
 
-const fetchResultsPage = async (page) => request(`${SEARCH_URL}&page=${page}`);
-
 async function getIDsOnPage(page) {
-  const { text } = await fetchResultsPage(page);
+  const fetched = await fetch(`${SEARCH_URL}&page=${page}`);
+  const text = await fetched.text();
 
   const {
     window: { document },
