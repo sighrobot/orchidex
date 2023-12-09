@@ -12,8 +12,8 @@ export default async function Hybridize({
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const { s, p } = searchParams;
-  let seedParent: GrexType | undefined = undefined;
-  let pollenParent: GrexType | undefined = undefined;
+  let selectedSeedParent: GrexType | undefined = undefined;
+  let selectedPollenParent: GrexType | undefined = undefined;
   let existingGrex: GrexType | undefined = undefined;
 
   const sId = parseInt(s as string, 10);
@@ -21,42 +21,52 @@ export default async function Hybridize({
 
   if (sId && pId) {
     const parents = await fetchGrex(`${sId},${pId}`);
-    seedParent = parents.find((parent) => parent.id === s);
-    pollenParent = parents.find((parent) => parent.id === p);
+    selectedSeedParent = parents.find((parent) => parent.id === s);
+    selectedPollenParent = parents.find((parent) => parent.id === p);
   } else if (sId) {
-    [seedParent] = await fetchGrex(s);
+    [selectedSeedParent] = await fetchGrex(s);
   } else if (pId) {
-    [pollenParent] = await fetchGrex(p);
+    [selectedPollenParent] = await fetchGrex(p);
   }
 
   if (s && p) {
     [existingGrex] = await fetchGrexChild(s as string, p as string);
   }
 
+  const selectedParents = [selectedSeedParent, selectedPollenParent];
+
+  // ensures that ancestry is displayed canonically when an `existingGrex` is found
+  const displayedSeedParent = existingGrex
+    ? selectedParents.find((p: Grex) => p.id === existingGrex?.seed_parent_id)
+    : selectedSeedParent;
+  const displayedPollenParent = existingGrex
+    ? selectedParents.find((p: Grex) => p.id === existingGrex?.pollen_parent_id)
+    : selectedPollenParent;
+
   return (
     <>
       <Form />
 
-      {seedParent && pollenParent ? (
+      {selectedSeedParent && selectedPollenParent ? (
         <GrexView
           shouldRedirect={false}
           grex={
             existingGrex ??
             ({
-              id: `${seedParent.id}-${pollenParent.id}`,
+              id: `${selectedSeedParent.id}-${selectedPollenParent.id}`,
               hypothetical: true,
               genus: ' ',
               epithet: 'Your Hybrid',
               seed_parent_id: s as string,
-              seed_parent_genus: seedParent.genus,
-              seed_parent_epithet: seedParent.epithet,
+              seed_parent_genus: selectedSeedParent.genus,
+              seed_parent_epithet: selectedSeedParent.epithet,
               pollen_parent_id: p as string,
-              pollen_parent_genus: pollenParent.genus,
-              pollen_parent_epithet: pollenParent.epithet,
+              pollen_parent_genus: selectedPollenParent.genus,
+              pollen_parent_epithet: selectedPollenParent.epithet,
             } as Grex)
           }
-          seedParent={seedParent}
-          pollenParent={pollenParent}
+          seedParent={displayedSeedParent}
+          pollenParent={displayedPollenParent}
         />
       ) : (
         <aside className={style.empty}>
