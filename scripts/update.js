@@ -1,32 +1,9 @@
 const fs = require('fs');
 const jsdom = require('jsdom');
-const request = require('superagent');
 const { sql } = require('@vercel/postgres');
+const { normalize, URL, FIELDS, EXT_FIELDS } = require('./utils');
 
 const { JSDOM } = jsdom;
-
-const normalize = (s = '') =>
-  s
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase();
-
-const URL = `https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp`;
-const FIELDS = [
-  'ID',
-  'Genus',
-  'Epithet',
-  'Synonym Flag',
-  'Synonym Genus Name',
-  'Synonym Epithet Name',
-  'Registrant Name',
-  'Originator Name',
-  'Date of registration',
-  'Seed parent Genus',
-  'Seed parent Epithet',
-  'Pollen parent Genus',
-  'Pollen parent Epithet',
-];
 
 const args = process.argv.slice(2);
 
@@ -53,7 +30,9 @@ console.log(
 const get = async (id) => {
   return new Promise((resolve) => {
     setTimeout(async () => {
-      const { text } = await request(`${URL}?ID=${id}`);
+      const fetched = await fetch(`${URL}?ID=${id}`);
+      const text = await fetched.text();
+
       const {
         window: { document },
       } = new JSDOM(text);
@@ -133,25 +112,15 @@ const get = async (id) => {
       data.push(normalize(data[12]));
 
       return resolve(data.join('\t'));
-    }, 100);
+    }, 200);
   });
 };
 
-const LAST_GOOD = 1044679;
+const LAST_GOOD = 1061779;
 const END_AFTER = 200;
 let nullsInARow = 0;
 
-const skip = [169023, 900000];
-
 const stream = fs.createWriteStream(outFilename, { flags: 'w' });
-
-const EXT_FIELDS = [
-  'epithet_normalized',
-  'registrant_name_normalized',
-  'originator_name_normalized',
-  'seed_parent_epithet_normalized',
-  'pollen_parent_epithet_normalized',
-];
 
 stream.write(
   `${FIELDS.concat(EXT_FIELDS)
@@ -163,34 +132,32 @@ let i = startIndex;
 
 (async () => {
   while (i < LAST_GOOD || nullsInARow < END_AFTER) {
-    if (i <= skip[0] || i >= skip[1]) {
-      try {
-        const got = await get(i);
+    try {
+      const got = await get(i);
 
-        if (got !== null) {
-          const split = got.split('\t');
+      if (got !== null) {
+        const split = got.split('\t');
 
-          await sql.query(
-            `INSERT INTO rhs (${FIELDS.concat(EXT_FIELDS)
-              .map((f) => f.toLowerCase().split(' ').join('_'))
-              .join(', ')}) VALUES (${split
-              .map((s) => `'${s.replace(/'/g, "''")}'`)
-              .join(', ')})`
-          );
+        await sql.query(
+          `INSERT INTO rhs (${FIELDS.concat(EXT_FIELDS)
+            .map((f) => f.toLowerCase().split(' ').join('_'))
+            .join(', ')}) VALUES (${split
+            .map((s) => `'${s.replace(/'/g, "''")}'`)
+            .join(', ')})`
+        );
 
-          console.log(`${split.slice(0, 3).join(' ')}`);
-          stream.write(`${got}\n`);
-          nullsInARow = 0;
-        } else {
-          console.log(`${i} could not fetch`);
-          nullsInARow++;
-        }
-      } catch (e) {
-        // process.stdout.clearLine();
-        // process.stdout.cursorTo(0);
-        console.log(e);
+        console.log(`${split.slice(0, 3).join(' ')}`);
+        stream.write(`${got}\n`);
+        nullsInARow = 0;
+      } else {
+        console.log(`${i} could not fetch`);
         nullsInARow++;
       }
+    } catch (e) {
+      // process.stdout.clearLine();
+      // process.stdout.cursorTo(0);
+      console.log(e);
+      nullsInARow++;
     }
 
     i++;
