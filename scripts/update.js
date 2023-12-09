@@ -1,6 +1,9 @@
 const fs = require('fs');
 const jsdom = require('jsdom');
-const { sql } = require('@vercel/postgres');
+const { Pool } = require('pg');
+
+const sql = new Pool({ connectionString: process.env.SB_PG_URL });
+
 const { normalize, URL, FIELDS, EXT_FIELDS } = require('./utils');
 
 const { JSDOM } = jsdom;
@@ -19,6 +22,8 @@ if (!outFilename) {
   console.error('Error: no out file specified');
   return;
 }
+
+const shouldWriteDb = args[2] === 'true';
 
 console.log(
   '\nStarting at',
@@ -138,13 +143,15 @@ let i = startIndex;
       if (got !== null) {
         const split = got.split('\t');
 
-        await sql.query(
-          `INSERT INTO rhs (${FIELDS.concat(EXT_FIELDS)
-            .map((f) => f.toLowerCase().split(' ').join('_'))
-            .join(', ')}) VALUES (${split
-            .map((s) => `'${s.replace(/'/g, "''")}'`)
-            .join(', ')})`
-        );
+        if (shouldWriteDb) {
+          await sql.query(
+            `INSERT INTO rhs (${FIELDS.concat(EXT_FIELDS)
+              .map((f) => f.toLowerCase().split(' ').join('_'))
+              .join(', ')}) VALUES (${split
+              .map((s) => `'${s.replace(/'/g, "''")}'`)
+              .join(', ')})`
+          );
+        }
 
         console.log(`${split.slice(0, 3).join(' ')}`);
         stream.write(`${got}\n`);
@@ -163,10 +170,11 @@ let i = startIndex;
     i++;
   }
 
-  // fill in seed_parent_id
-  // THIS QUERY MUST STAY IN SYNC WITH data/init-pg.sql !!!
-  await sql.query(
-    `
+  if (shouldWriteDb) {
+    // fill in seed_parent_id
+    // THIS QUERY MUST STAY IN SYNC WITH data/init-pg.sql !!!
+    await sql.query(
+      `
     UPDATE rhs
     SET seed_parent_id=subquery.seed_parent_id
     FROM (
@@ -181,12 +189,12 @@ let i = startIndex;
         AND rhs.date_of_registration != ''
         AND rhs.seed_parent_id is NULL
     `.trim()
-  );
+    );
 
-  // fill in pollen_parent_id
-  // THIS QUERY MUST STAY IN SYNC WITH data/init-pg.sql !!!
-  await sql.query(
-    `
+    // fill in pollen_parent_id
+    // THIS QUERY MUST STAY IN SYNC WITH data/init-pg.sql !!!
+    await sql.query(
+      `
     UPDATE rhs
     SET pollen_parent_id=subquery.pollen_parent_id
     FROM (
@@ -201,7 +209,8 @@ let i = startIndex;
         AND rhs.date_of_registration != ''
         AND rhs.pollen_parent_id is NULL
     `.trim()
-  );
+    );
+  }
 
   stream.end();
 })();

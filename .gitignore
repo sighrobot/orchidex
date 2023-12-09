@@ -31,3 +31,4 @@ yarn-error.log*
 .vercel
 
 aws.json
+.env*.local
