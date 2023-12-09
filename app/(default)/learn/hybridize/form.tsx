@@ -21,12 +21,19 @@ export default function Form() {
   const [seedParent] = useGrex({ id: seedParentId });
   const [pollenParent] = useGrex({ id: pollenParentId });
 
-  const handleParams = (params: URLSearchParams, action: 'push' | 'replace') =>
-    router[action](
-      `${window.location.origin}${
-        window.location.pathname
-      }?${params.toString()}`
+  const handleParams = (
+    params: URLSearchParams,
+    action: 'push' | 'replace'
+  ) => {
+    params.sort();
+    return router[action](
+      `${window.location.origin}${window.location.pathname}?${params
+        .toString()
+        .split('&')
+        .reverse() // reverse the sort so `s` comes before `p`
+        .join('&')}`
     );
+  };
 
   const replaceParams = (params: URLSearchParams) =>
     handleParams(params, 'replace');
