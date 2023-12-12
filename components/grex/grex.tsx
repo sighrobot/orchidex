@@ -12,7 +12,6 @@ type GrexProps = {
   seedParent?: Grex;
   pollenParent?: Grex;
   hideDate?: boolean;
-  hideReg?: boolean;
   hideLink?: boolean;
   hideName?: boolean;
   heading?: boolean;
@@ -27,7 +26,6 @@ export const GrexCard = ({
   seedParent,
   pollenParent,
   hideDate = false,
-  hideReg,
   hideLink,
   hideLinks,
   hideName,
@@ -65,14 +63,13 @@ export const GrexCard = ({
         seedParent={seedParent}
         pollenParent={pollenParent}
       />
-      {!hideReg && (
-        <Reg
-          activeId={activeRegId}
-          grex={grex}
-          hideLink={shouldRenderAsButton || hideLinks}
-          hideDate={hideDate}
-        />
-      )}
+
+      <Reg
+        activeId={activeRegId}
+        grex={grex}
+        hideLink={shouldRenderAsButton || hideLinks}
+        hideDate={hideDate}
+      />
     </Component>
   );
 };
