@@ -19,7 +19,7 @@ export const Reg = ({ grex, activeId, hideDate, hideLink }: RegProps) => {
     return null;
   }
 
-  const isRegistrantOU = grex.originator_name === 'O/U';
+  const isRegistrantOU = grex.registrant_name === 'O/U';
   const isOriginatorOU = grex.originator_name === 'O/U';
 
   const dateStr = new Date(`${grex.date_of_registration}T00:00:00`)
