@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import cn from 'classnames';
 import Autocomplete from '@mui/material/Autocomplete';
 import { TextField, ThemeProvider, createTheme } from '@mui/material';
 import { Grex } from 'lib/types';
@@ -8,6 +9,7 @@ import { useFTS } from 'lib/fetchers/fts';
 import { GrexCard } from 'components/grex/grex';
 import { ibmPlexSans } from 'lib/utils';
 import { formatName } from 'lib/string';
+import { useRecent } from 'lib/fetchers/recent';
 
 import style from './style.module.scss';
 
@@ -26,13 +28,13 @@ export default function GrexAutocomplete({
   name,
   onChange,
 }: GrexAutocompleteProps) {
-  const [open, setOpen] = React.useState<boolean>(false);
   const [q, setQ] = React.useState<string>('');
   const fts = useFTS({
     q: q.length > 1 ? q : '',
     limit: 10,
     isDebounced: true,
   });
+  const { data: recents } = useRecent({ limit: 10 });
 
   const grexName = grex ? formatName(grex).long.full : '';
 
@@ -42,7 +44,6 @@ export default function GrexAutocomplete({
 
   const handleInputChange = (e) => setQ(e?.target?.value ?? grexName ?? '');
   const handleChange = (_, g) => {
-    setOpen(false);
     onChange(g);
   };
 
@@ -59,13 +60,21 @@ export default function GrexAutocomplete({
           isOptionEqualToValue={(o, g) => o.id === g?.id}
           onChange={handleChange}
           onInputChange={handleInputChange}
-          options={fts.data}
+          options={q ? fts.data : recents}
           renderInput={(params) => <TextField {...params} label={name} />}
-          renderOption={(props, option) => (
-            <li {...props} key={option.id}>
-              <GrexCard hideLinks grex={option} />
-            </li>
-          )}
+          renderOption={(props, option) => {
+            return (
+              <li
+                {...props}
+                key={option.id}
+                className={cn(style.grexItem, {
+                  [style.selected]: props['aria-selected'],
+                })}
+              >
+                <GrexCard hideLinks grex={option} />
+              </li>
+            );
+          }}
           size='small'
           fullWidth
           value={grex}

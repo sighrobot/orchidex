@@ -32,9 +32,7 @@ export const Header = ({ hasSearch }) => {
         </h1>
 
         <div className={style.navLockup}>
-          {hasSearch && (
-            <SearchBar className={style.search} hasButton={false} />
-          )}
+          {hasSearch && <SearchBar className={style.search} />}
 
           <nav className={style.nav}>
             <LinkList />

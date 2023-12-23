@@ -32,21 +32,3 @@
     background: none;
   }
 }
-
-.grexButton {
-  text-align: left;
-  background: none;
-  border: none;
-  display: block;
-  cursor: pointer;
-  padding: 20px 10px;
-  width: 100%;
-
-  a {
-    color: black !important;
-  }
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.05);
-  }
-}

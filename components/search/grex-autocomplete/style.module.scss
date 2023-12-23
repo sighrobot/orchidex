@@ -5,3 +5,20 @@
     padding: 0 15px;
   }
 }
+
+.grexItem {
+  cursor: pointer;
+  padding: 10px 15px;
+
+  &:hover {
+    background: #eee;
+  }
+
+  & + .grexItem {
+    border-top: 1px solid #ddd;
+  }
+
+  &.selected {
+    background: rgba(0, 0, 255, 0.05);
+  }
+}

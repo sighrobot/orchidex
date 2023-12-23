@@ -7,7 +7,6 @@ import styles from './style.module.scss';
 import type { Grex } from 'lib/types';
 
 type GrexProps = {
-  asButton?: boolean;
   grex: Grex;
   seedParent?: Grex;
   pollenParent?: Grex;
@@ -15,13 +14,11 @@ type GrexProps = {
   hideLink?: boolean;
   hideName?: boolean;
   heading?: boolean;
-  onClick?: (grex: Grex) => void;
   activeRegId?: string;
   hideLinks?: boolean;
 };
 
 export const GrexCard = ({
-  asButton,
   grex,
   seedParent,
   pollenParent,
@@ -30,35 +27,22 @@ export const GrexCard = ({
   hideLinks,
   hideName,
   heading = false,
-  onClick,
   activeRegId,
 }: GrexProps) => {
-  const shouldRenderAsButton = asButton && !!onClick;
-  const Component: keyof JSX.IntrinsicElements = shouldRenderAsButton
-    ? 'button'
-    : 'article';
-  const handleClick = shouldRenderAsButton ? () => onClick(grex) : undefined;
-
   return (
-    <Component
+    <article
       className={cn(styles.grex, {
         [styles.grexHeading]: heading,
-        [styles.grexButton]: shouldRenderAsButton,
       })}
-      onClick={handleClick}
     >
       <Pills grex={grex} />
       {!hideName && (
         <div style={{ marginTop: '5px' }}>
-          <Name
-            as='h2'
-            link={!shouldRenderAsButton && !hideLink && !hideLinks}
-            grex={grex}
-          />
+          <Name as='h2' link={!hideLink && !hideLinks} grex={grex} />
         </div>
       )}
       <Parentage
-        hideLink={shouldRenderAsButton || hideLinks}
+        hideLink={hideLinks}
         grex={grex}
         seedParent={seedParent}
         pollenParent={pollenParent}
@@ -67,9 +51,9 @@ export const GrexCard = ({
       <Reg
         activeId={activeRegId}
         grex={grex}
-        hideLink={shouldRenderAsButton || hideLinks}
+        hideLink={hideLinks}
         hideDate={hideDate}
       />
-    </Component>
+    </article>
   );
 };
