@@ -1,10 +1,10 @@
 'use client';
-import Link from 'next/link';
 
 import { Padded } from 'components/container/container';
 import List from 'components/viz/list';
 import { useRegistrantCounts } from 'lib/fetchers/counts/registrant';
 import { Grex } from 'lib/types';
+import { LinkPeople } from 'components/link';
 
 import style from './registrant.module.scss';
 
@@ -29,12 +29,15 @@ export default function RegistrantList({ genus }: { genus: string }) {
           id: d.r || '__species',
         };
       })}
-      renderField={({ grex: g = {} }: { grex: Partial<Grex> }, idx) => (
+      renderField={(
+        {
+          grex: g,
+        }: { grex: Pick<Grex, 'genus' | 'epithet' | 'registrant_name'> },
+        idx
+      ) => (
         <div className={style.rank}>
           <span>{idx + 1}.</span>
-          <Link href={`/registrant/${encodeURIComponent(g.registrant_name)}`}>
-            {g.registrant_name}
-          </Link>
+          <LinkPeople grex={g} kind='registrant' />
         </div>
       )}
       getCount={(d) => d.score}

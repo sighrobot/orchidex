@@ -1,5 +1,5 @@
 import { Grex } from 'lib/types';
-import Link from 'next/link';
+import { LinkPeople } from 'components/link';
 
 import styles from './style.module.scss';
 
@@ -34,12 +34,7 @@ export const Reg = ({ grex, activeId, hideDate, hideLink }: RegProps) => {
     isOriginatorOU ? (
     grex.originator_name
   ) : (
-    <Link
-      className='originator'
-      href={`/registrant/${encodeURIComponent(grex.originator_name)}`}
-    >
-      {grex.originator_name}
-    </Link>
+    <LinkPeople grex={grex} kind='originator' />
   );
 
   return (
@@ -49,9 +44,7 @@ export const Reg = ({ grex, activeId, hideDate, hideLink }: RegProps) => {
       {hideLink || activeId === grex.registrant_name || isRegistrantOU ? (
         grex.registrant_name
       ) : (
-        <Link href={`/registrant/${encodeURIComponent(grex.registrant_name)}`}>
-          {grex.registrant_name}
-        </Link>
+        <LinkPeople grex={grex} kind='registrant' />
       )}{' '}
       {originatorContent && <>({originatorContent})</>}
     </span>

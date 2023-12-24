@@ -8,7 +8,7 @@ import { groupBy, uniqBy } from 'lodash';
 
 import { H2 } from 'components/layout';
 import { useTreemap } from 'lib/hooks/useTreemap';
-import { grexToHref } from 'components/name/name';
+import { makeHrefGrex } from 'components/link/grex';
 import { useWcvp } from 'lib/hooks/useWcvp';
 import { Grex } from 'lib/types';
 import { capitalize } from 'lib/utils';
@@ -227,7 +227,7 @@ export default function Treemap({ genus }: { genus: string }) {
             onClick={(d: any) => {
               if (!d.data.zero && !d.data.one) {
                 router.push(
-                  grexToHref({
+                  makeHrefGrex({
                     id: '',
                     genus: genus as string,
                     epithet: d.id,

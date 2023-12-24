@@ -3,7 +3,7 @@ import { getStatText, getStatTitle } from 'lib/stats';
 import { Grex, Stat } from 'lib/types';
 import cn from 'classnames';
 import List from 'components/viz/list';
-import Link from 'next/link';
+import { LinkPeople } from 'components/link';
 import { Meter } from 'components/meter/meter';
 import style from './style.module.scss';
 
@@ -69,17 +69,13 @@ export const StatContent = ({
               id: d.r2 || '__species',
             };
           })}
-          renderField={({ grex: g = {} }) =>
+          renderField={({ grex: g }) =>
             g.registrant_name === '__species' ? (
               <em>N/A</em>
             ) : activeId && activeId === g.registrant_name ? (
               <strong>{g.registrant_name}</strong>
             ) : g.registrant_name !== 'O/U' ? (
-              <Link
-                href={`/registrant/${encodeURIComponent(g.registrant_name)}`}
-              >
-                {g.registrant_name}
-              </Link>
+              <LinkPeople grex={g} kind='registrant' />
             ) : (
               g.registrant_name
             )
@@ -116,7 +112,7 @@ export const StatCard = ({
     <StatBox className={style.stat} heading={t}>
       <StatContent
         isLoading={loading}
-        activeId={activeId}
+        activeId={activeId ?? ''}
         stat={stat}
         grex={grex}
         data={data}

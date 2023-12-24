@@ -1,9 +1,8 @@
-import Link from 'next/link';
 import cn from 'classnames';
-import { kebabCase } from 'lodash';
-
 import { formatName } from 'lib/string';
 import { Grex } from 'lib/types';
+import { LinkGrex } from 'components/link';
+import { isSpecies } from 'components/pills/pills';
 
 import style from './style.module.scss';
 
@@ -15,19 +14,7 @@ type NameProps = {
     epithet: Grex['epithet'];
   };
   link?: boolean;
-  linkAsSearch?: boolean;
-  shouldAbbreviate?: boolean;
   as?: React.FC | keyof JSX.IntrinsicElements;
-};
-
-export const grexToHref = (grex: Pick<Grex, 'genus' | 'epithet' | 'id'>) => {
-  const formattedName = formatName(grex);
-  const href = grex.id
-    ? `/${kebabCase(formattedName.long.genus)}/${kebabCase(
-        formattedName.long.epithet
-      )}/${grex.id}`
-    : `/${encodeURIComponent(grex.genus)}/${encodeURIComponent(grex.epithet)}`;
-  return href;
 };
 
 export const Name = ({
@@ -35,54 +22,22 @@ export const Name = ({
   className,
   grex,
   link = true,
-  linkAsSearch = false,
-  shouldAbbreviate = false,
 }: NameProps) => {
   if (grex) {
     const formattedName = formatName(grex);
-
-    const genus = shouldAbbreviate
-      ? formattedName.short.genus
-      : formattedName.long.genus;
-    const epithet = shouldAbbreviate
-      ? formattedName.short.epithet
-      : formattedName.long.epithet;
-
-    const href = linkAsSearch
-      ? `/${encodeURIComponent(grex.genus)}/${encodeURIComponent(grex.epithet)}`
-      : `/${kebabCase(formattedName.long.genus)}/${kebabCase(
-          formattedName.long.epithet
-        )}/${grex.id}`;
-
-    const isSpecies =
-      epithet &&
-      isNaN(Number(epithet[0])) &&
-      epithet[0] === epithet[0].toLowerCase();
+    const genus = formattedName.short.genus;
+    const epithet = formattedName.short.epithet;
 
     const content = (
       <>
-        <em>{genus}</em> {isSpecies ? <em>{epithet}</em> : epithet}
+        <em>{genus}</em>{' '}
+        {isSpecies(grex as Grex) ? <em>{epithet}</em> : epithet}
       </>
     );
     const Component = as;
     return (
       <Component className={cn(style.name, className)}>
-        {link ? (
-          <Link
-            href={href}
-            as={
-              linkAsSearch
-                ? `/${encodeURIComponent(
-                    formattedName.long.genus
-                  )}/${encodeURIComponent(formattedName.long.epithet)}`
-                : undefined
-            }
-          >
-            {content}
-          </Link>
-        ) : (
-          content
-        )}
+        {link ? <LinkGrex grex={grex}>{content}</LinkGrex> : content}
       </Component>
     );
   }

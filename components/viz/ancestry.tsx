@@ -15,7 +15,8 @@ import {
   isPrimary,
   isSpecies,
 } from 'components/pills/pills';
-import { Name, grexToHref } from 'components/name/name';
+import { Name } from 'components/name/name';
+import { makeHrefGrex } from 'components/link/grex';
 import { Grex } from 'lib/types';
 import { H3 } from 'components/layout';
 
@@ -103,7 +104,7 @@ export const AncestryViz = ({
       if (!isFullScreen) {
         const g = e.target.data() as Grex;
         if (g.hypothetical) return;
-        const href = grexToHref({ ...g, id: g.id.split('-')[0] });
+        const href = makeHrefGrex({ ...g, id: g.id.split('-')[0] });
         router.push(href);
       }
     },
