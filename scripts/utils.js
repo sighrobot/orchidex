@@ -3,6 +3,8 @@ const BASE_URL = 'https://apps.rhs.org.uk/horticulturaldatabase/orchidregister';
 const SEARCH_URL = `${BASE_URL}/orchidresults.asp?grex=%20`;
 const URL = `${BASE_URL}/orchiddetails.asp`;
 
+const escapeSingleQuotes = (s) => s.replace(/'/g, "''");
+
 const normalize = (s = '') =>
   s
     .normalize('NFD')
@@ -37,6 +39,7 @@ module.exports = {
   BASE_URL,
   SEARCH_URL,
   URL,
+  escapeSingleQuotes,
   normalize,
   FIELDS,
   EXT_FIELDS,
