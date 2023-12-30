@@ -21,7 +21,7 @@ const buildDescription = (
 
   const thisYear = new Date().getFullYear();
   const endYear = parseInt(
-    registrantGrexes[0].date_of_registration.slice(0, 4),
+    registrantGrexes[0]?.date_of_registration.slice(0, 4),
     10
   );
 
@@ -34,7 +34,7 @@ const buildDescription = (
   } else {
     timeString = `From ${
       statMap.firstYear
-    } to ${registrantGrexes[0].date_of_registration.slice(0, 4)},`;
+    } to ${registrantGrexes[0]?.date_of_registration.slice(0, 4)},`;
   }
 
   let desc = `${timeString} ${name}${
