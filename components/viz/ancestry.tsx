@@ -73,7 +73,7 @@ function getGrexColor(g: Grex): string {
     return 'rgba(103, 187, 110, 1)';
   }
 
-  return 'rgba(184, 151, 248, 1)';
+  return '#97999a';
 }
 
 let cy;
