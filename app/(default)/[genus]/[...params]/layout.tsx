@@ -5,6 +5,8 @@ import { description, formatName } from 'lib/string';
 import { APP_TITLE } from 'lib/constants';
 import { maybeGetGrex } from './page';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({
   params: { genus: g, params },
 }: {

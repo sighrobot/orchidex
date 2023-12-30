@@ -7,7 +7,7 @@ const fetcher = (id: string) =>
     .then((res) => res.json())
     .then((json) => json ?? []);
 
-export const fetchGrex = async (id): Promise<Grex[]> => {
+export const fetchGrex = async (id: string): Promise<Grex[]> => {
   const grex = await fetcher(id);
   return grex;
 };
