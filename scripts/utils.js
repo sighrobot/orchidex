@@ -35,6 +35,19 @@ const EXT_FIELDS = [
   'pollen_parent_epithet_normalized',
 ];
 
+async function fetchReferencePageText(grexId) {
+  const padding = Array(8 - grexId.length)
+    .fill(0)
+    .join('');
+  const id = `1${padding}${grexId}`;
+
+  const fetched = await fetch(
+    `https://bluenanta.com/display/information/${id}/?family=Orchidaceae`
+  );
+
+  return fetched.text();
+}
+
 module.exports = {
   BASE_URL,
   SEARCH_URL,
@@ -43,4 +56,5 @@ module.exports = {
   normalize,
   FIELDS,
   EXT_FIELDS,
+  fetchReferencePageText,
 };
