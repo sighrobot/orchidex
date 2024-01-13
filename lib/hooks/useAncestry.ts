@@ -7,7 +7,7 @@ export const useSpeciesAncestry = (grex: Grex | null) => {
   const fetcher = () =>
     grex
       ? fetch(
-          `/api/ancestry2?genus=${encodeURIComponent(
+          `/api/ancestry?genus=${encodeURIComponent(
             grex.genus
           )}&epithet=${encodeURIComponent(grex.epithet)}`
         ).then((resp) => resp.json())
@@ -47,7 +47,7 @@ export const useAncestry = (grex: Grex, level = 2) => {
   const fetcher = () =>
     grex
       ? fetch(
-          `/api/ancestry2?genus=${encodeURIComponent(
+          `/api/ancestry?genus=${encodeURIComponent(
             grex.genus
           )}&epithet=${encodeURIComponent(grex.epithet)}`
         ).then((resp) => resp.json())
