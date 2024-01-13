@@ -15,6 +15,7 @@ type NameProps = {
   };
   link?: boolean;
   as?: React.FC | keyof JSX.IntrinsicElements;
+  abbreviate?: boolean;
 };
 
 export const Name = ({
@@ -22,11 +23,13 @@ export const Name = ({
   className,
   grex,
   link = true,
+  abbreviate,
 }: NameProps) => {
   if (grex) {
     const formattedName = formatName(grex);
-    const genus = formattedName.short.genus;
-    const epithet = formattedName.short.epithet;
+    const nameVersion = formattedName[abbreviate ? 'short' : 'long'];
+    const genus = nameVersion.genus;
+    const epithet = nameVersion.epithet;
 
     const content = (
       <>

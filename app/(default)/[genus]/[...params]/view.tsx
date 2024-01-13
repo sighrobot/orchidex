@@ -35,7 +35,7 @@ export const SpeciesAncestry = ({ grex }) => {
       numItemsToLoad={10}
       getFields={(sa) => [sa.grex.epithet]}
       renderField={({ grex: g = {} }) => (
-        <Name className={style.speciesAncestryName} grex={g} />
+        <Name className={style.speciesAncestryName} abbreviate grex={g} />
       )}
       getCount={(d) => d.score}
       renderCount={(score) => `${(Math.round(score * 1000) / 10).toFixed(1)} %`}

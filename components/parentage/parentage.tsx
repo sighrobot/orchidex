@@ -34,6 +34,7 @@ export const Parentage = ({
     <span className={styles.parentage}>
       {seed_parent_genus && seed_parent_epithet ? (
         <Name
+          abbreviate
           link={!hideLink}
           grex={{
             id: seed_parent_id,
@@ -48,6 +49,7 @@ export const Parentage = ({
       &times;{' '}
       {pollen_parent_genus && pollen_parent_epithet ? (
         <Name
+          abbreviate
           link={!hideLink}
           grex={{
             id: pollen_parent_id,
