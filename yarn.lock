@@ -2114,11 +2114,6 @@ busboy@1.6.0:
   dependencies:
     streamsearch "^1.1.0"
 
-cache-lru@1.1.11:
-  version "1.1.11"
-  resolved "https://registry.yarnpkg.com/cache-lru/-/cache-lru-1.1.11.tgz#39d76aff2b0330cfac173a173b5a137fdd4acd32"
-  integrity sha512-Eczyf7U6aaBsvwqEq3k18lDSRIgxFPw6iYvfPHluTr2zOmg/1sIPmooLPDIa2YQP3SEvogSPZfpa6wScXKwFOg==
-
 call-bind@^1.0.0, call-bind@^1.0.2, call-bind@^1.0.4, call-bind@^1.0.5:
   version "1.0.5"
   resolved "https://registry.yarnpkg.com/call-bind/-/call-bind-1.0.5.tgz#6fa2b7845ce0ea49bf4d8b9ef64727a2c2e2e513"

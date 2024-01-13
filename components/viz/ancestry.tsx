@@ -125,8 +125,8 @@ export const AncestryViz = ({
 
   const cyContainer = useRef(null);
   const regularAncestry = useAncestry(grex, depth);
-  const seedParentAncestry = useAncestry(seedParent || {}, depth - 1);
-  const pollenParentAncestry = useAncestry(pollenParent || {}, depth - 1);
+  const seedParentAncestry = useAncestry(seedParent, depth - 1);
+  const pollenParentAncestry = useAncestry(pollenParent, depth - 1);
   const parentAncestry = {
     nodes: [
       grex,
@@ -198,7 +198,7 @@ export const AncestryViz = ({
             'background-color': (n) => {
               const g = n.data() as Grex;
               return isIntergeneric(g) && isPrimary(g) && !g.hypothetical
-                ? ''
+                ? 'transparent' // not visible when background-fill: linear-gradient
                 : getGrexColor(g);
             },
             'background-fill': (n) => {
@@ -318,7 +318,11 @@ export const AncestryViz = ({
                   {Array(9)
                     .fill(null)
                     .map((_, idx) => {
-                      return <option value={idx + 1}>{idx + 2}</option>;
+                      return (
+                        <option key={idx} value={idx + 1}>
+                          {idx + 2}
+                        </option>
+                      );
                     })}
                 </select>
               </label>

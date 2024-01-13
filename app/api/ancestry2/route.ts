@@ -20,15 +20,19 @@ export async function GET(req: NextRequest) {
 
   const q = `WITH RECURSIVE ancestry AS (
     SELECT
-      *
+      *,
+      0 AS depth,
+      1::decimal AS s
     FROM
       rhs
     WHERE
       lower(genus) = '${massageQueryTerm(genus)}'
       AND lower(epithet) ${epithetClause}
-    UNION
+    UNION ALL
     SELECT
-      rhs.*
+      rhs.*,
+      ancestry.depth + 1 AS depth,
+      (ancestry.s - (1 / POW(2, ancestry.depth + 1)))::decimal AS s
     FROM
       rhs
     JOIN ancestry ON (
@@ -42,10 +46,11 @@ export async function GET(req: NextRequest) {
       )
     )
   )
-  SELECT
-    *
+  SELECT DISTINCT ON (id)
+    *,
+    SUM(s) OVER (PARTITION BY id) AS score
   FROM
-    ancestry`;
+    ancestry WHERE genus != lower(genus)`;
 
   const json = await query(q);
 
