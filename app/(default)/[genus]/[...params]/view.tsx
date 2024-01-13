@@ -38,7 +38,10 @@ export const SpeciesAncestry = ({ grex }) => {
         <Name className={style.speciesAncestryName} abbreviate grex={g} />
       )}
       getCount={(d) => d.score}
-      renderCount={(score) => `${(Math.round(score * 1000) / 10).toFixed(1)} %`}
+      renderCount={(score) => {
+        const countString = (score * 100).toFixed(1);
+        return `${countString === '0.0' ? '< 0.1' : countString} %`;
+      }}
     />
   );
 };
