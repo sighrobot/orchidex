@@ -2,7 +2,7 @@ const fs = require('fs');
 const jsdom = require('jsdom');
 const { Pool } = require('pg');
 
-const sql = new Pool({ connectionString: process.env.SB_PG_URL });
+const sql = new Pool({ connectionString: process.env.SB_PG_POOL_URL });
 
 const { normalize, URL, FIELDS, EXT_FIELDS } = require('./utils');
 

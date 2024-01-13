@@ -7,7 +7,7 @@ const {
   fetchReferencePageText,
 } = require('./utils');
 
-const sql = new Pool({ connectionString: process.env.SB_PG_URL });
+const sql = new Pool({ connectionString: process.env.SB_PG_POOL_URL });
 
 const { JSDOM } = jsdom;
 

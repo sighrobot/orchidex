@@ -4,7 +4,7 @@ import { Pool } from 'pg';
 export const query = async (expr: string) => {
   if (!expr) return [];
 
-  const pool = new Pool({ connectionString: process.env.SB_PG_URL });
+  const pool = new Pool({ connectionString: process.env.SB_PG_POOL_URL });
 
   let rows: Grex[] = [];
   try {
