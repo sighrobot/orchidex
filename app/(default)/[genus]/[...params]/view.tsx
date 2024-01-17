@@ -24,8 +24,10 @@ import List from 'components/list';
 
 import style from './style.module.scss';
 
-export const SpeciesAncestry = ({ grex }) => {
-  const { data, isLoading } = useSpeciesAncestry(grex);
+export const SpeciesAncestry = ({ grex, seedParent, pollenParent }) => {
+  const { data, isLoading } = useSpeciesAncestry(
+    grex.hypothetical ? [seedParent, pollenParent] : grex
+  );
 
   return (
     <VizList
@@ -167,7 +169,11 @@ export default function GrexView({
                 )}
               {!isSpecies(grex) && grex.genus && grex.epithet && (
                 <StatBox heading='Species Ancestry'>
-                  <SpeciesAncestry grex={grex} />
+                  <SpeciesAncestry
+                    grex={grex}
+                    seedParent={seedParent}
+                    pollenParent={pollenParent}
+                  />
                 </StatBox>
               )}
             </aside>
