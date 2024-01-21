@@ -141,11 +141,6 @@ export const AncestryViz = ({
       ...seedParentAncestry.links,
       ...pollenParentAncestry.links,
     ],
-    nodeMap: {
-      [grex.id]: grex,
-      ...seedParentAncestry.nodeMap,
-      ...pollenParentAncestry.nodeMap,
-    },
   };
   const ancestry =
     seedParent && pollenParent ? parentAncestry : regularAncestry;

@@ -3,6 +3,7 @@ import useSWR from 'swr';
 import { isSpecies } from 'components/pills/pills';
 import { Grex } from 'lib/types';
 import { fetchJson } from 'lib/utils';
+import { uniqueId } from 'lodash';
 
 type Progeny = Grex | [Grex, Grex] | null;
 type RawScoredGrex = Grex & { score: string };
@@ -102,17 +103,13 @@ type AncestryLink = {
   value: number;
 };
 
-type AncestryNodeMap = Record<Grex['id'], Grex>;
-
 export const useAncestry = (grex?: Grex, level = 2) => {
   const [ancestry, setAncestry] = React.useState<{
     nodes: Grex[];
     links: AncestryLink[];
-    nodeMap: AncestryNodeMap;
   }>({
     nodes: [],
     links: [],
-    nodeMap: {},
   });
 
   const fetcher = () =>
@@ -136,9 +133,7 @@ export const useAncestry = (grex?: Grex, level = 2) => {
     (async () => {
       const nodes: (Grex & { maxL?: number })[] = [grex];
       const links: AncestryLink[] = [];
-      const nodeMap: AncestryNodeMap = { [grex.id]: grex };
 
-      let num = 0;
       let maxL = 0;
 
       const addParentToGraph = (type, counter, parent, child, id) => {
@@ -161,8 +156,7 @@ export const useAncestry = (grex?: Grex, level = 2) => {
         type: AncestryLink['type']
       ) => {
         if (parent) {
-          num++;
-          const id = `${parent.id}-${num}`;
+          const id = `${parent.id}-${uniqueId()}`;
 
           addParentToGraph(type, n, parent, child, id);
 
@@ -187,16 +181,15 @@ export const useAncestry = (grex?: Grex, level = 2) => {
 
         nodes.forEach((n) => {
           n.maxL = maxL;
-          nodeMap[n.id] = n;
         });
 
         if (nodes.length > 1) {
-          setAncestry({ nodes, links, nodeMap });
+          setAncestry({ nodes, links });
         } else {
-          setAncestry({ nodes: [], links: [], nodeMap: {} });
+          setAncestry({ nodes: [], links: [] });
         }
       } else {
-        setAncestry({ nodes: [grex], links: [], nodeMap });
+        setAncestry({ nodes: [grex], links: [] });
       }
     })();
   }, [grex, data, level]);
