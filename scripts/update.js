@@ -172,7 +172,7 @@ let i = startIndex;
 
   if (shouldWriteDb) {
     // fill in seed_parent_id
-    // THIS QUERY MUST STAY IN SYNC WITH data/init-pg.sql !!!
+    // THIS QUERY MUST STAY IN SYNC WITH data/init.sql !!!
     await sql.query(
       `
     UPDATE rhs
@@ -192,7 +192,7 @@ let i = startIndex;
     );
 
     // fill in pollen_parent_id
-    // THIS QUERY MUST STAY IN SYNC WITH data/init-pg.sql !!!
+    // THIS QUERY MUST STAY IN SYNC WITH data/init.sql !!!
     await sql.query(
       `
     UPDATE rhs

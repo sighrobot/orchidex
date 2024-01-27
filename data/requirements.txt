@@ -1,2 +1,0 @@
-datasette
-datasette-publish-vercel

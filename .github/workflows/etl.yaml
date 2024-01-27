@@ -53,37 +53,3 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.ref }}
-
-  datasette-publish:
-    needs: rhs-delta
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Pull latest
-        run: git pull
-
-      - name: Set up Python
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.x
-
-      - name: Install Python dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r data/requirements.txt
-
-      - name: Make temporary SQLite database
-        working-directory: data
-        run: sqlite3 orchidex.db < init.sql
-
-      - name: Deploy Datasette using Vercel
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        working-directory: data
-        run: datasette publish vercel orchidex.db --token $VERCEL_TOKEN --project xylem --setting max_returned_rows 50000 --setting sql_time_limit_ms 10000
-
-      - name: Delete temporary SQLite database
-        working-directory: data
-        run: rm orchidex.db
