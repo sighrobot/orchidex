@@ -26,7 +26,7 @@ export const getStatSql = ({ stat, grex }: { stat: Stat; grex: Grex }) => {
     case 'registrant_genus_pct':
       return `
         SELECT
-            (CAST(count(*) AS FLOAT) / (SELECT count(*) FROM rhs WHERE registrant_name = '${escaped}') ) as pct
+            (CAST(count(*) AS FLOAT) / (SELECT count(*) FROM rhs WHERE registrant_name = '${escaped}' AND epithet != '') ) as pct
         FROM rhs
         WHERE genus = '${grex.genus}' AND epithet != ''
         AND registrant_name = '${escaped}'
