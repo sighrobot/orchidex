@@ -9,6 +9,7 @@
     "postbuild-sitemaps": "mkdir .next/static/sitemaps && node scripts/sitemaps.js"
   },
   "dependencies": {
+    "3d-force-graph": "^1.73.3",
     "@emotion/react": "11.11.3",
     "@emotion/styled": "11.11.0",
     "@mui/material": "5.15.4",
@@ -18,6 +19,7 @@
     "classnames": "2.5.1",
     "cytoscape": "3.28.1",
     "cytoscape-dagre": "2.5.0",
+    "cytoscape-fcose": "^2.2.0",
     "lodash": "4.17.21",
     "next": "14.0.4",
     "pg": "8.11.3",

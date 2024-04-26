@@ -1,10 +1,11 @@
 'use client';
-
+import ForceGraph3D from '3d-force-graph';
 import React, { useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { debounce, orderBy } from 'lodash';
+import { debounce, orderBy, uniqBy } from 'lodash';
 import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
+import fcose from 'cytoscape-fcose';
 import cn from 'classnames';
 
 import { useAncestry } from 'lib/hooks/useAncestry';
@@ -77,8 +78,9 @@ function getGrexColor(g: Grex): string {
 }
 
 let cy;
+let myGraph = ForceGraph3D();
 
-cytoscape.use(dagre);
+cytoscape.use(fcose);
 
 export const AncestryViz = ({
   grex,
@@ -121,169 +123,234 @@ export const AncestryViz = ({
 
   const handleChangeDepth = debounce((e) => {
     setDepth(parseInt(e.target.value, 10));
-  }, 350);
+  }, 351);
 
   const cyContainer = useRef(null);
   const regularAncestry = useAncestry(grex, depth);
   const seedParentAncestry = useAncestry(seedParent, depth - 1);
   const pollenParentAncestry = useAncestry(pollenParent, depth - 1);
-  const parentAncestry = {
-    nodes: [
-      grex,
-      seedParent,
-      pollenParent,
-      ...seedParentAncestry.nodes,
-      ...pollenParentAncestry.nodes,
-    ],
-    links: [
-      { source: seedParent?.id, target: grex.id },
-      { source: pollenParent?.id, target: grex.id },
-      ...seedParentAncestry.links,
-      ...pollenParentAncestry.links,
-    ],
-  };
-  const ancestry =
-    seedParent && pollenParent ? parentAncestry : regularAncestry;
+
+  const elements = React.useMemo(() => {
+    const parentAncestry = {
+      nodes: [
+        grex,
+        seedParent,
+        pollenParent,
+        ...seedParentAncestry.nodes,
+        ...pollenParentAncestry.nodes,
+      ],
+      links: [
+        { source: seedParent?.id, target: grex.id },
+        { source: pollenParent?.id, target: grex.id },
+        ...seedParentAncestry.links,
+        ...pollenParentAncestry.links,
+      ],
+    };
+
+    const ancestry =
+      seedParent && pollenParent ? parentAncestry : regularAncestry;
+
+    return {
+      nodes: uniqBy(
+        ancestry.nodes.map((n) => ({ ...n, id: n?.id.split('-')[0] })),
+        'id'
+      ),
+      links: uniqBy(
+        ancestry.links.map((l) => ({
+          ...l,
+          source: l.source?.split('-')[0],
+          target: l.target.split('-')[0],
+        })),
+        (l) => `${l.source}-${l.target}`
+      ),
+    };
+
+    // return [
+    //   ...ancestry.nodes.map((n) => ({ data: n })),
+    //   ...orderBy(ancestry.links, ['type'], ['desc']).map((l) => ({
+    //     data: l,
+    //   })),
+    // ];
+  }, [
+    grex,
+    pollenParent,
+    seedParent,
+    seedParentAncestry,
+    pollenParentAncestry,
+    regularAncestry,
+  ]);
+
+  console.log(elements);
 
   React.useEffect(() => {
-    cy = cytoscape({
-      layout: { name: 'dagre', rankSep: 100 },
-      autoungrabify: true,
-      userZoomingEnabled: isFullScreen,
-      userPanningEnabled: isFullScreen,
-      boxSelectionEnabled: false,
-      container: cyContainer.current,
-      maxZoom: 1,
-      minZoom: isFullScreen ? 1 / (depth + 1) : undefined,
-      elements: [
-        ...ancestry.nodes.map((n) => ({ data: n })),
-        ...orderBy(ancestry.links, ['type'], ['desc']).map((l) => ({
-          data: l,
-        })),
-      ],
-      style: [
-        {
-          selector: 'node',
-          style: {
-            height: 148,
-            width: 220,
-            'background-gradient-direction': 'to-bottom-right',
-            color: (n) => {
-              const g = n.data() as Grex;
-              return g.hypothetical ? 'black' : 'white';
-            },
-            'font-family': getComputedStyle(document.body).fontFamily,
-            'font-weight': 300,
-            'font-size': 24,
-            'line-height': 1,
-            'min-zoomed-font-size': 12,
-            shape: 'roundrectangle',
-            'text-wrap': 'wrap',
-            'text-valign': 'center',
-            'border-color': 'black',
-            'border-width': (n) => {
-              const g = n.data() as Grex;
-              return g.hypothetical ? 2 : 1;
-            },
-            'border-style': (n) => {
-              const g = n.data() as Grex;
-              return g.hypothetical ? 'dashed' : 'solid';
-            },
+    myGraph(cyContainer.current ?? document.body)
+      .graphData({
+        nodes: elements.nodes.map((n) => {
+          const color =
+            isIntergeneric(n) && isPrimary(n) && !n.hypothetical
+              ? 'transparent' // not visible when background-fill: linear-gradient
+              : getGrexColor(n);
+          console.log(n);
+          return { ...n, color };
+        }),
+        links: elements.links.map((l) => {
+          return l;
+        }),
+      })
+      .nodeVal((n) => (n.score ? 100 * parseFloat(n.score) : 100))
+      .nodeLabel((n) => n.epithet)
+      .nodeRelSize(2)
+      .linkColor(() => 'black')
+      .dagMode('td')
+      .backgroundColor('white')
+      .dagLevelDistance(50);
+  }, [cyContainer, elements]);
 
-            'background-color': (n) => {
-              const g = n.data() as Grex;
-              return isIntergeneric(g) && isPrimary(g) && !g.hypothetical
-                ? 'transparent' // not visible when background-fill: linear-gradient
-                : getGrexColor(g);
-            },
-            'background-fill': (n) => {
-              const g = n.data() as Grex;
-              return isIntergeneric(g) && isPrimary(g) && !g.hypothetical
-                ? 'linear-gradient'
-                : 'solid';
-            },
-            'background-gradient-stop-colors': (n) => {
-              const g = n.data() as Grex;
-              return isIntergeneric(g)
-                ? isPrimary(g)
-                  ? ['rgba(239, 133, 180, 1)', 'rgba(130, 168, 248, 1)']
-                  : ['rgba(239, 133, 180, 1)', 'rgba(91, 175, 248, 1)']
-                : [];
-            },
-            label: (n) => {
-              const g = n.data() as Grex;
-              const formatted = formatName(g);
-              const repairedEpithet = repairMalformedNaturalHybridEpithet({
-                epithet: formatted.short.epithet,
-              });
-              const name = isSpecies(g)
-                ? `${formatted.short.genus} ${repairedEpithet}`
-                : formatted.short.full;
-              const nameLines = wrap(name, 17).split('\n');
-              const blankLines = Array(4 - nameLines.length).fill('');
-              const year = g.date_of_registration
-                ? g.date_of_registration.slice(0, 4)
-                : '';
+  // React.useEffect(() => {
+  //   // cy = cytoscape({
+  //   //   layout: {
+  //   //     name: 'fcose',
+  //   //     animate: false,
+  //   //   },
 
-              let nodeFooter: string;
-              const nodeLevel = grex.hypothetical ? (g.l ?? 0) + 1 : g.l;
-              const terminalNodeFooter = `${year}                    ${TERMINAL_NODE_CHAR}`;
-              const regularNodeFooter = `${
-                g.date_of_registration ? year : '          '
-              }                    ${
-                nodeLevel ? `${nodeLevel}${DEGREE_CHAR}` : ''
-              }`;
+  //   //   autoungrabify: true,
+  //   //   userZoomingEnabled: isFullScreen,
+  //   //   userPanningEnabled: isFullScreen,
+  //   //   boxSelectionEnabled: false,
+  //   //   container: cyContainer.current,
+  //   //   // maxZoom: 1,
+  //   //   minZoom: isFullScreen ? 1 / (depth + 1) : undefined,
+  //   //   elements,
+  //   //   style: [
+  //   //     {
+  //   //       selector: 'node',
+  //   //       style: {
+  //   //         // height: 148,
+  //   //         // width: 220,
+  //   //         // 'background-gradient-direction': 'to-bottom-right',
+  //   //         // color: (n) => {
+  //   //         //   const g = n.data() as Grex;
+  //   //         //   return g.hypothetical ? 'black' : 'white';
+  //   //         // },
+  //   //         // 'font-family': getComputedStyle(document.body).fontFamily,
+  //   //         // 'font-weight': 300,
+  //   //         // 'font-size': 24,
+  //   //         // 'line-height': 1,
+  //   //         'min-zoomed-font-size': 16,
+  //   //         // shape: 'roundrectangle',
+  //   //         // 'text-wrap': 'wrap',
+  //   //         // 'text-valign': 'center',
+  //   //         // // 'border-color': 'black',
+  //   //         // 'border-width': (n) => {
+  //   //         //   const g = n.data() as Grex;
+  //   //         //   return g.hypothetical ? 2 : 1;
+  //   //         // },
+  //   //         // 'border-width': 0,
+  //   //         // 'border-style': (n) => {
+  //   //         //   const g = n.data() as Grex;
+  //   //         //   return g.hypothetical ? 'dashed' : 'solid';
+  //   //         // },
 
-              nodeFooter = g.hypothetical
-                ? HYPOTHETICAL_NODE_FOOTER
-                : !!nodeLevel
-                ? regularNodeFooter
-                : terminalNodeFooter;
+  //   //         'background-color': (n) => {
+  //   //           const g = n.data() as Grex;
+  //   //           return isIntergeneric(g) && isPrimary(g) && !g.hypothetical
+  //   //             ? 'transparent' // not visible when background-fill: linear-gradient
+  //   //             : getGrexColor(g);
+  //   //         },
+  //   //         'background-fill': (n) => {
+  //   //           const g = n.data() as Grex;
+  //   //           return isIntergeneric(g) && isPrimary(g) && !g.hypothetical
+  //   //             ? 'linear-gradient'
+  //   //             : 'solid';
+  //   //         },
+  //   //         'background-gradient-stop-colors': (n) => {
+  //   //           const g = n.data() as Grex;
+  //   //           return isIntergeneric(g)
+  //   //             ? isPrimary(g)
+  //   //               ? ['rgba(239, 133, 180, 1)', 'rgba(130, 168, 248, 1)']
+  //   //               : ['rgba(239, 133, 180, 1)', 'rgba(91, 175, 248, 1)']
+  //   //             : [];
+  //   //         },
+  //   //         // label: (n) => {
+  //   //         //   const g = n.data() as Grex;
+  //   //         //   const formatted = formatName(g);
+  //   //         //   return formatted.short.epithet;
+  //   //         // },
+  //   //         // label: (n) => {
+  //   //         //   const g = n.data() as Grex;
+  //   //         //   const formatted = formatName(g);
+  //   //         //   const repairedEpithet = repairMalformedNaturalHybridEpithet({
+  //   //         //     epithet: formatted.short.epithet,
+  //   //         //   });
+  //   //         //   const name = isSpecies(g)
+  //   //         //     ? `${formatted.short.genus} ${repairedEpithet}`
+  //   //         //     : formatted.short.full;
+  //   //         //   const nameLines = wrap(name, 17).split('\n');
+  //   //         //   const blankLines = Array(4 - nameLines.length).fill('');
+  //   //         //   const year = g.date_of_registration
+  //   //         //     ? g.date_of_registration.slice(0, 4)
+  //   //         //     : '';
 
-              return [...nameLines, ...blankLines, nodeFooter].join('\n');
-            },
-          },
-        },
-        // {
-        //   selector: 'node:selected',
-        //   style: isFullScreen
-        //     ? {
-        //         'border-color': 'black',
-        //         'border-width': 25,
-        //       }
-        //     : {},
-        // },
-        {
-          selector: 'edge',
-          style: {
-            events: 'no',
-            width: 4,
-            'line-color': '#ccc',
-            'curve-style': 'taxi',
-            'taxi-direction': 'upward',
-            'edge-distances': 'node-position',
-          },
-        },
-      ],
-    }).fit(isFullScreen ? 40 : 0);
+  //   //         //   let nodeFooter: string;
+  //   //         //   const nodeLevel = grex.hypothetical ? (g.l ?? 0) + 1 : g.l;
+  //   //         //   const terminalNodeFooter = `${year}                    ${TERMINAL_NODE_CHAR}`;
+  //   //         //   const regularNodeFooter = `${
+  //   //         //     g.date_of_registration ? year : '          '
+  //   //         //   }                    ${
+  //   //         //     nodeLevel ? `${nodeLevel}${DEGREE_CHAR}` : ''
+  //   //         //   }`;
 
-    cy.removeAllListeners();
+  //   //         //   nodeFooter = g.hypothetical
+  //   //         //     ? HYPOTHETICAL_NODE_FOOTER
+  //   //         //     : !!nodeLevel
+  //   //         //     ? regularNodeFooter
+  //   //         //     : terminalNodeFooter;
 
-    if (isFullScreen) {
-      // cy.on('select', 'node', handleNodeSelect);
-      // cy.on('unselect', 'node', handleNodeUnselect);
-    } else {
-      cy.on('vclick', 'node', handleNodeClick);
-    }
-  }, [
-    ancestry,
-    handleNodeClick,
-    isFullScreen,
-    handleNodeSelect,
-    handleNodeUnselect,
-    depth,
-    grex.hypothetical,
-  ]);
+  //   //         //   return [...nameLines, ...blankLines, nodeFooter].join('\n');
+  //   //         // },
+  //   //       },
+  //   //     },
+  //   //     // {
+  //   //     //   selector: 'node:selected',
+  //   //     //   style: isFullScreen
+  //   //     //     ? {
+  //   //     //         'border-color': 'black',
+  //   //     //         'border-width': 25,
+  //   //     //       }
+  //   //     //     : {},
+  //   //     // },
+  //   //     {
+  //   //       selector: 'edge',
+  //   //       style: {
+  //   //         display: 'none',
+  //   //         events: 'no',
+  //   //         width: 2,
+  //   //         'line-color': 'black',
+  //   //         'curve-style': 'taxi',
+  //   //         'taxi-direction': 'upward',
+  //   //         'edge-distances': 'node-position',
+  //   //       },
+  //   //     },
+  //   //   ],
+  //   // }).fit(isFullScreen ? 100 : 0);
+
+  //   // cy.removeAllListeners();
+
+  //   // if (isFullScreen) {
+  //   //   // cy.on('select', 'node', handleNodeSelect);
+  //   //   // cy.on('unselect', 'node', handleNodeUnselect);
+  //   // } else {
+  //   //   cy.on('vclick', 'node', handleNodeClick);
+  //   // }
+  // }, [
+  //   elements,
+  //   handleNodeClick,
+  //   isFullScreen,
+  //   // handleNodeSelect,
+  //   // handleNodeUnselect,
+  //   depth,
+  //   // grex.hypothetical,
+  // ]);
 
   const MenuWrap = ({ children }) => (
     <div
@@ -310,7 +377,7 @@ export const AncestryViz = ({
               <label>
                 Generations:
                 <select onChange={handleChangeDepth} defaultValue={depth}>
-                  {Array(9)
+                  {Array(20)
                     .fill(null)
                     .map((_, idx) => {
                       return (
@@ -324,7 +391,7 @@ export const AncestryViz = ({
             )}
 
             {isFullScreen && (
-              <button onClick={() => cy.fit(40)}>&#x27F3;&nbsp;Reset</button>
+              <button onClick={() => cy.fit(100)}>&#x27F3;&nbsp;Reset</button>
             )}
 
             <button
