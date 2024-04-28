@@ -15,7 +15,7 @@ export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   description: 'View a list of the most recent orchid hybrid registrations.',
-  title: `Recent registrations | ${APP_TITLE}`,
+  title: `Recent registrations - ${APP_TITLE}`,
 };
 
 export default async function Recent() {

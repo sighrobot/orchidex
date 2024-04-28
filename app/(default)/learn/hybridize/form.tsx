@@ -81,7 +81,10 @@ export default function Form() {
           </sup>
         </H2>
 
-        <p>Use this tool to explore the ancestry of a theoretical hybrid. </p>
+        <p>
+          Explore the ancestry of a hybrid formed from any two orchids by
+          selecting its parents below.
+        </p>
 
         <Padded className={style.controls}>
           <article className={style.input}>

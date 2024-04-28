@@ -5,7 +5,6 @@ import React from 'react';
 import { Pills } from 'components/pills/pills';
 import Table from 'components/table';
 import { useFTS } from 'lib/fetchers/fts';
-import { abbreviateGenus } from 'lib/string';
 
 import style from './style.module.scss';
 
@@ -71,8 +70,7 @@ export default function TablePage() {
             render: (g) =>
               g.seed_parent_genus && (
                 <small>
-                  <em>{abbreviateGenus({ genus: g.seed_parent_genus })}</em>{' '}
-                  {g.seed_parent_epithet}
+                  <em>{g.seed_parent_genus}</em> {g.seed_parent_epithet}
                 </small>
               ),
           },
@@ -83,8 +81,7 @@ export default function TablePage() {
             render: (g) =>
               g.pollen_parent_genus && (
                 <>
-                  <em>{abbreviateGenus({ genus: g.pollen_parent_genus })}</em>{' '}
-                  {g.pollen_parent_epithet}
+                  <em>{g.pollen_parent_genus}</em> {g.pollen_parent_epithet}
                 </>
               ),
           },

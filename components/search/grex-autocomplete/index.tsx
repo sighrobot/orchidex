@@ -34,7 +34,7 @@ export default function GrexAutocomplete({
     limit: 10,
     isDebounced: true,
   });
-  const { data: recents } = useRecent({ limit: 10 });
+  const { data: recents } = useRecent({ limit: 5 });
 
   const grexName = grex ? formatName(grex).long.full : '';
 
@@ -86,8 +86,8 @@ export default function GrexAutocomplete({
       </ThemeProvider>
 
       {grex && (
-        <div className={style.selected}>
-          <GrexCard grex={grex} hideName />
+        <div className={cn(style.selected, style.external)}>
+          <GrexCard grex={grex} />
         </div>
       )}
     </div>

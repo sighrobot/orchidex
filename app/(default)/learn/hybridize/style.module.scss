@@ -1,6 +1,10 @@
 .beta {
   font-size: 12px;
-  font-weight: 400;
+
+  mark {
+    font-weight: bold;
+    padding: 2px 4px;
+  }
 }
 
 .hybridize {

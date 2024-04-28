@@ -1,10 +1,36 @@
+import { Metadata } from 'next';
 import { fetchGrex } from 'lib/hooks/useGrex';
 import { Grex, Grex as GrexType } from 'lib/types';
 import GrexView from 'app/(default)/[genus]/[...params]/view';
 import { fetchGrexChild } from 'lib/hooks/useGrexChild';
+import { formatName } from 'lib/string';
 import Form from './form';
 
 import style from './style.module.scss';
+
+export async function generateMetadata({
+  searchParams: { s, p },
+}: {
+  searchParams: { s: string; p: string };
+}): Promise<Metadata> {
+  if (!s || !p) {
+    return {
+      title: 'Explore ancestry of any two orchids - Orchidex',
+      description:
+        'Explore the ancestry of any two orchids using the Hybridize feature, only on Orchidex.',
+    };
+  }
+
+  const [sGrex, pGrex] = await fetchGrex(`${s},${p}`);
+
+  const sName = formatName(sGrex).short.full;
+  const pName = formatName(pGrex).short.full;
+
+  return {
+    title: `Explore ancestry of ${sName} and ${pName} - Orchidex`,
+    description: `Explore the ancestry of ${sName} and ${pName} using the Hybridize feature, only on Orchidex.`,
+  };
+}
 
 export default async function Hybridize({
   searchParams,
@@ -39,6 +65,7 @@ export default async function Hybridize({
 
       {selectedSeedParent && selectedPollenParent ? (
         <GrexView
+          hybridizer
           shouldRedirect={false}
           grex={
             existingGrex ??
@@ -60,8 +87,8 @@ export default async function Hybridize({
         />
       ) : (
         <aside className={style.empty}>
-          The ancestry of your hybrid will appear here after selecting a seed
-          and pollen parent.
+          Ancestry information will be displayed here after selecting seed and
+          pollen parents.
         </aside>
       )}
     </>

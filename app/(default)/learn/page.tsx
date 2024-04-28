@@ -38,7 +38,7 @@ export function ParentageCTA({ genus = '' }: { genus?: string }) {
 export const metadata: Metadata = {
   description:
     'A library of learning tools to explore orchids, orchid hybrids, and the people who grow them.',
-  title: `Learn | ${APP_TITLE}`,
+  title: `Learn - ${APP_TITLE}`,
 };
 
 export default async function Learn() {

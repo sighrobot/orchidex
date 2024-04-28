@@ -21,7 +21,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: `${formatName(grex).long.full} | ${APP_TITLE}`,
+    title: `${formatName(grex).long.full} - ${APP_TITLE}`,
     description: description(grex),
   };
 }
