@@ -7,6 +7,7 @@ import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import fcose from 'cytoscape-fcose';
 import cn from 'classnames';
+import { GraphVizComponent } from '@graph-viz/react';
 
 import { useAncestry } from 'lib/hooks/useAncestry';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
@@ -74,7 +75,7 @@ function getGrexColor(g: Grex): string {
     return 'rgba(103, 187, 110, 1)';
   }
 
-  return '#97999a';
+  return '#16111d';
 }
 
 let cy;
@@ -98,7 +99,7 @@ export const AncestryViz = ({
   onFullScreenClose?: () => void;
 }) => {
   const router = useRouter();
-  const [depth, setDepth] = React.useState<number>(3);
+  const [depth, setDepth] = React.useState<number>(4);
   const [inspected, setInspected] = React.useState<Grex>(); // TODO: hook this up someday
 
   const handleNodeClick = React.useCallback(
@@ -151,18 +152,20 @@ export const AncestryViz = ({
       seedParent && pollenParent ? parentAncestry : regularAncestry;
 
     return {
-      nodes: uniqBy(
-        ancestry.nodes.map((n) => ({ ...n, id: n?.id.split('-')[0] })),
-        'id'
-      ),
-      links: uniqBy(
-        ancestry.links.map((l) => ({
-          ...l,
-          source: l.source?.split('-')[0],
-          target: l.target.split('-')[0],
-        })),
-        (l) => `${l.source}-${l.target}`
-      ),
+      nodes: ancestry.nodes,
+      // nodes: uniqBy(
+      //   ancestry.nodes.map((n) => ({ ...n, id: n?.id.split('-')[0] })),
+      //   'id'
+      // ),
+      links: ancestry.links,
+      // links: uniqBy(
+      //   ancestry.links.map((l) => ({
+      //     ...l,
+      //     source: l.source?.split('-')[0],
+      //     target: l.target.split('-')[0],
+      //   })),
+      //   (l) => `${l.source}-${l.target}`
+      // ),
     };
 
     // return [
@@ -190,7 +193,7 @@ export const AncestryViz = ({
             isIntergeneric(n) && isPrimary(n) && !n.hypothetical
               ? 'transparent' // not visible when background-fill: linear-gradient
               : getGrexColor(n);
-          console.log(n);
+
           return { ...n, color };
         }),
         links: elements.links.map((l) => {
@@ -403,6 +406,38 @@ export const AncestryViz = ({
           </menu>
         </div>
       </MenuWrap>
+
+      <div style={{ height: '1000px' }}>
+        <GraphVizComponent
+          // editMode
+          nodes={elements.nodes.map((n) => {
+            const color =
+              isIntergeneric(n) && isPrimary(n) && !n.hypothetical
+                ? 'transparent' // not visible when background-fill: linear-gradient
+                : getGrexColor(n);
+            // console.log(n);
+            return {
+              id: n?.id ?? '',
+              fill: color,
+              displayGroupIds: [String(n.l - 1)],
+            };
+          })}
+          links={elements.links.map((l) => ({
+            source: l.source,
+            target: l.target,
+          }))}
+          groups={Array(depth)
+            .fill(0)
+            .map((_, idx) => {
+              return {
+                id: String(idx),
+                visible: true,
+                shape: 'convexHull' as const,
+              };
+            })}
+          tooltips={[]}
+        />
+      </div>
 
       <div
         className={cn(style.vizContainer, { [style.expanded]: isFullScreen })}
