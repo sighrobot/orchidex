@@ -7,6 +7,7 @@ import style from './style.module.scss';
 const NAV_LINKS = [
   { path: 'recent', label: 'Recent' },
   { path: 'search', label: 'Search' },
+  { path: 'learn/hybridize', label: 'Hybridize', new: true },
   { path: 'about', label: 'About' },
 ];
 
@@ -14,7 +15,16 @@ const LinkList = () => (
   <ul className={style.linkList}>
     {NAV_LINKS.map((l) => (
       <li key={l.path}>
-        <Link href={`/${l.path}`}>{l.label}</Link>
+        <Link href={`/${l.path}`}>
+          <span>
+            {l.label}
+            {l.new && (
+              <sup>
+                <mark>NEW</mark>
+              </sup>
+            )}
+          </span>
+        </Link>
       </li>
     ))}
   </ul>
@@ -36,15 +46,6 @@ export const Header = ({ hasSearch }) => {
 
           <nav className={style.nav}>
             <LinkList />
-
-            {/* <Link
-          href='/learn/hybridizer'
-          className={
-            pathname === '/learn/hybridizer' ? 'active' : undefined
-          }
-        >
-          Hybridize
-        </Link> */}
           </nav>
         </div>
       </div>

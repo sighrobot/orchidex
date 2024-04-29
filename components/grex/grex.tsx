@@ -16,6 +16,7 @@ type GrexProps = {
   heading?: boolean;
   activeRegId?: string;
   hideLinks?: boolean;
+  emphasize?: boolean;
 };
 
 export const GrexCard = ({
@@ -28,17 +29,23 @@ export const GrexCard = ({
   hideName,
   heading = false,
   activeRegId,
+  emphasize,
 }: GrexProps) => {
   return (
     <article
       className={cn(styles.grex, {
         [styles.grexHeading]: heading,
+        [styles.emphasize]: emphasize,
       })}
     >
       <Pills grex={grex} />
       {!hideName && (
         <div style={{ marginTop: '5px' }}>
-          <Name as='h2' link={!hideLink && !hideLinks} grex={grex} />
+          <Name
+            as='h2'
+            link={emphasize || (!hideLink && !hideLinks)}
+            grex={grex}
+          />
         </div>
       )}
       <Parentage

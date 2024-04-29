@@ -53,11 +53,13 @@ export default function GrexView({
   seedParent,
   pollenParent,
   shouldRedirect = true,
+  hybridizer,
 }: {
   grex: GrexType;
   seedParent?: GrexType;
   pollenParent?: GrexType;
   shouldRedirect?: boolean;
+  hybridizer?: boolean;
 }) {
   const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false);
   const router = useRouter();
@@ -108,6 +110,7 @@ export default function GrexView({
       <Padded className={style.heading}>
         {!grex.hypothetical && (
           <GrexCard
+            emphasize={hybridizer}
             heading
             grex={grex}
             seedParent={seedParent}
@@ -131,7 +134,7 @@ export default function GrexView({
             {wcvpSpecies.primary_author} {wcvpSpecies.first_published}
           </div>
         )}
-        {!grex.hypothetical && (
+        {!hybridizer && (
           <Resources
             grex={grex}
             blueNantaSpeciesId={wcvpSpecies?.plant_name_id}

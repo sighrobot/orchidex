@@ -24,9 +24,7 @@ export async function GET(
     WHERE epithet != '' AND input.q <% (COALESCE(genus, '') || ' ' ||
       COALESCE(epithet, '') || ' ' ||
       COALESCE(registrant_name, ''))
-    ORDER BY  input.q <<-> (COALESCE(genus, '') || ' ' ||
-      COALESCE(epithet, '') || ' ' ||
-      COALESCE(registrant_name, ''))
+    ORDER BY score DESC, genus ASC, lower(epithet) ASC
     LIMIT ${limit}
     ${offset ? `OFFSET ${offset}` : ''}`;
 

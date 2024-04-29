@@ -7,7 +7,7 @@ import { APP_TITLE } from 'lib/constants';
 import style from './style.module.scss';
 
 export const metadata: Metadata = {
-  title: `About | ${APP_TITLE}`,
+  title: `About - ${APP_TITLE}`,
 };
 
 export default function About() {

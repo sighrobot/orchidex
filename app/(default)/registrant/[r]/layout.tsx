@@ -69,7 +69,7 @@ export async function generateMetadata({
   const statMap = createRegistrantStatMap(registrantName, registrantGrexes);
 
   return {
-    title: `${registrantName} | ${APP_TITLE}`,
+    title: `${registrantName} - ${APP_TITLE}`,
     description: buildDescription(registrantName, statMap, registrantGrexes),
   };
 }

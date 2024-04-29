@@ -27,7 +27,7 @@ export async function generateMetadata({
   const capitalizedGenus = capitalize(genus);
 
   return {
-    title: `${capitalizedGenus} orchid species and hybrids | ${APP_TITLE}`,
+    title: `${capitalizedGenus} orchid species and hybrids - ${APP_TITLE}`,
     description: `Explore the world of ${capitalizedGenus} orchid species and hybrids. Visualize their complex ancestries and learn about the people and organizations who grow and discover them.`,
   };
 }

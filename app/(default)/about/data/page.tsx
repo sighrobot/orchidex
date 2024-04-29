@@ -8,7 +8,7 @@ import style from './style.module.scss';
 
 export const metadata: Metadata = {
   description: `Information about the data displayed on ${APP_TITLE}. Learn about its provenance, attribution, and quality, or find out how to report an issue.`,
-  title: `About our data | ${APP_TITLE}`,
+  title: `About our data - ${APP_TITLE}`,
 };
 
 export default function Data() {

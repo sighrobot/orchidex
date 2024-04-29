@@ -1,6 +1,6 @@
-import type { Grex } from './types';
+import { getDescriptor } from 'components/pills/pills';
 import { GENUS_TO_ABBREVIATION } from './abbreviations';
-import { getDescriptor, orderTerms } from 'components/pills/pills';
+import type { Grex } from './types';
 
 // https://bytes.grubhub.com/disabling-safari-autofill-for-a-single-line-address-input-b83137b5b1c7
 export const INPUT_NAME_SUFFIX = '__search__';
@@ -14,9 +14,9 @@ export const normalize = (s = '') =>
     .replace(/[\u0300-\u036f]/g, '')
     .toLowerCase();
 
-export const abbreviateGenus = ({ genus } = { genus: '' }) =>
+const abbreviateGenus = ({ genus } = { genus: '' }) =>
   GENUS_TO_ABBREVIATION[genus] || genus;
-export const abbreviateEpithet = ({ epithet } = { epithet: '' }) => {
+const abbreviateEpithet = ({ epithet } = { epithet: '' }) => {
   return epithet.replace('Memoria ', 'Mem. ');
 };
 
@@ -36,7 +36,7 @@ export const formatName = (grex: Pick<Grex, 'genus' | 'epithet'>) => {
 };
 
 export const repairMalformedNaturalHybridEpithet = (
-  { epithet } = { epithet: '' },
+  { epithet } = { epithet: '' }
 ) => {
   const i = epithet.indexOf(UNKNOWN_CHAR);
 
@@ -67,35 +67,42 @@ export const description = (grex: Grex) => {
     registrant_name,
     hypothetical,
   } = grex;
-  const crossString = `${abbreviateGenus({
-    genus: seed_parent_genus,
-  })} ${seed_parent_epithet} ${CROSS_CHAR} ${abbreviateGenus({
-    genus: pollen_parent_genus,
-  })} ${pollen_parent_epithet}`;
 
-  if (hypothetical) {
-    return `${crossString} is ${getDescriptor(grex)}.`;
-  }
-
-  const dateString = `${new Date(date_of_registration)
-    .toString()
-    .slice(4, 15)}`;
+  const nameShort = formatName({ genus, epithet }).long.full;
 
   if (seed_parent_genus && pollen_parent_genus) {
+    const seedNameShort = formatName({
+      genus: seed_parent_genus,
+      epithet: seed_parent_epithet,
+    }).short.full;
+    const pollenNameShort = formatName({
+      genus: pollen_parent_genus,
+      epithet: pollen_parent_epithet,
+    }).short.full;
+    const crossString = `${seedNameShort} ${CROSS_CHAR} ${pollenNameShort}`;
+
     if (date_of_registration) {
+      const dateString = `${new Date(date_of_registration)
+        .toString()
+        .slice(4, 15)}`;
+
       if (registrant_name) {
-        return `${genus} ${epithet} (${crossString}) is ${getDescriptor(
-          grex,
+        return `${nameShort} (${crossString}) is ${getDescriptor(
+          grex
         )} registered by ${registrant_name} on ${dateString}.`;
       }
 
-      return `${genus} ${epithet} (${crossString}) is ${getDescriptor(
-        grex,
+      return `${nameShort} (${crossString}) is ${getDescriptor(
+        grex
       )} registered on ${dateString}.`;
     }
 
-    return `${genus} ${epithet} (${crossString}) is ${getDescriptor(grex)}.`;
+    if (hypothetical) {
+      return `Explore the ancestry of ${crossString}.`;
+    }
+
+    return `${nameShort} (${crossString}) is ${getDescriptor(grex)}.`;
   }
 
-  return `${genus} ${epithet} is an orchid ${getDescriptor(grex)}.`;
+  return `${nameShort} is an orchid ${getDescriptor(grex)}.`;
 };
