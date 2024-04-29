@@ -74,12 +74,7 @@ export default function Form() {
   return (
     <>
       <aside className={style.hybridize}>
-        <H2>
-          Hybridize{' '}
-          <sup className={style.beta}>
-            <mark>BETA</mark>
-          </sup>
-        </H2>
+        <H2>Hybridize</H2>
 
         <p>
           Explore the ancestry of a hybrid formed from any two orchids by

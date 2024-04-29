@@ -35,7 +35,7 @@
     .search {
       margin-right: 20px;
 
-      @media (max-width: 500px) {
+      @media (max-width: 580px) {
         margin-right: 35px;
       }
 
@@ -49,7 +49,7 @@
   }
 
   .nav {
-    @media (max-width: 500px) {
+    @media (max-width: 580px) {
       display: none;
     }
 
@@ -91,7 +91,7 @@
   background: gray;
   display: flex;
 
-  @media (min-width: 501px) {
+  @media (min-width: 581px) {
     display: none;
   }
 
@@ -137,4 +137,26 @@
 .linkList {
   list-style-type: none;
   padding: 0;
+
+  li {
+    span {
+      position: relative;
+
+      sup {
+        position: absolute;
+        top: -14px;
+        right: -8px;
+        transform: rotate(15deg);
+
+        mark {
+          background: fuchsia;
+          border-radius: 2px;
+          font-size: 9px;
+          padding: 1px 2px;
+          font-weight: bold;
+          color: white;
+        }
+      }
+    }
+  }
 }
