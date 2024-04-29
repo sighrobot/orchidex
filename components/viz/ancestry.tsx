@@ -1,5 +1,6 @@
 'use client';
 
+import { track } from '@vercel/analytics';
 import React, { useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { debounce, orderBy } from 'lodash';
@@ -120,7 +121,9 @@ export const AncestryViz = ({
   }, []);
 
   const handleChangeDepth = debounce((e) => {
-    setDepth(parseInt(e.target.value, 10));
+    const newDepth = parseInt(e.target.value, 10);
+    setDepth(newDepth);
+    track('Set ancestry depth', { depth: newDepth + 1 });
   }, 350);
 
   const cyContainer = useRef(null);

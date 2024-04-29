@@ -1,5 +1,6 @@
 'use client';
 
+import { track } from '@vercel/analytics';
 import React from 'react';
 import { capitalize, kebabCase, orderBy } from 'lodash';
 
@@ -85,7 +86,10 @@ export default function GrexView({
     }
   }, [pathname, grex.hypothetical, shouldRedirect]);
 
-  const handleFullScreenOpen = () => setIsDialogOpen(true);
+  const handleFullScreenOpen = () => {
+    setIsDialogOpen(true);
+    track('Expand ancestry');
+  };
   const handleFullScreenClose = () => setIsDialogOpen(false);
 
   if (!grex) {
