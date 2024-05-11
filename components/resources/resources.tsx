@@ -30,11 +30,11 @@ export const Resources = ({ grex, blueNantaSpeciesId }: ResourcesProps) => {
 
       <a
         {...SHARED_PROPS}
-        href={`https://bluenanta.com/display/information/${
+        href={`https://orchidroots.com/display/information/${
           blueNantaSpeciesId ?? String(orchidRootsIdNumber)
         }/?family=Orchidaceae`}
       >
-        BlueNanta
+        OrchidRoots
       </a>
 
       <a

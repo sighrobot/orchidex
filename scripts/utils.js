@@ -42,7 +42,7 @@ async function fetchReferencePageText(grexId) {
   const id = `1${padding}${grexId}`;
 
   const fetched = await fetch(
-    `https://bluenanta.com/display/information/${id}/?family=Orchidaceae`
+    `https://orchidroots.com/display/information/${id}/?family=Orchidaceae`
   );
 
   return fetched.text();
