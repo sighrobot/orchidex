@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
     where.push(`lower(genus) = '${genus}'`);
   }
 
-  const sql = `${select} ${where.join(' AND ')} ${aggr.join(' ')}`;
+  const sql = `${select} ${where.join(' AND ')} ${aggr.join(' ')} LIMIT 25`;
 
   const json = await query(sql);
 
