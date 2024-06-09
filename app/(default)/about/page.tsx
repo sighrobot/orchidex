@@ -58,8 +58,8 @@ export default function About() {
             </dt>
             <dd>
               Please feel free to email{' '}
-              <Link href='mailto:orchidgrexes@gmail.com'>
-                orchidgrexes@gmail.com
+              <Link href='mailto:support@orchidex.org'>
+                support@orchidex.org
               </Link>
               . We welcome questions, comments, feature requests, and any other
               feedback you may have.
