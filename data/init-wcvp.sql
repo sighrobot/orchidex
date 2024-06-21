@@ -1,3 +1,6 @@
+-- prefilter by family Orchidaceae
+-- awk -F "|" '$5 == "Orchidaceae"' wcvp_names.csv > data.csv
+
 -- to run on production:
 -- psql $POSTGRES_URL -f init-wcvp.sql
 
