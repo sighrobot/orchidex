@@ -1,10 +1,13 @@
-const fs = require('fs');
+const { Pool } = require('pg');
 const jsdom = require('jsdom');
 const fetch = require('fetch-retry')(global.fetch);
 const { htmlTextToDelimitedRow } = require('./html-text-to-delimited-row');
 const { SEARCH_URL, URL, FIELDS, EXT_FIELDS } = require('./utils');
 
+const sql = new Pool({ connectionString: process.env.SB_PG_POOL_URL });
 const { JSDOM } = jsdom;
+
+const TABLE = 'rhs_rebuild';
 
 async function getIDsOnPage(page) {
   const fetched = await fetch(`${SEARCH_URL}&page=${page}`);
@@ -21,6 +24,7 @@ async function getIDsOnPage(page) {
   }
 
   const ids = Array.from(table.querySelectorAll('tbody a'))
+    .filter((e) => e.innerHTML)
     .map((e) => e.href)
     .filter((l) => l.includes('orchiddetails'))
     .map((l) => parseInt(l.split('=')[1], 10))
@@ -30,16 +34,11 @@ async function getIDsOnPage(page) {
 }
 
 const args = process.argv.slice(2);
-const outFilename = args[0];
-const startPage = args[1] ? parseInt(args[1], 10) : 1;
-const startItem = args[2] ? parseInt(args[2], 10) : 1;
+const startPage = args[0] ? parseInt(args[0], 10) : 1;
+const endPage = args[1] ? parseInt(args[1], 10) : 1000;
+const shouldWriteDb = args[2] === 'write';
 
-if (!outFilename) {
-  console.error('Error: no out file specified');
-  return;
-}
-
-console.log('Writing to', `${outFilename}...\n`);
+const startItem = 1;
 
 const get = async (id) => {
   return new Promise((resolve) => {
@@ -50,14 +49,6 @@ const get = async (id) => {
     }, 500);
   });
 };
-
-const stream = fs.createWriteStream(outFilename, { flags: 'w' });
-
-stream.write(
-  `${FIELDS.concat(EXT_FIELDS)
-    .map((f) => f.toLowerCase().split(' ').join('_'))
-    .join('\t')}\n`
-);
 
 let p = startPage;
 let ids = [];
@@ -75,13 +66,22 @@ let ids = [];
         const got = await get(id);
         const split = got.split('\t');
 
+        if (shouldWriteDb) {
+          await sql.query(
+            `INSERT INTO ${TABLE} (${FIELDS.concat(EXT_FIELDS)
+              .map((f) => f.toLowerCase().split(' ').join('_'))
+              .join(', ')}) VALUES (${split
+              .map((s) => `'${s.replace(/'/g, "''")}'`)
+              .join(', ')})`
+          );
+        }
+
         if (got !== null) {
           console.log(
             `${p}\t${p === startPage ? i + startItem : i + 1}\t${
               split[0]
             }\t${split.slice(1, 3).join(' ')}`
           );
-          stream.write(`${got}\n`);
         }
       } catch (e) {
         console.log(`grex ${id} could not fetch`);
@@ -89,7 +89,5 @@ let ids = [];
     }
 
     p++;
-  } while (ids.length > 0);
-
-  stream.end();
+  } while (ids.length > 0 && p <= endPage);
 })();

@@ -1,0 +1,31 @@
+name: Rebuild RHS chunk
+
+on:
+  workflow_call:
+    inputs:
+      start-page:
+        required: true
+        type: number
+      end-page:
+        required: true
+        type: number
+
+jobs:
+  rebuild-rhs-01:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Scrape data
+        env:
+          SB_PG_POOL_URL: ${{ secrets.SB_PG_POOL_URL }}
+        run: node scripts/rebuild.js ${{ inputs.start-page }} ${{ inputs.end-page }} write

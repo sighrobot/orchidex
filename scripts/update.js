@@ -1,12 +1,9 @@
 const fs = require('fs');
-const jsdom = require('jsdom');
 const { Pool } = require('pg');
+const { htmlTextToDelimitedRow } = require('./html-text-to-delimited-row');
+const { URL, FIELDS, EXT_FIELDS } = require('./utils');
 
 const sql = new Pool({ connectionString: process.env.SB_PG_POOL_URL });
-
-const { normalize, URL, FIELDS, EXT_FIELDS } = require('./utils');
-
-const { JSDOM } = jsdom;
 
 const args = process.argv.slice(2);
 
@@ -37,86 +34,7 @@ const get = async (id) => {
     setTimeout(async () => {
       const fetched = await fetch(`${URL}?ID=${id}`);
       const text = await fetched.text();
-
-      const {
-        window: { document },
-      } = new JSDOM(text);
-
-      const data = new Array(FIELDS.length);
-
-      data[0] = id.toString();
-
-      const mainTableRows = document.querySelectorAll(
-        '.mcl.results.fifty50 tr'
-      );
-
-      mainTableRows.forEach((row) => {
-        const fieldIdx = FIELDS.indexOf(
-          row.querySelector('td:first-of-type').textContent
-        );
-
-        const textContent = row.querySelector('td:last-of-type').textContent;
-
-        if (fieldIdx === 8) {
-          // date
-          const [d, m, y] = textContent.split('/');
-          data[fieldIdx] = `${y}-${m}-${d}`;
-        } else {
-          data[fieldIdx] = textContent;
-        }
-      });
-
-      const secondaryTableRows = Array.from(
-        document.querySelectorAll('.results.spread.thirds tr')
-      );
-
-      if (secondaryTableRows.length > 0) {
-        let seedParentColIdx = -1;
-        let pollenParentColIdx = -1;
-
-        secondaryTableRows[0].querySelectorAll('th').forEach((th, colIdx) => {
-          if (th.textContent === 'Seed parent') {
-            seedParentColIdx = colIdx;
-          }
-
-          if (th.textContent === 'Pollen parent') {
-            pollenParentColIdx = colIdx;
-          }
-        });
-
-        secondaryTableRows.slice(1).forEach((row, idx) => {
-          const cells = row.querySelectorAll('th, td');
-          const subFieldName = cells[0].textContent;
-
-          cells.forEach((cell, cellIdx) => {
-            if (cellIdx > 0) {
-              let fieldName;
-
-              if (cellIdx === seedParentColIdx) {
-                fieldName = `Seed parent ${subFieldName}`;
-              } else if (cellIdx === pollenParentColIdx) {
-                fieldName = `Pollen parent ${subFieldName}`;
-              }
-
-              const fieldIdx = FIELDS.indexOf(fieldName);
-
-              data[fieldIdx] = cell.textContent;
-            }
-          });
-        });
-      }
-
-      if (data.slice(1).every((d) => d === undefined)) {
-        return resolve(null);
-      }
-
-      data.push(normalize(data[2]));
-      data.push(normalize(data[6]));
-      data.push(normalize(data[7]));
-      data.push(normalize(data[10]));
-      data.push(normalize(data[12]));
-
-      return resolve(data.join('\t'));
+      return resolve(htmlTextToDelimitedRow(id, text));
     }, 200);
   });
 };
