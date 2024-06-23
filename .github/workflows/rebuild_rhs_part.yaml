@@ -1,4 +1,4 @@
-name: Rebuild RHS chunk
+name: Rebuild RHS part
 
 on:
   workflow_call:
@@ -11,7 +11,7 @@ on:
         type: number
 
 jobs:
-  rebuild-rhs-01:
+  rebuild-rhs-part:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
