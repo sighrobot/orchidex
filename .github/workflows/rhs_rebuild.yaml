@@ -1,0 +1,110 @@
+name: RHS rebuild
+
+on:
+  workflow_dispatch:
+
+jobs:
+  rhs-rebuild-00:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 1
+      end-page: 800
+    secrets: inherit
+
+  rhs-rebuild-01:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 801
+      end-page: 1600
+    secrets: inherit
+
+  rhs-rebuild-02:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 1601
+      end-page: 2400
+    secrets: inherit
+
+  rhs-rebuild-03:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 2401
+      end-page: 3200
+    secrets: inherit
+
+  rhs-rebuild-04:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 3201
+      end-page: 4000
+    secrets: inherit
+
+  rhs-rebuild-05:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 4001
+      end-page: 4800
+    secrets: inherit
+
+  rhs-rebuild-06:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 4801
+      end-page: 5600
+    secrets: inherit
+
+  rhs-rebuild-07:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 5601
+      end-page: 6400
+    secrets: inherit
+
+  rhs-rebuild-08:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 6401
+      end-page: 7200
+    secrets: inherit
+
+  rhs-rebuild-09:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 7201
+      end-page: 8000
+    secrets: inherit
+
+  rhs-rebuild-10:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 8001
+      end-page: 8800
+    secrets: inherit
+
+  rhs-rebuild-11:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 8801
+      end-page: 9600
+    secrets: inherit
+
+  rhs-rebuild-12:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 9601
+      end-page: 10400
+    secrets: inherit
+
+  rhs-rebuild-13:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 10401
+      end-page: 11200
+    secrets: inherit
+
+  rhs-rebuild-14:
+    uses: ./.github/workflows/rhs_rebuild_part.yaml
+    with:
+      start-page: 11201
+      end-page: 11331
+    secrets: inherit

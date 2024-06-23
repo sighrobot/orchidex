@@ -3,7 +3,7 @@ const { normalize, FIELDS } = require('./utils');
 
 const { JSDOM } = jsdom;
 
-const htmlTextToDelimitedRow = (id, text) => {
+const htmlTextToDelimitedRow = (id, text, delimiter = '\t') => {
   const {
     window: { document },
   } = new JSDOM(text);
@@ -80,7 +80,7 @@ const htmlTextToDelimitedRow = (id, text) => {
   data.push(normalize(data[10]));
   data.push(normalize(data[12]));
 
-  return data.join('\t');
+  return data.join(delimiter);
 };
 
 module.exports = { htmlTextToDelimitedRow };
