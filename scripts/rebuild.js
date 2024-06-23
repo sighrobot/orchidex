@@ -8,9 +8,14 @@ const sql = new Pool({ connectionString: process.env.SB_PG_POOL_URL });
 const { JSDOM } = jsdom;
 
 const TABLE = 'rhs_rebuild';
+const ID_FETCH_INTERVAL = 500;
+
+function retryDelay(attempt, error, response) {
+  return Math.pow(2, attempt) * 1000; // 1000, 2000, 4000
+}
 
 async function getIDsOnPage(page) {
-  const fetched = await fetch(`${SEARCH_URL}&page=${page}`);
+  const fetched = await fetch(`${SEARCH_URL}&page=${page}`, { retryDelay });
   const text = await fetched.text();
 
   const {
@@ -43,10 +48,10 @@ const startItem = 1;
 const get = async (id) => {
   return new Promise((resolve) => {
     setTimeout(async () => {
-      const fetched = await fetch(`${URL}?ID=${id}`);
+      const fetched = await fetch(`${URL}?ID=${id}`, { retryDelay });
       const text = await fetched.text();
       return resolve(htmlTextToDelimitedRow(id, text));
-    }, 500);
+    }, ID_FETCH_INTERVAL);
   });
 };
 
@@ -89,5 +94,5 @@ let ids = [];
     }
 
     p++;
-  } while (ids.length > 0 && p <= endPage);
+  } while (p <= endPage);
 })();
