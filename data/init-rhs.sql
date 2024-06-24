@@ -1,10 +1,13 @@
--- to dedupe the source:
--- awk '!seen[$1]++' data.tsv > new.tsv
+-- to replace local csv with a rebuild
+-- \copy (SELECT * FROM rhs_rebuild ORDER BY id::int DESC) to 'data.csv' with (FORMAT CSV, HEADER);
 
 -- to run on production:
--- psql $POSTGRES_URL -f init.sql
+-- psql $POSTGRES_URL -f init-rhs.sql
 
 DROP TABLE IF EXISTS rhs;
+DROP INDEX IF EXISTS idx_rhs_genus_epithet;
+DROP INDEX IF EXISTS rhs_searchable_text_trgm_gist_idx;
+
 CREATE TABLE rhs (
     id text PRIMARY KEY,
     genus TEXT,
@@ -23,9 +26,11 @@ CREATE TABLE rhs (
     registrant_name_normalized TEXT,
     originator_name_normalized TEXT,
     seed_parent_epithet_normalized TEXT,
-    pollen_parent_epithet_normalized TEXT
+    pollen_parent_epithet_normalized TEXT,
+    seed_parent_id TEXT,
+    pollen_parent_id TEXT
 );
-\COPY rhs FROM 'rhs/data.tsv' DELIMITER E'\t' CSV HEADER;
+\COPY rhs FROM 'rhs/data.csv' CSV HEADER;
 
 CREATE INDEX idx_rhs_genus_epithet ON rhs (genus, epithet);
 CREATE INDEX rhs_searchable_text_trgm_gist_idx ON rhs USING gist((
@@ -33,9 +38,6 @@ CREATE INDEX rhs_searchable_text_trgm_gist_idx ON rhs USING gist((
     COALESCE(genus, '') || ' ' ||
     COALESCE(registrant_name, '')
 ) gist_trgm_ops(siglen=256));
-
-ALTER TABLE rhs ADD seed_parent_id TEXT;
-ALTER TABLE rhs ADD pollen_parent_id TEXT;
 
 -- populate seed_parent_id
 UPDATE rhs

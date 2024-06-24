@@ -4,7 +4,7 @@ const { kebabCase } = require('lodash');
 
 const SITEMAPS_PATH = '.next/static/sitemaps';
 const MAX_NUM_URLS = 40000;
-const DATA_READ_PATH = 'data/rhs/data.tsv';
+const DATA_READ_PATH = 'data/rhs/data.csv';
 const BASE_URL = 'https://orchidex.org';
 const XML_HEADER = '<?xml version="1.0" encoding="UTF-8"?>';
 const getNamespacedTagOpen = (tag) =>
@@ -35,7 +35,7 @@ const genera = new Set();
 const registrants = new Set();
 
 const handleLine = (line) => {
-  const split = line.split('\t');
+  const split = line.split(',');
   const [id, genus, epithet, , , , reg, orig] = split;
 
   const thisId = parseInt(id, 10);
