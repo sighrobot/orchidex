@@ -63,7 +63,7 @@ let i = startIndex;
 
         if (shouldWriteDb) {
           await sql.query(
-            `INSERT INTO rhs (${FIELDS.concat(EXT_FIELDS)
+            `INSERT INTO rhs_test (${FIELDS.concat(EXT_FIELDS)
               .map((f) => f.toLowerCase().split(' ').join('_'))
               .join(', ')}) VALUES (${split
               .map((s) => `'${s.replace(/'/g, "''")}'`)
@@ -93,19 +93,19 @@ let i = startIndex;
     // THIS QUERY MUST STAY IN SYNC WITH data/init.sql !!!
     await sql.query(
       `
-    UPDATE rhs
+    UPDATE rhs_test
     SET seed_parent_id=subquery.seed_parent_id
     FROM (
         SELECT r1.id, r2.id AS seed_parent_id
-        FROM rhs r1
-        LEFT JOIN rhs r2
+        FROM rhs_test r1
+        LEFT JOIN rhs_test r2
             ON r1.seed_parent_genus = r2.genus
             AND r1.seed_parent_epithet = r2.epithet
     ) AS subquery
-    WHERE rhs.id=subquery.id
-        AND rhs.epithet != ''
-        AND rhs.date_of_registration != ''
-        AND rhs.seed_parent_id is NULL
+    WHERE rhs_test.id=subquery.id
+        AND rhs_test.epithet != ''
+        AND rhs_test.date_of_registration != ''
+        AND rhs_test.seed_parent_id is NULL
     `.trim()
     );
 
@@ -113,19 +113,19 @@ let i = startIndex;
     // THIS QUERY MUST STAY IN SYNC WITH data/init.sql !!!
     await sql.query(
       `
-    UPDATE rhs
+    UPDATE rhs_test
     SET pollen_parent_id=subquery.pollen_parent_id
     FROM (
         SELECT r1.id, r2.id AS pollen_parent_id
-        FROM rhs r1
-        LEFT JOIN rhs r2
+        FROM rhs_test r1
+        LEFT JOIN rhs_test r2
             ON r1.pollen_parent_genus = r2.genus
             AND r1.pollen_parent_epithet = r2.epithet
     ) AS subquery
-    WHERE rhs.id=subquery.id
-        AND rhs.epithet != ''
-        AND rhs.date_of_registration != ''
-        AND rhs.pollen_parent_id is NULL
+    WHERE rhs_test.id=subquery.id
+        AND rhs_test.epithet != ''
+        AND rhs_test.date_of_registration != ''
+        AND rhs_test.pollen_parent_id is NULL
     `.trim()
     );
   }
