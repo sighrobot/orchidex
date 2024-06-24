@@ -34,7 +34,7 @@ const get = async (id) => {
     setTimeout(async () => {
       const fetched = await fetch(`${URL}?ID=${id}`);
       const text = await fetched.text();
-      return resolve(htmlTextToDelimitedRow(id, text));
+      return resolve(htmlTextToDelimitedRow(id, text, ','));
     }, 200);
   });
 };
@@ -48,7 +48,7 @@ const stream = fs.createWriteStream(outFilename, { flags: 'w' });
 stream.write(
   `${FIELDS.concat(EXT_FIELDS)
     .map((f) => f.toLowerCase().split(' ').join('_'))
-    .join('\t')}\n`
+    .join(',')}\n`
 );
 
 let i = startIndex;
@@ -59,7 +59,7 @@ let i = startIndex;
       const got = await get(i);
 
       if (got !== null) {
-        const split = got.split('\t');
+        const split = got.split(',');
 
         if (shouldWriteDb) {
           await sql.query(
