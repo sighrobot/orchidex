@@ -25,7 +25,7 @@ export default function About() {
               Abe Rubenstein
             </Link>{' '}
             &amp;{' '}
-            <Link href='https://ktcharliaorchids.com' target='_blank'>
+            <Link href='https://charliaorchids.com' target='_blank'>
               KT Paeth
             </Link>
             .
