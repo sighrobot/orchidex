@@ -46,13 +46,13 @@ export default function SearchAdvanced() {
       [e.target.name.replace(INPUT_NAME_SUFFIX, '')]: e.target.value,
     }));
 
-  const handleSubmit = (s) => {
+  const makeHandleSubmit = (fields) => (s) => {
     let url = '/search-advanced';
     const params: string[] = [];
 
-    SEARCH_FIELDS.forEach((f) => {
+    fields.forEach((f) => {
       if (s[f]) {
-        params.push(`${f}=${s[f]}`);
+        params.push(`${f}=${encodeURIComponent(s[f])}`);
       }
     });
 
@@ -63,22 +63,8 @@ export default function SearchAdvanced() {
     }
   };
 
-  const handleSubmitCross = () => {
-    let url = '/search-advanced';
-    const params: string[] = [];
-
-    CROSS_FIELDS.forEach((f) => {
-      if (state[f]) {
-        params.push(`${f}=${state[f]}`);
-      }
-    });
-
-    if (params.length > 0) {
-      url += `?${params.join('&')}`;
-
-      router.replace(url);
-    }
-  };
+  const handleSubmitSimple = makeHandleSubmit(SEARCH_FIELDS);
+  const handleSubmitCross = makeHandleSubmit(CROSS_FIELDS);
 
   React.useEffect(() => {
     if (Object.keys(query).length > 0) {
@@ -88,7 +74,7 @@ export default function SearchAdvanced() {
 
       (nextSimple ? CROSS_FIELDS : SEARCH_FIELDS).forEach((f) => {
         if (query[f]) {
-          params.push(`${f}=${query[f]}`);
+          params.push(`${f}=${encodeURIComponent(query[f])}`);
           nextState[f] = query[f];
         }
       });
@@ -145,7 +131,7 @@ export default function SearchAdvanced() {
         ) : (
           <SearchGrex
             onChange={handleChange}
-            onSubmit={handleSubmit}
+            onSubmit={handleSubmitSimple}
             state={state}
           />
         )}
