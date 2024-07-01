@@ -9,7 +9,7 @@ import { Padded } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
 import { CROSS_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
-import { SearchGrex } from 'components/search/grex';
+import { SearchParentage } from 'components/search/parentage';
 import { APP_URL } from 'lib/constants';
 import { H2, H3 } from 'components/layout';
 import { Grex } from 'lib/types';
@@ -22,7 +22,7 @@ export async function fetchSearch(params: string[] = []): Promise<Grex[]> {
   return fetched.json();
 }
 
-export default function SearchAdvanced() {
+export default function SearchHybrid() {
   const router = useRouter();
   const rawSearchParams = useSearchParams();
   const query = React.useMemo(
@@ -42,7 +42,7 @@ export default function SearchAdvanced() {
     }));
 
   const makeHandleSubmit = (fields) => (s) => {
-    let url = '/search-advanced';
+    let url = '/search-hybrid';
     const params: string[] = [];
 
     fields.forEach((f) => {
@@ -58,7 +58,7 @@ export default function SearchAdvanced() {
     }
   };
 
-  const handleSubmitSimple = makeHandleSubmit(SEARCH_FIELDS);
+  const handleSubmitCross = makeHandleSubmit(CROSS_FIELDS);
 
   React.useEffect(() => {
     if (Object.keys(query).length > 0) {
@@ -88,21 +88,29 @@ export default function SearchAdvanced() {
     }
   }, [query]);
 
+  const exp = (
+    <>
+      <em>{query.g1}</em> {query.e1}{' '}
+      {(query.g2 || query.e2) && (query.g1 || query.e1) && '×'}{' '}
+      <em>{query.g2}</em> {query.e2}
+    </>
+  );
+
   return (
     <>
       <Padded>
-        <H2>Advanced search</H2>
+        <H2>Hybrid search</H2>
 
         <div className={style.backToSimple}>
           <Link href='/search'>Basic search</Link> &middot;{' '}
-          <Link href='/search-hybrid'>Hybrid search</Link>
+          <Link href='/search-advanced'>Advanced search</Link>
         </div>
       </Padded>
 
       <section>
-        <SearchGrex
+        <SearchParentage
           onChange={handleChange}
-          onSubmit={handleSubmitSimple}
+          onSubmit={handleSubmitCross}
           state={state}
         />
       </section>
@@ -110,7 +118,7 @@ export default function SearchAdvanced() {
       <section>
         {results !== null && (
           <H3>
-            Results ({results.length.toLocaleString()}
+            Results for {exp} ({results.length.toLocaleString()}
             {results.length === 1000 ? '+' : ''})
           </H3>
         )}

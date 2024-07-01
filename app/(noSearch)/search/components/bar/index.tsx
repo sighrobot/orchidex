@@ -11,9 +11,8 @@ import style from './style.module.scss';
 
 export const AdvSearchCTA = () => (
   <aside className={style.advSearchCta}>
-    <strong>
-      <Link href='/search-advanced'>Try advanced search &raquo;</Link>
-    </strong>
+    <Link href='/search-hybrid'>Hybrid search</Link> &middot;{' '}
+    <Link href='/search-advanced'>Advanced search</Link>
   </aside>
 );
 

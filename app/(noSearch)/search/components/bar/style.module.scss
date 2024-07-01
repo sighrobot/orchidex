@@ -30,6 +30,17 @@
   padding: 0 15px;
 
   a {
+    text-decoration: underline;
+  }
+}
+
+.backToSimple {
+  font-weight: 400;
+  margin-top: 10px;
+  margin-bottom: 20px;
+
+  a {
     color: gray;
+    text-decoration: underline;
   }
 }
