@@ -1,0 +1,41 @@
+.shirt {
+  display: inline-block;
+  margin: 0;
+  position: relative;
+  margin-right: 50px;
+
+  img {
+    transform: rotate(5deg);
+    width: 117px;
+    height: 100px;
+  }
+
+  figcaption {
+    font-weight: bold;
+    text-align: center;
+    position: absolute;
+    right: -42px;
+    top: 0px;
+    left: 20px;
+    transform: rotate(15deg);
+
+    span {
+      text-transform: uppercase;
+      transition: 200ms ease background;
+      background: fuchsia;
+      border-radius: 2px;
+      font-size: 10px;
+      padding: 2px 3px;
+      font-weight: bold;
+      color: white;
+    }
+  }
+}
+
+.shirt:hover {
+  figcaption {
+    span {
+      background: rgb(116, 124, 5);
+    }
+  }
+}

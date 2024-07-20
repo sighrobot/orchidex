@@ -1,11 +1,9 @@
-import { isSpecies } from 'components/pills/pills';
-import { formatName } from 'lib/string';
 import { Grex } from 'lib/types';
 
 import style from './style.module.scss';
 
 const ORCHID_ROOTS_BASE_ID = 100000000;
-const SHARED_PROPS = {
+export const EXTERNAL_LINK_PROPS = {
   target: '_blank',
   rel: 'noreferrer noopener',
 };
@@ -22,14 +20,14 @@ export const Resources = ({ grex, blueNantaSpeciesId }: ResourcesProps) => {
   return (
     <div className={style.resources}>
       <a
-        {...SHARED_PROPS}
+        {...EXTERNAL_LINK_PROPS}
         href={`https://apps.rhs.org.uk/horticulturaldatabase/orchidregister/orchiddetails.asp?ID=${grex.id}`}
       >
         RHS
       </a>
 
       <a
-        {...SHARED_PROPS}
+        {...EXTERNAL_LINK_PROPS}
         href={`https://orchidroots.com/display/information/${
           blueNantaSpeciesId ?? String(orchidRootsIdNumber)
         }/?family=Orchidaceae`}
@@ -38,7 +36,7 @@ export const Resources = ({ grex, blueNantaSpeciesId }: ResourcesProps) => {
       </a>
 
       <a
-        {...SHARED_PROPS}
+        {...EXTERNAL_LINK_PROPS}
         href={`https://www.google.com/search?q=${encodeURIComponent(
           `"${grex.genus} ${grex.epithet}"`
         )}&tbm=isch`}
