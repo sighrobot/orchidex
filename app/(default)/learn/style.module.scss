@@ -1,19 +1,35 @@
 .learn {
   .grid {
-    display: flex;
-    flex-wrap: wrap;
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
     gap: 40px;
+
+    @media (max-width: 1100px) {
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    }
+
+    @media (max-width: 860px) {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
   }
 }
 
 .cta {
-  padding: 10px 20px 15px 20px;
+  padding: 20px;
   background: rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
   box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.05);
-  border: 1px solid black;
-  max-width: 350px;
+  border: 1px solid #aaa;
   flex-grow: 1;
+  position: relative;
   transition: 200ms ease background, 200ms ease box-shadow;
+
+  p {
+    margin: 20px 0;
+    font-size: 20px;
+  }
 
   &:hover {
     background: white;
@@ -21,13 +37,15 @@
   }
 
   figure {
-    margin: 10px 0;
-    position: relative;
+    margin: 0;
+    margin-top: 10px;
     overflow: hidden;
-    height: 100px;
-  }
 
-  p {
-    font-size: 14px;
+    img {
+      border-radius: 5px;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      transform: translateY(5px);
+    }
   }
 }
