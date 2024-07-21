@@ -9,7 +9,7 @@ const spec = {
   config: { style: { cell: { stroke: 'transparent' } } },
   layer: [
     {
-      mark: { type: 'bar' },
+      mark: { type: 'bar', size: 7 },
       transform: [
         { filter: { field: 'd', gte: { year: 1857 } } },
         { calculate: 'datum.d + 86400000', as: 'd2' },
