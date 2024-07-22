@@ -34,6 +34,7 @@
     border-radius: 5px;
     text-decoration: underline;
     padding: 1px 4px;
+    white-space: nowrap;
 
     &:nth-child(1) {
       background: rgba(250, 9, 250, 0.15);
