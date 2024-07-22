@@ -74,11 +74,11 @@ export default function Form() {
   return (
     <>
       <aside className={style.hybridize}>
-        <H2>Hybridize</H2>
+        <H2>Hybridizer tool</H2>
 
         <p>
-          Explore the ancestry of a hybrid formed from any two orchids by
-          selecting its parents below.
+          Explore the ancestry of a hypothetical hybrid formed from any two
+          orchids by selecting its parents below.
         </p>
 
         <Padded className={style.controls}>

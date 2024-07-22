@@ -1,26 +1,29 @@
 import { Padded } from 'components/container/container';
 import { H2, H3 } from 'components/layout';
 import Link from 'next/link';
-import Image from 'next/image';
 import { Metadata } from 'next';
 import { APP_TITLE } from 'lib/constants';
 
 import style from './style.module.scss';
 
 const PAGES: { title: string; href: string; src: string }[] = [
-  { title: 'Hybridize', href: '/learn/hybridize', src: '/learn/hybridize.png' },
   {
-    title: 'Genus parentage',
+    title: 'Hybridizer tool',
+    href: '/learn/hybridize',
+    src: '/learn/hybridize.png',
+  },
+  {
+    title: 'Explore genus parentage',
     href: '/learn/parentage/vanda',
     src: '/learn/parentage.png',
   },
   {
-    title: 'Genus dominance',
+    title: 'Explore genus dominance',
     href: '/learn/genus-dominance',
     src: '/learn/genus-dominance.png',
   },
   {
-    title: 'Registrant dominance',
+    title: 'Explore registrant dominance',
     href: '/learn/registrant-dominance',
     src: '/learn/registrant-dominance.png',
   },
@@ -45,7 +48,7 @@ export default function Learn() {
                 <article className={style.cta}>
                   <H3>{page.title}</H3>
                   <figure>
-                    <img alt='thumb' src={page.src} />
+                    <img alt={page.title} src={page.src} />
                   </figure>
                 </article>
               </Link>
