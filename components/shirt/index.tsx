@@ -1,13 +1,14 @@
-import Link from 'next/link';
-import { EXTERNAL_LINK_PROPS } from 'components/resources/resources';
+import ExternalLink from 'components/link/external';
 
 import style from './style.module.scss';
 
-export default function Shirt() {
+export const SHIRT_TRACK_NAME = 'Buy t-shirt';
+
+export default function Shirt({ page }: { page: string }) {
   return (
-    <Link
+    <ExternalLink
       href='https://charliaorchids.com/Orchidex-Merch'
-      {...EXTERNAL_LINK_PROPS}
+      trackArgs={[SHIRT_TRACK_NAME, { type: 'image', page }]}
     >
       <figure className={style.shirt}>
         <img alt='orchidex shirt' src='/shirt1.png' />
@@ -15,6 +16,6 @@ export default function Shirt() {
           <span>Buy</span>
         </figcaption>
       </figure>
-    </Link>
+    </ExternalLink>
   );
 }

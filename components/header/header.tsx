@@ -6,8 +6,8 @@ import style from './style.module.scss';
 
 const NAV_LINKS = [
   { path: 'recent', label: 'Recent' },
-  { path: 'search', label: 'Search' },
-  { path: 'learn/hybridize', label: 'Hybridize' },
+  // { path: 'search', label: 'Search' },
+  { path: 'learn', label: 'Explore', new: true },
   { path: 'about', label: 'About' },
 ];
 

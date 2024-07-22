@@ -3,6 +3,7 @@ import { H2, H3 } from 'components/layout';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { APP_TITLE } from 'lib/constants';
+import ExternalLink from 'components/link/external';
 
 import style from './style.module.scss';
 
@@ -21,13 +22,19 @@ export default function About() {
         <article>
           <p>
             Orchidex is a project by{' '}
-            <Link target='_blank' href='https://abe.sh'>
+            <ExternalLink
+              href='https://abe.sh'
+              trackArgs={['Click Abe Rubenstein']}
+            >
               Abe Rubenstein
-            </Link>{' '}
+            </ExternalLink>{' '}
             &amp;{' '}
-            <Link href='https://charliaorchids.com' target='_blank'>
+            <ExternalLink
+              href='https://charliaorchids.com'
+              trackArgs={['Click KT Paeth']}
+            >
               KT Paeth
-            </Link>
+            </ExternalLink>
             .
           </p>
         </article>
