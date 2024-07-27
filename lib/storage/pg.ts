@@ -1,10 +1,10 @@
 import { Grex } from 'lib/types';
 import { Pool } from 'pg';
 
+const pool = new Pool({ connectionString: process.env.SB_PG_POOL_URL });
+
 export const query = async (expr: string) => {
   if (!expr) return [];
-
-  const pool = new Pool({ connectionString: process.env.SB_PG_POOL_URL });
 
   let rows: Grex[] = [];
   try {
