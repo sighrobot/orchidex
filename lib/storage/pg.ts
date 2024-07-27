@@ -1,7 +1,6 @@
 import { Grex } from 'lib/types';
-import { Pool } from 'pg';
 
-const pool = new Pool({ connectionString: process.env.SB_PG_POOL_URL });
+import pool from 'lib/storage/pool';
 
 export const query = async (expr: string) => {
   if (!expr) return [];
