@@ -2,12 +2,11 @@
 
 import { track } from '@vercel/analytics';
 import React from 'react';
-import { capitalize, kebabCase, orderBy } from 'lodash';
+import { capitalize, kebabCase } from 'lodash';
 
 import { Container, Padded } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
 
-import { useProgeny } from 'lib/hooks/useProgeny';
 import Link from 'next/link';
 import { Resources } from 'components/resources/resources';
 import { formatName } from 'lib/string';
@@ -21,7 +20,7 @@ import { isNaturalHybrid, isSpecies } from 'components/pills/pills';
 import { StatBox, StatCard } from 'components/stat/stat';
 import { Grex as GrexType } from 'lib/types';
 import { useWcvp } from 'lib/hooks/useWcvp';
-import List from 'components/list';
+import ProgenyList from 'components/progeny-list';
 
 import style from './style.module.scss';
 
@@ -65,7 +64,6 @@ export default function GrexView({
   const [isDialogOpen, setIsDialogOpen] = React.useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
-  const { isLoading: isProgenyLoading, data: progeny = [] } = useProgeny(grex);
   const name = formatName(grex);
   const { data: wcvp = [] } = useWcvp(grex);
   const wcvpSpecies =
@@ -195,21 +193,12 @@ export default function GrexView({
             {
               label: `Progeny`,
               hidden: grex.hypothetical,
-              count: progeny.length,
-              component: () => (
-                <List<GrexType>
-                  items={orderBy(
-                    progeny,
-                    ['date_of_registration', 'genus', 'epithet'],
-                    ['desc']
-                  )}
-                  renderItem={(item) => <GrexCard grex={item} />}
-                  itemMinHeight={72}
-                  numItemsToLoad={5}
-                  isLoading={isProgenyLoading}
-                />
-              ),
+              component: () => <ProgenyList grex={grex} />,
             },
+            // {
+            //   label: `Progeny Map (Alpha)`,
+            //   component: () => <ProgenyMap grex={grex} />,
+            // },
           ]}
         />
       </div>

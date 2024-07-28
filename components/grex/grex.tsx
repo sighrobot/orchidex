@@ -17,6 +17,7 @@ type GrexProps = {
   activeRegId?: string;
   hideLinks?: boolean;
   emphasize?: boolean;
+  contextGrex?: Grex;
 };
 
 export const GrexCard = ({
@@ -30,6 +31,7 @@ export const GrexCard = ({
   heading = false,
   activeRegId,
   emphasize,
+  contextGrex,
 }: GrexProps) => {
   return (
     <article
@@ -53,14 +55,21 @@ export const GrexCard = ({
         grex={grex}
         seedParent={seedParent}
         pollenParent={pollenParent}
+        contextGrex={contextGrex}
       />
-
       <Reg
         activeId={activeRegId}
         grex={grex}
         hideLink={hideLinks}
         hideDate={hideDate}
       />
+
+      {grex.first_order_progeny_count !== undefined && (
+        <aside className={styles.progeny}>
+          <span>{grex.first_order_progeny_count.toLocaleString()}</span>
+          &nbsp;progeny
+        </aside>
+      )}
     </article>
   );
 };

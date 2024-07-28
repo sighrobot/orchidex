@@ -13,3 +13,11 @@ export const useProgeny = (grex: Grex) => {
 
   return { isLoading: !data, data };
 };
+
+export const useProgenyAll = (grex: Grex, { level }: { level?: number }) => {
+  let url = `/api/progeny/${grex.id}/by-progeny/1`;
+
+  const { data } = useSWR<Grex[]>(url, fetcher);
+
+  return { isLoading: !data, data };
+};

@@ -9,6 +9,7 @@ type ParentageProps = {
   seedParent?: Grex;
   pollenParent?: Grex;
   hideLink?: boolean;
+  contextGrex?: Grex;
 };
 
 export const Parentage = ({
@@ -16,6 +17,7 @@ export const Parentage = ({
   seedParent,
   pollenParent,
   hideLink,
+  contextGrex,
 }: ParentageProps) => {
   if (!grex || isSpecies(grex)) {
     return null;
@@ -35,7 +37,7 @@ export const Parentage = ({
       {seed_parent_genus && seed_parent_epithet ? (
         <Name
           abbreviate
-          link={!hideLink}
+          link={!hideLink && contextGrex?.epithet !== seed_parent_epithet}
           grex={{
             id: seed_parent_id,
             genus: seed_parent_genus,
@@ -50,7 +52,7 @@ export const Parentage = ({
       {pollen_parent_genus && pollen_parent_epithet ? (
         <Name
           abbreviate
-          link={!hideLink}
+          link={!hideLink && contextGrex?.epithet !== pollen_parent_epithet}
           grex={{
             id: pollen_parent_id,
             genus: pollen_parent_genus,
