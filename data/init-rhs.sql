@@ -5,6 +5,8 @@
 -- psql $POSTGRES_URL -f init-rhs.sql
 
 DROP TABLE IF EXISTS rhs;
+DROP INDEX IF EXISTS idx_rhs_seed_parent_id;
+DROP INDEX IF EXISTS idx_rhs_pollen_parent_id;
 DROP INDEX IF EXISTS idx_rhs_genus_epithet;
 DROP INDEX IF EXISTS rhs_searchable_text_trgm_gist_idx;
 
@@ -32,6 +34,8 @@ CREATE TABLE rhs (
 );
 \COPY rhs FROM 'rhs/data.csv' CSV HEADER;
 
+CREATE INDEX idx_rhs_seed_parent_id ON rhs (seed_parent_id);
+CREATE INDEX idx_rhs_pollen_parent_id ON rhs (pollen_parent_id);
 CREATE INDEX idx_rhs_genus_epithet ON rhs (genus, epithet);
 CREATE INDEX rhs_searchable_text_trgm_gist_idx ON rhs USING gist((
     COALESCE(epithet, '') || ' ' ||
