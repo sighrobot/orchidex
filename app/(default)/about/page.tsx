@@ -23,17 +23,17 @@ export default function About() {
           <p>
             Orchidex is a project by{' '}
             <ExternalLink
-              href='https://abe.sh'
-              trackArgs={['Click Abe Rubenstein']}
-            >
-              Abe Rubenstein
-            </ExternalLink>{' '}
-            &amp;{' '}
-            <ExternalLink
               href='https://charliaorchids.com'
               trackArgs={['Click KT Paeth']}
             >
               KT Paeth
+            </ExternalLink>{' '}
+            &amp;{' '}
+            <ExternalLink
+              href='https://abe.sh'
+              trackArgs={['Click Abe Rubenstein']}
+            >
+              Abe Rubenstein
             </ExternalLink>
             .
           </p>
