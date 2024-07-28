@@ -1,25 +1,17 @@
+'use client';
 import React from 'react';
-import { Metadata } from 'next';
 
-import { APP_TITLE } from 'lib/constants';
 import { H2 } from 'components/layout';
 import VegaLite from 'components/vega-lite';
 import Shirt from 'components/shirt';
-import spec from './spec';
+import { getSpec } from './spec';
 
 import style from './style.module.scss';
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: `Genus dominance - Learn | ${APP_TITLE}`,
-    description: `A visualization depicting the dominance over time of genera used in
-            orchid hybridization, as registered by the Royal Horitcultural
-            Society.`,
-    openGraph: { images: ['/learn/genus-dominance.png'] },
-  };
-}
-
 export default function GenusDominance() {
+  const [labelYear, setLabelYear] = React.useState<'all' | '2024'>('2024');
+  const handleLabel = (e) => setLabelYear(e.target.value);
+
   return (
     <>
       <div className={style.pageHeader}>
@@ -37,8 +29,23 @@ export default function GenusDominance() {
         <Shirt />
       </div>
 
+      <div className={style.labelControl}>
+        <label>
+          Show labels for
+          <select value={labelYear} onChange={handleLabel}>
+            <option value='all'>All-time</option>
+            <option value='2024'>2024</option>
+          </select>
+        </label>
+      </div>
+
       <div style={{ width: '100%' }}>
-        <VegaLite height={800} renderer='canvas' id='dominance' spec={spec} />
+        <VegaLite
+          height={800}
+          renderer='canvas'
+          id='dominance'
+          spec={getSpec({ labelYear })}
+        />
       </div>
     </>
   );
