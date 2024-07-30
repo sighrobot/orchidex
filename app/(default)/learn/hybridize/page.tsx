@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { fetchGrex } from 'lib/fetchers/grex';
 import { Grex, Grex as GrexType } from 'lib/types';
 import GrexView from 'app/(default)/[genus]/[...params]/view';
-import { fetchGrexChild } from 'lib/hooks/useGrexChild';
+import { fetchGrexChild } from 'lib/fetchers/grex-child';
 import { formatName } from 'lib/string';
 import Form from './form';
 
