@@ -1,11 +1,12 @@
 'use client';
 
+import { track } from '@vercel/analytics';
 import React from 'react';
 import { GrexCard } from 'components/grex/grex';
 import List from 'components/list';
 import { useProgenyAll } from 'lib/hooks/useProgeny';
 import { Grex } from 'lib/types';
-import { orderBy } from 'lodash';
+import { difference, orderBy } from 'lodash';
 import {
   Checkbox,
   ListItemText,
@@ -48,13 +49,20 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
 
     setField(f);
     setDirection(f === 'first_order_progeny_count' ? 'desc' : 'asc');
+    track('Sort progeny list by field', { field: f });
   };
   const handleGen = (e) => {
+    const newValues = e.target.value;
     setGenValues((oldSet) => {
-      if (e.target.value.includes(0)) {
+      track('Filter progeny list by generation', {
+        generation: String(
+          difference(Array.from(oldSet.values()), newValues)[0]
+        ),
+      });
+
+      if (newValues.includes(0)) {
         return new Set(genOptions);
       }
-      const newValues = e.target.value;
       if (newValues.length === 0) {
         return new Set(oldSet);
       }
