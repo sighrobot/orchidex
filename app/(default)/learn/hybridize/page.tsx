@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { fetchGrex } from 'lib/hooks/useGrex';
+import { fetchGrex } from 'lib/fetchers/grex';
 import { Grex, Grex as GrexType } from 'lib/types';
 import GrexView from 'app/(default)/[genus]/[...params]/view';
 import { fetchGrexChild } from 'lib/hooks/useGrexChild';

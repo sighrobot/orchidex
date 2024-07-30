@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Grex } from 'lib/types';
-import { fetchGrex } from 'lib/hooks/useGrex';
+import { fetchGrex } from 'lib/fetchers/grex';
 import { UNKNOWN_CHAR, repairMalformedNaturalHybridEpithet } from 'lib/string';
 import { APP_URL } from 'lib/constants';
 import { find } from 'lodash';
