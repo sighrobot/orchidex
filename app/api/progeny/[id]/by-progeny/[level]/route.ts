@@ -17,58 +17,66 @@ export async function GET(
 
   const json = await query(`
     WITH RECURSIVE progeny_tree AS (
-    SELECT
+    SELECT 
         ${ID_FIELDS.concat(SEARCH_FIELDS).join(', ')},
-        1 AS generation
-    FROM
+        1 AS generation -- Start with the first generation
+    FROM 
         rhs
-    WHERE
+    WHERE 
         id = '${id}' -- Replace with the actual id of the given orchid
 
     UNION ALL
 
-    SELECT
+    SELECT 
         ${ID_FIELDS.concat(SEARCH_FIELDS)
           .map((f) => `o.${f}`)
           .join(', ')},
-        pt.generation + 1 AS generation
-    FROM
+        pt.generation + 1 -- Increment the generation value
+    FROM 
         rhs o
-    INNER JOIN
+    INNER JOIN 
         progeny_tree pt ON (o.seed_parent_id = pt.id OR o.pollen_parent_id = pt.id)
-    -- WHERE
-        -- pt.generation < ${level} -- Replace N with the desired depth
+    WHERE
+        pt.generation < 100 -- Replace N with the desired depth
 )
-
--- Final SELECT to get all progeny up to Nth order
 , progeny_with_count AS (
-    SELECT
+    SELECT 
         ${ID_FIELDS.concat(SEARCH_FIELDS)
           .map((f) => `pt.${f}`)
           .join(', ')},
         pt.generation,
         COUNT(child.id)::int AS first_order_progeny_count
-    FROM
+    FROM 
         progeny_tree pt
-    LEFT JOIN
+    LEFT JOIN 
         rhs child ON child.seed_parent_id = pt.id OR child.pollen_parent_id = pt.id
-    GROUP BY
-    ${ID_FIELDS.concat(SEARCH_FIELDS)
-      .map((f) => `pt.${f}`)
-      .join(', ')}, pt.generation
+    GROUP BY 
+        ${ID_FIELDS.concat(SEARCH_FIELDS)
+          .map((f) => `pt.${f}`)
+          .join(', ')},
+        pt.generation
 )
 
-SELECT
+-- Combine generations and remove duplicates
+, combined_generations AS (
+    SELECT
+        ${ID_FIELDS.concat(SEARCH_FIELDS).join(', ')},
+        array_agg(DISTINCT generation) AS combined_generations,
+        MAX(first_order_progeny_count) AS first_order_progeny_count
+    FROM progeny_with_count
+    GROUP BY 
+        ${ID_FIELDS.concat(SEARCH_FIELDS).join(', ')}
+)
+
+SELECT 
     ${ID_FIELDS.concat(SEARCH_FIELDS).join(', ')},
-    generation,
+    combined_generations AS generations,
     first_order_progeny_count
-FROM
-    progeny_with_count
--- WHERE
-    -- generation = ${level}
+FROM 
+    combined_generations
 WHERE
     id != '${id}'
-ORDER BY
+ORDER BY 
     first_order_progeny_count DESC;
   `);
 

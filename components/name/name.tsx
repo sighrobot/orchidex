@@ -40,7 +40,13 @@ export const Name = ({
     const Component = as;
     return (
       <Component className={cn(style.name, className)}>
-        {link ? <LinkGrex grex={grex}>{content}</LinkGrex> : content}
+        {link ? (
+          <LinkGrex prefetch={false} grex={grex}>
+            {content}
+          </LinkGrex>
+        ) : (
+          content
+        )}
       </Component>
     );
   }

@@ -5,7 +5,6 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: `Hybrid search - ${APP_TITLE}` };
 }
 
-export default function SearchHybridLayout({ children, searchParams }) {
-  console.log(searchParams);
+export default function SearchHybridLayout({ children }) {
   return <>{children}</>;
 }

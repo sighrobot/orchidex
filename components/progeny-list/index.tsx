@@ -4,9 +4,14 @@ import { track } from '@vercel/analytics';
 import React from 'react';
 import { GrexCard } from 'components/grex/grex';
 import List from 'components/list';
-import { useProgenyAll } from 'lib/hooks/useProgeny';
+import {
+  GrexWithGen,
+  useProgenyAll,
+  useProgenyDepth,
+} from 'lib/hooks/useProgeny';
 import { Grex } from 'lib/types';
 import { difference, orderBy } from 'lodash';
+import cn from 'classnames';
 import {
   Checkbox,
   ListItemText,
@@ -17,15 +22,8 @@ import {
 
 import style from './style.module.scss';
 
-// WISHLIST: alpha by seed/pollen parent
-
 const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: 48 * 4.5 + 8,
-      width: 250,
-    },
-  },
+  PaperProps: { style: { maxHeight: 48 * 4.5 + 8, width: 250 } },
 };
 
 export default function ProgenyList({ grex }: { grex: Grex }) {
@@ -73,11 +71,15 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
   const dataAndGen = React.useMemo(() => {
     const genSet = new Set<number>();
     rawData?.forEach((g) => {
-      genSet.add(g.generation - 1);
+      g.generations.forEach((gen) => {
+        genSet.add(gen - 1);
+      });
     });
     return {
-      data: rawData?.filter((g) => genValues.has(g.generation - 1)),
       genOptions: orderBy(Array.from(genSet.values())),
+      data: rawData?.filter((g) =>
+        g.generations.some((gen) => genValues.has(gen - 1))
+      ),
     };
   }, [genValues, rawData]);
 
@@ -114,7 +116,9 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
                 onChange={handleGen}
                 input={<OutlinedInput />}
                 renderValue={(selected) =>
-                  orderBy(selected.map((s) => `F${s}`)).join(', ')
+                  orderBy(selected)
+                    .map((s) => `F${s}`)
+                    .join(', ')
                 }
                 MenuProps={MenuProps}
               >
@@ -199,12 +203,39 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
         </div>
       </aside>
       <List<Grex>
-        items={ordered}
-        renderItem={(item) => <GrexCard grex={item} contextGrex={grex} />}
+        items={ordered.slice(0, 500)}
+        renderItem={(item: GrexWithGen) => {
+          return (
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {genOptions.map((genOpt) => {
+                const alpha = (genOpt / genOptions.at(-1)) * 0.33;
+                const s = {
+                  background: `rgba(50, 0, 255, ${alpha})`,
+                };
+
+                if (item.generations.includes(genOpt + 1)) {
+                  return (
+                    <div key={genOpt} style={s} className={style.gen}>
+                      F{genOpt}
+                    </div>
+                  );
+                }
+                return null;
+              })}
+              <GrexCard grex={item} contextGrex={grex} />
+            </div>
+          );
+        }}
         itemMinHeight={72}
-        numItemsToLoad={5}
+        numItemsToLoad={10}
         isLoading={isLoading}
       />
+      {ordered.length > 500 && (
+        <mark>
+          A maximum of 500 progeny results is displayed. Please refine your
+          filters.
+        </mark>
+      )}
     </div>
   );
 }

@@ -17,7 +17,7 @@ export const LinkPeople = ({
   kind: PeopleKind;
 }) => {
   return (
-    <Link {...linkProps} href={makeHrefPeople(grex, kind)}>
+    <Link {...linkProps} href={makeHrefPeople(grex, kind)} prefetch={false}>
       {grex[`${kind}_name`]}
     </Link>
   );
