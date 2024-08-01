@@ -4,14 +4,9 @@ import { track } from '@vercel/analytics';
 import React from 'react';
 import { GrexCard } from 'components/grex/grex';
 import List from 'components/list';
-import {
-  GrexWithGen,
-  useProgenyAll,
-  useProgenyDepth,
-} from 'lib/hooks/useProgeny';
+import { GrexWithGen, useProgenyAll } from 'lib/hooks/useProgeny';
 import { Grex } from 'lib/types';
 import { difference, orderBy } from 'lodash';
-import cn from 'classnames';
 import {
   Checkbox,
   ListItemText,

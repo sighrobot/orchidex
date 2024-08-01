@@ -1,10 +1,13 @@
 export const APP_TITLE = 'Orchidex';
 export const APP_DESCRIPTION = `${APP_TITLE} is a platform for exploring the world of orchid species and hybrids. Visualize their complex ancestries and learn about the people and organizations who grow and discover them.`;
 
+// https://stackoverflow.com/a/77996386
 export const APP_URL =
-  process.env.NODE_ENV === 'development'
-    ? 'http://localhost:3000'
-    : new URL(`https://${process.env.VERCEL_URL || 'orchidex.org'}`).origin;
+  process.env.VERCEL_ENV === 'production'
+    ? `https://orchidex.org`
+    : process.env.VERCEL_URL
+    ? `https://${process.env.VERCEL_URL}`
+    : `http://localhost:3000`;
 
 export const CROSS_FIELDS = ['g1', 'e1', 'g2', 'e2'];
 
