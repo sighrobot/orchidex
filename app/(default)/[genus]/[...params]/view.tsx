@@ -186,7 +186,6 @@ export default function GrexView({
           config={[
             {
               label: 'Ancestry',
-              disabled: isGrexSpecies,
               disablePadding: true,
               component: () => !isDialogOpen && Viz,
             },
