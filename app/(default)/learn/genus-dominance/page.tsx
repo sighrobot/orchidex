@@ -9,7 +9,7 @@ import { getSpec } from './spec';
 import style from './style.module.scss';
 
 export default function GenusDominance() {
-  const [labelYear, setLabelYear] = React.useState<'all' | '2024'>('2024');
+  const [labelYear, setLabelYear] = React.useState<'all' | '2024'>('all');
   const handleLabel = (e) => setLabelYear(e.target.value);
 
   return (
