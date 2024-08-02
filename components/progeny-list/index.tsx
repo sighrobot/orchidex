@@ -44,24 +44,6 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
     setDirection(f === 'first_order_progeny_count' ? 'desc' : 'asc');
     track('Sort progeny list by field', { field: f });
   };
-  const handleGen = (e) => {
-    const newValues = e.target.value;
-    setGenValues((oldSet) => {
-      track('Filter progeny list by generation', {
-        generation: String(
-          difference(Array.from(oldSet.values()), newValues)[0]
-        ),
-      });
-
-      if (newValues.includes(0)) {
-        return new Set(genOptions);
-      }
-      if (newValues.length === 0) {
-        return new Set(oldSet);
-      }
-      return new Set(newValues);
-    });
-  };
 
   const dataAndGen = React.useMemo(() => {
     const genSet = new Set<number>();
@@ -79,6 +61,33 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
   }, [genValues, rawData]);
 
   const { data, genOptions } = dataAndGen;
+
+  const areAllChecked = genOptions.every((o) => genValues.has(o));
+
+  const handleGen = (e) => {
+    const newValues = e.target.value;
+    setGenValues((oldSet) => {
+      console.log({ newValues, old: Array.from(oldSet.values()) });
+
+      track('Filter progeny list by generation', {
+        generation: String(
+          difference(Array.from(oldSet.values()), newValues)[0]
+        ),
+      });
+
+      if (newValues.includes(0)) {
+        if (areAllChecked) {
+          return new Set([1]);
+        }
+        return new Set(genOptions);
+      }
+
+      if (newValues.length === 0) {
+        return new Set(oldSet);
+      }
+      return new Set(newValues);
+    });
+  };
 
   const ordered = React.useMemo(() => {
     if (field === 'parent_name') {
@@ -111,16 +120,16 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
                 onChange={handleGen}
                 input={<OutlinedInput />}
                 renderValue={(selected) =>
-                  orderBy(selected)
-                    .map((s) => `F${s}`)
-                    .join(', ')
+                  areAllChecked
+                    ? 'All'
+                    : orderBy(selected)
+                        .map((s) => `F${s}`)
+                        .join(', ')
                 }
                 MenuProps={MenuProps}
               >
                 <MenuItem value={0}>
-                  <Checkbox
-                    checked={genOptions.every((o) => genValues.has(o))}
-                  />
+                  <Checkbox checked={areAllChecked} />
                   <ListItemText primary={`All generations`} />
                 </MenuItem>
 
@@ -201,23 +210,37 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
         items={ordered.slice(0, 500)}
         renderItem={(item: GrexWithGen) => {
           return (
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              {genOptions.map((genOpt) => {
-                const alpha = (genOpt / genOptions.at(-1)) * 0.33;
-                const s = {
-                  background: `rgba(50, 0, 255, ${alpha})`,
-                };
-
-                if (item.generations.includes(genOpt + 1)) {
-                  return (
-                    <div key={genOpt} style={s} className={style.gen}>
-                      F{genOpt}
-                    </div>
-                  );
-                }
-                return null;
-              })}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'stretch',
+                columnGap: '5px',
+              }}
+            >
               <GrexCard grex={item} contextGrex={grex} />
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  marginLeft: 'auto',
+                }}
+              >
+                {genOptions.map((genOpt) => {
+                  const alpha = (genOpt / genOptions.at(-1)) * 0.33;
+                  const s = {
+                    background: `rgba(50, 0, 255, ${alpha})`,
+                  };
+
+                  if (item.generations.includes(genOpt + 1)) {
+                    return (
+                      <div key={genOpt} style={s} className={style.gen}>
+                        F{genOpt}
+                      </div>
+                    );
+                  }
+                  return null;
+                })}
+              </div>
             </div>
           );
         }}
