@@ -8,38 +8,42 @@ const TOP_ALL_TIME = [
   'Den.',
   'Rlc.',
   // 'Onc.',
-  'V.',
+  // 'V.',
   'Rth.',
   'Ctt.',
   // 'Mps.',
   // 'Masd.',
   'Phrag.',
-  'Tolu.',
+  // 'Tolu.',
   'Sarco.',
-  'Pda.',
+  // 'Pda.',
   // 'Oip.',
-  'Bc.',
+  // 'Bc.',
   // 'Lyc.',
-  'Epi.',
+  // 'Epi.',
 ];
 
 const SHIFT_Y = 2;
-const SHIFT_X = 9;
+const SHIFT_X = 10;
 
 const ADJUST_ALL_TIME = {
-  'Lyc.': { yOffset: -10 + SHIFT_Y, xOffset: SHIFT_X },
-  'Masd.': { yOffset: -4 + SHIFT_Y, xOffset: SHIFT_X },
-  'Mps.': { yOffset: 0 + SHIFT_Y, xOffset: SHIFT_X },
-  'Oip.': { yOffset: 3 + SHIFT_Y, xOffset: SHIFT_X },
-  'Onc.': { yOffset: 7 + SHIFT_Y, xOffset: SHIFT_X },
+  // 'Lyc.': { yOffset: -10 + SHIFT_Y, xOffset: SHIFT_X },
+  'Masd.': { yOffset: -5 + SHIFT_Y, xOffset: SHIFT_X },
+  'Mps.': { yOffset: 2 + SHIFT_Y, xOffset: SHIFT_X },
+  // 'Oip.': { yOffset: 3 + SHIFT_Y, xOffset: SHIFT_X },
+  'Onc.': { yOffset: 1 + SHIFT_Y, xOffset: SHIFT_X },
+  'Tolu.': { yOffset: 1 + SHIFT_Y, xOffset: SHIFT_X },
+  'V.': { yOffset: 0 + SHIFT_Y, xOffset: SHIFT_X },
 };
 
 const ADJUST_ALL_TIME_TICKS = {
-  'Lyc.': { yOffset: 0 },
+  // 'Lyc.': { yOffset: 0 },
   'Masd.': { yOffset: 0 },
   'Mps.': { yOffset: 0 },
-  'Oip.': { yOffset: 0 },
+  // 'Oip.': { yOffset: 0 },
   'Onc.': { yOffset: 0 },
+  'Tolu.': { yOffset: 0 },
+  'V.': { yOffset: 0 },
 };
 
 const ADJUST_2024 = {
@@ -210,7 +214,7 @@ export function getSpec({ labelYear }: { labelYear?: 'all' | '2024' }) {
               yOffset: ADJUST_ALL_TIME_TICKS[k].yOffset,
               angle: ADJUST_ALL_TIME_TICKS[k].angle,
               align: 'left',
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: 200,
             },
             transform: [

@@ -20,7 +20,7 @@ export default function GenusDominance() {
 
           <p>
             This visualization depicts the dominance over time of genera used in
-            orchid hybridization, as registered by the Royal Horitcultural
+            orchid hybridization, as registered by the Royal Horticultural
             Society. Each colored bar represents the number of hybrids
             registered that year for a given genus.
           </p>
