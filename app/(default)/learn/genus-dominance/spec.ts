@@ -23,12 +23,23 @@ const TOP_ALL_TIME = [
   'Epi.',
 ];
 
+const SHIFT_Y = 2;
+const SHIFT_X = 9;
+
 const ADJUST_ALL_TIME = {
-  'Lyc.': { angle: -20, yOffset: -2 },
-  'Masd.': { angle: -10, yOffset: 0 },
-  'Mps.': { angle: 0, yOffset: 2 },
-  'Oip.': { angle: 10, yOffset: 2 },
-  'Onc.': { angle: 20, yOffset: 6 },
+  'Lyc.': { yOffset: -10 + SHIFT_Y, xOffset: SHIFT_X },
+  'Masd.': { yOffset: -4 + SHIFT_Y, xOffset: SHIFT_X },
+  'Mps.': { yOffset: 0 + SHIFT_Y, xOffset: SHIFT_X },
+  'Oip.': { yOffset: 3 + SHIFT_Y, xOffset: SHIFT_X },
+  'Onc.': { yOffset: 7 + SHIFT_Y, xOffset: SHIFT_X },
+};
+
+const ADJUST_ALL_TIME_TICKS = {
+  'Lyc.': { yOffset: 0 },
+  'Masd.': { yOffset: 0 },
+  'Mps.': { yOffset: 0 },
+  'Oip.': { yOffset: 0 },
+  'Onc.': { yOffset: 0 },
 };
 
 const ADJUST_2024 = {
@@ -71,7 +82,7 @@ export function getSpec({ labelYear }: { labelYear?: 'all' | '2024' }) {
               title: null,
               domain: false,
               labelFontWeight: 200,
-              labelFontSize: 12,
+              labelFontSize: labelYear === 'all' ? 11 : 12,
               tickColor: 'black',
               tickSize: 5,
             },
@@ -122,7 +133,7 @@ export function getSpec({ labelYear }: { labelYear?: 'all' | '2024' }) {
           type: 'text',
           xOffset: { expr: 'width / 2' },
           align: 'left',
-          fontSize: 12,
+          fontSize: labelYear === 'all' ? 11 : 12,
           fontWeight: 200,
         },
         transform: [
@@ -155,11 +166,11 @@ export function getSpec({ labelYear }: { labelYear?: 'all' | '2024' }) {
       ...Object.keys(ADJUST).map((k) => ({
         mark: {
           type: 'text',
-          xOffset: { expr: 'width / 2' },
+          xOffset: { expr: `width / 2 + ${ADJUST[k].xOffset ?? 0}` },
           yOffset: ADJUST[k].yOffset,
           angle: ADJUST[k].angle,
           align: 'left',
-          fontSize: 12,
+          fontSize: labelYear === 'all' ? 11 : 12,
           fontWeight: 200,
         },
         transform: [
@@ -173,7 +184,9 @@ export function getSpec({ labelYear }: { labelYear?: 'all' | '2024' }) {
             sort: [{ field: 'sumByGenus', order: 'descending' }],
           },
           {
-            calculate: `datum.genus != '${k}' ? '' : '– ' + datum.genus`,
+            calculate: `datum.genus != '${k}' ? '' : ${
+              labelYear === 'all' ? '' : "'– ' + "
+            }datum.genus`,
             as: 'g2',
           },
         ],
@@ -184,10 +197,49 @@ export function getSpec({ labelYear }: { labelYear?: 'all' | '2024' }) {
             field: 'sumByGenus',
             stack: 'normalize',
             type: 'quantitative',
-            bandPosition: ADJUST[k].bandPosition,
+            bandPosition: ADJUST[k].bandPosition ?? 0.5,
           },
         },
       })),
+
+      ...(labelYear === 'all'
+        ? Object.keys(ADJUST_ALL_TIME_TICKS).map((k) => ({
+            mark: {
+              type: 'text',
+              xOffset: { expr: 'width / 2' },
+              yOffset: ADJUST_ALL_TIME_TICKS[k].yOffset,
+              angle: ADJUST_ALL_TIME_TICKS[k].angle,
+              align: 'left',
+              fontSize: 11,
+              fontWeight: 200,
+            },
+            transform: [
+              { filter: { field: 'd', gt: { year: 2023 } } },
+              {
+                aggregate: [{ op: 'sum', field: 'c', as: 'sumByGenus' }],
+                groupby: ['genus'],
+              },
+              {
+                window: [{ op: 'row_number', as: 'rank' }],
+                sort: [{ field: 'sumByGenus', order: 'descending' }],
+              },
+              {
+                calculate: `datum.genus != '${k}' ? '' : '–'`,
+                as: 'g2',
+              },
+            ],
+            encoding: {
+              order: { field: 'genus', sort: 'descending' },
+              text: { field: 'g2' },
+              y: {
+                field: 'sumByGenus',
+                stack: 'normalize',
+                type: 'quantitative',
+                bandPosition: ADJUST_ALL_TIME_TICKS[k].bandPosition ?? 0.5,
+              },
+            },
+          }))
+        : []),
     ],
   };
 }
