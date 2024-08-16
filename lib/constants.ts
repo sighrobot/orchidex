@@ -3,10 +3,10 @@ export const APP_DESCRIPTION = `${APP_TITLE} is a platform for exploring the wor
 
 // https://stackoverflow.com/a/77996386
 export const APP_URL =
-  process.env.VERCEL_ENV === 'production'
-    ? `https://orchidex.org`
-    : process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
+  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.NEXT_PUBLIC_VERCEL_URL
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
     : `http://localhost:3000`;
 
 export const CROSS_FIELDS = ['g1', 'e1', 'g2', 'e2'];
