@@ -1,12 +1,20 @@
 .disclaimer {
-  max-width: 600px;
+  width: 100%;
+  max-width: 1500px;
   margin: 0 auto;
   padding: 40px 10px;
-  padding-top: 80px;
-  font-size: 10px;
+  padding-top: 100px;
+  display: flex;
+  margin-top: auto;
 
   a {
     color: inherit;
     text-decoration: underline;
+  }
+
+  section {
+    max-width: 550px;
+    font-size: 10px;
+    margin-left: 20px;
   }
 }

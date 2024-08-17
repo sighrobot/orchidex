@@ -12,9 +12,6 @@ export default function Shirt({ page }: { page: string }) {
     >
       <figure className={style.shirt}>
         <img alt='orchidex shirt' src='/shirt1.png' />
-        <figcaption>
-          <span>Buy</span>
-        </figcaption>
       </figure>
     </ExternalLink>
   );

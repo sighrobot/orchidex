@@ -77,9 +77,9 @@ export default function IndexPage() {
             <Shirt page='/' />
           </article>
 
-          <hr />
+          {/* <hr /> */}
 
-          <article className={style.cta}>
+          {/* <article className={style.cta}>
             <p>
               Orchidex will be a guest at the{' '}
               <ExternalLink
@@ -91,7 +91,7 @@ export default function IndexPage() {
               in Easton, CT, USA on July 26-28. If you're in the area, come say
               hello!
             </p>
-          </article>
+          </article> */}
         </aside>
       </section>
     </>

@@ -4,7 +4,7 @@ import { track } from '@vercel/analytics';
 import React from 'react';
 import { capitalize, kebabCase } from 'lodash';
 
-import { Container, Padded } from 'components/container/container';
+import { Padded } from 'components/container/container';
 import { GrexCard } from 'components/grex/grex';
 
 import Link from 'next/link';
@@ -89,12 +89,6 @@ export default function GrexView({
     track('Expand ancestry');
   };
   const handleFullScreenClose = () => setIsDialogOpen(false);
-
-  if (!grex) {
-    return <Container>loading&hellip;</Container>;
-  }
-
-  const isGrexSpecies = isSpecies(grex);
 
   const Viz = (
     <AncestryViz
