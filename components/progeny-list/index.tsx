@@ -4,7 +4,11 @@ import { track } from '@vercel/analytics';
 import React from 'react';
 import { GrexCard } from 'components/grex/grex';
 import List from 'components/list';
-import { GrexWithGen, useProgenyAll } from 'lib/hooks/useProgeny';
+import {
+  GrexWithGen,
+  useProgenyAll,
+  useProgenyDepth,
+} from 'lib/hooks/useProgeny';
 import { Grex } from 'lib/types';
 import { difference, orderBy } from 'lodash';
 import {
@@ -32,9 +36,20 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
   >('epithet');
   const [genValues, setGenValues] = React.useState<Set<number>>(new Set([1]));
 
+  const { data: deepest } = useProgenyDepth(grex);
   const { data: rawData, isLoading } = useProgenyAll(grex, {
     level: Math.max(...Array.from(genValues.values())),
+    sortBy: field,
+    direction,
   });
+
+  const genOptions = React.useMemo(
+    () =>
+      Array(deepest)
+        .fill(0)
+        .map((_, idx) => idx + 1),
+    [deepest]
+  );
 
   const handleDirection = (e) => setDirection(e.target.value);
   const handleField = (e) => {
@@ -53,14 +68,13 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
       });
     });
     return {
-      genOptions: orderBy(Array.from(genSet.values())),
       data: rawData?.filter((g) =>
         g.generations.some((gen) => genValues.has(gen - 1))
       ),
     };
   }, [genValues, rawData]);
 
-  const { data, genOptions } = dataAndGen;
+  const { data } = dataAndGen;
 
   const areAllChecked = genOptions.every((o) => genValues.has(o));
 
@@ -101,7 +115,7 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
       );
     }
 
-    return orderBy(data, field, direction);
+    return data ?? [];
   }, [data, field, direction, grex]);
 
   return (
@@ -109,9 +123,14 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
       <aside>
         {!isLoading && (
           <span>
-            <strong>{data?.length.toLocaleString()}</strong> results in{' '}
+            <strong>
+              {Number(data?.length) < 10000
+                ? data?.length.toLocaleString()
+                : '10,000+'}
+            </strong>{' '}
+            results in{' '}
             <label>
-              generation{' '}
+              generations{' '}
               <Select
                 className={style.select}
                 size='small'
@@ -248,9 +267,9 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
         numItemsToLoad={10}
         isLoading={isLoading}
       />
-      {ordered.length > 500 && (
+      {ordered.length >= 10000 && (
         <mark>
-          A maximum of 500 progeny results is displayed. Please refine your
+          A maximum of 10,000 progeny results are displayed. Please refine your
           filters.
         </mark>
       )}

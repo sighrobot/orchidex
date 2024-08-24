@@ -16,8 +16,15 @@ export const useProgeny = (grex: Grex) => {
 
 export type GrexWithGen = Grex & { generations: number[] };
 
-export const useProgenyAll = (grex: Grex, { level }: { level?: number }) => {
-  let url = `/api/progeny/${grex.id}/by-progeny/1`;
+export const useProgenyAll = (
+  grex: Grex,
+  {
+    level,
+    sortBy,
+    direction,
+  }: { level?: number; sortBy: string; direction: string }
+) => {
+  let url = `/api/progeny/${grex.id}/by-progeny/${level}?sortBy=${sortBy}&direction=${direction}`;
 
   const { data } = useSWR<GrexWithGen[]>(url, fetcher);
 
