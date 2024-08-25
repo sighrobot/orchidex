@@ -142,7 +142,7 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
                   areAllChecked
                     ? 'All'
                     : orderBy(selected)
-                        .map((s) => `F${s}`)
+                        .map((s) => `${s}`)
                         .join(', ')
                 }
                 MenuProps={MenuProps}
@@ -155,7 +155,7 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
                 {Array.from(genOptions.values()).map((v) => (
                   <MenuItem key={v} value={v}>
                     <Checkbox checked={genValues.has(v)} />
-                    <ListItemText primary={`F${v}`} />
+                    <ListItemText primary={`${v}`} />
                   </MenuItem>
                 ))}
               </Select>
@@ -253,7 +253,7 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
                   if (item.generations.includes(genOpt + 1)) {
                     return (
                       <div key={genOpt} style={s} className={style.gen}>
-                        F{genOpt}
+                        {genOpt}
                       </div>
                     );
                   }
