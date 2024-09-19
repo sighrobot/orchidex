@@ -99,8 +99,8 @@ let i = startIndex;
         SELECT r1.id, r2.id AS seed_parent_id
         FROM rhs r1
         LEFT JOIN rhs r2
-            ON r1.seed_parent_genus = r2.genus
-            AND r1.seed_parent_epithet = r2.epithet
+            ON r2.genus = r1.seed_parent_genus
+            AND r2.epithet like replace(r1.seed_parent_epithet, '�', '_')
     ) AS subquery
     WHERE rhs.id=subquery.id
         AND rhs.epithet != ''
@@ -119,8 +119,8 @@ let i = startIndex;
         SELECT r1.id, r2.id AS pollen_parent_id
         FROM rhs r1
         LEFT JOIN rhs r2
-            ON r1.pollen_parent_genus = r2.genus
-            AND r1.pollen_parent_epithet = r2.epithet
+            ON r2.genus = r1.pollen_parent_genus
+            AND r2.epithet like replace(r1.pollen_parent_epithet, '�', '_')
     ) AS subquery
     WHERE rhs.id=subquery.id
         AND rhs.epithet != ''
