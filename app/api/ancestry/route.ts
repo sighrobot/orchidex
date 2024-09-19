@@ -1,22 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { UNKNOWN_CHAR } from 'lib/string';
-import { massageQueryTerm } from 'lib/utils';
 import { query } from 'lib/storage/pg';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.nextUrl);
-  const genus = searchParams.get('genus');
-  const epithet = searchParams.get('epithet');
+  const id = searchParams.get('id');
 
-  if (!genus || !epithet) {
+  if (!id) {
     return NextResponse.json([], { status: 200 });
   }
-
-  const epithetClause = epithet.includes(UNKNOWN_CHAR)
-    ? `like '${massageQueryTerm(
-        epithet.replace(new RegExp(UNKNOWN_CHAR, 'g'), '_')
-      )}'`
-    : `= '${massageQueryTerm(epithet)}'`;
 
   const q = `WITH RECURSIVE ancestry AS (
     SELECT
@@ -26,8 +17,7 @@ export async function GET(req: NextRequest) {
     FROM
       rhs
     WHERE
-      lower(genus) = '${massageQueryTerm(genus)}'
-      AND lower(epithet) ${epithetClause}
+      id = '${id}'
     UNION ALL
     SELECT
       rhs.*,
@@ -37,12 +27,10 @@ export async function GET(req: NextRequest) {
       rhs
     JOIN ancestry ON (
       (
-        rhs.genus = ancestry.seed_parent_genus
-        AND rhs.epithet = ancestry.seed_parent_epithet
+        rhs.id = ancestry.seed_parent_id
       )
       OR (
-        rhs.genus = ancestry.pollen_parent_genus
-        AND rhs.epithet = ancestry.pollen_parent_epithet
+        rhs.id = ancestry.pollen_parent_id
       )
     )
   )

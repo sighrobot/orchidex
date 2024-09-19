@@ -9,10 +9,7 @@ type Progeny = Grex | [Grex, Grex] | null;
 type RawScoredGrex = Grex & { score: string };
 type ScoredGrex = { grex: Grex; score: number };
 
-const makeUrl = (grex: Grex) =>
-  `/api/ancestry?genus=${encodeURIComponent(
-    grex.genus
-  )}&epithet=${encodeURIComponent(grex.epithet)}`;
+const makeUrl = (grex: Grex) => `/api/ancestry?id=${grex.id}`;
 
 const parseResponse = (response: RawScoredGrex[]): ScoredGrex[] =>
   response
@@ -114,11 +111,7 @@ export const useAncestry = (grex?: Grex, level = 2) => {
 
   const fetcher = () =>
     grex && !grex.hypothetical
-      ? fetch(
-          `/api/ancestry?genus=${encodeURIComponent(
-            grex.genus
-          )}&epithet=${encodeURIComponent(grex.epithet)}`
-        ).then((resp) => resp.json())
+      ? fetch(`/api/ancestry?id=${grex.id}`).then((resp) => resp.json())
       : [];
   const { data = [] } = useSWR<Grex[]>(
     grex ? [grex.genus, grex.epithet] : 'none',
