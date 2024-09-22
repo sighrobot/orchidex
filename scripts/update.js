@@ -128,6 +128,45 @@ let i = startIndex;
         AND rhs.pollen_parent_id is NULL
     `.trim()
     );
+
+    // correct seed_parent_epithet
+    // THIS QUERY MUST STAY IN SYNC WITH data/init.sql !!!
+    await sql.query(
+      `
+    UPDATE rhs
+    SET seed_parent_epithet=subquery.seed_parent_epithet
+    FROM (
+        SELECT r1.id, r2.epithet AS seed_parent_epithet
+        FROM rhs r1
+        LEFT JOIN rhs r2
+            ON r2.id = r1.seed_parent_id
+    ) AS subquery
+    WHERE rhs.id=subquery.id
+        AND rhs.seed_parent_epithet LIKE '%�%'
+        AND rhs.epithet != ''
+        AND rhs.date_of_registration != ''
+    `.trim()
+    );
+
+    // correct pollen_parent_epithet
+    // THIS QUERY MUST STAY IN SYNC WITH data/init.sql !!!
+    await sql.query(
+      `
+    UPDATE rhs
+    SET pollen_parent_epithet = subquery.pollen_parent_epithet
+    FROM (
+        SELECT r1.id, r2.epithet AS pollen_parent_epithet
+        FROM rhs r1
+        LEFT JOIN rhs r2
+            ON r2.id = r1.pollen_parent_id
+    ) AS subquery
+    WHERE
+      rhs.id = subquery.id
+      AND rhs.pollen_parent_epithet LIKE '%�%'
+      AND rhs.epithet != ''
+      AND rhs.date_of_registration != ''
+    `.trim()
+    );
   }
 
   stream.end();
