@@ -4,11 +4,12 @@
 -- to run on production:
 -- psql $POSTGRES_URL -f init-rhs.sql
 
-DROP TABLE IF EXISTS rhs;
+DROP MATERIALIZED VIEW IF EXISTS materialized_fts;
+DROP INDEX IF EXISTS idx_fts;
 DROP INDEX IF EXISTS idx_rhs_seed_parent_id;
 DROP INDEX IF EXISTS idx_rhs_pollen_parent_id;
 DROP INDEX IF EXISTS idx_rhs_genus_epithet;
-DROP INDEX IF EXISTS rhs_searchable_text_trgm_gist_idx;
+DROP TABLE IF EXISTS rhs;
 
 CREATE TABLE rhs (
     id text PRIMARY KEY,
@@ -37,11 +38,6 @@ CREATE TABLE rhs (
 CREATE INDEX idx_rhs_seed_parent_id ON rhs (seed_parent_id);
 CREATE INDEX idx_rhs_pollen_parent_id ON rhs (pollen_parent_id);
 CREATE INDEX idx_rhs_genus_epithet ON rhs (genus, epithet);
-CREATE INDEX rhs_searchable_text_trgm_gist_idx ON rhs USING gist((
-    COALESCE(epithet, '') || ' ' ||
-    COALESCE(genus, '') || ' ' ||
-    COALESCE(registrant_name, '')
-) gist_trgm_ops(siglen=256));
 
 -- populate seed_parent_id
 -- THIS QUERY MUST STAY IN SYNC WITH scripts/update.js !!!
@@ -105,3 +101,19 @@ WHERE
   AND rhs.pollen_parent_epithet LIKE '%�%'
   AND rhs.epithet != ''
   AND rhs.date_of_registration != '';
+
+-- fts
+-- !!! MUST REFRESH WHEN DATA UPDATES (in update.js etc.)
+CREATE MATERIALIZED VIEW materialized_fts AS
+SELECT id,
+       epithet,
+       genus || ' ' || epithet as p_title,
+       setweight(to_tsvector(genus), 'C') || ' ' ||
+       setweight(to_tsvector(unaccent(epithet)), 'A') || ' ' ||
+       setweight(to_tsvector(unaccent(translate(registrant_name, '.', ' '))), 'B') || ' ' ||
+       setweight(to_tsvector(unaccent(translate(originator_name, '.', ' '))), 'D') as document
+FROM rhs
+WHERE epithet != ''
+GROUP BY id;
+
+CREATE INDEX idx_fts ON materialized_fts USING gin(document);

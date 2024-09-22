@@ -167,6 +167,8 @@ let i = startIndex;
       AND rhs.date_of_registration != ''
     `.trim()
     );
+
+    await sql.query('REFRESH MATERIALIZED VIEW materialized_fts');
   }
 
   stream.end();

@@ -11,22 +11,25 @@ export async function GET(
 
   const { limit = 100, offset } = Object.fromEntries(req.nextUrl.searchParams);
 
-  // https://alexklibisz.com/2022/02/18/optimizing-postgres-trigram-search#a-blazing-fast-search-query
+  const vectorizedWild = q
+    .split(' ')
+    .map((t) => `${t}:*`)
+    .join(' & ');
+  const vectorized = q.split(' ').join(' & ');
+
+  // https://rachbelaid.com/postgres-full-text-search-is-good-enough/ <-- https://stackoverflow.com/a/57379943
+  // p.s. https://dba.stackexchange.com/a/177044
+  // p.p.s. https://www.www-old.bartlettpublishing.com/site/bartpub/blog/3/entry/350
   const sql = `
-    WITH input AS (SELECT '${q}' AS q)
-      SELECT
-        ${ID_FIELDS.join(', ')},
-        ${SEARCH_FIELDS.join(', ')},
-        1 - (input.q <<-> (COALESCE(genus, '') || ' ' || 
-          COALESCE(epithet, '') || ' ' ||
-          COALESCE(registrant_name, ''))) AS score
-    FROM rhs, input
-    WHERE epithet != '' AND input.q <% (COALESCE(genus, '') || ' ' ||
-      COALESCE(epithet, '') || ' ' ||
-      COALESCE(registrant_name, ''))
-    ORDER BY score DESC, genus ASC, lower(epithet) ASC
+    SELECT ${ID_FIELDS.concat(SEARCH_FIELDS)
+      .map((f) => `rhs.${f}`)
+      .join(', ')}
+    FROM materialized_fts
+    LEFT JOIN rhs ON rhs.id = materialized_fts.id
+    WHERE document @@ to_tsquery('${vectorizedWild}')
+    ORDER BY (lower(rhs.epithet) = rhs.epithet) DESC, ts_rank(document, to_tsquery('${vectorized}')) DESC
     LIMIT ${limit}
-    ${offset ? `OFFSET ${offset}` : ''}`;
+    ${offset ? `OFFSET ${offset}` : ''}`.trim();
 
   const json = await query(sql);
 
