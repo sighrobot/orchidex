@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { query } from 'lib/storage/pg';
+import { ABBR_TO_GENUS } from 'lib/abbreviations';
+import { capitalize } from 'lib/utils';
+
+function hasThreeConsonantsInARow(s: string) {
+  const consonantPattern = /[^aeiouAEIOU\s]{3}/;
+  return consonantPattern.test(s);
+}
 
 export async function GET(
   req: NextRequest,
@@ -11,11 +18,18 @@ export async function GET(
 
   const { limit = 100, offset } = Object.fromEntries(req.nextUrl.searchParams);
 
-  const vectorizedWild = q
-    .split(' ')
-    .map((t) => `${t}:*`)
-    .join(' & ');
-  const vectorized = q.split(' ').join(' & ');
+  const tokens = q.split(' ');
+  const firstToken = tokens[0];
+
+  if (hasThreeConsonantsInARow(firstToken)) {
+    const abbrGenus = ABBR_TO_GENUS[`${capitalize(tokens[0])}.`];
+    if (abbrGenus) {
+      tokens[0] = abbrGenus.toLowerCase();
+    }
+  }
+
+  const vectorizedWild = tokens.map((t) => `${t}:*`).join(' & ');
+  const vectorized = tokens.join(' & ');
 
   // https://rachbelaid.com/postgres-full-text-search-is-good-enough/ <-- https://stackoverflow.com/a/57379943
   // p.s. https://dba.stackexchange.com/a/177044

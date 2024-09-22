@@ -1,5 +1,7 @@
 // partial source: https://duocet.ibiodiversity.net/index.php?title=%E5%85%B0%E7%A7%91%E6%9D%82%E4%BA%A4%E5%B1%9E%E5%90%8D%E7%BC%A9%E5%86%99%E5%AF%B9%E7%85%A7%E8%A1%A8
 
+import { invert } from 'lodash';
+
 export const GENUS_TO_ABBREVIATION = {
   Androcorys: 'Androcorys',
   Brownleea: 'Brownleea',
@@ -3088,5 +3090,7 @@ export const GENUS_TO_ABBREVIATION = {
   Yusofara: 'Ysfra.',
   Zygozella: 'Zzl.',
 };
+
+export const ABBR_TO_GENUS = invert(GENUS_TO_ABBREVIATION);
 
 export const GENUSES = Object.keys(GENUS_TO_ABBREVIATION);
