@@ -14,7 +14,7 @@ export async function GET(
   { params }: { params: { q: string } }
 ) {
   const { q: rawQ } = params;
-  const q = rawQ.replace(/'/g, "''");
+  const q = rawQ.replace(/'/g, "''").trim();
 
   const { limit = 100, offset } = Object.fromEntries(req.nextUrl.searchParams);
 
