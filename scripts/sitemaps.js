@@ -105,9 +105,14 @@ const handleClose = () => {
     '',
     'recent',
     'search',
+    'search-hybrid',
     'search-advanced',
     'about',
     'about/data',
+    'learn',
+    'learn/hybridize',
+    'learn/genus-dominance',
+    'learn/registrant-dominance',
   ]) {
     const url = `${BASE_URL}/${u}`;
     writeLines(makeLocXml('url', url), staticOut);
