@@ -67,6 +67,7 @@ export default function Treemap({ genus }: { genus: string }) {
             value: Math.max(g.c, 1),
             zero: g.c === 0,
           }))
+          .filter((g) => g.name) // can't determine why a few records have null names :(
           .concat(
             speciesEpithets.map((s) => ({ name: s, value: 1, zero: true }))
           ),
