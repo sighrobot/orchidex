@@ -1,0 +1,40 @@
+.login,
+.next {
+  background: rgba(255, 255, 255, 1);
+  border: 1px solid #ccc;
+  margin: 40px auto;
+  max-width: 500px;
+  padding: 40px;
+}
+
+.login {
+  h2 {
+    text-align: center;
+  }
+
+  form {
+    > * {
+      display: block;
+      margin-top: 20px;
+    }
+
+    input {
+      border: 1px solid fuchsia;
+      outline-color: fuchsia;
+      width: 100%;
+      padding: 5px 10px;
+    }
+
+    button {
+      cursor: pointer;
+      width: 100%;
+      padding: 5px 10px;
+    }
+  }
+}
+
+.next {
+  p {
+    margin-top: 20px;
+  }
+}

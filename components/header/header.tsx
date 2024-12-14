@@ -1,4 +1,6 @@
+// 'use server';
 import Link from 'next/link';
+import { createClient } from 'lib/supabase/server';
 
 import SearchBar from 'app/(noSearch)/search/components/bar';
 
@@ -27,10 +29,27 @@ const LinkList = () => (
         </Link>
       </li>
     ))}
+    <User />
   </ul>
 );
 
-export const Header = ({ hasSearch }) => {
+const User = async () => {
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data?.user) {
+    return null;
+  }
+
+  return (
+    <div className={style.user}>
+      <Link className={style.user} href='/account'>
+        👤
+      </Link>
+    </div>
+  );
+};
+
+export const Header = async ({ hasSearch }) => {
   return (
     <header className={style.header}>
       <div className={style.inner}>
@@ -43,7 +62,6 @@ export const Header = ({ hasSearch }) => {
 
         <div className={style.navLockup}>
           {hasSearch && <SearchBar className={style.search} />}
-
           <nav className={style.nav}>
             <LinkList />
           </nav>
