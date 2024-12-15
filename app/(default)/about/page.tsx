@@ -21,14 +21,15 @@ export default function About() {
       <div className={style.about}>
         <article>
           <p>
-            Orchidex is a project created, directed, and designed by{' '}
+            Orchidex is a project created and designed by{' '}
             <ExternalLink
               href='https://charliaorchids.com'
               trackArgs={['Click KT Paeth']}
             >
               KT Paeth
-            </ExternalLink>{' '}
-            with engineering help from{' '}
+            </ExternalLink>
+            <br />
+            with engineering by{' '}
             <ExternalLink
               href='https://abe.sh'
               trackArgs={['Click Abe Rubenstein']}
