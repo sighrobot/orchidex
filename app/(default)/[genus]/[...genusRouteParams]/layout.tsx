@@ -3,16 +3,17 @@ import { notFound } from 'next/navigation';
 
 import { description, formatName } from 'lib/string';
 import { APP_TITLE } from 'lib/constants';
-import { maybeGetGrex } from './page';
+import { GrexPageParams, maybeGetGrex } from './page';
 
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata({
-  params: { genus: g, params },
+  params,
 }: {
-  params: { genus: string; params: [string, string] };
+  params: GrexPageParams;
 }): Promise<Metadata> {
-  const [rawE, id] = params;
+  const { genus: g, genusRouteParams } = await params;
+  const [rawE, id] = genusRouteParams;
   const e = decodeURIComponent(rawE);
   const grex = await maybeGetGrex(g, e, id);
 

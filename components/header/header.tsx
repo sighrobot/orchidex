@@ -1,4 +1,3 @@
-// 'use server';
 import Link from 'next/link';
 import { createClient } from 'lib/supabase/server';
 
@@ -34,7 +33,7 @@ const LinkList = () => (
 );
 
 const User = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user) {
     return null;

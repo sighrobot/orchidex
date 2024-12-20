@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { query } from 'lib/storage/pg';
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { name: string } }
-) {
-  const raw = params.name;
+type Params = Promise<{ name: string }>;
+
+export async function GET(req: NextRequest, { params }: { params: Params }) {
+  const { name: raw } = await params;
   const r = raw.replace(/'/g, "''");
 
   if (!r) {
