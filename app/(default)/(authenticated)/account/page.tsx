@@ -3,7 +3,7 @@ import { logout } from 'lib/serverActions/auth';
 import { H2 } from 'components/layout';
 
 export default async function AccountPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
   const { data } = await supabase.auth.getUser();
 
   return (

@@ -3,7 +3,10 @@ import React from 'react';
 
 import { Grex } from 'lib/types';
 import { APP_TITLE, APP_URL } from 'lib/constants';
-import { StatMap, createRegistrantStatMap } from './page';
+
+import { createRegistrantStatMap, StatMap } from './utils';
+
+export type RegistrantPageParams = Promise<{ r: string }>;
 
 const buildDescription = (
   name: string,
@@ -41,7 +44,7 @@ const buildDescription = (
     didEndThisYear ? ' has ' : ' '
   }registered or originated ${registrantGrexes.length.toLocaleString()} orchid ${
     registrantGrexes.length === 1 ? 'hybrid' : 'hybrids'
-  } in ${statMap.genera.size} genera`;
+  } in ${statMap.numGenera} genera`;
 
   if (tokens.length > 0) {
     const tokenString = tokens.join(' and ');
@@ -61,9 +64,10 @@ export async function fetchRegistrant(name: string): Promise<object[]> {
 export async function generateMetadata({
   params,
 }: {
-  params: { r: string };
+  params: RegistrantPageParams;
 }): Promise<Metadata> {
-  const registrantName = decodeURIComponent(params.r);
+  const { r } = await params;
+  const registrantName = decodeURIComponent(r);
   const registrantGrexes = (await fetchRegistrant(registrantName)) as Grex[];
 
   const statMap = createRegistrantStatMap(registrantName, registrantGrexes);

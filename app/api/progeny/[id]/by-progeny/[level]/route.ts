@@ -2,16 +2,15 @@ import { NextRequest, NextResponse } from 'next/server';
 import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { query } from 'lib/storage/pg';
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string; level: string } }
-) {
+type Params = Promise<{ id: string; level: string }>;
+
+export async function GET(req: NextRequest, { params }: { params: Params }) {
   const { searchParams } = req.nextUrl;
   const sortBy = searchParams.get('sortBy');
   const direction = searchParams.get('direction');
 
-  const { id } = params;
-  const rawLevel = parseInt(params.level, 10);
+  const { id, level: l } = await params;
+  const rawLevel = parseInt(l, 10);
 
   if (Number.isNaN(rawLevel) || rawLevel < 0) {
     return NextResponse.json([], { status: 200 });

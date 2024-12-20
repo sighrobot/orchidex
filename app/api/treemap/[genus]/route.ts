@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from 'next/server';
 import { capitalize } from 'lib/utils';
 import { query } from 'lib/storage/pg';
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { genus: string } }
-) {
+type Params = Promise<{ genus: string }>;
+
+export async function GET(req: NextRequest, { params }: { params: Params }) {
   const { searchParams } = new URL(req.nextUrl);
   const parentType = searchParams.get('parentType');
-  const genus = capitalize(params.genus);
+  const { genus: rawGenus } = await params;
+  const genus = capitalize(rawGenus);
 
   let q = '';
 
