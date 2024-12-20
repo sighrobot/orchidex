@@ -48,10 +48,14 @@ export async function maybeGetGrex(g: string, e: string, id: string) {
   return grex;
 }
 
-export default async function GrexPage({
-  params: { genus: g, params } = { genus: '', params: [] },
-} = {}) {
-  const [e, id] = params;
+export type GrexPageParams = Promise<{
+  genus: string;
+  genusRouteParams: [string, string];
+}>;
+
+export default async function GrexPage({ params }: { params: GrexPageParams }) {
+  const { genus: g, genusRouteParams } = await params;
+  const [e, id] = genusRouteParams;
   const grex = await maybeGetGrex(g, e, id);
 
   if (grex) {

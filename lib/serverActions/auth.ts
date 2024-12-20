@@ -6,7 +6,7 @@ import { revalidatePath } from 'next/cache';
 import { notFound, redirect } from 'next/navigation';
 
 export async function login(formData: FormData) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.auth.signInWithOtp({
     email: formData.get('email') as string,
@@ -25,7 +25,7 @@ export async function login(formData: FormData) {
 }
 
 export async function logout() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const { error } = await supabase.auth.signOut();
 

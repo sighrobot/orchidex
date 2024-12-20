@@ -9,11 +9,10 @@ function hasThreeConsonantsInARow(s: string) {
   return consonantPattern.test(s);
 }
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { q: string } }
-) {
-  const { q: rawQ } = params;
+type Params = Promise<{ q: string }>;
+
+export async function GET(req: NextRequest, { params }: { params: Params }) {
+  const { q: rawQ } = await params;
   const q = rawQ.replace(/'/g, "''").trim();
 
   const { limit = 100, offset } = Object.fromEntries(req.nextUrl.searchParams);

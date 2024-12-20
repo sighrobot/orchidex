@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { orderBy } from 'lodash';
@@ -22,7 +22,7 @@ export async function fetchSearch(params: string[] = []): Promise<Grex[]> {
   return fetched.json();
 }
 
-export default function SearchHybrid() {
+function SearchHybridInner() {
   const router = useRouter();
   const rawSearchParams = useSearchParams();
   const query = React.useMemo(
@@ -136,5 +136,14 @@ export default function SearchHybrid() {
         />
       </section>
     </>
+  );
+}
+
+// useSearchParams needs <Suspense />
+export default function SearchHybrid() {
+  return (
+    <Suspense>
+      <SearchHybridInner />
+    </Suspense>
   );
 }

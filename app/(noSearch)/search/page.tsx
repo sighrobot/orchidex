@@ -1,5 +1,5 @@
-import SearchPage from './[q]/page';
+import SearchView from './[q]/view';
 
 export default function Search() {
-  return <SearchPage />;
+  return <SearchView />;
 }
