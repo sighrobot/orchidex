@@ -5,12 +5,15 @@ import { APP_TITLE } from 'lib/constants';
 import { capitalize } from 'lib/utils';
 import Treemap from 'components/viz/treemap';
 
+type Params = Promise<{ genus: string }>;
+
 export async function generateMetadata({
   params,
 }: {
-  params: { genus: string };
+  params: Params;
 }): Promise<Metadata> {
-  const genus = decodeURIComponent(params.genus);
+  const { genus: rawGenus } = await params;
+  const genus = decodeURIComponent(rawGenus);
   const capitalizedGenus = capitalize(genus);
 
   return {
@@ -19,8 +22,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function Parentage({
-  params: { genus } = { genus: '' },
-} = {}) {
+export default async function Parentage({ params }: { params: Params }) {
+  const { genus } = await params;
   return <Treemap genus={genus} />;
 }

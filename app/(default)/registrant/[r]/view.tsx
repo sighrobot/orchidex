@@ -12,20 +12,17 @@ import { Tabs } from 'components/tabs/tabs';
 import List from 'components/list';
 import { H2 } from 'components/layout';
 import { Padded } from 'components/container/container';
+import { createRegistrantStatMap } from './utils';
 
 import style from './style.module.scss';
 
 type RegistrantViewProps = {
   name: string;
   rawData: Grex[];
-  statMap: any;
 };
 
-export default function RegistrantView({
-  name,
-  rawData,
-  statMap,
-}: RegistrantViewProps) {
+export default function RegistrantView({ name, rawData }: RegistrantViewProps) {
+  const statMap = createRegistrantStatMap(name, rawData);
   const { registrations, originations } = statMap;
 
   return (
@@ -37,8 +34,8 @@ export default function RegistrantView({
           <span>
             <strong>{rawData.length.toLocaleString()}</strong>{' '}
             {rawData.length === 1 ? 'record' : 'records'} across{' '}
-            <strong>{statMap.genera.size}</strong>{' '}
-            {statMap.genera.size === 1 ? 'genus' : 'genera'}
+            <strong>{statMap.numGenera}</strong>{' '}
+            {statMap.numGenera === 1 ? 'genus' : 'genera'}
           </span>
         </div>
         <div className={style.quickStats}>

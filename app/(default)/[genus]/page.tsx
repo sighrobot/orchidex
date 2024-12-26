@@ -18,12 +18,15 @@ import RegistrantList from './components/registrants';
 
 import { Sidebar } from './components/sidebar';
 
+type Params = Promise<{ genus: string }>;
+
 export async function generateMetadata({
   params,
 }: {
-  params: { genus: string };
+  params: Params;
 }): Promise<Metadata> {
-  const genus = decodeURIComponent(params.genus);
+  const { genus: rawGenus } = await params;
+  const genus = decodeURIComponent(rawGenus);
   const capitalizedGenus = capitalize(genus);
 
   return {
@@ -32,9 +35,9 @@ export async function generateMetadata({
   };
 }
 
-export default async function Genus({
-  params: { genus } = { genus: '' },
-} = {}) {
+export default async function Genus({ params }: { params: Params }) {
+  const { genus } = await params;
+
   if (!GENUS_TO_ABBREVIATION[capitalize(genus)]) {
     notFound();
   }

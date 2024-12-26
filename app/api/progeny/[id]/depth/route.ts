@@ -2,11 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { query } from 'lib/storage/pg';
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+type Params = Promise<{ id: string }>;
+
+export async function GET(req: NextRequest, { params }: { params: Params }) {
+  const { id } = await params;
 
   const json = await query(`
         WITH RECURSIVE progeny_depth AS (

@@ -1,18 +1,22 @@
+import { Suspense } from 'react';
 import { Metadata } from 'next';
 import { fetchGrex } from 'lib/fetchers/grex';
 import { Grex, Grex as GrexType } from 'lib/types';
-import GrexView from 'app/(default)/[genus]/[...params]/view';
+import GrexView from 'app/(default)/[genus]/[...genusRouteParams]/view';
 import { fetchGrexChild } from 'lib/fetchers/grex-child';
 import { formatName } from 'lib/string';
 import Form from './form';
 
 import style from './style.module.scss';
 
+type SearchParams = Promise<{ s: string; p: string }>;
+
 export async function generateMetadata({
-  searchParams: { s, p },
+  searchParams,
 }: {
-  searchParams: { s: string; p: string };
+  searchParams: SearchParams;
 }): Promise<Metadata> {
+  const { s, p } = await searchParams;
   if (!s || !p) {
     return {
       title: 'Explore ancestry of any two orchids - Orchidex',
@@ -35,9 +39,9 @@ export async function generateMetadata({
 export default async function Hybridize({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: SearchParams;
 }) {
-  const { s, p } = searchParams;
+  const { s, p } = await searchParams;
   let selectedSeedParent: GrexType | undefined = undefined;
   let selectedPollenParent: GrexType | undefined = undefined;
   let existingGrex: GrexType | undefined = undefined;
@@ -59,9 +63,12 @@ export default async function Hybridize({
     [existingGrex] = await fetchGrexChild(s as string, p as string);
   }
 
+  // useSearchParams needs <Suspense />
   return (
     <>
-      <Form />
+      <Suspense>
+        <Form />
+      </Suspense>
 
       {selectedSeedParent && selectedPollenParent ? (
         <GrexView
