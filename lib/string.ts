@@ -73,11 +73,11 @@ export const description = (grex: Grex) => {
   if (seed_parent_genus && pollen_parent_genus) {
     const seedNameShort = formatName({
       genus: seed_parent_genus,
-      epithet: seed_parent_epithet,
+      epithet: seed_parent_epithet ?? '',
     }).short.full;
     const pollenNameShort = formatName({
       genus: pollen_parent_genus,
-      epithet: pollen_parent_epithet,
+      epithet: pollen_parent_epithet ?? '',
     }).short.full;
     const crossString = `${seedNameShort} ${CROSS_CHAR} ${pollenNameShort}`;
 
