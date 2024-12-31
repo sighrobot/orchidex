@@ -20,7 +20,7 @@ export const createRegistrantStatMap = (name: string, rawData: Grex[]) => {
     numGenera: 0,
   };
 
-  //   let genera = new Set();
+  const genera = new Set();
 
   rawData.forEach((g) => {
     if (isPrimary(g)) {
@@ -31,7 +31,7 @@ export const createRegistrantStatMap = (name: string, rawData: Grex[]) => {
       statMap.intergeneric += 1;
     }
 
-    // genera = genera ? genera.add(g.genus) : new Set([g.genus]);
+    genera.add(g.genus);
 
     const year = parseInt(g.date_of_registration.slice(0, 4), 10);
 
@@ -49,7 +49,7 @@ export const createRegistrantStatMap = (name: string, rawData: Grex[]) => {
     }
   });
 
-  statMap.numGenera = 0;
+  statMap.numGenera = genera.size;
 
   return statMap;
 };
