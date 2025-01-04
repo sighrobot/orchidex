@@ -14,12 +14,10 @@ type NameProps = {
     epithet: Grex['epithet'];
   };
   link?: boolean;
-  as?: React.FC | keyof JSX.IntrinsicElements;
   abbreviate?: boolean;
 };
 
 export const Name = ({
-  as = 'span',
   className,
   grex,
   link = true,
@@ -37,9 +35,8 @@ export const Name = ({
         {isSpecies(grex as Grex) ? <em>{epithet}</em> : epithet}
       </>
     );
-    const Component = as;
     return (
-      <Component className={cn(style.name, className)}>
+      <span className={cn(style.name, className)}>
         {link ? (
           <LinkGrex prefetch={false} grex={grex}>
             {content}
@@ -47,7 +44,7 @@ export const Name = ({
         ) : (
           content
         )}
-      </Component>
+      </span>
     );
   }
 

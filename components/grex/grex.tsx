@@ -5,6 +5,7 @@ import { Pills } from 'components/pills/pills';
 import { Reg } from 'components/reg/reg';
 import styles from './style.module.scss';
 import type { Grex } from 'lib/types';
+import { H2 } from 'components/layout';
 
 type GrexProps = {
   grex: Grex;
@@ -42,13 +43,15 @@ export const GrexCard = ({
     >
       <Pills grex={grex} />
       {!hideName && (
-        <div style={{ marginTop: '5px' }}>
-          <Name
-            as='h2'
-            link={emphasize || (!hideLink && !hideLinks)}
-            grex={grex}
-          />
-        </div>
+        <H2
+          style={{
+            marginTop: '5px',
+            fontSize: heading ? undefined : 'inherit',
+            fontWeight: heading ? undefined : 400,
+          }}
+        >
+          <Name link={emphasize || (!hideLink && !hideLinks)} grex={grex} />
+        </H2>
       )}
       <Parentage
         hideLink={hideLinks}

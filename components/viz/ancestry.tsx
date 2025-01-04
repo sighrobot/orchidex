@@ -306,7 +306,11 @@ export const AncestryViz = ({
     <div className={style.viz}>
       <MenuWrap>
         <div className={style.menuOuter}>
-          {isFullScreen && <Name grex={grex} as={H3} />}
+          {isFullScreen && (
+            <H3>
+              <Name grex={grex} />
+            </H3>
+          )}
 
           <menu>
             {isFullScreen && (
