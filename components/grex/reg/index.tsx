@@ -1,5 +1,6 @@
 import { Grex } from 'lib/types';
 import { LinkPeople } from 'components/link';
+import { RegDate } from 'components/grex/date';
 
 import styles from './style.module.scss';
 
@@ -22,10 +23,6 @@ export const Reg = ({ grex, activeId, hideDate, hideLink }: RegProps) => {
   const isRegistrantOU = grex.registrant_name === 'O/U';
   const isOriginatorOU = grex.originator_name === 'O/U';
 
-  const dateStr = new Date(`${grex.date_of_registration}T00:00:00`)
-    .toString()
-    .slice(3, 15);
-
   const isOriginatorSame = grex.originator_name === grex.registrant_name;
 
   const originatorContent = isOriginatorSame ? null : activeId ===
@@ -39,7 +36,7 @@ export const Reg = ({ grex, activeId, hideDate, hideLink }: RegProps) => {
 
   return (
     <span className={styles.reg}>
-      {!hideDate && dateStr}
+      {!hideDate && <RegDate grex={grex} />}
       {hideDate ? '' : ' • '}
       {hideLink || activeId === grex.registrant_name || isRegistrantOU ? (
         grex.registrant_name
