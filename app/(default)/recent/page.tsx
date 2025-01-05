@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { groupBy, orderBy } from 'lodash';
-import { GrexCard } from 'components/grex/grex';
+import { GrexCard } from 'components/grex/card';
 import { H2, H3 } from 'components/layout';
 import { Padded } from 'components/container/container';
 import { APP_TITLE } from 'lib/constants';

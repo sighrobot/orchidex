@@ -1,4 +1,4 @@
-import { Name } from 'components/name/name';
+import { Name } from 'components/grex/name';
 import { Grex } from 'lib/types';
 import { isSpecies } from 'components/pills/pills';
 

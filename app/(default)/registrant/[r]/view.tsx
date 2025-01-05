@@ -3,7 +3,7 @@
 import React from 'react';
 import { orderBy, groupBy } from 'lodash';
 
-import { GrexCard } from 'components/grex/grex';
+import { GrexCard } from 'components/grex/card';
 import VizList from 'components/viz/list';
 import { ButtonSimple } from 'components/button-simple/button-simple';
 import { StatCard } from 'components/stat/stat';

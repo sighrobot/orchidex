@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { orderBy } from 'lodash';
 
 import { Padded } from 'components/container/container';
-import { GrexCard } from 'components/grex/grex';
+import { GrexCard } from 'components/grex/card';
 import { CROSS_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
 import { SearchParentage } from 'components/search/parentage';

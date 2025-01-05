@@ -16,7 +16,7 @@ import {
   isPrimary,
   isSpecies,
 } from 'components/pills/pills';
-import { Name } from 'components/name/name';
+import { Name } from 'components/grex/name';
 import { makeHrefGrex } from 'components/link/grex';
 import { Grex } from 'lib/types';
 import { H3 } from 'components/layout';

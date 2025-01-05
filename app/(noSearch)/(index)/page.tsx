@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 
 import { Padded } from 'components/container/container';
-import { GrexCard } from 'components/grex/grex';
+import { GrexCard } from 'components/grex/card';
 import { H2, H3 } from 'components/layout';
 import { useDate } from 'lib/hooks/useDate';
 import { Grex } from 'lib/types';

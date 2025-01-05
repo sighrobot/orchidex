@@ -1,7 +1,7 @@
 'use client';
 
 import { Padded } from 'components/container/container';
-import { GrexCard } from 'components/grex/grex';
+import { GrexCard } from 'components/grex/card';
 import List from 'components/list';
 import { FetchRecentProps, useRecent } from 'lib/fetchers/recent';
 import { Grex } from 'lib/types';

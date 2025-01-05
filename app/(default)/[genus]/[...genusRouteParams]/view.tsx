@@ -5,7 +5,7 @@ import React from 'react';
 import { capitalize, kebabCase } from 'lodash';
 
 import { Padded } from 'components/container/container';
-import { GrexCard } from 'components/grex/grex';
+import { GrexCard } from 'components/grex/card';
 
 import Link from 'next/link';
 import { Resources } from 'components/resources/resources';
@@ -13,7 +13,7 @@ import { formatName } from 'lib/string';
 import { AncestryViz } from 'components/viz/ancestry';
 import VizList from 'components/viz/list';
 import { useSpeciesAncestry } from 'lib/hooks/useAncestry';
-import { Name } from 'components/name/name';
+import { Name } from 'components/grex/name';
 import { useRouter, usePathname } from 'next/navigation';
 import { Tabs } from 'components/tabs/tabs';
 import { isNaturalHybrid, isSpecies } from 'components/pills/pills';

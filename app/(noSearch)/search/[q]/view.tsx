@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { Padded } from 'components/container/container';
-import { GrexCard } from 'components/grex/grex';
+import { GrexCard } from 'components/grex/card';
 import { H2, H3 } from 'components/layout';
 import List from 'components/list';
 import { useFTS } from 'lib/fetchers/fts';

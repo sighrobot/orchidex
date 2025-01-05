@@ -2,7 +2,7 @@
 
 import { track } from '@vercel/analytics';
 import React from 'react';
-import { GrexCard } from 'components/grex/grex';
+import { GrexCard } from 'components/grex/card';
 import List from 'components/list';
 import {
   GrexWithGen,
