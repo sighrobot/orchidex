@@ -8,7 +8,7 @@ import cytoscape from 'cytoscape';
 import dagre from 'cytoscape-dagre';
 import cn from 'classnames';
 
-import { useAncestry } from 'lib/hooks/useAncestry';
+import { ANCESTRY_NODE_ID_DELIMITER, useAncestry } from 'lib/hooks/useAncestry';
 import { formatName, repairMalformedNaturalHybridEpithet } from 'lib/string';
 import {
   isIntergeneric,
@@ -105,7 +105,10 @@ export const AncestryViz = ({
       if (!isFullScreen) {
         const g = e.target.data() as Grex;
         if (g.hypothetical) return;
-        const href = makeHrefGrex({ ...g, id: g.id.split('-')[0] });
+        const href = makeHrefGrex({
+          ...g,
+          id: g.id.split(ANCESTRY_NODE_ID_DELIMITER)[0],
+        });
         router.push(href);
       }
     },

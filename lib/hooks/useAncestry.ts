@@ -100,6 +100,8 @@ type AncestryLink = {
   value: number;
 };
 
+export const ANCESTRY_NODE_ID_DELIMITER = '~';
+
 export const useAncestry = (grex?: Grex, level = 2) => {
   const [ancestry, setAncestry] = React.useState<{
     nodes: Grex[];
@@ -149,7 +151,7 @@ export const useAncestry = (grex?: Grex, level = 2) => {
         type: AncestryLink['type']
       ) => {
         if (parent) {
-          const id = `${parent.id}-${uniqueId()}`;
+          const id = `${parent.id}${ANCESTRY_NODE_ID_DELIMITER}${uniqueId()}`;
 
           addParentToGraph(type, n, parent, child, id);
 
