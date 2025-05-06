@@ -17,7 +17,12 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
 
   const { limit = 100, offset } = Object.fromEntries(req.nextUrl.searchParams);
 
-  const tokens = q.split(' ');
+  const tokens = q
+    .split(' ')
+    .map((t) => t.split('.')) // handle "D.Goddard" et al.
+    .flat()
+    .filter((t) => t); // don't allow empty tokens
+
   const firstToken = tokens[0];
 
   if (hasThreeConsonantsInARow(firstToken)) {
