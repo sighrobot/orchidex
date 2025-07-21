@@ -7,6 +7,7 @@ import React from 'react';
 import ForceGraph3D from '3d-force-graph';
 // import { GraphVizComponent } from '@graph-viz/react';
 
+
 const top = [
   'Phalaenopsis',
   'Paphiopedilum',
@@ -29,7 +30,7 @@ const topColors = ['red', 'blue', 'green', 'yellow', 'pink', 'cyan', 'orange', '
 let myGraph = ForceGraph3D();
 
 export default function Sankey() {
-  const cyContainer = React.useRef(null);
+  const cyContainer = React.useRef<HTMLDivElement>(null);
 
   const [data, setData] = React.useState<{ edge: string }[]>([]);
 
@@ -65,8 +66,8 @@ export default function Sankey() {
         linkList.push({
           source,
           target,
-          color: 'black',
-          label: target[0] === '' ? target : undefined,
+          // color: 'black',
+          // label: target[0] === '' ? target : undefined,
         });
       }
     });
@@ -76,6 +77,7 @@ export default function Sankey() {
   console.log({ nodes, links });
 
   React.useEffect(() => {
+
     myGraph(cyContainer.current ?? document.body)
       .graphData({
         nodes: nodes.map((n) => {
@@ -94,7 +96,7 @@ export default function Sankey() {
       .dagMode('td')
       .backgroundColor('white')
       .dagLevelDistance(50);
-  }, [cyContainer, links]);
+  }, [cyContainer.current, nodes, links]);
 
   // const viz = React.useMemo(() => {
   //   if (nodes.length === 0 || links.length === 0) {
