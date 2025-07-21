@@ -4,6 +4,7 @@ import { Metadata } from 'next';
 import { APP_TITLE } from 'lib/constants';
 import { capitalize } from 'lib/utils';
 import Treemap from 'components/viz/treemap';
+import Sankey from 'components/viz/sankey';
 
 export async function generateMetadata({
   params,
@@ -22,5 +23,5 @@ export async function generateMetadata({
 export default async function Parentage({
   params: { genus } = { genus: '' },
 } = {}) {
-  return <Treemap genus={genus} />;
+  return <Sankey/>;//<Treemap genus={genus} />;
 }
