@@ -31,7 +31,7 @@ export async function GET() {
 FROM (
   SELECT seed_parent_genus AS parent_genus, genus
   FROM rhs
-  WHERE seed_parent_genus = 'Vanda' AND id != '1016580'
+  WHERE  id NOT IN ('1016580', '1010987', '1040251')
     AND date_of_registration != ''
     AND epithet != ''
     AND genus != seed_parent_genus
@@ -43,7 +43,7 @@ FROM (
 
   SELECT pollen_parent_genus AS parent_genus, genus
   FROM rhs
-  WHERE pollen_parent_genus = 'Vanda' AND id != '1016580'
+  WHERE  id NOT IN ('1016580', '1010987', '1040251')
     AND date_of_registration != ''
     AND epithet != ''
     AND genus != seed_parent_genus

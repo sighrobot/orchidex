@@ -4,35 +4,141 @@ import React from 'react';
 // import { ResponsiveSankey } from '@nivo/sankey';
 
 // import style from './style.module.scss';
-import ForceGraph3D from '3d-force-graph';
+
 // import { GraphVizComponent } from '@graph-viz/react';
 
-
+let capture = true;
+let myGraph;
 const top = [
-  'Phalaenopsis',
-  'Paphiopedilum',
-  'Cattleya',
-  'Dendrobium',
-  'Cymbidium',
-  'Rhyncholaeliocattleya',
-  'Oncidium',
-  'Vanda',
-  'Rhyncattleanthe',
-  'Cattlianthe',
-  'Bulbophyllum',
-  'Epidendrum',
-  'Masdevallia',
-  'Miltoniopsis',
-  'Phragmipedium',
+  {
+    genus: 'Phalaenopsis',
+    c: 40477,
+  },
+  {
+    genus: 'Paphiopedilum',
+    c: 30602,
+  },
+  {
+    genus: 'Cattleya',
+    c: 19687,
+  },
+  {
+    genus: 'Dendrobium',
+    c: 19574,
+  },
+  {
+    genus: 'Cymbidium',
+    c: 18430,
+  },
+  {
+    genus: 'Rhyncholaeliocattleya',
+    c: 16434,
+  },
+  {
+    genus: 'Oncidium',
+    c: 8616,
+  },
+  {
+    genus: 'Vanda',
+    c: 5604,
+  },
+  {
+    genus: 'Rhyncattleanthe',
+    c: 3571,
+  },
+  {
+    genus: 'Cattlianthe',
+    c: 3126,
+  },
+  {
+    genus: 'Bulbophyllum',
+    c: 2806,
+  },
+  {
+    genus: 'Epidendrum',
+    c: 2800,
+  },
+  {
+    genus: 'Masdevallia',
+    c: 2372,
+  },
+  {
+    genus: 'Miltoniopsis',
+    c: 2008,
+  },
+  {
+    genus: 'Phragmipedium',
+    c: 1650,
+  },
+  {
+    genus: 'Tolumnia',
+    c: 1581,
+  },
+  {
+    genus: 'Stelis',
+    c: 1341,
+  },
+  {
+    genus: 'Lepanthes',
+    c: 1228,
+  },
+  {
+    genus: 'Sarcochilus',
+    c: 1139,
+  },
+  {
+    genus: 'Papilionanda',
+    c: 1092,
+  },
+  {
+    genus: 'Habenaria',
+    c: 1057,
+  },
+  {
+    genus: 'Catasetum',
+    c: 1003,
+  },
+  {
+    genus: 'Lycaste',
+    c: 861,
+  },
+  {
+    genus: 'Calanthe',
+    c: 808,
+  },
+  {
+    genus: 'Oncidopsis',
+    c: 792,
+  },
+  {
+    genus: 'Brassocattleya',
+    c: 783,
+  },
+  {
+    genus: 'Laeliocattleya',
+    c: 772,
+  },
+  {
+    genus: 'Coelogyne',
+    c: 762,
+  },
+  {
+    genus: 'Disa',
+    c: 721,
+  },
+  {
+    genus: 'Vandachostylis',
+    c: 706,
+  },
 ];
-const topColors = ['red', 'blue', 'green', 'yellow', 'pink', 'cyan', 'orange', 'purple', 'brown', 'gray'];
 
-let myGraph = ForceGraph3D();
+const topSet = new Set(top.map((t) => t.genus));
 
-export default function Sankey() {
+export const Sankey = () => {
   const cyContainer = React.useRef<HTMLDivElement>(null);
 
   const [data, setData] = React.useState<{ edge: string }[]>([]);
+  const [genera, setGenera] = React.useState([]);
 
   React.useEffect(() => {
     fetch('http://localhost:3000/api/treemap').then((fetched) =>
@@ -40,8 +146,14 @@ export default function Sankey() {
         setData(rows);
       })
     );
-  }, []);
 
+    fetch('http://localhost:3000/api/wcvp/genera').then((fetched) =>
+      fetched.json().then((rows) => {
+        setGenera(rows.map((r) => r.genus));
+      })
+    );
+  }, []);
+  const generaSet = new Set(genera);
   const idSet = React.useMemo(() => {
     const set = new Set();
     data.forEach((d) => {
@@ -51,11 +163,20 @@ export default function Sankey() {
         set.add(target);
       }
     });
+    genera.forEach((g) => {
+      set.add(g);
+    });
     return set;
   }, [data.length]);
 
   const nodes = React.useMemo(() => {
-    return Array.from(idSet).map((id) => ({ id }));
+    return Array.from(idSet).map((id) => ({
+      id,
+      isTop: topSet.has(id),
+      isNatural: generaSet.has(id),
+      count: topSet.has(id) ? top.find((t) => t.genus === id)?.c : undefined,
+      // color: generaSet.has(id) ? 'red' : 'white',
+    }));
   }, [idSet]);
 
   const links = React.useMemo(() => {
@@ -66,36 +187,64 @@ export default function Sankey() {
         linkList.push({
           source,
           target,
-          // color: 'black',
-          // label: target[0] === '' ? target : undefined,
         });
       }
     });
     return linkList;
   }, [data]);
 
-  console.log({ nodes, links });
+  // console.log({ nodes, links });
 
   React.useEffect(() => {
-
-    myGraph(cyContainer.current ?? document.body)
+    if (typeof window !== 'undefined') {
+      const ForceGraph3D = require('3d-force-graph').default;
+      myGraph = ForceGraph3D();
+    }
+    myGraph(cyContainer.current ?? document.body, {
+      rendererConfig: { preserveDrawingBuffer: true },
+    })
+      .width(10000)
+      .height(10000)
       .graphData({
         nodes: nodes.map((n) => {
-          const color = 'blue'
-
-          return { ...n, color };
+          return { ...n };
         }),
         links: links.map((l) => {
           return l;
         }),
       })
-      .nodeVal((n) => 100)
+      // .nodeVal((n) => 100)
+      .nodeColor((n) => (n.isNatural ? '#ffff81' : 'white'))
+      // .nodeColor((n) => 'white')
+      .nodeOpacity(1)
       .nodeLabel((n) => n.id)
-      .nodeRelSize(2)
-      .linkColor(() => 'black')
+      // .nodeRelSize(10)
+      // .nodeVal((n) => (n.isTop ? 10000 : n.isNatural ? 40 : 20))
+      .nodeVal((n) => {
+        const sizeRange = 5000 - 20;
+        return n.count ? (n.count / top[0].c) * sizeRange + 20 : 20;
+      })
+      .nodeResolution(16)
+      .linkColor(() => 'white')
+      .linkWidth(20)
+      // .linkOpacity(1)
       .dagMode('td')
-      .backgroundColor('white')
-      .dagLevelDistance(50);
+      .backgroundColor('#00000000')
+      .dagLevelDistance(5)
+      .showNavInfo(false)
+      .d3AlphaDecay(0.001)
+      .d3VelocityDecay(0.4)
+      .dagNodeFilter((n) => !n.isNatural);
+
+    myGraph.d3Force('link').distance((l) => {
+      // console.log(l);
+      return generaSet.has(l.source) || topSet.has(l.source) ? 20 : 300;
+    });
+    myGraph.d3Force('charge').strength((n) => {
+      // console.log(l);
+      return n.isNatural || n.isTop ? -100 : -20;
+    });
+    console.log(myGraph.renderer());
   }, [cyContainer.current, nodes, links]);
 
   // const viz = React.useMemo(() => {
@@ -130,7 +279,31 @@ export default function Sankey() {
   // }, [nodes, links]);
 
   return (
-    <div  style={{ width: '100%', height: '800px', border: '1px solid black' }}>
+    <div style={{ width: '100%', height: '1200px', border: '1px solid red' }}>
+      <button
+        onClick={() => {
+          capture = true;
+          function render() {
+            myGraph.renderer().render(myGraph.scene(), myGraph.camera());
+
+            if (capture) {
+              capture = false;
+              document.querySelector('canvas').toBlob((blob) => {
+                const newImg = document.createElement('img');
+                const url = URL.createObjectURL(blob);
+
+                newImg.src = url;
+                document.body.appendChild(newImg);
+              });
+            }
+
+            requestAnimationFrame(render);
+          }
+          requestAnimationFrame(render);
+        }}
+      >
+        a
+      </button>
       {/* <GraphVizComponent
         nodes={nodes.map((n, a, b) => {
           return {
@@ -145,7 +318,8 @@ export default function Sankey() {
         groups={[]}
       /> */}
       {/* {viz} */}
-      <div ref={cyContainer} style={{ width: '100%', height: '100%',  }}/>
+      <style>{`canvas {width: 300px; height: 300px; border: 1px solid pink;}`}</style>
+      <div ref={cyContainer} />
     </div>
   );
-}
+};
