@@ -203,8 +203,8 @@ export const Sankey = () => {
     myGraph(cyContainer.current ?? document.body, {
       rendererConfig: { preserveDrawingBuffer: true },
     })
-      .width(10000)
-      .height(10000)
+      .width(1000)
+      .height(1000)
       .graphData({
         nodes: nodes.map((n) => {
           return { ...n };
@@ -221,12 +221,17 @@ export const Sankey = () => {
       // .nodeRelSize(10)
       // .nodeVal((n) => (n.isTop ? 10000 : n.isNatural ? 40 : 20))
       .nodeVal((n) => {
-        const sizeRange = 5000 - 20;
-        return n.count ? (n.count / top[0].c) * sizeRange + 20 : 20;
+        const min = 1000;
+        const sizeRange = 10000 - min;
+        return n.count
+          ? (n.count / top[0].c) * sizeRange + min
+          : n.isNatural
+          ? 500
+          : 120;
       })
       .nodeResolution(16)
       .linkColor(() => 'white')
-      .linkWidth(20)
+      .linkWidth(30)
       // .linkOpacity(1)
       .dagMode('td')
       .backgroundColor('#00000000')
@@ -242,7 +247,7 @@ export const Sankey = () => {
     });
     myGraph.d3Force('charge').strength((n) => {
       // console.log(l);
-      return n.isNatural || n.isTop ? -100 : -20;
+      return n.isNatural || n.isTop ? -100 : -30;
     });
     console.log(myGraph.renderer());
   }, [cyContainer.current, nodes, links]);
