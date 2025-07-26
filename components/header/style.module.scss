@@ -16,17 +16,6 @@
     max-width: 1500px;
   }
 
-  h1 {
-    line-height: 1;
-
-    img {
-      transform: translateY(1px);
-      flex-shrink: 0;
-      width: 32px;
-      height: 32px;
-    }
-  }
-
   .navLockup {
     display: flex;
     align-items: center;
@@ -71,20 +60,23 @@
 }
 
 .brand {
+  img {
+    width: 123px;
+    height: 24px;
+  }
+
   a {
     align-items: center;
     display: flex;
     font-size: 18px;
     text-decoration: none;
   }
-}
 
-.orchi {
-  color: fuchsia;
-}
-
-.dex {
-  color: black;
+  sup {
+    font-family: sans-serif;
+    font-size: 6px;
+    transform: translateY(-8px);
+  }
 }
 
 .mobileNav {

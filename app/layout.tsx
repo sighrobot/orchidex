@@ -20,6 +20,7 @@ export const metadata: Metadata = {
   ],
   manifest: `${APP_URL}/manifest.json`,
   title: `${APP_TITLE}: Discover orchids.`,
+  openGraph: { images: ['/orchidex-share.png'] },
 };
 
 export default function RootLayout({

@@ -54,8 +54,8 @@ export const Header = async ({ hasSearch }) => {
       <div className={style.inner}>
         <h1 className={style.brand}>
           <Link href='/'>
-            <span className={style.orchi}>Orchi</span>
-            <span className={style.dex}>dex</span>
+            <img alt='Orchidex logo' src='/orchidex.png' />
+            <sup>™</sup>
           </Link>
         </h1>
 
