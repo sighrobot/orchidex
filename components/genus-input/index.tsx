@@ -5,7 +5,8 @@ import { capitalize } from 'lib/utils';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import style from './style.module.scss';
+import { Combobox } from '@/components/ui/combobox';
+import { uniqBy } from 'lodash';
 
 async function fetchGenera(): Promise<{ g: string; c: number; d: string }[]> {
   const res = await fetch(`${APP_URL}/api/genera`);
@@ -20,19 +21,10 @@ export default function GenusInput({
   value: string;
 }) {
   const router = useRouter();
-  const [generaInput, setGeneraInput] = React.useState<string>('');
   const [genera, setGenera] = React.useState<string[]>([]);
 
-  const handleChangeGenus = (e) => {
-    if (
-      e.target.value[0] !== generaInput[0] &&
-      genera.includes(e.target.value.toLowerCase())
-    ) {
-      router.push(`${basePath}/${e.target.value.toLowerCase()}`);
-      setGeneraInput('');
-    } else {
-      setGeneraInput(e.target.value);
-    }
+  const handleChangeGenus = (value: string) => {
+    router.push(`${basePath}/${value.toLowerCase()}`);
   };
 
   React.useEffect(() => {
@@ -40,25 +32,19 @@ export default function GenusInput({
       const fetched = await fetchGenera();
       setGenera(fetched.map(({ g }) => g.toLowerCase()));
     })();
-  }, [value]);
+  }, []);
 
   return (
-    <>
-      {genera.length > 0 && (
-        <datalist id='genera'>
-          {genera.map((g) => (
-            <option key={g}>{capitalize(g)}</option>
-          ))}
-        </datalist>
+    <Combobox
+      options={uniqBy(
+        genera
+          .map((g) => ({ label: capitalize(g), value: g }))
+          .concat([{ label: capitalize(value), value }]),
+        'value'
       )}
-
-      <input
-        className={style.input}
-        list='genera'
-        placeholder={generaInput.length === 0 ? 'Search genera' : undefined} // Safari/FF placeholder glitch
-        value={generaInput.toLowerCase()}
-        onChange={handleChangeGenus}
-      />
-    </>
+      onChange={handleChangeGenus}
+      placeholder='Search genera'
+      value={value}
+    />
   );
 }
