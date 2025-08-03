@@ -22,39 +22,24 @@
     margin-left: auto;
 
     .search {
-      margin-right: 20px;
+      margin-right: 15px;
 
-      @media (max-width: 580px) {
-        margin-right: 35px;
+      @media (max-width: 600px) {
+        margin-right: 10px;
       }
 
       input {
         font-size: 13px;
         padding: 0 10px;
         height: 30px;
-        width: 235px;
+        width: 190px;
       }
     }
   }
 
   .nav {
-    @media (max-width: 580px) {
+    @media (max-width: 600px) {
       display: none;
-    }
-
-    .linkList {
-      display: flex;
-
-      a {
-        color: black;
-        display: inline-block;
-        font-size: 14px;
-        font-weight: 400;
-      }
-
-      li:not(:first-child) {
-        margin-left: 10px;
-      }
     }
   }
 }
@@ -80,76 +65,8 @@
 }
 
 .mobileNav {
-  background: gray;
-  display: flex;
-
-  @media (min-width: 581px) {
+  @media (min-width: 601px) {
     display: none;
-  }
-
-  summary {
-    align-items: center;
-    cursor: pointer;
-    display: flex;
-    font-size: 30px;
-    color: #63666a;
-    list-style-type: none;
-    padding: 0 10px;
-    user-select: none;
-    position: absolute;
-    top: -7px; // ☰ is short
-    right: 0;
-    bottom: 0;
-
-    &::-webkit-details-marker {
-      display: none;
-    }
-  }
-
-  nav {
-    background: rgba(255, 255, 255, 0.95);
-    position: absolute;
-    width: 100%;
-    top: 50px;
-    left: 0;
-    right: 0;
-    padding: 0 10px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #ddd;
-
-    .linkList {
-      li {
-        padding-top: 5px;
-        text-align: center;
-      }
-    }
-  }
-}
-
-.linkList {
-  list-style-type: none;
-  padding: 0;
-
-  li {
-    span {
-      position: relative;
-
-      sup {
-        position: absolute;
-        top: -14px;
-        right: -8px;
-        transform: rotate(15deg);
-
-        mark {
-          background: #f55af5;
-          border-radius: 2px;
-          font-size: 9px;
-          padding: 1px 2px;
-          font-weight: bold;
-          color: white;
-        }
-      }
-    }
   }
 }
 

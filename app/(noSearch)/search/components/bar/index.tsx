@@ -29,7 +29,7 @@ type SearchInputProps = {
 export const SearchInput = ({
   className,
   onChange,
-  placeholder = 'Search orchid or registrant name',
+  placeholder = 'Search orchid or registrant',
   name = `home${INPUT_NAME_SUFFIX}`,
   type = 'search',
   value,

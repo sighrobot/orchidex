@@ -14,6 +14,8 @@
     "@nivo/core": "0.88.0",
     "@nivo/treemap": "0.88.0",
     "@radix-ui/react-dialog": "^1.1.14",
+    "@radix-ui/react-dropdown-menu": "^2.1.15",
+    "@radix-ui/react-navigation-menu": "^1.2.13",
     "@radix-ui/react-popover": "^1.1.14",
     "@radix-ui/react-slot": "^1.2.3",
     "@supabase/ssr": "0.5.2",
