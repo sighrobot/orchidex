@@ -22,6 +22,7 @@ import { Grex } from 'lib/types';
 import { H3 } from 'components/layout';
 
 import style from './ancestry.module.scss';
+import { Button } from '@/components/ui/button';
 
 const DEGREE_CHAR = 'º';
 const TERMINAL_NODE_CHAR = '𓆺';
@@ -334,15 +335,20 @@ export const AncestryViz = ({
             )}
 
             {isFullScreen && (
-              <button onClick={() => cy.fit(40)}>&#x27F3;&nbsp;Reset</button>
+              <Button size='sm' onClick={() => cy.fit(40)}>
+                <span className='text-lg'>&#x27F3;</span>Reset
+              </Button>
             )}
 
-            <button
+            <Button
+              size='sm'
               onClick={isFullScreen ? onFullScreenClose : onFullScreenOpen}
             >
-              {isFullScreen ? <>&times;</> : <>&#x26F6;</>}&nbsp;
-              {isFullScreen ? 'Close' : 'Expand Ancestry'}
-            </button>
+              <span className='text-lg'>
+                {isFullScreen ? <>&times;</> : <>&#x26F6;</>}
+              </span>
+              {isFullScreen ? 'Close' : 'Expand '}
+            </Button>
           </menu>
         </div>
       </MenuWrap>

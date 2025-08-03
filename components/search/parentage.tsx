@@ -1,6 +1,7 @@
 import React from 'react';
 
 import searchStyle from './search.module.scss';
+import { Button } from '@/components/ui/button';
 
 type SearchParentageState = {
   g1?: string;
@@ -82,12 +83,13 @@ export const SearchParentage = ({
       </div>
 
       <div>
-        <button
+        <Button
+          className='w-full mt-[40px] cursor-pointer'
           disabled={!state.g1 && !state.e1 && !state.g2 && !state.e2}
           type='submit'
         >
           {submitText}
-        </button>
+        </Button>
       </div>
     </form>
   );

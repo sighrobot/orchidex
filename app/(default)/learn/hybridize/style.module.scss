@@ -22,34 +22,10 @@
     flex-grow: 1;
   }
 
-  .swap {
-    background: #fff;
-    background: black;
-    border: 1px solid #333;
-    color: white;
-    cursor: pointer;
-    font-size: 14px;
-    margin-top: 8px;
-
-    &:hover {
-      background: #666;
-    }
-
-    &[disabled] {
-      background: #666;
-      cursor: not-allowed;
-    }
-  }
-
   @media (max-width: 800px) {
-    .input,
-    .swapWrap {
+    .input {
       max-width: unset;
       width: 100%;
-    }
-
-    .swap {
-      margin-bottom: 10px;
     }
   }
 }
