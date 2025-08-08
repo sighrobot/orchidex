@@ -5,6 +5,7 @@ import { INPUT_NAME_SUFFIX } from 'lib/string';
 import { capitalize } from 'lib/utils';
 
 import searchStyle from './search.module.scss';
+import { Button } from '@/components/ui/button';
 
 type SearchGrexState = {
   genus?: string;
@@ -47,9 +48,13 @@ export const SearchGrex = ({
       })}
 
       <div>
-        <button disabled={SEARCH_FIELDS.every((f) => !state[f])} type='submit'>
+        <Button
+          className='w-full mt-[40px] cursor-pointer'
+          type='submit'
+          disabled={SEARCH_FIELDS.every((f) => !state[f])}
+        >
           Search
-        </button>
+        </Button>
       </div>
     </form>
   );

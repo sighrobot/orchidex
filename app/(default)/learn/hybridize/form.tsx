@@ -9,6 +9,7 @@ import { useGrex } from 'lib/hooks/useGrex';
 import { H2 } from 'components/layout';
 
 import style from './style.module.scss';
+import { Button } from '@/components/ui/button';
 
 const PARAM_SEED = 's';
 const PARAM_POLLEN = 'p';
@@ -90,15 +91,9 @@ export default function Form() {
             />
           </article>
 
-          <div className={style.swapWrap}>
-            <button
-              className={style.swap}
-              disabled={!seedParent && !pollenParent}
-              onClick={handleSwap}
-            >
-              &#8651; Swap
-            </button>
-          </div>
+          <Button size='sm' disabled={!seedParent && !pollenParent}>
+            &#8651; Swap
+          </Button>
 
           <article className={style.input}>
             <GrexAutocomplete

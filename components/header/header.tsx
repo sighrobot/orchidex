@@ -4,32 +4,39 @@ import { createClient } from 'lib/supabase/server';
 import SearchBar from 'app/(noSearch)/search/components/bar';
 
 import style from './style.module.scss';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+} from '@/components/ui/navigation-menu';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 const NAV_LINKS = [
   { path: 'recent', label: 'Recent' },
-  // { path: 'search', label: 'Search' },
   { path: 'learn', label: 'Explore' },
   { path: 'about', label: 'About' },
 ];
 
 const LinkList = () => (
-  <ul className={style.linkList}>
-    {NAV_LINKS.map((l) => (
-      <li key={l.path}>
-        <Link href={`/${l.path}`}>
-          <span>
-            {l.label}
-            {l.new && (
-              <sup>
-                <mark>NEW</mark>
-              </sup>
-            )}
-          </span>
-        </Link>
-      </li>
-    ))}
-    <User />
-  </ul>
+  <NavigationMenu className='text-sm'>
+    <NavigationMenuList>
+      {NAV_LINKS.map((l) => (
+        <NavigationMenuItem>
+          <NavigationMenuLink asChild>
+            <Link href={`/${l.path}`}>{l.label}</Link>
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+      ))}
+
+      <User />
+    </NavigationMenuList>
+  </NavigationMenu>
 );
 
 const User = async () => {
@@ -64,15 +71,31 @@ export const Header = async ({ hasSearch }) => {
           <nav className={style.nav}>
             <LinkList />
           </nav>
+
+          <div className={style.mobileNav}>
+            <DropdownMenu>
+              <DropdownMenuTrigger className='cursor-pointer'>
+                <span
+                  style={{
+                    fontSize: '30px',
+                    top: '-3px',
+                    position: 'relative',
+                  }}
+                >
+                  &#9776;
+                </span>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {NAV_LINKS.map((l) => (
+                  <DropdownMenuItem>
+                    <Link href={`/${l.path}`}>{l.label}</Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
         </div>
       </div>
-
-      <details className={style.mobileNav}>
-        <summary>&#9776;</summary>
-        <nav>
-          <LinkList />
-        </nav>
-      </details>
     </header>
   );
 };

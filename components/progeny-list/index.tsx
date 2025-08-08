@@ -16,10 +16,17 @@ import {
   ListItemText,
   MenuItem,
   OutlinedInput,
-  Select,
+  Select as MaterialSelect,
 } from '@mui/material';
 
 import style from './style.module.scss';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const MenuProps = {
   PaperProps: { style: { maxHeight: 48 * 4.5 + 8, width: 250 } },
@@ -51,9 +58,9 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
     [deepest]
   );
 
-  const handleDirection = (e) => setDirection(e.target.value);
-  const handleField = (e) => {
-    const f = e.target.value;
+  const handleDirection = (value) => setDirection(value);
+  const handleField = (value) => {
+    const f = value;
 
     setField(f);
     setDirection(f === 'first_order_progeny_count' ? 'desc' : 'asc');
@@ -131,7 +138,7 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
             results in{' '}
             <label>
               generations{' '}
-              <Select
+              <MaterialSelect
                 className={style.select}
                 size='small'
                 multiple
@@ -158,69 +165,46 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
                     <ListItemText primary={`${v}`} />
                   </MenuItem>
                 ))}
-              </Select>
+              </MaterialSelect>
             </label>
           </span>
         )}
 
         <div className={style.controls}>
           <label>
-            Sort by{' '}
-            <Select
-              className={style.select}
-              size='small'
-              value={field}
-              onChange={handleField}
-              input={<OutlinedInput />}
-              renderValue={(selected) =>
-                selected === 'epithet'
-                  ? 'name'
-                  : selected === 'registrant_name'
-                  ? 'registrant'
-                  : selected === 'date_of_registration'
-                  ? 'date'
-                  : selected === 'first_order_progeny_count'
-                  ? '# of progeny'
-                  : 'parent name'
-              }
-            >
-              <MenuItem value='epithet'>
-                <Checkbox checked={field === 'epithet'} />
-                <ListItemText primary='name' />
-              </MenuItem>
-              <MenuItem value='registrant_name'>
-                <Checkbox checked={field === 'registrant_name'} />
-                <ListItemText primary='registrant' />
-              </MenuItem>
-              <MenuItem value='date_of_registration'>
-                <Checkbox checked={field === 'date_of_registration'} />
-                <ListItemText primary='date' />
-              </MenuItem>
-              <MenuItem value='first_order_progeny_count'>
-                <Checkbox checked={field === 'first_order_progeny_count'} />
-                <ListItemText primary='# of progeny' />
-              </MenuItem>
-              <MenuItem value='parent_name'>
-                <Checkbox checked={field === 'parent_name'} />
-                <ListItemText primary='parent name' />
-              </MenuItem>
+            Sort by
+            <Select onValueChange={handleField} value={field}>
+              <SelectTrigger className='ml-[5px]'>
+                <SelectValue>
+                  {field === 'epithet'
+                    ? 'name'
+                    : field === 'registrant_name'
+                    ? 'registrant'
+                    : field === 'date_of_registration'
+                    ? 'date'
+                    : field === 'first_order_progeny_count'
+                    ? '# of progeny'
+                    : 'parent name'}
+                </SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='epithet'>name</SelectItem>
+                <SelectItem value='registrant_name'>registrant</SelectItem>
+                <SelectItem value='date_of_registration'>date</SelectItem>
+                <SelectItem value='first_order_progeny_count'>
+                  # of progeny
+                </SelectItem>
+                <SelectItem value='parent_name'>parent name</SelectItem>
+              </SelectContent>
             </Select>
-            <Select
-              className={style.select}
-              size='small'
-              value={direction}
-              onChange={handleDirection}
-              input={<OutlinedInput />}
-              renderValue={(selected) => (selected === 'asc' ? '↑' : '↓')}
-            >
-              <MenuItem value='asc'>
-                <Checkbox checked={direction === 'asc'} />
-                <ListItemText primary='ascending' />
-              </MenuItem>
-              <MenuItem value='desc'>
-                <Checkbox checked={direction === 'desc'} />
-                <ListItemText primary='descending' />
-              </MenuItem>
+            <Select onValueChange={handleDirection} value={direction}>
+              <SelectTrigger className='ml-[5px]'>
+                <SelectValue>{direction === 'asc' ? '↑' : '↓'}</SelectValue>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value='asc'>ascending</SelectItem>
+                <SelectItem value='desc'>descending</SelectItem>
+              </SelectContent>
             </Select>
           </label>
         </div>

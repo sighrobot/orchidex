@@ -18,21 +18,7 @@
     }
   }
 
-  button[type='submit'] {
-    border: none;
-    width: 100%;
-    margin-top: 40px;
-    padding: 10px;
-    font-size: 12px;
-    text-transform: uppercase;
-    font-weight: 500;
-    background: black;
-    color: white;
-    cursor: pointer;
-  }
-
-  input[type='search'][disabled],
-  button[type='submit'][disabled] {
+  input[type='search'][disabled] {
     cursor: not-allowed;
     opacity: 0.5;
   }

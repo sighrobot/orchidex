@@ -17,12 +17,9 @@
     font-size: 14px;
     padding: 10px 0;
 
-    .select {
-      font-family: inherit;
-
-      &:first-of-type {
-        margin-right: 5px;
-      }
+    label {
+      align-items: center;
+      display: flex;
     }
   }
 }
