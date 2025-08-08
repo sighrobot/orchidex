@@ -23,6 +23,13 @@ import { H3 } from 'components/layout';
 
 import style from './ancestry.module.scss';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const DEGREE_CHAR = 'º';
 const TERMINAL_NODE_CHAR = '𓆺';
@@ -124,8 +131,8 @@ export const AncestryViz = ({
     setInspected(undefined);
   }, []);
 
-  const handleChangeDepth = debounce((e) => {
-    const newDepth = parseInt(e.target.value, 10);
+  const handleChangeDepth = debounce((value) => {
+    const newDepth = parseInt(value, 10);
     setDepth(newDepth);
     track('Set ancestry depth', { depth: newDepth + 1 });
   }, 350);
@@ -320,17 +327,22 @@ export const AncestryViz = ({
             {isFullScreen && (
               <label>
                 Generations:
-                <select onChange={handleChangeDepth} defaultValue={depth}>
-                  {Array(9)
-                    .fill(null)
-                    .map((_, idx) => {
-                      return (
-                        <option key={idx} value={idx + 1}>
-                          {idx + 2}
-                        </option>
-                      );
-                    })}
-                </select>
+                <Select onValueChange={handleChangeDepth} value={String(depth)}>
+                  <SelectTrigger className='ml-[5px]'>
+                    <SelectValue>{depth + 1}</SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array(9)
+                      .fill(null)
+                      .map((_, idx) => {
+                        return (
+                          <SelectItem key={idx} value={String(idx + 1)}>
+                            {idx + 2}
+                          </SelectItem>
+                        );
+                      })}
+                  </SelectContent>
+                </Select>
               </label>
             )}
 
