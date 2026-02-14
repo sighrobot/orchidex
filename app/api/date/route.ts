@@ -1,5 +1,6 @@
 import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { cachedJson } from 'lib/cache';
 import { query } from 'lib/storage/pg';
 
 export async function GET(req: NextRequest) {
@@ -34,5 +35,5 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  return NextResponse.json(last7Days, { status: 200 });
+  return cachedJson(last7Days);
 }

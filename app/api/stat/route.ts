@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { cachedJson } from 'lib/cache';
 import { getStatSql } from 'lib/stats';
 import { Grex, Stat } from 'lib/types';
 import { query } from 'lib/storage/pg';
@@ -13,8 +14,8 @@ export async function POST(req: NextRequest) {
 
   if (q) {
     const json = await query(q);
-    return NextResponse.json(json, { status: 200 });
+    return cachedJson(json);
   }
 
-  return NextResponse.json([], { status: 200 });
+  return cachedJson([]);
 }

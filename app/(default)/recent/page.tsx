@@ -11,7 +11,7 @@ import { Grex } from 'lib/types';
 
 import style from './style.module.scss';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // ISR: revalidate every hour
 
 export const metadata: Metadata = {
   description: 'View a list of the most recent orchid hybrid registrations.',

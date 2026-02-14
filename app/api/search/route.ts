@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { cachedJson } from 'lib/cache';
 import { SEARCH_FIELDS, CROSS_FIELDS } from 'lib/constants';
 import { formatClause, makeCrossQuery } from 'lib/utils';
 import { query } from 'lib/storage/pg';
@@ -29,5 +30,5 @@ export async function GET(req: NextRequest) {
     `SELECT * FROM rhs WHERE epithet != '' AND ${condx} order by date_of_registration desc limit 1000`
   );
 
-  return NextResponse.json(json, { status: 200 });
+  return cachedJson(json);
 }

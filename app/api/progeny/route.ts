@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { cachedJson } from 'lib/cache';
 import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { query } from 'lib/storage/pg';
 
@@ -11,5 +12,5 @@ export async function GET(req: NextRequest) {
     )} FROM rhs WHERE (seed_parent_genus = '${genus}' and seed_parent_epithet = '${epithet}') or (pollen_parent_genus = '${genus}' and pollen_parent_epithet = '${epithet}')`
   );
 
-  return NextResponse.json(json, { status: 200 });
+  return cachedJson(json);
 }

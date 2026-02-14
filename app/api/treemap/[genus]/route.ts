@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { cachedJson } from 'lib/cache';
 import { capitalize } from 'lib/utils';
 import { query } from 'lib/storage/pg';
 
@@ -93,5 +94,5 @@ ORDER BY
 
   const json = await query(q);
 
-  return NextResponse.json(json, { status: 200 });
+  return cachedJson(json);
 }

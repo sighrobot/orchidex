@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { cachedJson } from 'lib/cache';
 import { query } from 'lib/storage/pg';
 
 export async function GET() {
@@ -13,13 +13,10 @@ export async function GET() {
     "SELECT count(*)::int as naturalHybrids FROM rhs where registrant_name like '%a natural hybrid%'"
   );
 
-  return NextResponse.json(
-    {
-      ...records[0],
-      ...synonyms[0],
-      ...species[0],
-      ...naturalHybrids[0],
-    },
-    { status: 200 }
-  );
+  return cachedJson({
+    ...records[0],
+    ...synonyms[0],
+    ...species[0],
+    ...naturalHybrids[0],
+  });
 }

@@ -1,6 +1,7 @@
 import { capitalize } from 'lib/utils';
 import { query } from 'lib/storage/pg';
-import { NextResponse, type NextRequest } from 'next/server';
+import { type NextRequest } from 'next/server';
+import { cachedJson } from 'lib/cache';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.nextUrl);
@@ -30,5 +31,5 @@ where
 
   const json = await query(q);
 
-  return NextResponse.json(json, { status: 200 });
+  return cachedJson(json);
 }

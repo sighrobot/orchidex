@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { cachedJson } from 'lib/cache';
 import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { query } from 'lib/storage/pg';
 import { ABBR_TO_GENUS } from 'lib/abbreviations';
@@ -51,5 +52,5 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
 
   const json = await query(sql);
 
-  return NextResponse.json(json, { status: 200 });
+  return cachedJson(json);
 }

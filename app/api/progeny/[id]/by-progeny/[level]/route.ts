@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { cachedJson } from 'lib/cache';
 import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
 import { query } from 'lib/storage/pg';
 
@@ -87,5 +88,5 @@ export async function GET(req: NextRequest, { params }: { params: Params }) {
         10000
   `);
 
-  return NextResponse.json(json, { status: 200 });
+  return cachedJson(json);
 }

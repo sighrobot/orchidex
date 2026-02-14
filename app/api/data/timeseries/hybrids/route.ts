@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { cachedJson } from 'lib/cache';
 import { query } from 'lib/storage/pg';
 
 const select =
@@ -23,5 +24,5 @@ export async function GET(req: NextRequest) {
 
   const json = await query(sql);
 
-  return NextResponse.json(json, { status: 200 });
+  return cachedJson(json);
 }

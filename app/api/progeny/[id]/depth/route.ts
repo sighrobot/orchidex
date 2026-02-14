@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
+import { cachedJson } from 'lib/cache';
 
 import { query } from 'lib/storage/pg';
 
@@ -34,5 +35,5 @@ FROM
     progeny_depth;
       `);
 
-  return NextResponse.json(json, { status: 200 });
+  return cachedJson(json);
 }

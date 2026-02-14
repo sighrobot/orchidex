@@ -5,7 +5,7 @@ import { description, formatName } from 'lib/string';
 import { APP_TITLE } from 'lib/constants';
 import { GrexPageParams, maybeGetGrex } from './page';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // ISR: revalidate every hour
 
 export async function generateMetadata({
   params,
