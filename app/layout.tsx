@@ -46,7 +46,7 @@ export default function RootLayout({
           </>
         )}
 
-        <Script id='datadog-rum'>
+        {process.env.NODE_ENV === 'production' && <Script id='datadog-rum'>
           {`
              (function(h,o,u,n,d) {
                h=h[d]=h[d]||{q:[],onReady:function(c){h.q.push(c)}}
@@ -70,7 +70,7 @@ export default function RootLayout({
                });
              })
            `}
-        </Script>
+        </Script>}
 
         <div className={style.container}>
           {children}
