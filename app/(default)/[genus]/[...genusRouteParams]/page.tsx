@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { cache } from 'react';
 
 import { Grex } from 'lib/types';
 import { fetchGrex } from 'lib/fetchers/grex';
@@ -38,7 +38,7 @@ const fetchGrexByName = async ({
   }
 };
 
-export async function maybeGetGrex(g: string, e: string, id: string) {
+export const maybeGetGrex = cache(async function maybeGetGrex(g: string, e: string, id: string) {
   let grex: Grex | undefined;
   if (parseInt(id, 10)) {
     [grex] = await fetchGrex(id);
@@ -46,7 +46,7 @@ export async function maybeGetGrex(g: string, e: string, id: string) {
     grex = await fetchGrexByName({ genus: g, epithet: e });
   }
   return grex;
-}
+});
 
 export type GrexPageParams = Promise<{
   genus: string;

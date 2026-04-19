@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import { Metadata } from 'next';
 import React from 'react';
 
@@ -54,12 +55,12 @@ const buildDescription = (
   return `${desc}.`;
 };
 
-export async function fetchRegistrant(name: string): Promise<object[]> {
+export const fetchRegistrant = cache(async (name: string): Promise<object[]> => {
   const res = await fetch(
     `${APP_URL}/api/registrant/${encodeURIComponent(name)}`
   );
   return res.json();
-}
+});
 
 export async function generateMetadata({
   params,
