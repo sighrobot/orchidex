@@ -1,9 +1,8 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
-import { fetchGrex } from 'lib/fetchers/grex';
+import { queryGrexById, queryGrexChild } from 'lib/queries/grex';
 import { Grex, Grex as GrexType } from 'lib/types';
 import GrexView from 'app/(default)/[genus]/[...genusRouteParams]/view';
-import { fetchGrexChild } from 'lib/fetchers/grex-child';
 import { formatName } from 'lib/string';
 import Form from './form';
 
@@ -25,7 +24,7 @@ export async function generateMetadata({
     };
   }
 
-  const [sGrex, pGrex] = await fetchGrex(`${s},${p}`);
+  const [sGrex, pGrex] = await queryGrexById(`${s},${p}`);
 
   const sName = formatName(sGrex).short.full;
   const pName = formatName(pGrex).short.full;
@@ -50,17 +49,17 @@ export default async function Hybridize({
   const pId = parseInt(p as string, 10);
 
   if (sId && pId) {
-    const parents = await fetchGrex(`${sId},${pId}`);
+    const parents = await queryGrexById(`${sId},${pId}`);
     selectedSeedParent = parents.find((parent) => parent.id === s);
     selectedPollenParent = parents.find((parent) => parent.id === p);
   } else if (sId) {
-    [selectedSeedParent] = await fetchGrex(s);
+    [selectedSeedParent] = await queryGrexById(s);
   } else if (pId) {
-    [selectedPollenParent] = await fetchGrex(p);
+    [selectedPollenParent] = await queryGrexById(p);
   }
 
   if (s && p) {
-    [existingGrex] = await fetchGrexChild(s as string, p as string);
+    [existingGrex] = await queryGrexChild(s as string, p as string);
   }
 
   // useSearchParams needs <Suspense />

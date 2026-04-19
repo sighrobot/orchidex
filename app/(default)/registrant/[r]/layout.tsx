@@ -3,7 +3,8 @@ import { Metadata } from 'next';
 import React from 'react';
 
 import { Grex } from 'lib/types';
-import { APP_TITLE, APP_URL } from 'lib/constants';
+import { APP_TITLE } from 'lib/constants';
+import { queryRegistrant } from 'lib/queries/registrant';
 
 import { createRegistrantStatMap, StatMap } from './utils';
 
@@ -56,10 +57,7 @@ const buildDescription = (
 };
 
 export const fetchRegistrant = cache(async (name: string): Promise<object[]> => {
-  const res = await fetch(
-    `${APP_URL}/api/registrant/${encodeURIComponent(name)}`
-  );
-  return res.json();
+  return queryRegistrant(name);
 });
 
 export async function generateMetadata({
