@@ -1,22 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ID_FIELDS, SEARCH_FIELDS } from 'lib/constants';
-import { query } from 'lib/storage/pg';
+import { queryRegistrant } from 'lib/queries/registrant';
 
 type Params = Promise<{ name: string }>;
 
 export async function GET(req: NextRequest, { params }: { params: Params }) {
-  const { name: raw } = await params;
-  const r = raw.replace(/'/g, "''");
+  const { name } = await params;
 
-  if (!r) {
-    return NextResponse.json([], { status: 200 });
-  }
-
-  const json = await query(
-    `SELECT ${ID_FIELDS.join(', ')}, ${SEARCH_FIELDS.join(
-      ', '
-    )} FROM rhs WHERE epithet != '' AND (registrant_name = '${r}' OR originator_name = '${r}') ORDER BY date_of_registration DESC`
-  );
+  const json = await queryRegistrant(name);
 
   return NextResponse.json(json, { status: 200 });
 }

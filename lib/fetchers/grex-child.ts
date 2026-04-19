@@ -9,8 +9,3 @@ export const grexChildFetcher = (s: string, p: string) =>
   )
     .then((res) => res.json())
     .then((json) => json ?? null);
-
-export const fetchGrexChild = async (s: string, p: string): Promise<Grex[]> => {
-  const grex = await grexChildFetcher(s, p);
-  return grex;
-};

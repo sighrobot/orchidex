@@ -1,9 +1,9 @@
 import React, { cache } from 'react';
 
 import { Grex } from 'lib/types';
-import { fetchGrex } from 'lib/fetchers/grex';
+import { queryGrexById } from 'lib/queries/grex';
 import { UNKNOWN_CHAR, repairMalformedNaturalHybridEpithet } from 'lib/string';
-import { APP_URL } from 'lib/constants';
+import { querySearch } from 'lib/queries/search';
 import { find } from 'lodash';
 import GrexView from './view';
 
@@ -19,10 +19,10 @@ const fetchGrexByName = async ({
     : `"${repairMalformedNaturalHybridEpithet({ epithet })}"`;
 
   try {
-    const fetched = await fetch(
-      `${APP_URL}/api/search?genus=${quotedGenus}&epithet=${quotedEpithet}`
-    );
-    const json = await fetched.json();
+    const json = await querySearch({
+      genus: quotedGenus,
+      epithet: quotedEpithet,
+    });
 
     let match: Grex;
 
@@ -41,7 +41,7 @@ const fetchGrexByName = async ({
 export const maybeGetGrex = cache(async function maybeGetGrex(g: string, e: string, id: string) {
   let grex: Grex | undefined;
   if (parseInt(id, 10)) {
-    [grex] = await fetchGrex(id);
+    [grex] = await queryGrexById(id);
   } else if (g && e) {
     grex = await fetchGrexByName({ genus: g, epithet: e });
   }
