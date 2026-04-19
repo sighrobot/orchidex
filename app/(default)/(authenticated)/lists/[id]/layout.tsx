@@ -1,8 +1,8 @@
 import { notFound } from 'next/navigation';
-import { getList } from 'lib/serverActions/list';
+import { getListCached } from './getListCached';
 
 export default async function ListLayout({ children, params: { id } }) {
-  const { data: lists } = await getList(id);
+  const { data: lists } = await getListCached(id);
 
   const list = lists?.[0];
 

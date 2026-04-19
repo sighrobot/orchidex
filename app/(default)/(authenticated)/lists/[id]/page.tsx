@@ -1,8 +1,9 @@
 import { H2 } from 'components/layout';
-import { deleteLists, getList } from 'lib/serverActions/list';
+import { deleteLists } from 'lib/serverActions/list';
+import { getListCached } from './getListCached';
 
 export default async function ListPage({ params: { id } }) {
-  const { data: lists } = await getList(id);
+  const { data: lists } = await getListCached(id);
   const list = lists?.[0];
 
   const deleteListWithId = deleteLists.bind(null, [list?.id]);
