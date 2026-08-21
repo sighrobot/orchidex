@@ -55,7 +55,10 @@ export type GrexPageParams = Promise<{
 
 export default async function GrexPage({ params }: { params: GrexPageParams }) {
   const { genus: g, genusRouteParams } = await params;
-  const [e, id] = genusRouteParams;
+  const [rawE, id] = genusRouteParams;
+  // route params arrive percent-encoded, so multi-word epithets
+  // (e.g. `Copper%20Angel`) must be decoded before querying by name
+  const e = decodeURIComponent(rawE);
   const grex = await maybeGetGrex(g, e, id);
 
   if (grex) {
