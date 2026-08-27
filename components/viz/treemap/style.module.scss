@@ -22,6 +22,21 @@
     }
   }
 
+  p.counts {
+    margin-top: 6px;
+    color: rgba(0, 0, 0, 0.6);
+
+    strong {
+      color: black;
+    }
+
+    // wins over the shared `.simple` button styles regardless of load order
+    .reset {
+      margin-left: 6px;
+      font-size: inherit;
+    }
+  }
+
   fieldset {
     padding: 0;
     border: 0;
