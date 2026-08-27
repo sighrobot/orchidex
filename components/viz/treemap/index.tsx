@@ -14,6 +14,7 @@ import { Grex } from 'lib/types';
 import { capitalize } from 'lib/utils';
 
 import GenusInput from 'components/genus-input';
+import { ButtonSimple } from 'components/button-simple/button-simple';
 import style from './style.module.scss';
 
 type MapData = {
@@ -188,6 +189,12 @@ export default function Treemap({ genus }: { genus: string }) {
     [setType]
   );
 
+  const handleReset = React.useCallback(() => {
+    setType('all');
+    setParent(null);
+    setMinProgeny(0);
+  }, []);
+
   const map = React.useMemo(() => {
     return (
       <div className={style.mapWrap}>
@@ -279,6 +286,7 @@ export default function Treemap({ genus }: { genus: string }) {
 
   const capitalizedGenus = capitalize(genus);
   const isFiltered = type !== 'all' || minProgeny > 0;
+  const isNeutral = !isFiltered && parent === null;
 
   return (
     <div className={style.treemap}>
@@ -315,6 +323,12 @@ export default function Treemap({ genus }: { genus: string }) {
                 and <strong>{counts.total.hybrids.toLocaleString()}</strong>{' '}
                 hybrids.
               </>
+            )}
+
+            {!isLoading && !isNeutral && (
+              <ButtonSimple className={style.reset} onClick={handleReset}>
+                Reset
+              </ButtonSimple>
             )}
           </p>
         </div>
