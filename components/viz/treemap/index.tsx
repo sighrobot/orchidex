@@ -23,14 +23,32 @@ type MapData = {
   one?: boolean;
 };
 
+// Parent epithets only expose a name, so species are detected the same way
+// `isSpecies` does for a full grex: a lowercase, non-numeric first character.
+const isSpeciesEpithet = (name: string) =>
+  !!name &&
+  name[0].toLowerCase() === name[0] &&
+  !Number.isInteger(parseInt(name[0], 10));
+
+const tally = (list: MapData[]) =>
+  list.reduce(
+    (acc, g) => {
+      if (isSpeciesEpithet(g.name)) {
+        acc.species += 1;
+      } else {
+        acc.hybrids += 1;
+      }
+      return acc;
+    },
+    { species: 0, hybrids: 0 }
+  );
+
 export default function Treemap({ genus }: { genus: string }) {
   React.useEffect(() => {
     (HTMLCanvasElement as any).prototype.getBBox = function () {
       return { width: this.offsetWidth, height: this.offsetHeight };
     };
   });
-  const [numOrchids, setNumOrchids] = React.useState(0);
-
   const router = useRouter();
 
   const [minProgeny, setMinProgeny] = React.useState(0);
@@ -76,22 +94,42 @@ export default function Treemap({ genus }: { genus: string }) {
     [parent, data, speciesEpithets]
   );
 
+  // Everything matching the type filter, before the progeny threshold is
+  // applied and before small values are condensed into grouped nodes.
+  const preprocessed = React.useMemo(
+    () =>
+      combined.filter((g) => {
+        if (type === 'species') {
+          return isSpeciesEpithet(g.name);
+        }
+
+        if (type === 'hybrid') {
+          return !isSpeciesEpithet(g.name);
+        }
+
+        return true;
+      }),
+    [combined.length, type] // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  // Derived from `combined` rather than `preprocessed` so the summary always
+  // reflects the current filters, even on renders where the memo below is
+  // intentionally stale.
+  const counts = React.useMemo(() => {
+    const matchesType = (g: MapData) =>
+      type === 'all' || (type === 'species') === isSpeciesEpithet(g.name);
+
+    return {
+      total: tally(combined),
+      shown: tally(
+        combined.filter(
+          (g) => matchesType(g) && (g.zero ? 0 : g.value) >= minProgeny
+        )
+      ),
+    };
+  }, [combined, type, minProgeny]);
+
   const children = React.useMemo(() => {
-    const preprocessed = combined.filter((g: any) => {
-      const isSpecies =
-        g.name[0].toLowerCase() === g.name[0] &&
-        !Number.isInteger(parseInt(g.name[0], 10));
-      if (type === 'species') {
-        return isSpecies;
-      }
-
-      if (type === 'hybrid') {
-        return !isSpecies;
-      }
-
-      return true;
-    });
-
     const groupedByCount = groupBy<MapData>(preprocessed, (d: any) =>
       d.zero ? 0 : d.value
     );
@@ -135,13 +173,7 @@ export default function Treemap({ genus }: { genus: string }) {
           ? 1
           : -1
       );
-  }, [combined.length, type, minProgeny]); // using combined.length prevents genera input lag (?)
-
-  React.useEffect(() => {
-    if (numOrchids === 0 && !isLoading && combined.length) {
-      setNumOrchids(combined.length);
-    }
-  }, [combined.length, isLoading, numOrchids]);
+  }, [preprocessed, minProgeny]);
 
   const handleParent = React.useCallback((e) => {
     if (e.target.name === 'both') {
@@ -246,6 +278,7 @@ export default function Treemap({ genus }: { genus: string }) {
   }, [data, genus, isLoading, router, children]);
 
   const capitalizedGenus = capitalize(genus);
+  const isFiltered = type !== 'all' || minProgeny > 0;
 
   return (
     <div className={style.treemap}>
@@ -258,12 +291,31 @@ export default function Treemap({ genus }: { genus: string }) {
           </H2>
 
           <p>
-            This visualization shows the frequency with which all{' '}
-            {numOrchids ? <strong>{numOrchids.toLocaleString()}</strong> : ''}{' '}
+            This visualization shows the frequency with which{' '}
             <Link href={`/${genus}`}>
               <em>{capitalizedGenus}</em>
             </Link>{' '}
             orchids are used in creating new hybrids.
+          </p>
+
+          <p className={style.counts}>
+            {isLoading ? (
+              <>&nbsp;</>
+            ) : isFiltered ? (
+              <>
+                Showing <strong>{counts.shown.species.toLocaleString()}</strong>{' '}
+                of {counts.total.species.toLocaleString()} species and{' '}
+                <strong>{counts.shown.hybrids.toLocaleString()}</strong> of{' '}
+                {counts.total.hybrids.toLocaleString()} hybrids.
+              </>
+            ) : (
+              <>
+                Showing all{' '}
+                <strong>{counts.total.species.toLocaleString()}</strong> species
+                and <strong>{counts.total.hybrids.toLocaleString()}</strong>{' '}
+                hybrids.
+              </>
+            )}
           </p>
         </div>
 
