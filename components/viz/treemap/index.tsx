@@ -327,7 +327,7 @@ export default function Treemap({ genus }: { genus: string }) {
 
             {!isLoading && !isNeutral && (
               <ButtonSimple className={style.reset} onClick={handleReset}>
-                Reset
+                Reset filters
               </ButtonSimple>
             )}
           </p>
