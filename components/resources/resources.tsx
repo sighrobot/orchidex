@@ -46,9 +46,9 @@ export const Resources = ({ grex, blueNantaSpeciesId }: ResourcesProps) => {
       )}
 
       <ExternalLink
-        href={`https://orchidroots.com/display/information/${
+        href={`https://orchidroots.com/display/summary/orchidaceae/${
           blueNantaSpeciesId ?? String(orchidRootsIdNumber)
-        }/?family=Orchidaceae`}
+        }/`}
         trackArgs={['Click OrchidRoots', { grex: grex.id }]}
       >
         OrchidRoots
