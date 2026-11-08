@@ -12,6 +12,8 @@ import SearchBar, { AdvSearchCTA } from '../components/bar';
 
 import style from './style.module.scss';
 
+const SEARCH_LIMIT = 1000;
+
 export default function SearchView({ q: qFromParams }: { q?: string }) {
   const decodedQ = decodeURIComponent(qFromParams ?? '');
   const [q, setQ] = React.useState<string>(decodedQ);
@@ -22,7 +24,7 @@ export default function SearchView({ q: qFromParams }: { q?: string }) {
     setInputValue(decodedQ);
   }, [decodedQ]);
 
-  const fts = useFTS({ q });
+  const fts = useFTS({ q, limit: SEARCH_LIMIT });
   const results = fts.data;
 
   return (
@@ -38,7 +40,7 @@ export default function SearchView({ q: qFromParams }: { q?: string }) {
         {!fts.isLoading && results.length > 0 && (
           <H3>
             {results.length.toLocaleString()}
-            {results.length === 100 ? '+' : ''}{' '}
+            {results.length === SEARCH_LIMIT ? '+' : ''}{' '}
             {results.length === 1 ? 'result' : 'results'} for <em>{q}</em>
           </H3>
         )}
