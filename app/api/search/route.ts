@@ -1,18 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { SEARCH_FIELDS, CROSS_FIELDS } from 'lib/constants';
-import { querySearch } from 'lib/queries/search';
 
+import { searchRegistry } from 'lib/queries/search';
+import { parseSearchParams } from 'lib/search/params';
+
+// GET /api/search?q=…&genus=…&type=hybrid&offset=50
+// Returns { results, total }. See lib/search/params.ts for every param.
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.nextUrl);
-  const params: Record<string, string | null> = {};
-  SEARCH_FIELDS.forEach((f) => {
-    params[f] = searchParams.get(f);
-  });
-  CROSS_FIELDS.forEach((f) => {
-    params[f] = searchParams.get(f);
-  });
+  const { searchParams } = req.nextUrl;
 
-  const json = await querySearch(params);
-
-  return NextResponse.json(json, { status: 200 });
+  try {
+    const json = await searchRegistry(parseSearchParams(searchParams), {
+      limit: searchParams.get('limit'),
+      offset: searchParams.get('offset'),
+    });
+    return NextResponse.json(json, { status: 200 });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: 'Search failed' }, { status: 500 });
+  }
 }

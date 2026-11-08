@@ -1,19 +1,19 @@
-import React from 'react';
+import { permanentRedirect } from 'next/navigation';
 
-import { SearchLayoutParams } from './layout';
-import SearchView from './view';
+import { searchUrl } from 'lib/search/params';
 
-export default async function SearchPage({
+// Old basic-search URLs: /search/<text> → /search?q=<text>
+export default async function LegacySearchPage({
   params,
 }: {
-  params: SearchLayoutParams;
+  params: Promise<{ q: string }>;
 }) {
   const { q } = await params;
-  const decodedQ = decodeURIComponent(q ?? '');
-
-  return (
-    <>
-      <SearchView q={decodedQ} />
-    </>
-  );
+  let text = q;
+  try {
+    text = decodeURIComponent(q);
+  } catch {
+    // Already decoded.
+  }
+  permanentRedirect(searchUrl({ q: text.trim() }));
 }

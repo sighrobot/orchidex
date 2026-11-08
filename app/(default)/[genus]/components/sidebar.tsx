@@ -5,6 +5,7 @@ import Image from 'next/image';
 
 import { Padded } from 'components/container/container';
 import { H3 } from 'components/layout';
+import { searchUrl } from 'lib/search/params';
 import { capitalize } from 'lib/utils';
 
 import style from './sidebar.module.scss';
@@ -41,9 +42,19 @@ export function Sidebar({ genus }: { genus: string }) {
       <Padded className={style.searchAllWrapper}>
         <Link
           className={style.searchAll}
-          href={`/search-advanced?genus="${genus}"`}
+          href={searchUrl({ genus: `"${genus}"` })}
         >
           Search all
+        </Link>
+        <Link
+          className={style.searchAll}
+          href={searchUrl({
+            genus: `"${genus}"`,
+            type: 'hybrid',
+            origin: 'primary',
+          })}
+        >
+          Primary hybrids
         </Link>
       </Padded>
 

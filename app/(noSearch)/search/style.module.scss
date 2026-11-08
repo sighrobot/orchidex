@@ -1,0 +1,392 @@
+.filtersWrap {
+  padding-top: 8px;
+  padding-bottom: 0;
+
+  details[open] .chevron {
+    transform: rotate(180deg);
+  }
+
+  // Open, the toggle becomes a tab joined to the top of the panel: its bottom
+  // border is painted over the panel's top border so there's no seam.
+  details[open] > .filtersToggle {
+    position: relative;
+    z-index: 1;
+    margin-bottom: -1px;
+    border-bottom-color: white;
+    border-radius: 5px 5px 0 0;
+    background: white;
+  }
+}
+
+// The <summary> that opens and closes the filters panel.
+.filtersToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  // Same side padding as the search box, so their text lines up.
+  padding: 4px 15px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  list-style: none;
+  user-select: none;
+
+  // Hide the browser's own disclosure triangle.
+  &::-webkit-details-marker {
+    display: none;
+  }
+
+  &:hover {
+    background: #f2f2f2;
+  }
+}
+
+.chevron {
+  transition: transform 150ms ease;
+}
+
+// Active filter count: a little gradient bubble, in the search box's colours.
+.count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid black;
+  border-radius: 999px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 255, 0.35),
+    rgba(255, 128, 0, 0.45)
+  );
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  animation: countPop 350ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes countPop {
+  0% {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.hint {
+  color: gray;
+  font-size: 13px;
+}
+
+// Fields with something in them get a peach tint (the orange end of the search
+// box gradient) so it's easy to see which filters are set. Peach rather than
+// pink so it still stands out on the pink highlighted sections.
+%filled {
+  background: #ffe9d1;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid black;
+  // Solid, to match the open tab above it.
+  background: white;
+
+  // One placeholder colour for every field, including the empty date fields
+  // below, which show "mm/dd/yyyy" as text rather than as a placeholder.
+  input::placeholder {
+    color: gray;
+    opacity: 1;
+  }
+
+  input[type='search'] {
+    appearance: none;
+    padding: 5px 10px;
+    width: 100%;
+    border: 1px solid black;
+    background: white;
+
+    // Every text field has a placeholder, so this means "has a value".
+    &:not(:placeholder-shown) {
+      @extend %filled;
+    }
+  }
+
+  input[type='date']:not(.empty) {
+    @extend %filled;
+  }
+}
+
+.group {
+  padding: 12px;
+  border-radius: 5px;
+}
+
+// Arriving from a homepage link briefly tints that section, in the same colour
+// as the link: it fades in, holds, then fades out.
+.highlightHybrid,
+.highlightAdvanced {
+  animation: highlightFade 3.5s ease-in-out forwards;
+}
+
+.highlightHybrid {
+  --highlight: rgba(250, 9, 250, 0.15);
+}
+
+.highlightAdvanced {
+  --highlight: rgba(252, 228, 233, 1);
+}
+
+@keyframes highlightFade {
+  0% {
+    background: transparent;
+  }
+  15%,
+  45% {
+    background: var(--highlight);
+  }
+  100% {
+    background: transparent;
+  }
+}
+
+.groupTitle {
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+
+.advancedGrid {
+  display: grid;
+  gap: 5px;
+  // Same width as the hybrid search fields above.
+  max-width: 520px;
+}
+
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  min-width: 0;
+}
+
+// Genus over epithet for each parent, with × between them.
+.cross {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 520px;
+}
+
+.parent {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+
+  input + input {
+    margin-top: 5px;
+  }
+}
+
+.crossIcon {
+  font-size: 150%;
+}
+
+.dateField {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+
+  span {
+    color: gray;
+    font-size: 13px;
+  }
+
+  input {
+    appearance: none;
+    border: 1px solid black;
+    background: white;
+    padding: 4px 10px;
+    width: 100%;
+    min-width: 0;
+    min-height: 36px;
+  }
+
+  .empty {
+    color: gray;
+  }
+}
+
+.italic {
+  font-style: italic;
+}
+
+.selectWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 0;
+    background: white;
+    color: inherit;
+    font: inherit;
+    padding: 5px 34px 5px 10px;
+    cursor: pointer;
+  }
+}
+
+.selectIcon {
+  position: absolute;
+  right: 10px;
+  pointer-events: none;
+}
+
+// Rows of toggle groups that wrap onto the next line on narrow screens. The
+// hybrid-only options are a nested row that slides out to the right of
+// "Hybrids" when it's picked.
+.segmentRows,
+.hybridRefine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+}
+
+// Options that appear when the option to their left is picked slide out
+// from it.
+.hybridRefine,
+.slideOut {
+  animation: slideOut 250ms ease-out;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.segmented {
+  display: inline-flex;
+  max-width: 100%;
+  border: 1px solid black;
+  border-radius: 5px;
+  background: white;
+  overflow: hidden;
+}
+
+.segment {
+  // Segments shrink evenly to fit narrow screens.
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: center;
+  padding: 5px 12px;
+  font-size: 14px;
+  white-space: nowrap;
+  cursor: pointer;
+
+  @media (max-width: 480px) {
+    padding: 5px 7px;
+  }
+
+  &:focus-visible {
+    outline: 2px solid black;
+    outline-offset: -3px;
+  }
+
+  & + & {
+    border-left: 1px solid black;
+  }
+
+  &:hover {
+    background: #f2f2f2;
+  }
+}
+
+.selected {
+  font-weight: 600;
+  background: #f2f2f2;
+
+  // Clicking a selected option clears it, so hovering one strikes it out.
+  &:not(.noStrike):hover,
+  &:not(.noStrike):focus-visible {
+    text-decoration: line-through;
+  }
+}
+
+// A chosen type counts as a filled-in filter, like the text fields.
+.segment.filledSegment,
+.segment.filledSegment:hover {
+  @extend %filled;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 4px 12px 8px;
+}
+
+.results {
+  margin-top: 24px;
+}
+
+.resultsHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.sortSelect {
+  font-size: 14px;
+}
+
+.sortSelect select {
+  padding: 3px 30px 3px 8px;
+}
+
+.sortSelect .selectIcon {
+  right: 8px;
+}
+
+.message {
+  margin: 16px 0;
+}
+
+.loadMore {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 40px;
+}
