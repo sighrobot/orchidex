@@ -5,14 +5,17 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import cn from 'classnames';
 
+import { searchUrl } from 'lib/search/params';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
 
 import style from './style.module.scss';
 
 export const AdvSearchCTA = () => (
   <aside className={style.advSearchCta}>
-    <Link href='/search-hybrid'>Hybrid search</Link> &middot;{' '}
-    <Link href='/search-advanced'>Advanced search</Link> &middot;{' '}
+    <Link href={searchUrl({}, { panel: 'hybrid' })}>Hybrid search</Link>{' '}
+    &middot;{' '}
+    <Link href={searchUrl({}, { panel: 'advanced' })}>Advanced search</Link>{' '}
+    &middot;{' '}
     <Link href='/learn/hybridize'>Hybridizer tool</Link>
   </aside>
 );
@@ -63,7 +66,7 @@ export default function SearchBar({ className, value = '' }: SearchBarProps) {
   const handleSearchText = (e) => setSearchText(e.target.value);
   const handleSearch = (e) => {
     e.preventDefault();
-    router.push(`/search/${encodeURIComponent(searchText)}`);
+    router.push(searchUrl({ q: searchText.trim() }));
   };
 
   return (
