@@ -1,0 +1,18 @@
+@use 'theme' as t;
+
+.trigger {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  color: t.fg(0.75);
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease;
+
+  &:hover,
+  &[data-state='open'] {
+    background: t.$hover;
+    color: t.fg();
+  }
+}

@@ -6,6 +6,7 @@ import cn from 'classnames';
 
 import Footer from 'components/footer';
 import { APP_DESCRIPTION, APP_TITLE, APP_URL } from 'lib/constants';
+import { THEME_INIT_SCRIPT } from 'lib/theme';
 import { ibmPlexSans } from 'lib/utils';
 
 import './globals.css';
@@ -29,7 +30,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html className={style.html} lang='en'>
+    // The theme script adds a class to <html> before React loads, so React
+    // shouldn't flag that difference.
+    <html className={style.html} lang='en' suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className={cn(style.body, ibmPlexSans.className)}>
         {process.env.NODE_ENV === 'production' && (
           <>

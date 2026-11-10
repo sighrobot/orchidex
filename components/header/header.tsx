@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createClient } from 'lib/supabase/server';
 
 import SearchBar from 'app/(noSearch)/search/components/bar';
+import ThemeToggle from 'components/theme-toggle';
 
 import style from './style.module.scss';
 import {
@@ -71,6 +72,8 @@ export const Header = async ({ hasSearch }) => {
           <nav className={style.nav}>
             <LinkList />
           </nav>
+
+          <ThemeToggle />
 
           <div className={style.mobileNav}>
             <DropdownMenu>
