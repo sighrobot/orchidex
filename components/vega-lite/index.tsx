@@ -4,21 +4,26 @@ import React from 'react';
 import embed, { VisualizationSpec } from 'vega-embed';
 
 import { useResolvedTheme } from 'lib/hooks/useResolvedTheme';
+import { DARK_COLORS } from 'lib/theme';
 
 import style from './style.module.scss';
 
-// Matches --fg in app/globals.css (dark).
-const DARK_FG = '#ececec';
-const DARK_FG_RGB = '236, 236, 236';
+const DARK_FG = DARK_COLORS.fg;
+// The same colour at an alpha, e.g. dark(0.4). Plain rgba(), since some
+// charts draw to <canvas>.
+const DARK_FG_RGB = [1, 3, 5]
+  .map((i) => parseInt(DARK_FG.slice(i, i + 2), 16))
+  .join(', ');
+const dark = (alpha: number) => `rgba(${DARK_FG_RGB}, ${alpha})`;
 
 // Vega's defaults (black text, grey axes) for a dark page.
 const DARK_CONFIG = {
   axis: {
     labelColor: DARK_FG,
     titleColor: DARK_FG,
-    domainColor: 'rgba(236, 236, 236, 0.4)',
-    tickColor: 'rgba(236, 236, 236, 0.4)',
-    gridColor: 'rgba(236, 236, 236, 0.1)',
+    domainColor: dark(0.4),
+    tickColor: dark(0.4),
+    gridColor: dark(0.1),
   },
   legend: { labelColor: DARK_FG, titleColor: DARK_FG },
   title: { color: DARK_FG, subtitleColor: DARK_FG },
@@ -31,7 +36,8 @@ const DARK_CONFIG = {
 const toDark = (node: unknown): unknown => {
   if (typeof node === 'string') {
     if (node === 'black') return DARK_FG;
-    return node.replace(/rgba\(0,\s*0,\s*0,/g, `rgba(${DARK_FG_RGB},`);
+    const fade = node.match(/^rgba\(0,\s*0,\s*0,\s*([\d.]+)\)$/);
+    return fade ? dark(Number(fade[1])) : node;
   }
   if (Array.isArray(node)) return node.map(toDark);
   if (node && typeof node === 'object') {

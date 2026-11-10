@@ -33,7 +33,6 @@ export type GrexTableColumn<G extends Grex> = {
   label: string;
   position: 'start' | 'end';
   render: (grex: G) => React.ReactNode;
-  className?: string;
   numeric?: boolean;
   sortKey?: string;
   mobileLabel?: string;
@@ -44,8 +43,6 @@ type GrexTableProps<G extends Grex> = {
   grexes: G[];
   isLoading?: boolean;
   numRowsLoading?: number;
-  // Hide the date column, e.g. when the list is already grouped by date.
-  hideDate?: boolean;
   // The registrant/originator whose page this is: shown as plain text.
   activeRegId?: string;
   // Which people to show. 'both' is "Registrant (Originator)"; a registrant's
@@ -67,7 +64,6 @@ export function GrexTable<G extends Grex>({
   grexes,
   isLoading,
   numRowsLoading = 10,
-  hideDate,
   activeRegId,
   people = 'both',
   contextGrex,
@@ -84,22 +80,7 @@ export function GrexTable<G extends Grex>({
   const start = columns.filter((c) => c.position === 'start');
   const end = columns.filter((c) => c.position === 'end');
 
-  const header = (
-    key: string,
-    label: string,
-    className: string,
-    sortKey?: string,
-    numeric?: boolean
-  ) => (
-    <HeaderCell
-      className={cn(className, numeric && style.numeric)}
-      key={key}
-      label={label}
-      onSort={onSort}
-      sort={sort}
-      sortKey={sortKey}
-    />
-  );
+  const sorting = { onSort, sort };
 
   // The wrapper is a size container: the table switches to its compact
   // layout based on its own width, not the screen's (e.g. beside a sidebar).
@@ -107,46 +88,54 @@ export function GrexTable<G extends Grex>({
     <div className={cn(style.wrap, className)}>
       <table
         className={cn(style.table, {
-          [style.noDate]: hideDate,
           [style.hasStart]: start.length > 0,
           [style.loading]: isLoading,
         })}
       >
         <thead>
           <tr>
-            {start.map((c) =>
-              header(
-                c.key,
-                c.label,
-                cn(style.start, c.className),
-                c.sortKey,
-                c.numeric
-              )
-            )}
-            {header('name', 'Name', style.name, sortKeys.name)}
-            {header(
-              'parentage',
-              'Parentage',
-              style.parentage,
-              sortKeys.parentage
-            )}
-            {!hideDate &&
-              header('date', 'Registered', style.date, sortKeys.date)}
-            {header(
-              'people',
-              PEOPLE_LABELS[people],
-              style.people,
-              sortKeys.people
-            )}
-            {end.map((c) =>
-              header(
-                c.key,
-                c.label,
-                cn(style.end, c.className),
-                c.sortKey,
-                c.numeric
-              )
-            )}
+            {start.map((c) => (
+              <HeaderCell
+                className={columnClass(c)}
+                key={c.key}
+                label={c.label}
+                sortKey={c.sortKey}
+                {...sorting}
+              />
+            ))}
+            <HeaderCell
+              className={style.name}
+              label='Name'
+              sortKey={sortKeys.name}
+              {...sorting}
+            />
+            <HeaderCell
+              className={style.parentage}
+              label='Parentage'
+              sortKey={sortKeys.parentage}
+              {...sorting}
+            />
+            <HeaderCell
+              className={style.date}
+              label='Registered'
+              sortKey={sortKeys.date}
+              {...sorting}
+            />
+            <HeaderCell
+              className={style.people}
+              label={PEOPLE_LABELS[people]}
+              sortKey={sortKeys.people}
+              {...sorting}
+            />
+            {end.map((c) => (
+              <HeaderCell
+                className={columnClass(c)}
+                key={c.key}
+                label={c.label}
+                sortKey={c.sortKey}
+                {...sorting}
+              />
+            ))}
           </tr>
         </thead>
         <tbody>
@@ -154,25 +143,18 @@ export function GrexTable<G extends Grex>({
             ? Array.from({ length: numRowsLoading }, (_, i) => (
                 <tr key={i}>
                   {start.map((c) => (
-                    <td className={cn(style.start, c.className)} key={c.key} />
+                    <td className={columnClass(c)} key={c.key} />
                   ))}
-                  <LoadingCells hideDate={hideDate} index={i} />
+                  <LoadingCells index={i} />
                   {end.map((c) => (
-                    <td className={cn(style.end, c.className)} key={c.key} />
+                    <td className={columnClass(c)} key={c.key} />
                   ))}
                 </tr>
               ))
             : grexes.map((grex) => (
                 <tr key={grex.id ?? `${grex.genus} ${grex.epithet}`}>
                   {start.map((c) => (
-                    <td
-                      className={cn(
-                        style.start,
-                        c.numeric && style.numeric,
-                        c.className
-                      )}
-                      key={c.key}
-                    >
+                    <td className={columnClass(c)} key={c.key}>
                       {c.render(grex)}
                     </td>
                   ))}
@@ -180,16 +162,11 @@ export function GrexTable<G extends Grex>({
                     activeRegId={activeRegId}
                     contextGrex={contextGrex}
                     grex={grex}
-                    hideDate={hideDate}
                     people={people}
                   />
                   {end.map((c) => (
                     <td
-                      className={cn(
-                        style.end,
-                        c.numeric && style.numeric,
-                        c.className
-                      )}
+                      className={columnClass(c)}
                       data-label={c.mobileLabel}
                       key={c.key}
                     >
@@ -203,6 +180,9 @@ export function GrexTable<G extends Grex>({
     </div>
   );
 }
+
+const columnClass = (c: GrexTableColumn<Grex>) =>
+  cn(style[c.position], c.numeric && style.numeric);
 
 const HeaderCell = ({
   className,
@@ -249,13 +229,11 @@ const HeaderCell = ({
 
 const BaseCells = ({
   grex,
-  hideDate,
   activeRegId,
   contextGrex,
   people,
 }: {
   grex: Grex;
-  hideDate?: boolean;
   activeRegId?: string;
   contextGrex?: Grex;
   people: PeopleMode;
@@ -279,15 +257,13 @@ const BaseCells = ({
           )}
         </div>
       </td>
-      {!hideDate && (
-        <td className={style.date}>
-          {grex.date_of_registration && !isNatural ? (
-            <RegDate grex={grex} />
-          ) : (
-            <span className={style.muted}>—</span>
-          )}
-        </td>
-      )}
+      <td className={style.date}>
+        {grex.date_of_registration && !isNatural ? (
+          <RegDate grex={grex} />
+        ) : (
+          <span className={style.muted}>—</span>
+        )}
+      </td>
       <td className={style.people}>
         {isNatural || !grex.registrant_name ? (
           <span className={style.muted}>—</span>
@@ -360,13 +336,7 @@ const Tags = ({ grex }: { grex: Grex }) => {
   );
 };
 
-const LoadingCells = ({
-  index,
-  hideDate,
-}: {
-  index: number;
-  hideDate?: boolean;
-}) => (
+const LoadingCells = ({ index }: { index: number }) => (
   <>
     <td className={style.name}>
       <Loader height={16} index={index} />
@@ -374,11 +344,9 @@ const LoadingCells = ({
     <td className={style.parentage}>
       <Loader height={16} index={index} />
     </td>
-    {!hideDate && (
-      <td className={style.date}>
-        <Loader height={16} index={index} />
-      </td>
-    )}
+    <td className={style.date}>
+      <Loader height={16} index={index} />
+    </td>
     <td className={style.people}>
       <Loader height={16} index={index} />
     </td>

@@ -7,7 +7,15 @@ const DARK_QUERY = '(prefers-color-scheme: dark)';
 
 // Light unless the visitor picked something else, so the site looks the same
 // as before dark mode existed until someone opts in.
-export const DEFAULT_PREFERENCE: ThemePreference = 'light';
+const DEFAULT_PREFERENCE: ThemePreference = 'light';
+
+// The dark palette, for code that can't read the CSS variables (charts, MUI).
+// Keep in sync with .dark in app/globals.css.
+export const DARK_COLORS = {
+  fg: '#ececec',
+  bg: '#191919',
+  raised: '#232323',
+};
 
 export const readPreference = (): ThemePreference => {
   try {

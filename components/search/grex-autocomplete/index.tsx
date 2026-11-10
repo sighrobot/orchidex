@@ -11,11 +11,11 @@ import { ibmPlexSans } from 'lib/utils';
 import { formatName } from 'lib/string';
 import { useRecent } from 'lib/fetchers/recent';
 import { useResolvedTheme } from 'lib/hooks/useResolvedTheme';
+import { DARK_COLORS } from 'lib/theme';
 
 import style from './style.module.scss';
 
-// One MUI theme per site theme. The dark one's colours match --bg / --fg in
-// app/globals.css.
+// One MUI theme per site theme.
 const typography = {
   fontFamily: [ibmPlexSans.style.fontFamily].join(','),
 };
@@ -25,8 +25,8 @@ const THEMES = {
     typography,
     palette: {
       mode: 'dark',
-      background: { default: '#191919', paper: '#232323' },
-      text: { primary: '#ececec' },
+      background: { default: DARK_COLORS.bg, paper: DARK_COLORS.raised },
+      text: { primary: DARK_COLORS.fg },
     },
   }),
 };

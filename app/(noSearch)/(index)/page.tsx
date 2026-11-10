@@ -17,7 +17,7 @@ import SearchBar, { AdvSearchCTA } from '../search/components/bar';
 import style from './style.module.scss';
 
 export default function IndexPage() {
-  const { isLoading, data: recent = [] } = useDate({ latest: true });
+  const { isLoading, data: recent = [] } = useDate();
 
   return (
     <>

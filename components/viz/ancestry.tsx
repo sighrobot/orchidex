@@ -21,6 +21,7 @@ import { makeHrefGrex } from 'components/link/grex';
 import { Grex } from 'lib/types';
 import { H3 } from 'components/layout';
 import { useResolvedTheme } from 'lib/hooks/useResolvedTheme';
+import { DARK_COLORS } from 'lib/theme';
 
 import style from './ancestry.module.scss';
 import { Button } from '@/components/ui/button';
@@ -50,10 +51,10 @@ const THEME_COLORS = {
     overlay: 'rgba(255, 255, 255, 0.8)',
   },
   dark: {
-    fg: '#ececec',
-    bg: '#191919',
+    fg: DARK_COLORS.fg,
+    bg: DARK_COLORS.bg,
     edge: '#505050',
-    overlay: 'rgba(25, 25, 25, 0.8)',
+    overlay: `${DARK_COLORS.bg}cc`, // 80%
   },
 };
 

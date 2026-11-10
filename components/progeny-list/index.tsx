@@ -22,6 +22,7 @@ import { Grex } from 'lib/types';
 import style from './style.module.scss';
 
 const PAGE_SIZE = 100;
+// The progeny API returns at most this many (LIMIT 10000).
 const MAX_RESULTS = 10000;
 
 type SortField =

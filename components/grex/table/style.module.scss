@@ -251,12 +251,6 @@ $narrow: 720px;
     display: inline;
   }
 
-  .noDate tbody tr {
-    grid-template-areas:
-      'name people'
-      'parentage people';
-  }
-
   // Extra columns move to a third line, so every row's name and parentage
   // start at the same left edge: the start column on the left, the end
   // column on the right (e.g. generations ..... 12 progeny). Supports one of
