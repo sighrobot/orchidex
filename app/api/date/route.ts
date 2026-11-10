@@ -3,7 +3,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { query } from 'lib/storage/pg';
 
 export async function GET(req: NextRequest) {
-  const { limit, genus } = Object.fromEntries(req.nextUrl.searchParams);
+  const { limit, genus, latest } = Object.fromEntries(req.nextUrl.searchParams);
+
+  // ?latest=1: everything registered on the newest registration date in the
+  // registry (not necessarily today), in name order.
+  if (latest) {
+    const json = await query(
+      `SELECT ${ID_FIELDS.join(', ')}, ${SEARCH_FIELDS.join(', ')}
+       FROM rhs
+       WHERE epithet != '' AND date_of_registration = (
+         SELECT max(date_of_registration) FROM rhs
+         WHERE epithet != '' AND date_of_registration != ''
+       )
+       ORDER BY genus, epithet`
+    );
+    return NextResponse.json(json, { status: 200 });
+  }
 
   let expr = `SELECT ${ID_FIELDS.join(', ')}, ${SEARCH_FIELDS.join(
     ', '

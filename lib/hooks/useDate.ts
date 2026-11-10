@@ -4,12 +4,16 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 type UseDateProps = {
   limit?: number;
+  // Only the newest registration date's records (ignores `limit`).
+  latest?: boolean;
 };
 
-export const useDate = ({ limit }: UseDateProps = {}) => {
+export const useDate = ({ limit, latest }: UseDateProps = {}) => {
   let url = '/api/date';
 
-  if (limit) {
+  if (latest) {
+    url += '?latest=1';
+  } else if (limit) {
     url += `?limit=${limit}`;
   }
 
