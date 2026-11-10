@@ -130,16 +130,14 @@ export default function SearchView() {
       </form>
 
       <Padded className={style.results}>
-        {hasCriteria(params) && (
-          <ResultsHeader
-            isLoading={results.isLoading}
-            onSortChange={(sort) =>
-              router.replace(searchUrl({ ...params, sort }), { scroll: false })
-            }
-            params={params}
-            total={results.total}
-          />
-        )}
+        <ResultsHeader
+          isLoading={results.isLoading}
+          onSortChange={(sort) =>
+            router.replace(searchUrl({ ...params, sort }), { scroll: false })
+          }
+          params={params}
+          total={results.total}
+        />
 
         {results.error && (
           <p className={style.message}>
@@ -165,9 +163,11 @@ export default function SearchView() {
             >
               {results.isLoadingMore
                 ? 'Loading…'
-                : `Show more (${(
+                : hasCriteria(params)
+                ? `Show more (${(
                     results.total - results.items.length
-                  ).toLocaleString()} left)`}
+                  ).toLocaleString()} left)`
+                : 'Show more'}
             </Button>
           </div>
         )}
@@ -176,14 +176,13 @@ export default function SearchView() {
   );
 }
 
+// With no criteria this lists the whole registry, newest first.
 function useSearchResults(params: SearchParams) {
-  const enabled = hasCriteria(params);
   const qs = toQueryString(params);
 
   const { data, error, isLoading, size, setSize } =
     useSWRInfinite<SearchResult>(
       (pageIndex, previous: SearchResult | null) => {
-        if (!enabled) return null;
         if (previous && pageIndex * PAGE_SIZE >= previous.total) return null;
         return `/api/search?${qs}&offset=${pageIndex * PAGE_SIZE}`;
       },
@@ -201,7 +200,7 @@ function useSearchResults(params: SearchParams) {
     error,
     items,
     total,
-    isLoading: enabled && isLoading,
+    isLoading,
     isLoadingMore: !!data && size > data.length,
     hasMore: !!data && items.length < total,
     loadMore: () => setSize(size + 1),
@@ -224,7 +223,9 @@ function ResultsHeader({
   return (
     <div className={style.resultsHeader}>
       <H3>
-        {isLoading
+        {!hasCriteria(params)
+          ? 'All registrations'
+          : isLoading
           ? 'Searching…'
           : total === 0
           ? 'No results'

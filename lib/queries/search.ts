@@ -140,12 +140,11 @@ function textQuery(q: string) {
 export type SearchResult = { results: Grex[]; total: number };
 
 // `limit` and `offset` may come straight from a URL; they're clamped here.
+// With no criteria this pages through the whole registry.
 export async function searchRegistry(
   p: SearchParams,
   { limit, offset }: { limit?: unknown; offset?: unknown } = {}
 ): Promise<SearchResult> {
-  if (!hasCriteria(p)) return { results: [], total: 0 };
-
   const values: unknown[] = [];
   const add: AddParam = (value) => {
     values.push(value);
@@ -232,5 +231,9 @@ function clampInt(value: unknown, min: number, max: number, fallback: number) {
 }
 
 // Field search used by the grex page to look a record up by name.
+// Returns nothing rather than the first page of everything when given no
+// criteria.
 export const querySearch = async (p: SearchParams): Promise<Grex[]> =>
-  (await searchRegistry(p, { limit: MAX_PAGE_SIZE })).results;
+  hasCriteria(p)
+    ? (await searchRegistry(p, { limit: MAX_PAGE_SIZE })).results
+    : [];
