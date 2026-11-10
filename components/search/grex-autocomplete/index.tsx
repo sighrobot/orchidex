@@ -10,12 +10,26 @@ import { GrexCard } from 'components/grex/card';
 import { ibmPlexSans } from 'lib/utils';
 import { formatName } from 'lib/string';
 import { useRecent } from 'lib/fetchers/recent';
+import { useResolvedTheme } from 'lib/hooks/useResolvedTheme';
 
 import style from './style.module.scss';
 
-const THEME = createTheme({
-  typography: { fontFamily: [ibmPlexSans.style.fontFamily].join(',') },
-});
+// One MUI theme per site theme. The dark one's colours match --bg / --fg in
+// app/globals.css.
+const typography = {
+  fontFamily: [ibmPlexSans.style.fontFamily].join(','),
+};
+const THEMES = {
+  light: createTheme({ typography }),
+  dark: createTheme({
+    typography,
+    palette: {
+      mode: 'dark',
+      background: { default: '#191919', paper: '#232323' },
+      text: { primary: '#ececec' },
+    },
+  }),
+};
 
 type GrexAutocompleteProps = {
   grex?: Grex;
@@ -35,6 +49,7 @@ export default function GrexAutocomplete({
     isDebounced: true,
   });
   const { data: recents } = useRecent({ limit: 5 });
+  const theme = THEMES[useResolvedTheme()];
 
   const grexName = grex ? formatName(grex).long.full : '';
 
@@ -49,7 +64,7 @@ export default function GrexAutocomplete({
 
   return (
     <div className={style.autocomplete}>
-      <ThemeProvider theme={THEME}>
+      <ThemeProvider theme={theme}>
         <Autocomplete<Grex>
           className={ibmPlexSans.className}
           autoHighlight
