@@ -1,14 +1,33 @@
+// The site's pink, as a small solid button.
 .button {
-  align-self: flex-start;
-  background: #f55af5;
-  border: none;
-  border-radius: 5px;
-  color: white !important;
-  display: inline-block;
+  display: inline-flex;
   flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 5px;
+  background: #f55af5;
+  color: white !important;
+  font-size: 13px;
   font-weight: 500;
-  font-size: 12px;
-  padding: 3px 5px;
   text-decoration: none !important;
   white-space: nowrap;
+  transition: background 150ms ease;
+
+  &:hover {
+    background: #e040e0;
+  }
+}
+
+.icon {
+  fill: currentColor;
+  transition: transform 150ms ease;
+
+  .button:hover & {
+    transform: scale(1.15);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 }

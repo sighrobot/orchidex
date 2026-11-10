@@ -4,7 +4,7 @@ import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/react';
 import cn from 'classnames';
 
-import Disclaimer from 'components/disclaimer';
+import Footer from 'components/footer';
 import { APP_DESCRIPTION, APP_TITLE, APP_URL } from 'lib/constants';
 import { ibmPlexSans } from 'lib/utils';
 
@@ -74,7 +74,7 @@ export default function RootLayout({
 
         <div className={style.container}>
           {children}
-          <Disclaimer />
+          <Footer />
         </div>
       </body>
 
