@@ -62,7 +62,7 @@ export default async function Genus({ params }: { params: Params }) {
               `${capitalizedGenus} is a genus in the orchid family Orchidaceae.`}
           </p>
 
-          {wikiMeta.extract && (
+          {wikiMeta.extract && wikiMeta.content_urls?.desktop?.page && (
             <p className={style.credit}>
               <Link href={wikiMeta.content_urls.desktop.page} target='_blank'>
                 Wikipedia
