@@ -1,4 +1,6 @@
-// The site's pink, as a small solid button.
+// The site's orchid-to-orange gradient (as in the footer bands and search
+// box), a little deeper so white text stays readable. The background is
+// twice as wide as the button, so hovering slides it across.
 .button {
   display: inline-flex;
   flex-shrink: 0;
@@ -6,16 +8,28 @@
   gap: 6px;
   padding: 6px 12px;
   border-radius: 5px;
-  background: #f55af5;
+  background: linear-gradient(
+      100deg,
+      rgb(196, 72, 192),
+      rgb(236, 110, 90),
+      rgb(245, 130, 0),
+      rgb(196, 72, 192)
+    )
+    0 0 / 200% 100%;
   color: white !important;
   font-size: 13px;
   font-weight: 500;
   text-decoration: none !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.15);
   white-space: nowrap;
-  transition: background 150ms ease;
+  transition: background-position 600ms ease;
 
   &:hover {
-    background: #e040e0;
+    background-position: 100% 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 }
 
