@@ -1,3 +1,5 @@
+@use 'theme' as t;
+
 .filtersWrap {
   padding-top: 8px;
   padding-bottom: 0;
@@ -12,9 +14,9 @@
     position: relative;
     z-index: 1;
     margin-bottom: -1px;
-    border-bottom-color: white;
+    border-bottom-color: t.bg();
     border-radius: 5px 5px 0 0;
-    background: white;
+    background: t.bg();
   }
 }
 
@@ -25,9 +27,9 @@
   gap: 6px;
   // Same side padding as the search box, so their text lines up.
   padding: 4px 15px;
-  border: 1px solid black;
+  border: 1px solid t.fg();
   border-radius: 5px;
-  background: white;
+  background: t.bg();
   cursor: pointer;
   font-size: 14px;
   list-style: none;
@@ -39,7 +41,7 @@
   }
 
   &:hover {
-    background: #f2f2f2;
+    background: t.$hover;
   }
 }
 
@@ -54,7 +56,7 @@
   min-width: 20px;
   height: 20px;
   padding: 0 6px;
-  border: 1px solid black;
+  border: 1px solid t.fg();
   border-radius: 999px;
   background: linear-gradient(
     135deg,
@@ -84,7 +86,7 @@
 }
 
 .hint {
-  color: gray;
+  color: t.fg(0.6);
   font-size: 13px;
 }
 
@@ -92,7 +94,7 @@
 // box gradient) so it's easy to see which filters are set. Peach rather than
 // pink so it still stands out on the pink highlighted sections.
 %filled {
-  background: #ffe9d1;
+  background: rgba(255, 140, 0, 0.18);
 }
 
 .filters {
@@ -100,14 +102,14 @@
   flex-direction: column;
   gap: 8px;
   padding: 12px;
-  border: 1px solid black;
+  border: 1px solid t.fg();
   // Solid, to match the open tab above it.
-  background: white;
+  background: t.bg();
 
   // One placeholder colour for every field, including the empty date fields
   // below, which show "mm/dd/yyyy" as text rather than as a placeholder.
   input::placeholder {
-    color: gray;
+    color: t.fg(0.6);
     opacity: 1;
   }
 
@@ -115,8 +117,8 @@
     appearance: none;
     padding: 5px 10px;
     width: 100%;
-    border: 1px solid black;
-    background: white;
+    border: 1px solid t.fg();
+    background: t.bg();
 
     // Every text field has a placeholder, so this means "has a value".
     &:not(:placeholder-shown) {
@@ -146,7 +148,7 @@
 }
 
 .highlightAdvanced {
-  --highlight: rgba(252, 228, 233, 1);
+  --highlight: rgba(240, 70, 110, 0.14);
 }
 
 @keyframes highlightFade {
@@ -211,14 +213,14 @@
   min-width: 0;
 
   span {
-    color: gray;
+    color: t.fg(0.6);
     font-size: 13px;
   }
 
   input {
     appearance: none;
-    border: 1px solid black;
-    background: white;
+    border: 1px solid t.fg();
+    background: t.bg();
     padding: 4px 10px;
     width: 100%;
     min-width: 0;
@@ -226,7 +228,7 @@
   }
 
   .empty {
-    color: gray;
+    color: t.fg(0.6);
   }
 }
 
@@ -243,9 +245,9 @@
     appearance: none;
     -webkit-appearance: none;
     width: 100%;
-    border: 1px solid black;
+    border: 1px solid t.fg();
     border-radius: 0;
-    background: white;
+    background: t.bg();
     color: inherit;
     font: inherit;
     padding: 5px 34px 5px 10px;
@@ -298,9 +300,9 @@
 .segmented {
   display: inline-flex;
   max-width: 100%;
-  border: 1px solid black;
+  border: 1px solid t.fg();
   border-radius: 5px;
-  background: white;
+  background: t.bg();
   overflow: hidden;
 }
 
@@ -319,22 +321,22 @@
   }
 
   &:focus-visible {
-    outline: 2px solid black;
+    outline: 2px solid t.fg();
     outline-offset: -3px;
   }
 
   & + & {
-    border-left: 1px solid black;
+    border-left: 1px solid t.fg();
   }
 
   &:hover {
-    background: #f2f2f2;
+    background: t.$hover;
   }
 }
 
 .selected {
   font-weight: 600;
-  background: #f2f2f2;
+  background: t.$hover;
 
   // Clicking a selected option clears it, so hovering one strikes it out.
   &:not(.noStrike):hover,

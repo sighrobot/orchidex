@@ -1,6 +1,8 @@
+@use 'theme' as t;
+
 .intro {
   margin-top: 8px;
-  color: rgba(0, 0, 0, 0.6);
+  color: t.fg(0.6);
 }
 
 .grid {
@@ -22,14 +24,14 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid t.fg(0.15);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.6);
+  background: t.bg(0.6);
   transition: border-color 150ms ease, background 150ms ease;
 
   &:hover {
-    border-color: black;
-    background: white;
+    border-color: t.fg();
+    background: t.bg();
     text-decoration: none;
 
     .title {
@@ -45,8 +47,8 @@
   aspect-ratio: 16 / 9;
   object-fit: cover;
   object-position: top left;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  background: white;
+  border-bottom: 1px solid t.fg(0.08);
+  background: t.bg();
 }
 
 .text {
@@ -62,7 +64,7 @@
 }
 
 .description {
-  color: rgba(0, 0, 0, 0.6);
+  color: t.fg(0.6);
   font-size: 14px;
   line-height: 1.4;
 }

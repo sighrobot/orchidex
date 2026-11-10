@@ -1,11 +1,13 @@
-$muted: rgba(0, 0, 0, 0.5);
+@use 'theme' as t;
+
+$muted: t.fg(0.6);
 // Matches the table's compact breakpoint in components/grex/table.
 $narrow: 720px;
 // Generation colour, deeper generations darker (as before). Elements set
 // --depth (0–1); the badges and the filter buttons share these.
 $gen: rgb(50, 0, 255);
-$gen-fill: color-mix(in srgb, $gen calc(8% + var(--depth) * 22%), white);
-$gen-text: color-mix(in srgb, $gen 70%, black);
+$gen-fill: color-mix(in srgb, $gen calc(8% + var(--depth) * 22%), t.bg());
+$gen-text: color-mix(in srgb, $gen 70%, var(--fg));
 
 .progenyList {
   padding-top: 10px;
@@ -45,29 +47,29 @@ $gen-text: color-mix(in srgb, $gen 70%, black);
   min-width: 28px;
   height: 28px;
   padding: 0 8px;
-  border: 1px solid rgba(0, 0, 0, 0.2);
+  border: 1px solid t.fg(0.2);
   border-radius: 5px;
-  background: white;
+  background: t.bg();
   font-size: 13px;
   font-variant-numeric: tabular-nums;
   cursor: pointer;
   transition: background 150ms ease, border-color 150ms ease;
 
   &:hover {
-    border-color: black;
+    border-color: t.fg();
   }
 
   &[aria-pressed='true'] {
-    border-color: black;
-    background: black;
-    color: white;
+    border-color: t.fg();
+    background: t.fg();
+    color: t.bg();
   }
 }
 
 // Generation buttons: tinted outline when off, filled with the generation's
 // badge colour when on.
 .genChip {
-  border-color: color-mix(in srgb, $gen 25%, white);
+  border-color: color-mix(in srgb, $gen 25%, var(--bg));
   color: $gen-text;
 
   &:hover {
@@ -75,7 +77,7 @@ $gen-text: color-mix(in srgb, $gen 70%, black);
   }
 
   &[aria-pressed='true'] {
-    border-color: color-mix(in srgb, $gen 45%, white);
+    border-color: color-mix(in srgb, $gen 45%, var(--bg));
     background: $gen-fill;
     color: $gen-text;
   }
@@ -99,9 +101,9 @@ $gen-text: color-mix(in srgb, $gen 70%, black);
   select {
     height: 28px;
     padding: 0 26px 0 10px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid t.fg(0.2);
     border-radius: 5px;
-    background: white;
+    background: t.bg();
     font-size: 13px;
     appearance: none;
     cursor: pointer;
@@ -137,7 +139,7 @@ $gen-text: color-mix(in srgb, $gen 70%, black);
 }
 
 .none {
-  color: rgba(0, 0, 0, 0.3);
+  color: t.fg(0.3);
 }
 
 .empty {

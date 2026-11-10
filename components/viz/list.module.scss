@@ -1,3 +1,5 @@
+@use 'theme' as t;
+
 .vizList {
   max-width: 400px;
   padding: 20px 0;
@@ -42,7 +44,7 @@
 }
 
 .active {
-  box-shadow: inset 5px 0 0 black;
+  box-shadow: inset 5px 0 0 t.fg();
 }
 
 .list {

@@ -1,3 +1,5 @@
+@use 'theme' as t;
+
 .pageHeader {
   padding: 10px 0 30px 0;
   display: flex;
@@ -24,10 +26,10 @@
 
   p.counts {
     margin-top: 6px;
-    color: rgba(0, 0, 0, 0.6);
+    color: t.fg(0.6);
 
     strong {
-      color: black;
+      color: t.fg();
     }
 
     // wins over the shared `.simple` button styles regardless of load order
@@ -95,8 +97,8 @@
 .tooltip {
   font-size: 14px;
   padding: 5px;
-  background: white;
-  box-shadow: 1px 1px black;
+  background: t.bg();
+  box-shadow: 1px 1px t.fg();
 }
 
 .mapWrap {

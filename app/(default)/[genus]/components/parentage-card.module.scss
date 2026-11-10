@@ -1,16 +1,18 @@
+@use 'theme' as t;
+
 // Same treatment as the home page's Explore cards.
 .card {
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid t.fg(0.15);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.6);
+  background: t.bg(0.6);
   transition: border-color 150ms ease, background 150ms ease;
 
   &:hover {
-    border-color: black;
-    background: white;
+    border-color: t.fg();
+    background: t.bg();
     text-decoration: none;
 
     .title {
@@ -26,8 +28,8 @@
   aspect-ratio: 4 / 1;
   object-fit: cover;
   object-position: top left;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  background: white;
+  border-bottom: 1px solid t.fg(0.08);
+  background: t.bg();
 }
 
 .text {
@@ -42,6 +44,6 @@
 }
 
 .tagline {
-  color: rgba(0, 0, 0, 0.55);
+  color: t.fg(0.55);
   font-size: 12px;
 }

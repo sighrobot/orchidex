@@ -1,3 +1,5 @@
+@use 'theme' as t;
+
 // Intro and search on the left, Explore links on the right.
 // 60/40: search gets the room; 40% keeps each link's blurb to about a line.
 .hero {
@@ -25,7 +27,7 @@
 .explore {
   margin-top: 10px;
   padding: 0 40px;
-  border-left: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: 1px solid t.fg(0.1);
 
   @media (max-width: 900px) {
     padding: 0;
@@ -47,14 +49,14 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  border: 1px solid rgba(0, 0, 0, 0.15);
+  border: 1px solid t.fg(0.15);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.6);
+  background: t.bg(0.6);
   transition: border-color 150ms ease, background 150ms ease;
 
   &:hover {
-    border-color: black;
-    background: white;
+    border-color: t.fg();
+    background: t.bg();
     text-decoration: none;
 
     .exploreCardTitle {
@@ -70,8 +72,8 @@
   aspect-ratio: 4 / 1;
   object-fit: cover;
   object-position: top left;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  background: white;
+  border-bottom: 1px solid t.fg(0.08);
+  background: t.bg();
 }
 
 .exploreText {
@@ -92,7 +94,7 @@
 
 .exploreTagline {
   overflow: hidden;
-  color: rgba(0, 0, 0, 0.55);
+  color: t.fg(0.55);
   font-size: 12px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -122,14 +124,14 @@
   gap: 6px;
   margin-top: 20px;
   padding: 6px 12px 6px 15px;
-  border: 1px solid black;
+  border: 1px solid t.fg();
   border-radius: 5px;
-  background: white;
+  background: t.bg();
   font-size: 14px;
   transition: background 150ms ease;
 
   &:hover {
-    background: #f2f2f2;
+    background: t.$hover;
     text-decoration: none;
 
     .moreArrow {

@@ -1,3 +1,5 @@
+@use 'theme' as t;
+
 .pills {
   .pill {
     color: white;
@@ -12,7 +14,8 @@
   }
 
   .hypothetical {
-    background: black;
+    background: t.fg();
+    color: t.bg();
   }
 
   .intergeneric {

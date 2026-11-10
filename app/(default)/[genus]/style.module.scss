@@ -1,3 +1,5 @@
+@use 'theme' as t;
+
 $stack: 900px;
 
 // Intro beside the per-year chart.
@@ -30,7 +32,7 @@ $stack: 900px;
 
 .credit {
   margin-top: 8px;
-  color: rgba(0, 0, 0, 0.45);
+  color: t.fg(0.6);
   font-size: 11px;
 
   a {
@@ -75,14 +77,14 @@ $stack: 900px;
   gap: 6px;
   margin-top: 20px;
   padding: 6px 12px 6px 15px;
-  border: 1px solid black;
+  border: 1px solid t.fg();
   border-radius: 5px;
-  background: white;
+  background: t.bg();
   font-size: 14px;
   transition: background 150ms ease;
 
   &:hover {
-    background: #f2f2f2;
+    background: t.$hover;
     text-decoration: none;
 
     .arrow {

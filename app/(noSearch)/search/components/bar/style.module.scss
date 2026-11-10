@@ -1,3 +1,5 @@
+@use 'theme' as t;
+
 .search {
   display: flex;
   margin: 0;
@@ -11,16 +13,16 @@
     rgba(255, 0, 255, 0.15),
     rgba(255, 128, 0, 0.2)
   );
-  border: 1px solid black;
+  border: 1px solid t.fg();
   border-radius: 5px;
   font-size: 18px;
-  outline-color: black;
+  outline-color: t.fg();
   padding: 0 15px;
   height: 50px;
   width: 100%;
 
   &::placeholder {
-    color: gray;
+    color: t.fg(0.6);
     opacity: initial;
   }
 }
@@ -41,7 +43,7 @@
     }
 
     &:nth-child(2) {
-      background: rgba(252, 228, 233, 1);
+      background: rgba(240, 70, 110, 0.14);
     }
 
     &:nth-child(3) {
@@ -56,7 +58,7 @@
   margin-bottom: 20px;
 
   a {
-    color: gray;
+    color: t.fg(0.6);
     text-decoration: underline;
   }
 }

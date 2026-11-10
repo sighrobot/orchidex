@@ -1,5 +1,7 @@
-$rule: rgba(0, 0, 0, 0.08);
-$muted: rgba(0, 0, 0, 0.5);
+@use 'theme' as t;
+
+$rule: t.fg(0.08);
+$muted: t.fg(0.6);
 // Below this width (of the table's container, not the screen) rows become
 // compact two-line blocks.
 $narrow: 720px;
@@ -28,7 +30,7 @@ $narrow: 720px;
   th {
     padding-top: 0;
     padding-bottom: 6px;
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid t.fg();
     color: $muted;
     font-size: 11px;
     font-weight: 500;
@@ -82,7 +84,7 @@ $narrow: 720px;
   cursor: pointer;
 
   &:hover {
-    color: black;
+    color: t.fg();
 
     .sortArrow {
       opacity: 0.4;
@@ -95,7 +97,7 @@ $narrow: 720px;
 }
 
 .sortActive {
-  color: black;
+  color: t.fg();
 
   .sortArrow,
   &:hover .sortArrow {
@@ -119,7 +121,7 @@ $narrow: 720px;
 
   // td.parentage beats the Parentage component's own `.parentage a` rule
   // (16px, underlined) no matter which stylesheet loads last.
-  color: rgba(0, 0, 0, 0.75);
+  color: t.fg(0.75);
 
   @at-root td#{&} a,
     .cross > span:first-child span {
@@ -146,7 +148,7 @@ $narrow: 720px;
 .date {
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
-  color: rgba(0, 0, 0, 0.75);
+  color: t.fg(0.75);
 }
 
 .people {
@@ -162,7 +164,7 @@ $narrow: 720px;
 }
 
 .muted {
-  color: rgba(0, 0, 0, 0.3);
+  color: t.fg(0.3);
 }
 
 .tags {
@@ -179,11 +181,11 @@ $narrow: 720px;
 
 // Same colours as the card pills, as tinted labels.
 .tag {
-  --tag: black;
+  --tag: t.fg();
   padding: 1px 4px;
   border-radius: 3px;
   background: color-mix(in srgb, var(--tag) 14%, transparent);
-  color: color-mix(in srgb, var(--tag) 80%, black);
+  color: color-mix(in srgb, var(--tag) 80%, t.fg());
   font-size: 9px;
   font-weight: 500;
   letter-spacing: 0.04em;
@@ -193,7 +195,7 @@ $narrow: 720px;
 }
 
 .hypothetical {
-  --tag: black;
+  --tag: t.fg();
 }
 
 .intergeneric {

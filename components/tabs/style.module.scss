@@ -1,14 +1,16 @@
+@use 'theme' as t;
+
 .tabs {
   overflow: hidden;
 
   nav {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid t.fg();
     display: flex;
 
     button {
       background: transparent;
       border: none;
-      color: #333;
+      color: t.fg(0.8);
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -19,7 +21,7 @@
       text-transform: uppercase;
       font-size: 14px;
       &:hover:not([disabled]) {
-        background: rgba(255, 255, 255, 0.5);
+        background: t.bg(0.5);
       }
 
       &[disabled] {
@@ -30,7 +32,7 @@
   }
 
   .active {
-    box-shadow: inset 0 -5px 0 black;
+    box-shadow: inset 0 -5px 0 t.fg();
   }
 
   .content {
@@ -56,7 +58,7 @@
   }
 
   .count {
-    color: gray;
+    color: t.fg(0.6);
     margin-left: 10px;
   }
 }
