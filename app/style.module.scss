@@ -1,20 +1,46 @@
+@use 'sass:color';
+
 .html,
 .body {
   margin: 0;
 }
 
+// The original gradient's colours, used by the corner bands.
+$orchid: rgb(218, 112, 214);
+$orange: rgb(255, 140, 0);
+
 .body {
-  background: linear-gradient(
-    to bottom right,
-    white 40%,
-    rgba(218, 112, 214, 0.25),
-    rgba(255, 140, 0, 0.3)
-  );
-  background-attachment: fixed;
+  background: white;
   font-size: 16px;
   font-weight: 300;
   height: 100vh;
   width: 100vw;
+
+  // An homage to the old full-page gradient: diagonal bands across the
+  // bottom-right corner, stepping from its orchid ~30px out to its orange in
+  // the corner. Fixed to the viewport, like the gradient was.
+  &::before {
+    content: '';
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    width: 60px;
+    height: 60px;
+    pointer-events: none;
+    // Like five triangles stacked in the corner: a 10px orange triangle on
+    // top, then four 5px bands behind it. Distances are measured from the
+    // corner.
+    background: linear-gradient(
+      to top left,
+      $orange 0 10px,
+      color.mix($orange, $orchid, 75%) 10px 15px,
+      color.mix($orange, $orchid, 50%) 15px 20px,
+      color.mix($orange, $orchid, 25%) 20px 25px,
+      $orchid 25px 30px,
+      transparent 30px
+    );
+  }
 }
 
 .container {
