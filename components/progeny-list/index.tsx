@@ -41,7 +41,7 @@ const SORT_LABELS: Record<SortField, string> = {
 
 // How deep a generation is, 0–1, for the generation colours in the styles.
 const genDepth = (gen: number, deepest: number) =>
-  ({ '--depth': gen / Math.max(1, deepest) }) as React.CSSProperties;
+  ({ '--depth': gen / Math.max(1, deepest) } as React.CSSProperties);
 
 // The API counts the grex itself as generation 1, so its children are 2.
 // Everything shown here is offset by one: children are generation 1.
@@ -67,13 +67,13 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
 
   const genOptions = React.useMemo(
     () => Array.from({ length: deepest }, (_, i) => i + 1),
-    [deepest],
+    [deepest]
   );
   const allGens = genOptions.every((g) => gens.has(g));
 
   const rows = React.useMemo(() => {
     const inGens = (rawData ?? []).filter((g) =>
-      displayGens(g).some((gen) => gens.has(gen)),
+      displayGens(g).some((gen) => gens.has(gen))
     );
 
     // The API can't sort by "the parent that isn't this grex".
@@ -84,7 +84,7 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
           d.seed_parent_epithet === grex.epithet
             ? d.pollen_parent_epithet
             : d.seed_parent_epithet,
-        sort.direction,
+        sort.direction
       );
     }
 
@@ -100,7 +100,7 @@ export default function ProgenyList({ grex }: { grex: Grex }) {
             key: field,
             // Counts read best biggest first.
             direction: field === 'first_order_progeny_count' ? 'desc' : 'asc',
-          },
+          }
     );
     track('Sort progeny list by field', { field });
   };

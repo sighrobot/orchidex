@@ -50,12 +50,8 @@ export default function IndexPage() {
                     width={400}
                   />
                   <span className={style.exploreText}>
-                    <span className={style.exploreCardTitle}>
-                      {tool.title}
-                    </span>
-                    <span className={style.exploreTagline}>
-                      {tool.tagline}
-                    </span>
+                    <span className={style.exploreCardTitle}>{tool.title}</span>
+                    <span className={style.exploreTagline}>{tool.tagline}</span>
                   </span>
                 </Link>
               </li>
