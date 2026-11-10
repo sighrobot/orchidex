@@ -1,0 +1,45 @@
+@use 'theme' as t;
+
+.compact {
+  line-height: 1.3;
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: t.fg(0.3);
+    text-underline-offset: 3px;
+
+    &:hover {
+      text-decoration-color: currentColor;
+    }
+  }
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+}
+
+.name {
+  font-size: 17px;
+}
+
+// Beats the parentage component's own link size.
+.compact .line {
+  margin-top: 2px;
+  font-size: 14px;
+  color: t.fg(0.75);
+
+  a {
+    font-size: inherit;
+    color: inherit;
+  }
+}
+
+.meta {
+  margin-top: 2px;
+  font-size: 13px;
+  color: t.fg(0.6);
+}

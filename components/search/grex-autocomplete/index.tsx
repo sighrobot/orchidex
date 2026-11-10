@@ -6,7 +6,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import { TextField, ThemeProvider, createTheme } from '@mui/material';
 import { Grex } from 'lib/types';
 import { useFTS } from 'lib/fetchers/fts';
-import { GrexCard } from 'components/grex/card';
+import { GrexCompact } from 'components/grex/compact';
 import { ibmPlexSans } from 'lib/utils';
 import { formatName } from 'lib/string';
 import { useRecent } from 'lib/fetchers/recent';
@@ -86,7 +86,7 @@ export default function GrexAutocomplete({
                   [style.selected]: props['aria-selected'],
                 })}
               >
-                <GrexCard hideLinks grex={option} />
+                <GrexCompact links={false} grex={option} />
               </li>
             );
           }}
@@ -102,7 +102,7 @@ export default function GrexAutocomplete({
 
       {grex && (
         <div className={cn(style.selected, style.external)}>
-          <GrexCard grex={grex} />
+          <GrexCompact grex={grex} />
         </div>
       )}
     </div>
