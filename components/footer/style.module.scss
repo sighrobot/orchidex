@@ -1,0 +1,69 @@
+@use 'sass:color';
+@use 'theme' as t;
+
+// The old full-page gradient's colours, used by the corner bands.
+$orchid: rgb(218, 112, 214);
+$orange: rgb(255, 140, 0);
+
+.footer {
+  position: relative;
+  width: 100%;
+  margin-top: auto;
+  padding-top: 80px;
+
+  // An homage to the old full-page gradient: stacked triangles in the
+  // footer's bottom-right corner. A 20px orange triangle in the corner, then
+  // two 8px bands stepping out to orchid, with 1px gaps. Distances are
+  // measured from the corner, so 38px out needs a ~54px box.
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 60px;
+    height: 60px;
+    pointer-events: none;
+    background: linear-gradient(
+      to top left,
+      $orange 0 20px,
+      transparent 20px 21px,
+      color.mix($orange, $orchid, 50%) 21px 29px,
+      transparent 29px 30px,
+      $orchid 30px 38px,
+      transparent 38px
+    );
+  }
+}
+
+// Support button beside the legal text, above a hairline. Same width and
+// gutters as the page content.
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 12px 20px;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 20px 10px 28px;
+  border-top: 1px solid t.fg(0.08);
+
+  @media (max-width: 600px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.legal {
+  max-width: 760px;
+  color: t.fg(0.6);
+  font-size: 11px;
+  line-height: 1.6;
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+
+    &:hover {
+      color: t.fg();
+    }
+  }
+}

@@ -1,3 +1,5 @@
+@use 'theme' as t;
+
 .quickStats {
   margin-top: 5px;
 
@@ -22,7 +24,7 @@
   align-self: flex-start;
   overflow-y: auto;
   margin-right: 20px;
-  background: rgba(255, 255, 255, 0.5);
+  background: t.bg(0.5);
 
   * {
     font-size: 14px !important;
@@ -36,8 +38,10 @@
 }
 
 .list {
-  padding: 0 10px;
+  // Lines the table's header up with the first genus and sidebar rows.
+  padding: 20px 10px 0;
   flex-grow: 1;
+  min-width: 0;
 
   @media (max-width: 850px) {
     margin-right: 0;
@@ -47,7 +51,7 @@
 .sidebar {
   flex-shrink: 0;
   width: 260px;
-  background: rgba(255, 255, 255, 0.5);
+  background: t.bg(0.5);
   align-self: flex-start;
 
   @media (max-width: 850px) {

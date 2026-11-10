@@ -1,7 +1,9 @@
+@use 'theme' as t;
+
 .login,
 .next {
-  background: rgba(255, 255, 255, 1);
-  border: 1px solid #ccc;
+  background: t.bg();
+  border: 1px solid t.fg(0.2);
   margin: 40px auto;
   max-width: 500px;
   padding: 40px;

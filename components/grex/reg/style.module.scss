@@ -1,8 +1,10 @@
+@use 'theme' as t;
+
 .reg {
   margin-top: 7px !important;
 
   a {
-    color: black;
+    color: t.fg();
     text-decoration: underline;
   }
 }

@@ -20,6 +20,8 @@ import { Name } from 'components/grex/name';
 import { makeHrefGrex } from 'components/link/grex';
 import { Grex } from 'lib/types';
 import { H3 } from 'components/layout';
+import { useResolvedTheme } from 'lib/hooks/useResolvedTheme';
+import { DARK_COLORS } from 'lib/theme';
 
 import style from './ancestry.module.scss';
 import { Button } from '@/components/ui/button';
@@ -39,7 +41,24 @@ const HYPOTHETICAL_NODE_FOOTER = `                        ${TERMINAL_NODE_CHAR}`
 const wrap = (s, w) =>
   s.replace(new RegExp(`(?![^\\n]{1,${w}}$)([^\\n]{1,${w}})\\s`, 'g'), '$1\n');
 
-function getGrexColor(g: Grex): string {
+// Colours that change with the theme (see --fg / --bg in app/globals.css).
+// The type colours and white labels on them work on both backgrounds.
+const THEME_COLORS = {
+  light: {
+    fg: 'black',
+    bg: 'white',
+    edge: '#ccc',
+    overlay: 'rgba(255, 255, 255, 0.8)',
+  },
+  dark: {
+    fg: DARK_COLORS.fg,
+    bg: DARK_COLORS.bg,
+    edge: '#505050',
+    overlay: `${DARK_COLORS.bg}cc`, // 80%
+  },
+};
+
+function getGrexColor(g: Grex, emptyFill: string): string {
   const species = isSpecies(g);
   const natural = isNaturalHybrid(g);
   const primary = isPrimary(g);
@@ -47,7 +66,7 @@ function getGrexColor(g: Grex): string {
   const hypothetical = g.hypothetical;
 
   if (hypothetical) {
-    return 'white';
+    return emptyFill;
   }
 
   if (intergeneric) {
@@ -138,6 +157,7 @@ export const AncestryViz = ({
   }, 350);
 
   const cyContainer = useRef(null);
+  const colors = THEME_COLORS[useResolvedTheme()];
   const regularAncestry = useAncestry(grex, depth);
   const seedParentAncestry = useAncestry(seedParent, depth - 1);
   const pollenParentAncestry = useAncestry(pollenParent, depth - 1);
@@ -184,7 +204,7 @@ export const AncestryViz = ({
             'background-gradient-direction': 'to-bottom-right',
             color: (n) => {
               const g = n.data() as Grex;
-              return g.hypothetical ? 'black' : 'white';
+              return g.hypothetical ? colors.fg : 'white';
             },
             'font-family': getComputedStyle(document.body).fontFamily,
             'font-weight': 300,
@@ -194,7 +214,7 @@ export const AncestryViz = ({
             shape: 'roundrectangle',
             'text-wrap': 'wrap',
             'text-valign': 'center',
-            'border-color': 'black',
+            'border-color': colors.fg,
             'border-width': (n) => {
               const g = n.data() as Grex;
               return g.hypothetical ? 2 : 1;
@@ -208,7 +228,7 @@ export const AncestryViz = ({
               const g = n.data() as Grex;
               return isIntergeneric(g) && isPrimary(g) && !g.hypothetical
                 ? 'transparent' // not visible when background-fill: linear-gradient
-                : getGrexColor(g);
+                : getGrexColor(g, colors.bg);
             },
             'background-fill': (n) => {
               const g = n.data() as Grex;
@@ -272,7 +292,7 @@ export const AncestryViz = ({
           style: {
             events: 'no',
             width: 4,
-            'line-color': '#ccc',
+            'line-color': colors.edge,
             'curve-style': 'taxi',
             'taxi-direction': 'upward',
             'edge-distances': 'node-position',
@@ -297,6 +317,7 @@ export const AncestryViz = ({
     handleNodeUnselect,
     depth,
     grex.hypothetical,
+    colors,
   ]);
 
   const MenuWrap = ({ children }) => (
@@ -305,7 +326,7 @@ export const AncestryViz = ({
         position: 'absolute',
         right: 0,
         left: 0,
-        background: isFullScreen ? 'rgba(255, 255, 255,0.8)' : undefined,
+        background: isFullScreen ? colors.overlay : undefined,
         zIndex: 2,
       }}
     >

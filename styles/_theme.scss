@@ -1,0 +1,25 @@
+@use 'sass:math';
+
+// Theme helpers. The colours themselves are CSS variables in app/globals.css
+// (light on :root, dark on .dark), so these just build on them.
+//
+//   @use 'theme' as t;
+//   color: t.fg(0.5);       // text at 50%: black-ish in light, white-ish in dark
+//   background: t.bg();     // the page background colour
+//   background: t.$hover;   // a button's hover fill
+
+@function fg($alpha: 1) {
+  @if $alpha == 1 {
+    @return var(--fg);
+  }
+  @return color-mix(in srgb, var(--fg) math.percentage($alpha), transparent);
+}
+
+@function bg($alpha: 1) {
+  @if $alpha == 1 {
+    @return var(--bg);
+  }
+  @return color-mix(in srgb, var(--bg) math.percentage($alpha), transparent);
+}
+
+$hover: var(--hover);

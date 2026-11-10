@@ -1,3 +1,5 @@
+@use 'theme' as t;
+
 .simple {
   background: none;
   border: none;
@@ -6,7 +8,7 @@
   cursor: pointer;
   font-size: 14px;
   text-decoration: underline;
-  color: black;
+  color: t.fg();
   margin-left: auto;
   padding: 0;
 }

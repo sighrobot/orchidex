@@ -1,10 +1,12 @@
+@use 'theme' as t;
+
 .grex {
   & + .grex {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid t.fg(0.1);
   }
 
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: t.bg(0.1);
   }
 
   > * {
@@ -34,7 +36,7 @@
 }
 
 .progeny {
-  color: black;
+  color: t.fg();
   opacity: 0.5;
   font-size: 14px;
 

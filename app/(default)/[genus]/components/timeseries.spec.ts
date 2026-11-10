@@ -1,11 +1,10 @@
-import { capitalize } from 'lib/utils';
 import { VisualizationSpec } from 'vega-embed';
 
+// The title is an HTML heading on the page, so it matches the site's type.
 function getSpec({
-  genus,
   values,
 }: {
-  genus: string;
+  genus?: string;
   values: Record<string, any>[];
 }): VisualizationSpec {
   return {
@@ -38,11 +37,6 @@ function getSpec({
       },
       fill: { value: 'black' },
       stroke: { value: 'black' },
-    },
-    title: {
-      text: `${capitalize(genus)} hybrids registered per year`,
-      anchor: 'start',
-      offset: 10,
     },
     padding: 0,
   };

@@ -3,7 +3,6 @@ import React from 'react';
 
 import { H2 } from 'components/layout';
 import VegaLite from 'components/vega-lite';
-import Shirt from 'components/shirt';
 import { getSpec } from './spec';
 
 import style from './style.module.scss';
@@ -25,8 +24,6 @@ export default function GenusDominance() {
             registered that year for a given genus.
           </p>
         </div>
-
-        <Shirt />
       </div>
 
       <div className={style.labelControl}>

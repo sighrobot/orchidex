@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { createClient } from 'lib/supabase/server';
 
 import SearchBar from 'app/(noSearch)/search/components/bar';
+import ThemeToggle from 'components/theme-toggle';
 
 import style from './style.module.scss';
 import {
@@ -27,7 +28,7 @@ const LinkList = () => (
   <NavigationMenu className='text-sm'>
     <NavigationMenuList>
       {NAV_LINKS.map((l) => (
-        <NavigationMenuItem>
+        <NavigationMenuItem key={l.path}>
           <NavigationMenuLink asChild>
             <Link href={`/${l.path}`}>{l.label}</Link>
           </NavigationMenuLink>
@@ -72,6 +73,8 @@ export const Header = async ({ hasSearch }) => {
             <LinkList />
           </nav>
 
+          <ThemeToggle />
+
           <div className={style.mobileNav}>
             <DropdownMenu>
               <DropdownMenuTrigger className='cursor-pointer'>
@@ -87,7 +90,7 @@ export const Header = async ({ hasSearch }) => {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 {NAV_LINKS.map((l) => (
-                  <DropdownMenuItem>
+                  <DropdownMenuItem key={l.path}>
                     <Link href={`/${l.path}`}>{l.label}</Link>
                   </DropdownMenuItem>
                 ))}

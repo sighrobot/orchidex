@@ -1,0 +1,316 @@
+@use 'theme' as t;
+
+$rule: t.fg(0.08);
+$muted: t.fg(0.6);
+// Below this width (of the table's container, not the screen) rows become
+// compact two-line blocks.
+$narrow: 720px;
+
+.wrap {
+  container: grex-table / inline-size;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+  line-height: 1.3;
+
+  th,
+  td {
+    padding: 9px 16px 9px 0;
+    text-align: left;
+    vertical-align: baseline;
+
+    &:last-child {
+      padding-right: 0;
+    }
+  }
+
+  th {
+    padding-top: 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid t.fg();
+    color: $muted;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid $rule;
+  }
+
+  &:not(.loading) tbody tr:hover {
+    background: rgba(255, 0, 255, 0.04);
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  // Beats the left alignment above.
+  .numeric {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// Extra columns (see GrexTableColumn). Start columns shrink to fit.
+.start {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.end {
+  white-space: nowrap;
+}
+
+// Header buttons for sortable columns. The arrow shows on the sorted column,
+// and faintly on hover for the others.
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: t.fg();
+
+    .sortArrow {
+      opacity: 0.4;
+    }
+  }
+}
+
+.sortArrow {
+  opacity: 0;
+}
+
+.sortActive {
+  color: t.fg();
+
+  .sortArrow,
+  &:hover .sortArrow {
+    opacity: 1;
+  }
+}
+
+.name {
+  width: 32%;
+  font-weight: 500;
+
+  em {
+    font-weight: 400;
+  }
+}
+
+// The shared Parentage component underlines its links and sets its own size;
+// in a dense table that's too loud, so links only underline on hover here.
+.parentage {
+  width: 34%;
+
+  // td.parentage beats the Parentage component's own `.parentage a` rule
+  // (16px, underlined) no matter which stylesheet loads last.
+  color: t.fg(0.75);
+
+  @at-root td#{&} a,
+    .cross > span:first-child span {
+    color: inherit;
+    font-size: inherit;
+    text-decoration: none;
+  }
+}
+
+// The two parents are flex items, so a long cross only wraps after the ×.
+// A parent too long for the cell on its own still wraps inside itself.
+.cross {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  column-gap: 0.3em;
+
+  // Unwrap the Parentage component's outer span so its two halves join in.
+  > span:first-child {
+    display: contents;
+  }
+}
+
+.date {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: t.fg(0.75);
+}
+
+.people {
+  width: 24%;
+}
+
+.originator {
+  color: $muted;
+
+  a {
+    color: inherit;
+  }
+}
+
+.muted {
+  color: t.fg(0.3);
+}
+
+.tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-left: 6px;
+  vertical-align: 1px;
+}
+
+.shortName {
+  display: none;
+}
+
+// Same colours as the card pills, as tinted labels.
+.tag {
+  --tag: t.fg();
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--tag) 14%, transparent);
+  color: color-mix(in srgb, var(--tag) 80%, t.fg());
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hypothetical {
+  --tag: t.fg();
+}
+
+.intergeneric {
+  --tag: rgb(239, 133, 180);
+}
+
+.primary {
+  --tag: rgb(130, 168, 248);
+}
+
+.natural {
+  --tag: rgb(91, 175, 248);
+}
+
+// In narrow spaces each row becomes a compact two-column block:
+//   Name ............................. date
+//   Parentage ........ Registrant (originator)
+@container grex-table (max-width: #{$narrow}) {
+  .table {
+    thead {
+      display: none;
+    }
+
+    tbody tr {
+      display: grid;
+      grid-template-areas:
+        'name date'
+        'parentage people';
+      // The right column fits its content but never takes more than 40%.
+      grid-template-columns: minmax(0, 1fr) fit-content(40%);
+      column-gap: 12px;
+      row-gap: 2px;
+      padding: 10px 0;
+    }
+
+    td {
+      display: block;
+      width: auto;
+      padding: 0;
+    }
+
+    td.date,
+    td.people {
+      text-align: right;
+    }
+  }
+
+  .fullName {
+    display: none;
+  }
+
+  .shortName {
+    display: inline;
+  }
+
+  // Extra columns move to a third line, so every row's name and parentage
+  // start at the same left edge: the start column on the left, the end
+  // column on the right (e.g. generations ..... 12 progeny). Supports one of
+  // each.
+  .hasStart tbody tr {
+    grid-template-areas:
+      'name date'
+      'parentage people'
+      'start end';
+  }
+
+  .start {
+    grid-area: start;
+    width: auto;
+    margin-top: 4px;
+  }
+
+  // Without a start column, the end column takes the whole third line.
+  .table td.end {
+    grid-column: 1 / -1;
+    color: $muted;
+    font-size: 12px;
+    text-align: left;
+
+    &[data-label]::after {
+      content: ' ' attr(data-label);
+    }
+  }
+
+  .table.hasStart td.end {
+    grid-area: end;
+    align-self: end;
+    text-align: right;
+  }
+
+  .name {
+    grid-area: name;
+  }
+
+  .date {
+    grid-area: date;
+    font-size: 13px;
+  }
+
+  .parentage {
+    grid-area: parentage;
+    font-size: 14px;
+  }
+
+  .name {
+    font-size: 15px;
+  }
+
+  .people {
+    grid-area: people;
+    color: $muted;
+    font-size: 13px;
+
+    a {
+      color: inherit;
+    }
+  }
+}

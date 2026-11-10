@@ -29,8 +29,26 @@ ul {
   margin: 0;
 }
 
+/* Site colours. Stylesheets use these through styles/_theme.scss. The theme
+   class is set on <html> before paint by the script in app/layout.tsx. */
+:root {
+  --fg: #000;
+  --bg: #fff;
+  --hover: #f2f2f2;
+  color-scheme: light;
+}
+
+/* Dark: rgb(25, 25, 25) page. Raised surfaces (menus, cards) are a step
+   lighter, hover fills a step lighter again. */
+.dark {
+  --fg: #ececec;
+  --bg: #191919;
+  --hover: #2a2a2a;
+  color-scheme: dark;
+}
+
 a {
-  color: black;
+  color: var(--fg);
   text-decoration: none;
 }
 
@@ -112,19 +130,20 @@ a:hover {
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  /* Same as --bg / --fg above, so shadcn components match the site. */
+  --background: #191919;
+  --foreground: #ececec;
+  --card: #232323;
   --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
+  --popover: #232323;
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --primary-foreground: #191919;
+  --secondary: #2a2a2a;
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
+  --muted: #2a2a2a;
   --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --accent: #2a2a2a;
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
@@ -135,11 +154,11 @@ a:hover {
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
+  --sidebar: #232323;
   --sidebar-foreground: oklch(0.985 0 0);
   --sidebar-primary: oklch(0.488 0.243 264.376);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent: #2a2a2a;
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);

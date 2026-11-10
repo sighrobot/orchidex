@@ -1,9 +1,11 @@
+@use 'theme' as t;
+
 .resources {
   display: flex;
   padding-top: 15px;
 
   a {
-    color: #97999a;
+    color: t.fg(0.6);
     font-size: 14px;
 
     &:after {
@@ -15,7 +17,7 @@
     }
 
     &:hover {
-      color: black;
+      color: t.fg();
       text-decoration: underline;
     }
   }

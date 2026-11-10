@@ -1,7 +1,9 @@
+@use 'theme' as t;
+
 .sidebar {
   flex-shrink: 0;
   width: 280px;
-  background: rgba(255, 255, 255, 0.4);
+  background: t.bg(0.4);
 
   @media (max-width: 800px) {
     width: 100%;
@@ -22,7 +24,7 @@
 }
 
 .dialog {
-  background: white;
+  background: t.bg();
   border: none;
   position: fixed;
   padding: 0 10px;

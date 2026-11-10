@@ -14,7 +14,11 @@ export const useProgeny = (grex: Grex) => {
   return { isLoading: !data, data };
 };
 
-export type GrexWithGen = Grex & { generations: number[] };
+export type GrexWithGen = Grex & {
+  generations: number[];
+  // How many hybrids list this one as a parent.
+  first_order_progeny_count?: number;
+};
 
 export const useProgenyAll = (
   grex: Grex,

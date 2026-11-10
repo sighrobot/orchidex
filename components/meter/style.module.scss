@@ -1,11 +1,13 @@
+@use 'theme' as t;
+
 .meter {
   height: 8px;
   position: relative;
-  border: 1px solid black;
+  border: 1px solid t.fg();
 }
 
 .track {
-  background: white;
+  background: t.bg();
   position: absolute;
   top: 0;
   bottom: 0;
@@ -13,7 +15,7 @@
 }
 
 .value {
-  background: black;
+  background: t.fg();
   position: absolute;
   z-index: 2;
   top: 0;

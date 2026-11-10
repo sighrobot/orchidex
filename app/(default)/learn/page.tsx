@@ -1,33 +1,13 @@
-import { Padded } from 'components/container/container';
-import { H2, H3 } from 'components/layout';
-import Link from 'next/link';
 import { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+
+import { Padded } from 'components/container/container';
+import { H2 } from 'components/layout';
 import { APP_TITLE } from 'lib/constants';
+import { EXPLORE_TOOLS } from 'lib/explore';
 
 import style from './style.module.scss';
-
-const PAGES: { title: string; href: string; src: string }[] = [
-  {
-    title: 'Hybridizer tool',
-    href: '/learn/hybridize',
-    src: '/learn/hybridize.png',
-  },
-  {
-    title: 'Explore genus parentage',
-    href: '/learn/parentage/vanda',
-    src: '/learn/parentage.png',
-  },
-  {
-    title: 'Explore genus dominance',
-    href: '/learn/genus-dominance',
-    src: '/learn/genus-dominance.png',
-  },
-  {
-    title: 'Explore registrant dominance',
-    href: '/learn/registrant-dominance',
-    src: '/learn/registrant-dominance.png',
-  },
-];
 
 export const metadata: Metadata = {
   title: `Learn | ${APP_TITLE}`,
@@ -35,27 +15,32 @@ export const metadata: Metadata = {
 
 export default function Learn() {
   return (
-    <>
-      <Padded>
-        <H2 className={style.heading}>Explore the data</H2>
-      </Padded>
+    <Padded>
+      <H2>Explore the data</H2>
+      <p className={style.intro}>
+        Interactive tools and visualizations built on the RHS orchid registry.
+      </p>
 
-      <div className={style.learn}>
-        <section className={style.grid}>
-          {PAGES.map((page) => {
-            return (
-              <Link key={page.href} href={page.href}>
-                <article className={style.cta}>
-                  <H3>{page.title}</H3>
-                  <figure>
-                    <img alt={page.title} src={page.src} />
-                  </figure>
-                </article>
-              </Link>
-            );
-          })}
-        </section>
-      </div>
-    </>
+      <ul className={style.grid}>
+        {EXPLORE_TOOLS.map((tool) => (
+          <li key={tool.href}>
+            <Link className={style.card} href={tool.href}>
+              <Image
+                alt=''
+                className={style.image}
+                height={450}
+                sizes='(max-width: 700px) 100vw, 50vw'
+                src={tool.src}
+                width={800}
+              />
+              <span className={style.text}>
+                <span className={style.title}>{tool.title}</span>
+                <span className={style.description}>{tool.description}</span>
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </Padded>
   );
 }

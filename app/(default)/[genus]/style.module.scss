@@ -1,71 +1,110 @@
-.genus {
-  p {
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    display: -webkit-box;
-    font-size: 14px;
-    margin-top: 10px;
-    max-width: 500px;
-    overflow: hidden;
+@use 'theme' as t;
+
+$stack: 900px;
+
+// Intro beside the per-year chart.
+.top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: 40px;
+
+  @media (max-width: $stack) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
   }
+}
 
-  cite {
-    display: inline-block;
-    font-size: 12px;
-    font-style: normal;
-    margin-top: 10px;
+.title {
+  margin-top: 16px;
+}
 
-    & + cite {
-      font-size: 8px;
+.extract {
+  display: -webkit-box;
+  max-width: 560px;
+  margin-top: 10px;
+  overflow: hidden;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
 
-      a {
-        text-decoration: none;
-      }
-    }
+.credit {
+  margin-top: 8px;
+  color: t.fg(0.6);
+  font-size: 11px;
 
-    a {
-      color: gray;
-      text-decoration: underline;
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+}
+
+.chart {
+  min-width: 0;
+}
+
+.chartTitle {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 500;
+
+  em {
+    font-weight: 400;
+  }
+}
+
+// The recent registrations, with the registrant ranking and parentage map
+// alongside.
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 300px);
+  align-items: start;
+  gap: 40px;
+  margin-top: 30px;
+
+  @media (max-width: $stack) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+}
+
+// Same as the home page's "See all recent registrations" button.
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 20px;
+  padding: 6px 12px 6px 15px;
+  border: 1px solid t.fg();
+  border-radius: 5px;
+  background: t.bg();
+  font-size: 14px;
+  transition: background 150ms ease;
+
+  &:hover {
+    background: t.$hover;
+    text-decoration: none;
+
+    .arrow {
+      transform: translateX(3px);
     }
   }
 }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  column-gap: 20px;
-  flex-wrap: wrap;
+.arrow {
+  transition: transform 150ms ease;
 
-  section {
-    flex-grow: 1;
-  }
-
-  section + * {
-    flex-basis: 60%;
-    margin-top: 22px;
-    flex-grow: 1;
-    min-width: 300px;
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
 }
 
-.lists {
+.aside {
   display: flex;
-  width: 100%;
-  margin-top: 40px;
-  flex-wrap: wrap;
-  column-gap: 80px;
-
-  > *:first-child {
-    flex-grow: 1;
-  }
-
-  > *:nth-child(2) {
-    min-width: 300px;
-  }
-
-  > *:nth-child(3) {
-    max-width: 350px;
-  }
+  flex-direction: column;
+  gap: 10px;
 
   li {
     padding-right: 0;
