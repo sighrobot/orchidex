@@ -41,9 +41,9 @@ export default function RegistrantList({ genus }: { genus: string }) {
         </div>
       )}
       getCount={(d) => d.score}
-      limit={25}
+      limit={10}
       showBars={false}
-      numItemsToLoad={25}
+      numItemsToLoad={10}
     />
   );
 }

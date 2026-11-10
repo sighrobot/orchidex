@@ -1,0 +1,47 @@
+// Same treatment as the home page's Explore cards.
+.card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.6);
+  transition: border-color 150ms ease, background 150ms ease;
+
+  &:hover {
+    border-color: black;
+    background: white;
+    text-decoration: none;
+
+    .title {
+      text-decoration: underline;
+    }
+  }
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 1;
+  object-fit: cover;
+  object-position: top left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: white;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  padding: 7px 10px 9px;
+}
+
+.title {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.tagline {
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 12px;
+}
