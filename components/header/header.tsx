@@ -27,7 +27,7 @@ const LinkList = () => (
   <NavigationMenu className='text-sm'>
     <NavigationMenuList>
       {NAV_LINKS.map((l) => (
-        <NavigationMenuItem>
+        <NavigationMenuItem key={l.path}>
           <NavigationMenuLink asChild>
             <Link href={`/${l.path}`}>{l.label}</Link>
           </NavigationMenuLink>
@@ -87,7 +87,7 @@ export const Header = async ({ hasSearch }) => {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 {NAV_LINKS.map((l) => (
-                  <DropdownMenuItem>
+                  <DropdownMenuItem key={l.path}>
                     <Link href={`/${l.path}`}>{l.label}</Link>
                   </DropdownMenuItem>
                 ))}
