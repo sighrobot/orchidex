@@ -3,13 +3,12 @@
 import React from 'react';
 import { orderBy, groupBy } from 'lodash';
 
-import { GrexCard } from 'components/grex/card';
+import { GrexTable } from 'components/grex/table';
 import VizList from 'components/viz/list';
 import { ButtonSimple } from 'components/button-simple/button-simple';
 import { StatCard } from 'components/stat/stat';
 import { Grex } from 'lib/types';
 import { Tabs } from 'components/tabs/tabs';
-import List from 'components/list';
 import { H2 } from 'components/layout';
 import { Padded } from 'components/container/container';
 import { createRegistrantStatMap } from './utils';
@@ -123,15 +122,12 @@ export default function RegistrantView({ name, rawData }: RegistrantViewProps) {
                   />
 
                   <section className={style.list}>
-                    <List<Grex>
-                      itemMinHeight={72}
-                      items={orderBy(
+                    <GrexTable
+                      activeRegId={name}
+                      grexes={orderBy(
                         onDate,
                         ['date_of_registration'],
                         ['desc']
-                      )}
-                      renderItem={(item) => (
-                        <GrexCard grex={item} activeRegId={name} />
                       )}
                     />
                   </section>
@@ -193,15 +189,12 @@ export default function RegistrantView({ name, rawData }: RegistrantViewProps) {
                   />
 
                   <section className={style.list}>
-                    <List<Grex>
-                      itemMinHeight={72}
-                      items={orderBy(
+                    <GrexTable
+                      activeRegId={name}
+                      grexes={orderBy(
                         onDate,
                         ['date_of_registration'],
                         ['desc']
-                      )}
-                      renderItem={(item) => (
-                        <GrexCard grex={item} activeRegId={name} />
                       )}
                     />
                   </section>

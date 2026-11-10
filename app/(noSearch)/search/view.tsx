@@ -8,9 +8,8 @@ import { ChevronDown } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Padded } from 'components/container/container';
-import { GrexCard } from 'components/grex/card';
+import { GrexTable } from 'components/grex/table';
 import { H2, H3 } from 'components/layout';
-import List from 'components/list';
 import {
   countFilters,
   effectiveSort,
@@ -34,7 +33,6 @@ import {
   TYPE_LABELS,
 } from 'lib/search/params';
 import { INPUT_NAME_SUFFIX } from 'lib/string';
-import { Grex } from 'lib/types';
 import type { SearchResult } from 'lib/queries/search';
 import { SearchInput } from './components/bar';
 
@@ -150,12 +148,10 @@ export default function SearchView() {
         )}
 
         {!results.error && (
-          <List<Grex>
+          <GrexTable
+            className={style.table}
+            grexes={results.items}
             isLoading={results.isLoading}
-            itemMinHeight={72}
-            items={results.items}
-            numItemsToLoad={10}
-            renderItem={(item) => <GrexCard key={item.id} grex={item} />}
           />
         )}
 
