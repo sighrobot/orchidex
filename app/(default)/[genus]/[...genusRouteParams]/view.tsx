@@ -2,13 +2,11 @@
 
 import { track } from '@vercel/analytics';
 import React from 'react';
-import { capitalize, kebabCase } from 'lodash';
+import { kebabCase } from 'lodash';
 
 import { Padded } from 'components/container/container';
-import { GrexCard } from 'components/grex/card';
+import { GrexHeader } from 'components/grex/header';
 
-import Link from 'next/link';
-import { Resources } from 'components/resources/resources';
 import { formatName } from 'lib/string';
 import { AncestryViz } from 'components/viz/ancestry';
 import VizList from 'components/viz/list';
@@ -103,79 +101,46 @@ export default function GrexView({
 
   return (
     <>
-      <Padded className={style.heading}>
-        {!grex.hypothetical && (
-          <GrexCard
-            emphasize={hybridizer}
-            heading
+      {!grex.hypothetical && (
+        <Padded>
+          <GrexHeader
             grex={grex}
             seedParent={seedParent}
             pollenParent={pollenParent}
-            hideLink
+            wcvp={wcvpSpecies}
+            emphasize={hybridizer}
+            hideResources={hybridizer}
           />
-        )}
-        {wcvpSpecies && (
-          <div style={{ marginTop: '5px' }}>
-            {[
-              capitalize(wcvpSpecies.lifeform_description),
-              wcvpSpecies.climate_description,
-              wcvpSpecies.geographic_area,
-            ]
-              .filter((s) => s)
-              .join('; ')}
-          </div>
-        )}
-        {wcvpSpecies && (
-          <div style={{ marginTop: '2.5px' }}>
-            {wcvpSpecies.primary_author} {wcvpSpecies.first_published}
-          </div>
-        )}
-        {!hybridizer && (
-          <Resources
-            grex={grex}
-            blueNantaSpeciesId={wcvpSpecies?.plant_name_id}
-          />
-        )}
-      </Padded>
+        </Padded>
+      )}
 
       <div className={style.content}>
         <Tabs
           padding
           renderToSide={
-            <aside className={style.sidebar}>
-              {!grex.hypothetical && (
-                <StatBox heading='Genus Info'>
-                  <p>
-                    <Link
-                      href={`/${grex.genus.toLowerCase()}`}
-                      style={{ textDecoration: 'underline' }}
-                    >
-                      Learn more about <em>{grex.genus}</em> species and
-                      hybrids!
-                    </Link>
-                  </p>
-                </StatBox>
-              )}
-              {!grex.hypothetical &&
-                !isSpecies(grex) &&
-                !isNaturalHybrid(grex) && (
-                  <StatCard stat='registrant_genus_pct' grex={grex} />
+            !isSpecies(grex) && (
+              <aside className={style.sidebar}>
+                {!grex.hypothetical &&
+                  !isSpecies(grex) &&
+                  !isNaturalHybrid(grex) && (
+                    <StatCard stat='registrant_genus_pct' grex={grex} />
+                  )}
+                {!grex.hypothetical &&
+                  !isSpecies(grex) &&
+                  !isNaturalHybrid(grex) && (
+                    <StatCard stat='year_genus_pct' grex={grex} />
+                  )}
+                {!isSpecies(grex) && grex.genus && grex.epithet && (
+                  <StatBox heading='Species Ancestry'>
+                    <SpeciesAncestry
+                      grex={grex}
+                      seedParent={seedParent}
+                      pollenParent={pollenParent}
+                    />
+                  </StatBox>
                 )}
-              {!grex.hypothetical &&
-                !isSpecies(grex) &&
-                !isNaturalHybrid(grex) && (
-                  <StatCard stat='year_genus_pct' grex={grex} />
-                )}
-              {!isSpecies(grex) && grex.genus && grex.epithet && (
-                <StatBox heading='Species Ancestry'>
-                  <SpeciesAncestry
-                    grex={grex}
-                    seedParent={seedParent}
-                    pollenParent={pollenParent}
-                  />
-                </StatBox>
-              )}
-            </aside>
+              </aside>
+            )
           }
           config={[
             {

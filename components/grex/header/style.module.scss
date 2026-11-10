@@ -1,0 +1,81 @@
+@use 'theme' as t;
+
+$link-underline: t.fg(0.3);
+
+.header {
+  padding-bottom: 4px;
+
+  &.emphasize {
+    background: rgba(255, 0, 255, 0.06);
+    border-radius: 6px;
+    padding: 16px 20px;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: $link-underline;
+    text-underline-offset: 3px;
+
+    &:hover {
+      color: t.fg();
+      text-decoration-color: currentColor;
+    }
+  }
+}
+
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+}
+
+// Larger than the pills elsewhere so they hold their own next to the title.
+.titleRow .pills span {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 3px 7px;
+  border-radius: 3px;
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 300;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+
+  @media (max-width: 500px) {
+    font-size: 28px;
+  }
+}
+
+.summary {
+  margin-top: 8px;
+  font-size: 18px;
+  line-height: 1.35;
+  color: t.fg(0.75);
+}
+
+// Undo the parentage component's own link styles so it reads as prose.
+.summary .parentage a {
+  font-size: inherit;
+  color: inherit;
+}
+
+.line {
+  margin-top: 4px;
+  font-size: 15px;
+  color: t.fg(0.75);
+}
+
+// Beats the header's own link styles.
+.header .resources {
+  margin-top: 12px;
+
+  a {
+    text-decoration: none;
+  }
+}

@@ -1,24 +1,35 @@
 @use 'theme' as t;
 
-.resources {
+.resources ul {
   display: flex;
-  padding-top: 15px;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 13px;
 
   a {
-    color: t.fg(0.6);
-    font-size: 14px;
-
-    &:after {
-      content: ' ⧉';
-    }
-
-    + a {
-      margin-left: 15px;
-    }
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 3px 8px 3px 10px;
+    border: 1px solid t.fg(0.15);
+    border-radius: 4px;
+    color: t.fg(0.7);
+    text-decoration: none;
+    transition:
+      background 120ms,
+      border-color 120ms,
+      color 120ms;
 
     &:hover {
+      background: t.$hover;
+      border-color: t.fg(0.3);
       color: t.fg();
-      text-decoration: underline;
     }
   }
+}
+
+.arrow {
+  width: 12px;
+  height: 12px;
+  opacity: 0.5;
 }
