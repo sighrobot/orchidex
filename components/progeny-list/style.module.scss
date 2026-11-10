@@ -1,38 +1,157 @@
+$muted: rgba(0, 0, 0, 0.5);
+// Matches the table's compact breakpoint in components/grex/table.
+$narrow: 720px;
+// Generation colour, deeper generations darker (as before). Elements set
+// --depth (0–1); the badges and the filter buttons share these.
+$gen: rgb(50, 0, 255);
+$gen-fill: color-mix(in srgb, $gen calc(8% + var(--depth) * 22%), white);
+$gen-text: color-mix(in srgb, $gen 70%, black);
+
 .progenyList {
   padding-top: 10px;
+  container: progeny-list / inline-size;
+}
 
-  > aside {
-    display: flex;
-    align-items: center;
-    column-gap: 20px;
-    flex-wrap: wrap;
-    justify-content: space-between;
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 24px;
+  margin-bottom: 16px;
+}
+
+.count {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.genFilter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.genFilterLabel {
+  margin-right: 4px;
+  color: $muted;
+  font-size: 13px;
+}
+
+// Toggle buttons, styled like the search page's controls.
+.chip {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  background: white;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+
+  &:hover {
+    border-color: black;
   }
 
-  .controls {
-    display: flex;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-    font-size: 14px;
-    padding: 10px 0;
-
-    label {
-      align-items: center;
-      display: flex;
-    }
+  &[aria-pressed='true'] {
+    border-color: black;
+    background: black;
+    color: white;
   }
 }
 
-.gen {
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  font-size: 12px;
+// Generation buttons: tinted outline when off, filled with the generation's
+// badge colour when on.
+.genChip {
+  border-color: color-mix(in srgb, $gen 25%, white);
+  color: $gen-text;
 
-  &:last-of-type {
-    margin-right: 10px;
+  &:hover {
+    border-color: $gen-text;
   }
+
+  &[aria-pressed='true'] {
+    border-color: color-mix(in srgb, $gen 45%, white);
+    background: $gen-fill;
+    color: $gen-text;
+  }
+}
+
+.mobileSort {
+  display: none;
+  align-items: center;
+  gap: 4px;
+
+  // When the table hides its headers, sort from here instead.
+  @container progeny-list (max-width: #{$narrow}) {
+    display: flex;
+  }
+}
+
+.selectWrap {
+  position: relative;
+  display: inline-flex;
+
+  select {
+    height: 28px;
+    padding: 0 26px 0 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    background: white;
+    font-size: 13px;
+    appearance: none;
+    cursor: pointer;
+  }
+}
+
+.selectIcon {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+// Generation badges in the table's first column.
+.gens {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.gen {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 3px;
+  background: $gen-fill;
+  color: $gen-text;
+  font-size: 11px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.none {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.empty {
+  color: $muted;
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.cap {
+  color: $muted;
+  font-size: 13px;
+  text-align: center;
 }
