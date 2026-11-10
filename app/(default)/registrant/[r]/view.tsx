@@ -124,6 +124,7 @@ export default function RegistrantView({ name, rawData }: RegistrantViewProps) {
                   <section className={style.list}>
                     <GrexTable
                       activeRegId={name}
+                      people='originator'
                       grexes={orderBy(
                         onDate,
                         ['date_of_registration'],
@@ -191,6 +192,7 @@ export default function RegistrantView({ name, rawData }: RegistrantViewProps) {
                   <section className={style.list}>
                     <GrexTable
                       activeRegId={name}
+                      people='registrant'
                       grexes={orderBy(
                         onDate,
                         ['date_of_registration'],

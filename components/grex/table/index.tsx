@@ -16,6 +16,14 @@ export type GrexTableSort = { key: string; direction: SortDirection };
 
 type BaseColumn = 'name' | 'parentage' | 'date' | 'people';
 
+type PeopleMode = 'both' | 'registrant' | 'originator';
+
+const PEOPLE_LABELS: Record<PeopleMode, string> = {
+  both: 'Registrant (Originator)',
+  registrant: 'Registrant',
+  originator: 'Originator',
+};
+
 // An extra column for a particular list, e.g. generation or progeny count.
 // In the compact layout they move to a third line: a `start` column on its
 // left, an `end` column on its right (followed by `mobileLabel`). Use at most
@@ -40,6 +48,9 @@ type GrexTableProps<G extends Grex> = {
   hideDate?: boolean;
   // The registrant/originator whose page this is: shown as plain text.
   activeRegId?: string;
+  // Which people to show. 'both' is "Registrant (Originator)"; a registrant's
+  // page shows just the other one.
+  people?: PeopleMode;
   // The grex this list is about: not linked when it appears as a parent.
   contextGrex?: Grex;
   columns?: GrexTableColumn<G>[];
@@ -58,6 +69,7 @@ export function GrexTable<G extends Grex>({
   numRowsLoading = 10,
   hideDate,
   activeRegId,
+  people = 'both',
   contextGrex,
   columns = [],
   sortKeys = {},
@@ -77,7 +89,7 @@ export function GrexTable<G extends Grex>({
     label: string,
     className: string,
     sortKey?: string,
-    numeric?: boolean,
+    numeric?: boolean
   ) => (
     <HeaderCell
       className={cn(className, numeric && style.numeric)}
@@ -108,23 +120,23 @@ export function GrexTable<G extends Grex>({
                 c.label,
                 cn(style.start, c.className),
                 c.sortKey,
-                c.numeric,
-              ),
+                c.numeric
+              )
             )}
             {header('name', 'Name', style.name, sortKeys.name)}
             {header(
               'parentage',
               'Parentage',
               style.parentage,
-              sortKeys.parentage,
+              sortKeys.parentage
             )}
             {!hideDate &&
               header('date', 'Registered', style.date, sortKeys.date)}
             {header(
               'people',
-              'Registrant (Originator)',
+              PEOPLE_LABELS[people],
               style.people,
-              sortKeys.people,
+              sortKeys.people
             )}
             {end.map((c) =>
               header(
@@ -132,8 +144,8 @@ export function GrexTable<G extends Grex>({
                 c.label,
                 cn(style.end, c.className),
                 c.sortKey,
-                c.numeric,
-              ),
+                c.numeric
+              )
             )}
           </tr>
         </thead>
@@ -157,7 +169,7 @@ export function GrexTable<G extends Grex>({
                       className={cn(
                         style.start,
                         c.numeric && style.numeric,
-                        c.className,
+                        c.className
                       )}
                       key={c.key}
                     >
@@ -169,13 +181,14 @@ export function GrexTable<G extends Grex>({
                     contextGrex={contextGrex}
                     grex={grex}
                     hideDate={hideDate}
+                    people={people}
                   />
                   {end.map((c) => (
                     <td
                       className={cn(
                         style.end,
                         c.numeric && style.numeric,
-                        c.className,
+                        c.className
                       )}
                       data-label={c.mobileLabel}
                       key={c.key}
@@ -239,11 +252,13 @@ const BaseCells = ({
   hideDate,
   activeRegId,
   contextGrex,
+  people,
 }: {
   grex: Grex;
   hideDate?: boolean;
   activeRegId?: string;
   contextGrex?: Grex;
+  people: PeopleMode;
 }) => {
   const isNatural = grex.registrant_name?.includes('natural hybrid');
 
@@ -276,8 +291,10 @@ const BaseCells = ({
       <td className={style.people}>
         {isNatural || !grex.registrant_name ? (
           <span className={style.muted}>—</span>
-        ) : (
+        ) : people === 'both' ? (
           <People activeRegId={activeRegId} grex={grex} />
+        ) : (
+          <Person activeRegId={activeRegId} grex={grex} kind={people} />
         )}
       </td>
     </>

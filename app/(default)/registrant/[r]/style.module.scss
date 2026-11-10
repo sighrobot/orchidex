@@ -36,8 +36,10 @@
 }
 
 .list {
-  padding: 0 10px;
+  // Lines the table's header up with the first genus and sidebar rows.
+  padding: 20px 10px 0;
   flex-grow: 1;
+  min-width: 0;
 
   @media (max-width: 850px) {
     margin-right: 0;
