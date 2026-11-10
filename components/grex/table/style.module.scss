@@ -1,6 +1,12 @@
 $rule: rgba(0, 0, 0, 0.08);
 $muted: rgba(0, 0, 0, 0.5);
-$narrow: 640px;
+// Below this width (of the table's container, not the screen) rows become
+// compact two-line blocks.
+$narrow: 720px;
+
+.wrap {
+  container: grex-table / inline-size;
+}
 
 .table {
   width: 100%;
@@ -41,6 +47,59 @@ $narrow: 640px;
 
   a:hover {
     text-decoration: underline;
+  }
+
+  // Beats the left alignment above.
+  .numeric {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+// Extra columns (see GrexTableColumn). Start columns shrink to fit.
+.start {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.end {
+  white-space: nowrap;
+}
+
+// Header buttons for sortable columns. The arrow shows on the sorted column,
+// and faintly on hover for the others.
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+
+  &:hover {
+    color: black;
+
+    .sortArrow {
+      opacity: 0.4;
+    }
+  }
+}
+
+.sortArrow {
+  opacity: 0;
+}
+
+.sortActive {
+  color: black;
+
+  .sortArrow,
+  &:hover .sortArrow {
+    opacity: 1;
   }
 }
 
@@ -149,10 +208,10 @@ $narrow: 640px;
   --tag: rgb(91, 175, 248);
 }
 
-// On phones each row becomes a compact two-column block:
+// In narrow spaces each row becomes a compact two-column block:
 //   Name ............................. date
 //   Parentage ........ Registrant (originator)
-@media (max-width: $narrow) {
+@container grex-table (max-width: #{$narrow}) {
   .table {
     thead {
       display: none;
@@ -194,6 +253,41 @@ $narrow: 640px;
     grid-template-areas:
       'name people'
       'parentage people';
+  }
+
+  // Extra columns move to a third line, so every row's name and parentage
+  // start at the same left edge: the start column on the left, the end
+  // column on the right (e.g. generations ..... 12 progeny). Supports one of
+  // each.
+  .hasStart tbody tr {
+    grid-template-areas:
+      'name date'
+      'parentage people'
+      'start end';
+  }
+
+  .start {
+    grid-area: start;
+    width: auto;
+    margin-top: 4px;
+  }
+
+  // Without a start column, the end column takes the whole third line.
+  .table td.end {
+    grid-column: 1 / -1;
+    color: $muted;
+    font-size: 12px;
+    text-align: left;
+
+    &[data-label]::after {
+      content: ' ' attr(data-label);
+    }
+  }
+
+  .table.hasStart td.end {
+    grid-area: end;
+    align-self: end;
+    text-align: right;
   }
 
   .name {
