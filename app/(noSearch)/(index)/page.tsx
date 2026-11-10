@@ -1,98 +1,83 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 
 import { Padded } from 'components/container/container';
-import { GrexCard } from 'components/grex/card';
+import { GrexTable } from 'components/grex/table';
 import { H2, H3 } from 'components/layout';
 import { useDate } from 'lib/hooks/useDate';
-import { Grex } from 'lib/types';
-import List from 'components/list';
 import { APP_DESCRIPTION } from 'lib/constants';
+import { EXPLORE_TOOLS } from 'lib/explore';
 
-import Shirt, { SHIRT_TRACK_NAME } from 'components/shirt';
-import ExternalLink from 'components/link/external';
 import SearchBar, { AdvSearchCTA } from '../search/components/bar';
 
 import style from './style.module.scss';
 
 export default function IndexPage() {
-  const { isLoading, data: recent = [] } = useDate({ limit: 3 });
+  const { isLoading, data: recent = [] } = useDate({ latest: true });
 
   return (
     <>
-      <Padded className={style.homeHero}>
+      <Padded className={style.heroHead}>
         <H2 className={style.heroTitle}>Discover orchids.</H2>
-        <p className={style.heroDescription}>{APP_DESCRIPTION}</p>
       </Padded>
 
-      <SearchBar />
-      <AdvSearchCTA />
+      {/* Intro and search on the left, links to the Explore tools on the right. */}
+      <div className={style.hero}>
+        <div>
+          <Padded className={style.homeHero}>
+            <p className={style.heroDescription}>{APP_DESCRIPTION}</p>
+          </Padded>
 
-      <section className={style.columns}>
-        <div className={style.recent}>
-          <H3>Recently registered</H3>
-
-          <List<Grex>
-            isLoading={isLoading}
-            itemMinHeight={72}
-            items={recent.slice(0, 3)}
-            renderItem={(item) => <GrexCard key={item.id} grex={item} />}
-          />
-
-          <Link className={style.more} href='/recent'>
-            View more recents &raquo;
-          </Link>
+          <SearchBar />
+          <AdvSearchCTA />
         </div>
 
-        <aside className={style.aside}>
-          <H3>News &amp; updates</H3>
+        <nav aria-label='Explore the data' className={style.explore}>
+          <ul className={style.exploreList}>
+            {EXPLORE_TOOLS.map((tool) => (
+              <li key={tool.href}>
+                <Link className={style.exploreCard} href={tool.href}>
+                  <Image
+                    alt=''
+                    className={style.exploreThumb}
+                    height={175}
+                    sizes='(max-width: 900px) 50vw, 20vw'
+                    src={tool.src}
+                    width={400}
+                  />
+                  <span className={style.exploreText}>
+                    <span className={style.exploreCardTitle}>
+                      {tool.title}
+                    </span>
+                    <span className={style.exploreTagline}>
+                      {tool.tagline}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
 
-          <article className={style.cta}>
-            <p>
-              Two brand-new data visualizations,{' '}
-              <Link href='/learn/genus-dominance'>genus dominance</Link> and{' '}
-              <Link href='/learn/registrant-dominance'>
-                registrant dominance
-              </Link>
-              , are available on the new <Link href='/learn'>Explore</Link>{' '}
-              page.
-            </p>
-          </article>
+      <section className={style.recent}>
+        <H3>Recently registered</H3>
 
-          <hr />
+        <GrexTable
+          className={style.table}
+          grexes={recent}
+          isLoading={isLoading}
+          numRowsLoading={3}
+        />
 
-          <article className={style.cta}>
-            <p>
-              The first Orchidex t-shirt has dropped. Get yours today from{' '}
-              <ExternalLink
-                href='https://charliaorchids.com/Orchidex-Merch'
-                trackArgs={[SHIRT_TRACK_NAME, { type: 'text', page: '/' }]}
-              >
-                Charlia Orchids
-              </ExternalLink>
-              .
-            </p>
-            <Shirt page='/' />
-          </article>
-
-          {/* <hr /> */}
-
-          {/* <article className={style.cta}>
-            <p>
-              Orchidex will be a guest at the{' '}
-              <ExternalLink
-                href='https://jlorchids.com/j-l-summer-sale/'
-                trackArgs={['Click on J&L summer sale']}
-              >
-                J&L Orchids Summer Sale
-              </ExternalLink>{' '}
-              in Easton, CT, USA on July 26-28. If you're in the area, come say
-              hello!
-            </p>
-          </article> */}
-        </aside>
+        <Link className={style.more} href='/search?type=hybrid'>
+          See all recent registrations
+          <ArrowRight aria-hidden className={style.moreArrow} size={16} />
+        </Link>
       </section>
     </>
   );

@@ -1,7 +1,101 @@
+// Intro and search on the left, Explore links on the right.
+// 60/40: search gets the room; 40% keeps each link's blurb to about a line.
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  align-items: start;
+  gap: 40px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+}
+
+// The heading spans the full width, above the two columns.
+.heroHead {
+  padding-bottom: 0;
+}
+
 .homeHero {
   background: transparent;
-  max-width: 600px;
   margin-bottom: 20px;
+}
+
+.explore {
+  margin-top: 10px;
+  padding: 0 40px;
+  border-left: 1px solid rgba(0, 0, 0, 0.1);
+
+  @media (max-width: 900px) {
+    padding: 0;
+    border-left: none;
+  }
+}
+
+.exploreList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  padding: 0;
+  list-style: none;
+}
+
+// Small cards in the style of the Explore page's.
+.exploreCard {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.6);
+  transition: border-color 150ms ease, background 150ms ease;
+
+  &:hover {
+    border-color: black;
+    background: white;
+    text-decoration: none;
+
+    .exploreCardTitle {
+      text-decoration: underline;
+    }
+  }
+}
+
+.exploreThumb {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 1;
+  object-fit: cover;
+  object-position: top left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  background: white;
+}
+
+.exploreText {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  padding: 5px 10px 6px;
+}
+
+.exploreCardTitle {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.exploreTagline {
+  overflow: hidden;
+  color: rgba(0, 0, 0, 0.55);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .heroTitle {
@@ -10,20 +104,9 @@
 }
 
 .heroDescription {
-  margin-top: 10px;
 
   @media (max-width: 500px) {
     font-size: 14px;
-  }
-}
-
-.columns {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-
-  @media (max-width: 800px) {
-    display: block;
   }
 }
 
@@ -32,54 +115,37 @@
   margin-top: 40px;
 }
 
+// Styled like the search page's Filters toggle and sort select.
 .more {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   margin-top: 20px;
-  text-decoration: underline;
-  font-weight: 400;
+  padding: 6px 12px 6px 15px;
+  border: 1px solid black;
+  border-radius: 5px;
+  background: white;
+  font-size: 14px;
+  transition: background 150ms ease;
+
+  &:hover {
+    background: #f2f2f2;
+    text-decoration: none;
+
+    .moreArrow {
+      transform: translateX(3px);
+    }
+  }
 }
 
-.aside {
-  max-width: 420px;
-  margin-top: 40px;
-  padding-left: 20px;
-  border-left: 5px solid rgba(0, 0, 0, 0.05);
+.moreArrow {
+  transition: transform 150ms ease;
 
-  @media (max-width: 800px) {
-    max-width: unset;
-    padding: 0;
-    padding-top: 40px;
-    border: none;
-    border-top: 5px solid rgba(0, 0, 0, 0.05);
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
   }
+}
 
-  .cta {
-    display: flex;
-    align-items: center;
-    padding: 20px;
-
-    p {
-      margin-right: 10px;
-    }
-
-    figure {
-      margin: 0;
-    }
-  }
-
-  a {
-    font-weight: 500;
-    text-decoration: underline;
-  }
-
-  p {
-    margin-top: 10px;
-    line-height: 1.5;
-  }
-
-  hr {
-    background: rgba(0, 0, 0, 0.05);
-    height: 1px;
-    border: none;
-  }
+.table {
+  margin-top: 16px;
 }
