@@ -11,8 +11,9 @@ import type { GenusDominanceData } from 'lib/fetchers/genus-dominance';
 
 import style from './style.module.scss';
 
-// Colours follow each genus's all-time rank, so a genus keeps its colour
-// however the chart is zoomed or labelled.
+// The original chart's colours, in its order (royalblue appears twice there
+// too). Each genus takes the colour at its all-time rank, cycling, so it
+// keeps its colour however the chart is zoomed or labelled.
 const PALETTE = [
   '#8a3ffc',
   '#33b1ff',
@@ -28,6 +29,7 @@ const PALETTE = [
   '#bae6ff',
   '#ee82ee',
   '#d4bbff',
+  '#4169e1',
   '#4169e1',
   '#663399',
   '#a96af7',
@@ -56,16 +58,37 @@ function prepare({ start, end, genera, cells }: GenusDominanceData) {
   const yearOffset = new Int32Array(nYears + 1);
   const yearTotal = new Int32Array(nYears);
 
+  // Like the original chart, stack genera alphabetically by abbreviation:
+  // A at the top, Z at the bottom.
+  const stackPos = new Int32Array(genera.length);
+  genera
+    .map((g, i) => i)
+    .sort((a, b) =>
+      genera[a].abbr < genera[b].abbr
+        ? 1
+        : genera[a].abbr > genera[b].abbr
+          ? -1
+          : a - b,
+    )
+    .forEach((g, pos) => (stackPos[g] = pos));
+
+  const order = Array.from({ length: n }, (_, i) => i).sort(
+    (a, b) =>
+      cells[a * 3 + 1] - cells[b * 3 + 1] ||
+      stackPos[cells[a * 3]] - stackPos[cells[b * 3]],
+  );
+
   for (let i = 0; i < n; i++) {
-    segGenus[i] = cells[i * 3];
-    segYear[i] = cells[i * 3 + 1];
-    segCount[i] = cells[i * 3 + 2];
+    const c = order[i] * 3;
+    segGenus[i] = cells[c];
+    segYear[i] = cells[c + 1];
+    segCount[i] = cells[c + 2];
     yearOffset[segYear[i] + 1]++;
     yearTotal[segYear[i]] += segCount[i];
   }
   for (let y = 0; y < nYears; y++) yearOffset[y + 1] += yearOffset[y];
 
-  // Stack each year bottom-up, most popular genus (index 0) at the bottom.
+  // Stack each year bottom-up.
   for (let y = 0; y < nYears; y++) {
     let acc = 0;
     const total = yearTotal[y] || 1;
@@ -111,20 +134,23 @@ function prepare({ start, end, genera, cells }: GenusDominanceData) {
     byGenus,
     byColor,
     latestRanking,
+    stackPos,
   };
 }
 
 type Prepared = ReturnType<typeof prepare>;
 
 // The segment for genus `g` in year `y`, or -1. Segments within a year are
-// sorted by genus.
+// sorted by stack position.
 function findSegment(p: Prepared, y: number, g: number) {
   let lo = p.yearOffset[y];
   let hi = p.yearOffset[y + 1] - 1;
+  const target = p.stackPos[g];
   while (lo <= hi) {
     const mid = (lo + hi) >> 1;
-    if (p.segGenus[mid] === g) return mid;
-    if (p.segGenus[mid] < g) lo = mid + 1;
+    const pos = p.stackPos[p.segGenus[mid]];
+    if (pos === target) return mid;
+    if (pos < target) lo = mid + 1;
     else hi = mid - 1;
   }
   return -1;
