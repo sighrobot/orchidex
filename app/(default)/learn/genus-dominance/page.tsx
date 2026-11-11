@@ -1,15 +1,16 @@
-'use client';
 import React from 'react';
 
 import { H2 } from 'components/layout';
-import VegaLite from 'components/vega-lite';
-import { getSpec } from './spec';
+import { fetchGenusDominance } from 'lib/fetchers/genus-dominance';
+import GenusDominanceChart from './chart';
 
 import style from './style.module.scss';
 
-export default function GenusDominance() {
-  const [labelYear, setLabelYear] = React.useState<'all' | '2024'>('all');
-  const handleLabel = (e) => setLabelYear(e.target.value);
+// Registrations change slowly; rebuild the counts once a day.
+export const revalidate = 86400;
+
+export default async function GenusDominance() {
+  const data = await fetchGenusDominance();
 
   return (
     <>
@@ -20,30 +21,13 @@ export default function GenusDominance() {
           <p>
             This visualization depicts the dominance over time of genera used in
             orchid hybridization, as registered by the Royal Horticultural
-            Society. Each colored bar represents the number of hybrids
-            registered that year for a given genus.
+            Society. Each colored bar represents the share of hybrids registered
+            that year for a given genus.
           </p>
         </div>
       </div>
 
-      <div className={style.labelControl}>
-        <label>
-          Show labels for
-          <select value={labelYear} onChange={handleLabel}>
-            <option value='all'>All-time</option>
-            <option value='2024'>2024</option>
-          </select>
-        </label>
-      </div>
-
-      <div style={{ width: '100%' }}>
-        <VegaLite
-          height={800}
-          renderer='canvas'
-          id='dominance'
-          spec={getSpec({ labelYear })}
-        />
-      </div>
+      <GenusDominanceChart data={data} />
     </>
   );
 }
