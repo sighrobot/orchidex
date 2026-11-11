@@ -35,7 +35,9 @@ const PALETTE = [
   '#a96af7',
 ];
 
-const MARGIN = { top: 8, right: 88, bottom: 26, left: 40 };
+// The right margin is sized to fit the genus labels; see drawBase.
+const MARGIN = { top: 8, bottom: 26, left: 0 };
+const LABEL_OFFSET = 17;
 const LABEL_HEIGHT = 13;
 const MIN_YEARS = 3;
 const MIN_SHARE = 0.001;
@@ -212,6 +214,7 @@ export default function GenusDominanceChart({
   const sizeRef = React.useRef({ width: 0, height: 0, dpr: 1 });
   const frameRef = React.useRef(0);
   const dirtyRef = React.useRef({ base: true, overlay: true });
+  const rightRef = React.useRef(60);
 
   const ink = theme === 'dark' ? DARK_COLORS.fg : '#000000';
   const inkRgb = [1, 3, 5].map((i) => parseInt(ink.slice(i, i + 2), 16));
@@ -225,7 +228,7 @@ export default function GenusDominanceChart({
     const { width, height } = sizeRef.current;
     const left = MARGIN.left;
     const top = MARGIN.top;
-    const w = Math.max(1, width - MARGIN.left - MARGIN.right);
+    const w = Math.max(1, width - MARGIN.left - rightRef.current);
     const h = Math.max(1, height - MARGIN.top - MARGIN.bottom);
     const v = viewRef.current;
     const kx = w / (v.x1 - v.x0);
@@ -259,13 +262,24 @@ export default function GenusDominanceChart({
     const { width, height, dpr } = sizeRef.current;
     const { prepared: p, labelMode: mode, inkAlpha: ia } = stateRef.current;
     const v = viewRef.current;
-    const P = plot();
     const snap = (n: number) => Math.round(n * dpr) / dpr;
     const font = fontFamily();
 
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
     if (!p.nYears) return;
+
+    // Leave just enough room on the right for the widest label either label
+    // mode could show, so switching modes doesn't resize the plot.
+    ctx.font = `300 11px ${font}`;
+    let widest = 0;
+    for (const g of labelCandidates(p, 'all').concat(
+      labelCandidates(p, 'current'),
+    )) {
+      widest = Math.max(widest, ctx.measureText(genera[g].abbr).width);
+    }
+    rightRef.current = Math.ceil(LABEL_OFFSET + widest + 2);
+    const P = plot();
 
     // Visible years and their bar edges.
     const ya = clamp(Math.floor(v.x0 - start), 0, p.nYears - 1);
@@ -320,33 +334,21 @@ export default function GenusDominanceChart({
       year += xStep
     ) {
       const x = snap(P.sx(year + 0.5)) + 0.5 / dpr;
+      const half = ctx.measureText(String(year)).width / 2;
       ctx.moveTo(x, P.bottom);
       ctx.lineTo(x, P.bottom + 5);
-      ctx.fillText(String(year), x, P.bottom + 8);
-    }
-    ctx.stroke();
-
-    // Y axis: share of the year's registrations.
-    const shares = [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.25, 0.5];
-    const yStep = shares.find((s) => s * P.ky >= 36) ?? 0.5;
-    const decimals = Math.max(0, -Math.floor(Math.log10(yStep * 100) + 1e-9));
-    ctx.textAlign = 'right';
-    ctx.textBaseline = 'middle';
-    ctx.beginPath();
-    for (
-      let i = Math.ceil(v.y0 / yStep - 1e-9);
-      i * yStep <= v.y1 + 1e-9;
-      i++
-    ) {
-      const y = snap(P.sy(i * yStep)) + 0.5 / dpr;
-      ctx.moveTo(P.left - 5, y);
-      ctx.lineTo(P.left, y);
-      ctx.fillText(`${(i * yStep * 100).toFixed(decimals)}%`, P.left - 7, y);
+      ctx.fillText(String(year), Math.max(half, x), P.bottom + 8);
     }
     ctx.stroke();
 
     drawLabels(ctx, p, mode, P, yb, ia, font);
   };
+
+  // The genera to label: the top ones all-time or in the latest year.
+  const labelCandidates = (p: Prepared, mode: LabelMode) =>
+    mode === 'all'
+      ? genera.slice(0, 16).map((_, i) => i)
+      : p.latestRanking.slice(0, 20);
 
   // Genus names down the right edge, beside their bands in the rightmost
   // visible year, nudged apart so they don't overlap.
@@ -359,14 +361,10 @@ export default function GenusDominanceChart({
     ia: (a: number) => string,
     font: string,
   ) => {
-    const max = Math.min(
-      mode === 'all' ? 16 : 20,
+    const candidates = labelCandidates(p, mode).slice(
+      0,
       Math.floor(P.h / LABEL_HEIGHT),
     );
-    const candidates =
-      mode === 'all'
-        ? genera.slice(0, max).map((_, i) => i)
-        : p.latestRanking.slice(0, max);
 
     const labels: { g: number; at: number; y: number }[] = [];
     for (const g of candidates) {
@@ -407,7 +405,7 @@ export default function GenusDominanceChart({
     }
     ctx.stroke();
     for (const l of labels) {
-      ctx.fillText(genera[l.g].abbr, x + 17, l.y);
+      ctx.fillText(genera[l.g].abbr, x + LABEL_OFFSET, l.y);
     }
   };
 
@@ -431,14 +429,22 @@ export default function GenusDominanceChart({
     const P = plot();
     const v = viewRef.current;
     const g = p.segGenus[hover.seg];
-    const gap = barGap(P.kx, sizeRef.current.dpr);
+    const gap = barGap(P.kx, dpr);
+    const snap = (n: number) => Math.round(n * dpr) / dpr;
+    // The same edges as drawBase, so fills sit exactly over the bars. Thin
+    // segments get a minimum height so they still show.
     const box = (i: number) => {
       const y = p.segYear[i];
-      const t = Math.max(P.top - 2, P.sy(p.segY1[i]));
-      const b = Math.min(P.bottom + 2, P.sy(p.segY0[i]));
-      const x0 = Math.max(P.left - 2, P.sx(start + y));
-      const x1 = Math.min(P.right + 2, P.sx(start + y + 1) - gap);
-      return { x0, t, w: x1 - x0, h: Math.max(1, b - t) };
+      const x0 = snap(P.sx(start + y));
+      const x1 = snap(P.sx(start + y + 1)) - gap;
+      let t = snap(P.sy(p.segY1[i]));
+      let b = snap(P.sy(p.segY0[i]));
+      if (b - t < 2) {
+        const mid = (t + b) / 2;
+        t = mid - 1;
+        b = mid + 1;
+      }
+      return { x0, t, w: Math.max(1 / dpr, x1 - x0), h: b - t };
     };
 
     ctx.save();
@@ -446,9 +452,8 @@ export default function GenusDominanceChart({
     ctx.rect(P.left, P.top, P.w, P.h);
     ctx.clip();
 
-    // Outline the genus in every visible year, and the hovered year boldly.
-    ctx.strokeStyle = ia(0.55);
-    ctx.lineWidth = 1;
+    // Fill the genus in every visible year faintly, and the hovered bar solid.
+    ctx.fillStyle = ia(0.4);
     ctx.beginPath();
     const { offset, items } = p.byGenus;
     for (let k = offset[g]; k < offset[g + 1]; k++) {
@@ -456,19 +461,13 @@ export default function GenusDominanceChart({
       const year = start + p.segYear[i];
       if (year + 1 < v.x0 || year > v.x1 || i === hover.seg) continue;
       const r = box(i);
-      ctx.rect(
-        r.x0 + 0.5,
-        r.t + 0.5,
-        Math.max(0, r.w - 1),
-        Math.max(0, r.h - 1),
-      );
+      ctx.rect(r.x0, r.t, r.w, r.h);
     }
-    ctx.stroke();
+    ctx.fill();
 
     const r = box(hover.seg);
-    ctx.lineWidth = 2;
-    ctx.strokeStyle = ia(1);
-    ctx.strokeRect(r.x0, r.t, r.w, r.h);
+    ctx.fillStyle = ia(1);
+    ctx.fillRect(r.x0, r.t, r.w, r.h);
     ctx.restore();
 
     if (!tip) return;
@@ -658,10 +657,8 @@ export default function GenusDominanceChart({
       const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? 400 : 1;
       // About 15% per mouse-wheel notch; trackpad pinches send small deltas.
       const f = Math.exp(clamp(e.deltaY * unit, -60, 60) * 0.0025);
-      // Over an axis, zoom only along it.
-      const onXAxis = y > P.bottom;
-      const onYAxis = x < P.left;
-      zoomAt(onYAxis ? 1 : f, onXAxis ? 1 : f, x, y);
+      // Over the year axis, zoom only the years.
+      zoomAt(f, y > P.bottom ? 1 : f, x, y);
     };
 
     const onDown = (e: PointerEvent) => {
@@ -841,8 +838,8 @@ export default function GenusDominanceChart({
 
       <p className={style.help}>
         Hover or tap a bar for details. Pinch, or hold Ctrl/⌘ and scroll, to
-        zoom; scroll over an axis to zoom just that axis. Drag to pan,
-        double-click to zoom in.
+        zoom; scroll over the years to zoom just them. Drag to pan, double-click
+        to zoom in.
       </p>
     </div>
   );
