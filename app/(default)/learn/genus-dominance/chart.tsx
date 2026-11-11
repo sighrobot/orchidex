@@ -224,13 +224,25 @@ export default function GenusDominanceChart({
   const stateRef = React.useRef({ prepared, labelMode, inkAlpha });
   stateRef.current = { prepared, labelMode, inkAlpha };
 
+  // viewRef moves smoothly as you zoom and pan; what's drawn snaps to whole
+  // years, so the edges always fall between bars and none are cut off.
+  const shownView = (): View => {
+    const v = viewRef.current;
+    const span = Math.max(
+      Math.min(MIN_YEARS, full.x1 - full.x0),
+      Math.round(v.x1 - v.x0),
+    );
+    const x0 = clamp(Math.round(v.x0), full.x0, full.x1 - span);
+    return { x0, x1: x0 + span, y0: v.y0, y1: v.y1 };
+  };
+
   const plot = () => {
     const { width, height } = sizeRef.current;
     const left = MARGIN.left;
     const top = MARGIN.top;
     const w = Math.max(1, width - MARGIN.left - rightRef.current);
     const h = Math.max(1, height - MARGIN.top - MARGIN.bottom);
-    const v = viewRef.current;
+    const v = shownView();
     const kx = w / (v.x1 - v.x0);
     const ky = h / (v.y1 - v.y0);
     return {
@@ -261,7 +273,7 @@ export default function GenusDominanceChart({
     if (!ctx) return;
     const { width, height, dpr } = sizeRef.current;
     const { prepared: p, labelMode: mode, inkAlpha: ia } = stateRef.current;
-    const v = viewRef.current;
+    const v = shownView();
     const snap = (n: number) => Math.round(n * dpr) / dpr;
     const font = fontFamily();
 
@@ -427,7 +439,7 @@ export default function GenusDominanceChart({
     }
 
     const P = plot();
-    const v = viewRef.current;
+    const v = shownView();
     const g = p.segGenus[hover.seg];
     const gap = barGap(P.kx, dpr);
     const snap = (n: number) => Math.round(n * dpr) / dpr;
@@ -514,13 +526,12 @@ export default function GenusDominanceChart({
   };
 
   const updateRange = () => {
-    const v = viewRef.current;
-    const isZoomed =
-      v.x1 - v.x0 < full.x1 - full.x0 - 1e-6 || v.y1 - v.y0 < 1 - 1e-9;
+    const v = shownView();
+    const isZoomed = v.x1 - v.x0 < full.x1 - full.x0 || v.y1 - v.y0 < 1 - 1e-9;
     setZoomed(isZoomed);
     if (rangeRef.current) {
-      const a = Math.ceil(v.x0 - 1e-6);
-      const b = Math.floor(v.x1 - 1e-6);
+      const a = v.x0;
+      const b = v.x1 - 1;
       const shares =
         v.y1 - v.y0 < 1 - 1e-9
           ? ` · ${(v.y0 * 100).toFixed(1)}–${(v.y1 * 100).toFixed(1)}%`
