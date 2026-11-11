@@ -172,6 +172,16 @@ function segmentAt(p: Prepared, y: number, f: number) {
 const clamp = (v: number, lo: number, hi: number) =>
   Math.min(hi, Math.max(lo, v));
 
+// Space between year bars, in CSS pixels, given each year's width. None when
+// bars are thin enough that gaps would be noise; a single device pixel at the
+// full view; widening to 3px as you zoom in. Whole device pixels, so every
+// gap is the same width.
+const barGap = (yearWidth: number, dpr: number) => {
+  if (yearWidth < 4) return 0;
+  const gap = clamp((yearWidth - 4) * 0.08, 1 / dpr, 3);
+  return Math.max(1, Math.round(gap * dpr)) / dpr;
+};
+
 const fmt = new Intl.NumberFormat('en-US');
 
 export default function GenusDominanceChart({
@@ -260,12 +270,12 @@ export default function GenusDominanceChart({
     // Visible years and their bar edges.
     const ya = clamp(Math.floor(v.x0 - start), 0, p.nYears - 1);
     const yb = clamp(Math.ceil(v.x1 - start) - 1, 0, p.nYears - 1);
-    const gap = P.kx > 4 ? Math.min(P.kx * 0.2, 3) : 0;
+    const gap = barGap(P.kx, dpr);
     const barX = new Float64Array(p.nYears);
     const barW = new Float64Array(p.nYears);
     for (let y = ya; y <= yb; y++) {
-      const x0 = snap(P.sx(start + y) + gap / 2);
-      const x1 = snap(P.sx(start + y + 1) - gap / 2);
+      const x0 = snap(P.sx(start + y));
+      const x1 = snap(P.sx(start + y + 1)) - gap;
       barX[y] = x0;
       barW[y] = Math.max(1 / dpr, x1 - x0);
     }
@@ -421,13 +431,13 @@ export default function GenusDominanceChart({
     const P = plot();
     const v = viewRef.current;
     const g = p.segGenus[hover.seg];
-    const gap = P.kx > 4 ? Math.min(P.kx * 0.2, 3) : 0;
+    const gap = barGap(P.kx, sizeRef.current.dpr);
     const box = (i: number) => {
       const y = p.segYear[i];
       const t = Math.max(P.top - 2, P.sy(p.segY1[i]));
       const b = Math.min(P.bottom + 2, P.sy(p.segY0[i]));
-      const x0 = Math.max(P.left - 2, P.sx(start + y) + gap / 2);
-      const x1 = Math.min(P.right + 2, P.sx(start + y + 1) - gap / 2);
+      const x0 = Math.max(P.left - 2, P.sx(start + y));
+      const x1 = Math.min(P.right + 2, P.sx(start + y + 1) - gap);
       return { x0, t, w: x1 - x0, h: Math.max(1, b - t) };
     };
 
