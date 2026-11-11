@@ -40,6 +40,10 @@ const MARGIN = { top: 8, bottom: 26, left: 0 };
 const LABEL_OFFSET = 17;
 const LABEL_HEIGHT = 13;
 const MIN_YEARS = 3;
+// How far the smooth edge must pass a year before the drawn edge follows:
+// three quarters of a year, or this many pixels when years are thin.
+const SNAP_HYSTERESIS = 0.75;
+const SNAP_HYSTERESIS_PX = 6;
 const MIN_SHARE = 0.001;
 
 type LabelMode = 'all' | 'current';
@@ -226,14 +230,35 @@ export default function GenusDominanceChart({
 
   // viewRef moves smoothly as you zoom and pan; what's drawn snaps to whole
   // years, so the edges always fall between bars and none are cut off.
+  // Each edge has some hysteresis: it only moves once the smooth edge is
+  // clearly past the next year, so a finger resting near a half-year doesn't
+  // flip the range back and forth.
+  const shownRef = React.useRef({ x0: full.x0, x1: full.x1 });
   const shownView = (): View => {
     const v = viewRef.current;
-    const span = Math.max(
-      Math.min(MIN_YEARS, full.x1 - full.x0),
-      Math.round(v.x1 - v.x0),
+    const s = shownRef.current;
+    const plotWidth = Math.max(
+      1,
+      sizeRef.current.width - MARGIN.left - rightRef.current,
     );
-    const x0 = clamp(Math.round(v.x0), full.x0, full.x1 - span);
-    return { x0, x1: x0 + span, y0: v.y0, y1: v.y1 };
+    const threshold = Math.max(
+      SNAP_HYSTERESIS,
+      (SNAP_HYSTERESIS_PX * (v.x1 - v.x0)) / plotWidth,
+    );
+    const snapEdge = (cur: number, edge: number) =>
+      Math.abs(cur - edge) >= threshold ? Math.round(cur) : edge;
+    let x0 = v.x0 <= full.x0 + 1e-9 ? full.x0 : snapEdge(v.x0, s.x0);
+    let x1 = v.x1 >= full.x1 - 1e-9 ? full.x1 : snapEdge(v.x1, s.x1);
+    const minSpan = Math.min(MIN_YEARS, full.x1 - full.x0);
+    if (x1 - x0 < minSpan) {
+      const mid = Math.round((v.x0 + v.x1) / 2 - minSpan / 2);
+      x0 = mid;
+      x1 = mid + minSpan;
+    }
+    x0 = clamp(x0, full.x0, full.x1 - minSpan);
+    x1 = clamp(x1, x0 + minSpan, full.x1);
+    shownRef.current = { x0, x1 };
+    return { x0, x1, y0: v.y0, y1: v.y1 };
   };
 
   const plot = () => {
@@ -553,10 +578,13 @@ export default function GenusDominanceChart({
   };
 
   // Zoom by `fx`/`fy` (below 1 zooms in) keeping the point under (px, py).
+  // Gestures work on the smooth view, not the snapped one, so a snap never
+  // feeds back into the next step of a pinch or drag.
   const zoomAt = (fx: number, fy: number, px: number, py: number) => {
     const v = viewRef.current;
     const P = plot();
-    const ax = P.wx(clamp(px, P.left, P.right));
+    const ax =
+      v.x0 + ((clamp(px, P.left, P.right) - P.left) / P.w) * (v.x1 - v.x0);
     const ay = P.wy(clamp(py, P.top, P.bottom));
     setView({
       x0: ax - (ax - v.x0) * fx,
@@ -569,7 +597,7 @@ export default function GenusDominanceChart({
   const panBy = (dx: number, dy: number) => {
     const v = viewRef.current;
     const P = plot();
-    const wx = dx / P.kx;
+    const wx = (dx / P.w) * (v.x1 - v.x0);
     const wy = dy / P.ky;
     setView({ x0: v.x0 - wx, x1: v.x1 - wx, y0: v.y0 + wy, y1: v.y1 + wy });
   };
