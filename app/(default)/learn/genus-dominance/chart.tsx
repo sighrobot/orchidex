@@ -415,8 +415,6 @@ export default function GenusDominanceChart({
       if (b <= t) continue;
       labels.push({ g, at: (t + b) / 2, y: (t + b) / 2 });
     }
-    if (!labels.length) return;
-
     labels.sort((a, b) => a.at - b.at);
     const first = P.top + LABEL_HEIGHT / 2;
     const last = P.bottom - LABEL_HEIGHT / 2;
