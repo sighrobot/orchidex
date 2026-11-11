@@ -47,10 +47,14 @@
 .canvas {
   position: absolute;
   inset: 0;
-  // Let the page scroll vertically on touch; we handle sideways drags and
-  // pinches.
+  // At the full view, let the page scroll vertically on touch; we handle
+  // sideways drags and pinches. Once zoomed, every drag pans the chart.
   touch-action: pan-y;
   cursor: grab;
+
+  &[data-zoomed='true'] {
+    touch-action: none;
+  }
 
   &:active {
     cursor: grabbing;

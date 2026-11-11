@@ -737,6 +737,15 @@ export default function GenusDominanceChart({
       zoomAt(f, f, x, y);
     };
 
+    // Two fingers on the chart always mean a pinch: stop the browser from
+    // scrolling or zooming the page with them. (touch-action can't express
+    // "scroll with one finger but not two".)
+    const onTouch = (e: TouchEvent) => {
+      if (e.touches.length > 1 && e.cancelable) e.preventDefault();
+    };
+
+    canvas.addEventListener('touchstart', onTouch, { passive: false });
+    canvas.addEventListener('touchmove', onTouch, { passive: false });
     canvas.addEventListener('wheel', onWheel, { passive: false });
     canvas.addEventListener('pointerdown', onDown);
     canvas.addEventListener('pointermove', onMove);
@@ -753,6 +762,8 @@ export default function GenusDominanceChart({
       canvas.removeEventListener('pointercancel', onCancel);
       canvas.removeEventListener('pointerleave', onLeave);
       canvas.removeEventListener('dblclick', onDblClick);
+      canvas.removeEventListener('touchstart', onTouch);
+      canvas.removeEventListener('touchmove', onTouch);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [full]);
@@ -819,6 +830,7 @@ export default function GenusDominanceChart({
         <canvas
           ref={overlayRef}
           className={style.canvas}
+          data-zoomed={zoomed}
           role='img'
           aria-label={`Share of orchid hybrid registrations by genus each year, ${start} to ${end}`}
         />
