@@ -378,7 +378,8 @@ export default function GenusDominanceChart({
     }
     ctx.stroke();
 
-    drawLabels(ctx, p, mode, P, yb, ia, font);
+    const isZoomed = v.x1 - v.x0 < full.x1 - full.x0 || v.y1 - v.y0 < 1 - 1e-9;
+    drawLabels(ctx, p, mode, P, yb, ia, font, isZoomed);
   };
 
   // The genera to label: the top ones all-time or in the latest year.
@@ -388,7 +389,8 @@ export default function GenusDominanceChart({
       : p.latestRanking.slice(0, 20);
 
   // Genus names down the right edge, beside their bands in the rightmost
-  // visible year, nudged apart so they don't overlap.
+  // visible year. The top genera always get a label, nudged apart so they
+  // don't overlap. Once zoomed in, other genera are added where there's room.
   const drawLabels = (
     ctx: CanvasRenderingContext2D,
     p: Prepared,
@@ -397,6 +399,7 @@ export default function GenusDominanceChart({
     year: number,
     ia: (a: number) => string,
     font: string,
+    isZoomed: boolean,
   ) => {
     const candidates = labelCandidates(p, mode).slice(
       0,
@@ -427,10 +430,12 @@ export default function GenusDominanceChart({
       labels[i].y = Math.min(labels[i].y, next);
     }
 
+    ctx.font = `300 11px ${font}`;
+    if (isZoomed) addExtraLabels(ctx, p, P, year, labels, first, last);
+
     const x = P.right;
     ctx.strokeStyle = ia(0.6);
     ctx.fillStyle = ia(0.9);
-    ctx.font = `300 11px ${font}`;
     ctx.textAlign = 'left';
     ctx.textBaseline = 'middle';
     ctx.beginPath();
@@ -443,6 +448,41 @@ export default function GenusDominanceChart({
     ctx.stroke();
     for (const l of labels) {
       ctx.fillText(genera[l.g].abbr, x + LABEL_OFFSET, l.y);
+    }
+  };
+
+  // Adds labels for genera beyond the top ones, biggest band first. Each sits
+  // exactly beside its band, so it's only added if the band is at least a
+  // label tall, it doesn't touch a label already placed, and it fits in the
+  // right margin (which is sized for the top genera and shouldn't change
+  // mid-zoom).
+  const addExtraLabels = (
+    ctx: CanvasRenderingContext2D,
+    p: Prepared,
+    P: ReturnType<typeof plot>,
+    year: number,
+    labels: { g: number; at: number; y: number }[],
+    first: number,
+    last: number,
+  ) => {
+    const room = rightRef.current - LABEL_OFFSET - 2;
+    const taken = new Set(labels.map((l) => l.g));
+    const extras: { g: number; at: number; size: number }[] = [];
+    for (let i = p.yearOffset[year]; i < p.yearOffset[year + 1]; i++) {
+      const g = p.segGenus[i];
+      if (taken.has(g)) continue;
+      const t = Math.max(P.top, P.sy(p.segY1[i]));
+      const b = Math.min(P.bottom, P.sy(p.segY0[i]));
+      if (b - t < LABEL_HEIGHT) continue;
+      extras.push({ g, at: (t + b) / 2, size: b - t });
+    }
+    extras.sort((a, b) => b.size - a.size);
+
+    for (const e of extras) {
+      if (e.at < first || e.at > last) continue;
+      if (labels.some((l) => Math.abs(l.y - e.at) < LABEL_HEIGHT)) continue;
+      if (ctx.measureText(genera[e.g].abbr).width > room) continue;
+      labels.push({ g: e.g, at: e.at, y: e.at });
     }
   };
 
