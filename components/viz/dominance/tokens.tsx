@@ -9,20 +9,27 @@ import style from './style.module.scss';
 
 const MAX_SUGGESTIONS = 8;
 
-type Genus = { name: string; abbr: string };
+type Item = { name: string; abbr: string };
 
-// A text input that turns picked genera into removable tokens. Suggestions
-// match the start of a genus's name or abbreviation first, then anywhere in
-// it, and within each group keep the all-time ranking `genera` is sorted by.
-export default function GenusTokens({
-  genera,
+// A text input that turns picked items (genera or registrants) into removable
+// tokens. Suggestions match the start of an item's name or abbreviation
+// first, then anywhere in it, and within each group keep the all-time
+// ranking `items` is sorted by.
+export default function Tokens({
+  items,
+  noun,
+  italic,
   selected,
   colorOf,
   onAdd,
   onRemove,
   onClear,
 }: {
-  genera: Genus[];
+  items: Item[];
+  // What the items are called, plural, for the placeholder.
+  noun: string;
+  // Whether names are italicized, as scientific names are.
+  italic: boolean;
   selected: number[];
   colorOf: (g: number) => string;
   onAdd: (g: number) => void;
@@ -34,6 +41,7 @@ export default function GenusTokens({
   const [active, setActive] = React.useState(0);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const listId = React.useId();
+  const Name = italic ? 'i' : 'span';
 
   const suggestions = React.useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -41,7 +49,7 @@ export default function GenusTokens({
     const taken = new Set(selected);
     const starts: number[] = [];
     const contains: number[] = [];
-    genera.forEach((g, i) => {
+    items.forEach((g, i) => {
       if (taken.has(i)) return;
       const name = g.name.toLowerCase();
       const abbr = g.abbr.toLowerCase();
@@ -49,7 +57,7 @@ export default function GenusTokens({
       else if (name.includes(q) || abbr.includes(q)) contains.push(i);
     });
     return starts.concat(contains).slice(0, MAX_SUGGESTIONS);
-  }, [genera, query, selected]);
+  }, [items, query, selected]);
 
   const showList = open && suggestions.length > 0;
   const current = Math.min(active, suggestions.length - 1);
@@ -89,10 +97,10 @@ export default function GenusTokens({
         {selected.map((g) => (
           <span key={g} className={style.token}>
             <span className={style.swatch} style={{ background: colorOf(g) }} />
-            <i>{genera[g].name}</i>
+            <Name>{items[g].name}</Name>
             <button
               type='button'
-              aria-label={`Remove ${genera[g].name}`}
+              aria-label={`Remove ${items[g].name}`}
               onClick={(e) => {
                 e.stopPropagation();
                 onRemove(g);
@@ -105,9 +113,9 @@ export default function GenusTokens({
         <input
           ref={inputRef}
           value={query}
-          placeholder='Search genera'
+          placeholder={`Search ${noun}`}
           role='combobox'
-          aria-label='Search genera'
+          aria-label={`Search ${noun}`}
           aria-expanded={showList}
           aria-controls={listId}
           aria-autocomplete='list'
@@ -159,9 +167,9 @@ export default function GenusTokens({
                 className={style.swatch}
                 style={{ background: colorOf(g) }}
               />
-              <i>{genera[g].name}</i>
-              {genera[g].abbr !== genera[g].name && (
-                <i className={style.muted}>{genera[g].abbr}</i>
+              <Name>{items[g].name}</Name>
+              {items[g].abbr !== items[g].name && (
+                <Name className={style.muted}>{items[g].abbr}</Name>
               )}
             </li>
           ))}

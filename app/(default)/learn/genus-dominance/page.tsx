@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { fetchGenusDominance } from 'lib/fetchers/genus-dominance';
-import GenusDominanceChart from './chart';
+import DominanceChart from 'components/viz/dominance/chart';
+import { fetchDominance } from 'lib/fetchers/dominance';
 
 // Registrations change slowly; rebuild the counts once a day.
 export const revalidate = 86400;
 
 export default async function GenusDominance() {
-  const data = await fetchGenusDominance();
+  const data = await fetchDominance('genus');
 
-  return <GenusDominanceChart data={data} title='Genus dominance' />;
+  return <DominanceChart data={data} kind='genus' title='Genus dominance' />;
 }

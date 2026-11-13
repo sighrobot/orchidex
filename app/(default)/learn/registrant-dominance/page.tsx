@@ -1,12 +1,12 @@
 import React from 'react';
 import { Metadata } from 'next';
 
+import DominanceChart from 'components/viz/dominance/chart';
 import { APP_TITLE } from 'lib/constants';
-import { H2 } from 'components/layout';
-import VegaLite from 'components/vega-lite';
-import spec from './spec';
+import { fetchDominance } from 'lib/fetchers/dominance';
 
-import style from './style.module.scss';
+// Registrations change slowly; rebuild the counts once a day.
+export const revalidate = 86400;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -18,25 +18,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function GenusDominance() {
+export default async function RegistrantDominance() {
+  const data = await fetchDominance('registrant');
+
   return (
-    <>
-      <div className={style.pageHeader}>
-        <div>
-          <H2>Registrant dominance</H2>
-
-          <p>
-            This visualization depicts the dominance over time of people and
-            organizations who register orchid hybrids with the Royal
-            Horticultural Society. Each colored bar represents the number of new
-            hybrids registered that year by a given registrant.
-          </p>
-        </div>
-      </div>
-
-      <div style={{ width: '100%' }}>
-        <VegaLite height={800} renderer='canvas' id='dominance' spec={spec} />
-      </div>
-    </>
+    <DominanceChart
+      data={data}
+      kind='registrant'
+      title='Registrant dominance'
+    />
   );
 }

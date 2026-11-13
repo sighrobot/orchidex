@@ -8,41 +8,19 @@ import { H2 } from 'components/layout';
 import { useResolvedTheme } from 'lib/hooks/useResolvedTheme';
 import { DARK_COLORS } from 'lib/theme';
 
-import type { GenusDominanceData } from 'lib/fetchers/genus-dominance';
+import type { DominanceData, DominanceKind } from 'lib/fetchers/dominance';
 
-import GenusTokens from './genus-tokens';
+import { KINDS } from './kinds';
+import Tokens from './tokens';
 import { buildTour } from './tour';
 import style from './style.module.scss';
 
-// The original chart's colors, in its order (royalblue appears twice there
-// too). Each genus takes the color at its all-time rank, cycling, so it
-// keeps its color however the chart is zoomed or labeled.
-const PALETTE = [
-  '#8a3ffc',
-  '#33b1ff',
-  '#007d79',
-  '#ff7eb6',
-  '#fa4d56',
-  '#6fdc8c',
-  '#4589ff',
-  '#d12771',
-  '#ffa500',
-  '#40e0d0',
-  '#08bdba',
-  '#bae6ff',
-  '#ee82ee',
-  '#d4bbff',
-  '#4169e1',
-  '#4169e1',
-  '#663399',
-  '#a96af7',
-];
-
-// The right margin is sized to fit the genus labels; see drawBase.
-// Year and genus labels. Genus labels are spaced a little more than a line
+// The right margin is sized to fit the group labels; see drawBase.
+// Year and group labels. Group labels are spaced a little more than a line
 // apart, and the bottom margin fits the year labels.
-// Genus labels are italic, as scientific names are; years aren't.
 const TICK_FONT_SIZE = 12;
+// Longer labels (some registrants' names) are cut short with an ellipsis.
+const MAX_LABEL_WIDTH = 150;
 const MARGIN = { top: 8, bottom: 28, left: 0 };
 const LABEL_OFFSET = 17;
 const LABEL_HEIGHT = 14;
@@ -62,7 +40,7 @@ const FADE = {
   light: { mix: 0.75, desaturate: 0 },
   dark: { mix: 0.7, desaturate: 0.65 },
 };
-// How long the fade and each genus's highlight take to come in or go out, in
+// How long the fade and each group's highlight take to come in or go out, in
 // ms. Each moves at a steady rate and is drawn through an ease-in-out curve,
 // so it starts and ends gently, and a change of direction midway is smooth.
 const FADE_MS = 300;
@@ -74,13 +52,13 @@ type LabelMode = 'all' | 'current';
 export type View = { x0: number; x1: number; y0: number; y1: number };
 type Hover = { seg: number; x: number; y: number } | null;
 
-// Data laid out for drawing: one segment per genus per year, in typed arrays,
+// Data laid out for drawing: one segment per group per year, in typed arrays,
 // indexed by year (for hit testing) and by color (to fill in few batches).
-function prepare({ start, end, genera, cells }: GenusDominanceData) {
+function prepare({ start, end, groups, cells }: DominanceData, colors: number) {
   const nYears = Math.max(0, end - start + 1);
   const n = cells.length / 3;
 
-  const segGenus = new Int32Array(n);
+  const segGroup = new Int32Array(n);
   const segYear = new Int32Array(n);
   const segCount = new Int32Array(n);
   const segY0 = new Float64Array(n);
@@ -88,15 +66,15 @@ function prepare({ start, end, genera, cells }: GenusDominanceData) {
   const yearOffset = new Int32Array(nYears + 1);
   const yearTotal = new Int32Array(nYears);
 
-  // Like the original chart, stack genera alphabetically by abbreviation:
+  // Like the original charts, stack groups alphabetically by abbreviation:
   // A at the top, Z at the bottom.
-  const stackPos = new Int32Array(genera.length);
-  genera
+  const stackPos = new Int32Array(groups.length);
+  groups
     .map((g, i) => i)
     .sort((a, b) =>
-      genera[a].abbr < genera[b].abbr
+      groups[a].abbr < groups[b].abbr
         ? 1
-        : genera[a].abbr > genera[b].abbr
+        : groups[a].abbr > groups[b].abbr
           ? -1
           : a - b,
     )
@@ -110,7 +88,7 @@ function prepare({ start, end, genera, cells }: GenusDominanceData) {
 
   for (let i = 0; i < n; i++) {
     const c = order[i] * 3;
-    segGenus[i] = cells[c];
+    segGroup[i] = cells[c];
     segYear[i] = cells[c + 1];
     segCount[i] = cells[c + 2];
     yearOffset[segYear[i] + 1]++;
@@ -139,10 +117,10 @@ function prepare({ start, end, genera, cells }: GenusDominanceData) {
     return { offset, items };
   };
 
-  const byGenus = group((i) => segGenus[i], genera.length);
-  const byColor = group((i) => segGenus[i] % PALETTE.length, PALETTE.length);
+  const byGroup = group((i) => segGroup[i], groups.length);
+  const byColor = group((i) => segGroup[i] % colors, colors);
 
-  // Top genera in the latest year, for the "current year" labels.
+  // Top groups in the latest year, for the "current year" labels.
   const latest: number[] = [];
   if (nYears) {
     for (let i = yearOffset[nYears - 1]; i < yearOffset[nYears]; i++) {
@@ -150,18 +128,18 @@ function prepare({ start, end, genera, cells }: GenusDominanceData) {
     }
     latest.sort((a, b) => segCount[b] - segCount[a]);
   }
-  const latestRanking = latest.map((i) => segGenus[i]);
+  const latestRanking = latest.map((i) => segGroup[i]);
 
   return {
     nYears,
-    segGenus,
+    segGroup,
     segYear,
     segCount,
     segY0,
     segY1,
     yearOffset,
     yearTotal,
-    byGenus,
+    byGroup,
     byColor,
     latestRanking,
     stackPos,
@@ -170,7 +148,7 @@ function prepare({ start, end, genera, cells }: GenusDominanceData) {
 
 export type Prepared = ReturnType<typeof prepare>;
 
-// The segment for genus `g` in year `y`, or -1. Segments within a year are
+// The segment for group `g` in year `y`, or -1. Segments within a year are
 // sorted by stack position.
 function findSegment(p: Prepared, y: number, g: number) {
   let lo = p.yearOffset[y];
@@ -178,7 +156,7 @@ function findSegment(p: Prepared, y: number, g: number) {
   const target = p.stackPos[g];
   while (lo <= hi) {
     const mid = (lo + hi) >> 1;
-    const pos = p.stackPos[p.segGenus[mid]];
+    const pos = p.stackPos[p.segGroup[mid]];
     if (pos === target) return mid;
     if (pos < target) lo = mid + 1;
     else hi = mid - 1;
@@ -213,15 +191,18 @@ const barGap = (yearWidth: number, dpr: number) => {
 };
 
 const fmt = new Intl.NumberFormat('en-US');
-const colorOf = (g: number) => PALETTE[g % PALETTE.length];
 
 const rgbOf = (hex: string) =>
   [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
 
 // The palette faded toward `paper`; see FADE.
-function fadePalette(paper: string, { mix, desaturate }: typeof FADE.light) {
+function fadePalette(
+  palette: string[],
+  paper: string,
+  { mix, desaturate }: typeof FADE.light,
+) {
   const bg = rgbOf(paper);
-  return PALETTE.map((hex) => {
+  return palette.map((hex) => {
     const c = rgbOf(hex);
     const gray = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
     const out = c.map((v, k) => {
@@ -232,24 +213,34 @@ function fadePalette(paper: string, { mix, desaturate }: typeof FADE.light) {
   });
 }
 
-export default function GenusDominanceChart({
+// A stacked bar chart of each year's registrations, split by genus or by
+// registrant, normalized to the year's total.
+export default function DominanceChart({
   data,
+  kind,
   title,
 }: {
-  data: GenusDominanceData;
+  data: DominanceData;
+  kind: DominanceKind;
   title: string;
 }) {
-  const { start, end, currentYear, genera } = data;
-  const prepared = React.useMemo(() => prepare(data), [data]);
+  const { start, end, currentYear, groups } = data;
+  const cfg = KINDS[kind];
+  const { palette, one, many } = cfg;
+  const colorOf = (g: number) => palette[g % palette.length];
+  const prepared = React.useMemo(
+    () => prepare(data, palette.length),
+    [data, palette],
+  );
   const theme = useResolvedTheme();
 
   const [labelMode, setLabelMode] = React.useState<LabelMode>('all');
   const [zoomed, setZoomed] = React.useState(false);
-  // Genera kept highlighted, in the order they were picked.
+  // Groups kept highlighted, in the order they were picked.
   const [selected, setSelected] = React.useState<number[]>([]);
   // The step of the guide being shown, or null when it's closed.
   const [tour, setTour] = React.useState<number | null>(null);
-  const toggleGenus = (g: number) =>
+  const toggleGroup = (g: number) =>
     setSelected((s) => (s.includes(g) ? s.filter((x) => x !== g) : [...s, g]));
 
   const containerRef = React.useRef<HTMLDivElement>(null);
@@ -267,7 +258,7 @@ export default function GenusDominanceChart({
   const sizeRef = React.useRef({ width: 0, height: 0, dpr: 1 });
   const frameRef = React.useRef(0);
   // The animated state of the highlight: how far the fade has come in, and
-  // how bright each genus is drawn over it (0 to 1).
+  // how bright each group is drawn over it (0 to 1).
   const fadeRef = React.useRef({
     wash: 0,
     levels: new Map<number, number>(),
@@ -282,8 +273,9 @@ export default function GenusDominanceChart({
   // The page background, which faded bands are mixed toward.
   const paper = theme === 'dark' ? DARK_COLORS.bg : '#ffffff';
   const faded = React.useMemo(
-    () => fadePalette(paper, theme === 'dark' ? FADE.dark : FADE.light),
-    [paper, theme],
+    () =>
+      fadePalette(palette, paper, theme === 'dark' ? FADE.dark : FADE.light),
+    [palette, paper, theme],
   );
 
   // Everything draw() reads, so the stable callbacks below see fresh values.
@@ -294,7 +286,7 @@ export default function GenusDominanceChart({
     inkAlpha,
     faded,
     selected,
-    toggleGenus,
+    toggleGroup,
   });
   stateRef.current = {
     tour,
@@ -303,7 +295,7 @@ export default function GenusDominanceChart({
     inkAlpha,
     faded,
     selected,
-    toggleGenus,
+    toggleGroup,
   };
 
   // viewRef moves smoothly as you zoom and pan; what's drawn snaps to whole
@@ -368,8 +360,30 @@ export default function GenusDominanceChart({
     containerRef.current
       ? getComputedStyle(containerRef.current).fontFamily
       : 'sans-serif';
+  const labelFont = (font: string) =>
+    `${cfg.italic ? 'italic ' : ''}300 ${TICK_FONT_SIZE}px ${font}`;
 
-  // Fills every visible bar, each in `colors[its genus's palette index]`:
+  // Group `g`'s label, cut short to fit `limit` pixels in the current font.
+  const labelText = (
+    ctx: CanvasRenderingContext2D,
+    g: number,
+    limit = MAX_LABEL_WIDTH,
+  ) => {
+    const text = groups[g].abbr;
+    if (ctx.measureText(text).width <= limit) return text;
+    let lo = 0;
+    let hi = text.length;
+    while (lo < hi) {
+      const mid = (lo + hi + 1) >> 1;
+      const fits =
+        ctx.measureText(text.slice(0, mid).trimEnd() + '…').width <= limit;
+      if (fits) lo = mid;
+      else hi = mid - 1;
+    }
+    return text.slice(0, lo).trimEnd() + '…';
+  };
+
+  // Fills every visible bar, each in `colors[its group's palette index]`:
   // one path and one fill per color. Returns the visible years.
   const fillBars = (
     ctx: CanvasRenderingContext2D,
@@ -400,7 +414,7 @@ export default function GenusDominanceChart({
 
     // One path and one fill per color.
     const { offset, items } = p.byColor;
-    for (let c = 0; c < PALETTE.length; c++) {
+    for (let c = 0; c < colors.length; c++) {
       ctx.fillStyle = colors[c];
       ctx.beginPath();
       for (let k = offset[c]; k < offset[c + 1]; k++) {
@@ -434,18 +448,20 @@ export default function GenusDominanceChart({
     if (!p.nYears) return;
 
     // Leave just enough room on the right for the widest label either label
-    // mode could show, so switching modes doesn't resize the plot.
-    ctx.font = `italic 300 ${TICK_FONT_SIZE}px ${font}`;
+    // mode shows at the full view, so switching modes doesn't resize the
+    // plot. Labels for other years are cut short to fit.
+    ctx.font = labelFont(font);
     let widest = 0;
-    for (const g of labelCandidates(p, 'all').concat(
-      labelCandidates(p, 'current'),
+    const lastYear = p.nYears - 1;
+    for (const g of labelCandidates(p, 'all', lastYear).concat(
+      labelCandidates(p, 'current', lastYear),
     )) {
-      widest = Math.max(widest, ctx.measureText(genera[g].abbr).width);
+      widest = Math.max(widest, ctx.measureText(labelText(ctx, g)).width);
     }
     rightRef.current = Math.ceil(LABEL_OFFSET + widest + 2);
     const P = plot();
 
-    const { ya, yb } = fillBars(ctx, p, P, PALETTE);
+    const { ya, yb } = fillBars(ctx, p, P, palette);
 
     ctx.fillStyle = ia(0.75);
     ctx.strokeStyle = ia(0.5);
@@ -475,15 +491,22 @@ export default function GenusDominanceChart({
     drawLabels(ctx, p, mode, P, yb, ia, font, isZoomed);
   };
 
-  // The genera to label: the top ones all-time or in the latest year.
-  const labelCandidates = (p: Prepared, mode: LabelMode) =>
-    mode === 'all'
-      ? genera.slice(0, 16).map((_, i) => i)
-      : p.latestRanking.slice(0, 20);
+  // The groups to label: the top ones all-time or in the latest year. All-time
+  // takes the top ones of those in `year` (the labels' year), so there are
+  // always 16 when there are that many: most of the top registrants of all
+  // time registered nothing in recent years. Group indices are all-time ranks.
+  const labelCandidates = (p: Prepared, mode: LabelMode, year: number) => {
+    if (mode === 'current') return p.latestRanking.slice(0, 20);
+    const inYear: number[] = [];
+    for (let i = p.yearOffset[year]; i < p.yearOffset[year + 1]; i++) {
+      inYear.push(p.segGroup[i]);
+    }
+    return inYear.sort((a, b) => a - b).slice(0, 16);
+  };
 
-  // Genus names down the right edge, beside their bands in the rightmost
-  // visible year. The top genera always get a label, nudged apart so they
-  // don't overlap. Once zoomed in, other genera are added where there's room.
+  // Group names down the right edge, beside their bands in the rightmost
+  // visible year. The top groups always get a label, nudged apart so they
+  // don't overlap. Once zoomed in, other groups are added where there's room.
   const drawLabels = (
     ctx: CanvasRenderingContext2D,
     p: Prepared,
@@ -494,7 +517,7 @@ export default function GenusDominanceChart({
     font: string,
     isZoomed: boolean,
   ) => {
-    const candidates = labelCandidates(p, mode).slice(
+    const candidates = labelCandidates(p, mode, year).slice(
       0,
       Math.floor(P.h / LABEL_HEIGHT),
     );
@@ -521,9 +544,12 @@ export default function GenusDominanceChart({
       labels[i].y = Math.min(labels[i].y, next);
     }
 
-    ctx.font = `italic 300 ${TICK_FONT_SIZE}px ${font}`;
-    if (isZoomed) addExtraLabels(ctx, p, P, year, labels, first, last);
+    ctx.font = labelFont(font);
+    if (isZoomed) addExtraLabels(p, P, year, labels, first, last);
 
+    // Every label is cut short to fit the right margin, which is sized for
+    // the full view and shouldn't change mid-zoom.
+    const room = rightRef.current - LABEL_OFFSET - 2;
     const x = P.right;
     ctx.strokeStyle = ia(0.6);
     ctx.fillStyle = ia(0.9);
@@ -538,17 +564,14 @@ export default function GenusDominanceChart({
     }
     ctx.stroke();
     for (const l of labels) {
-      ctx.fillText(genera[l.g].abbr, x + LABEL_OFFSET, l.y);
+      ctx.fillText(labelText(ctx, l.g, room), x + LABEL_OFFSET, l.y);
     }
   };
 
-  // Adds labels for genera beyond the top ones, biggest band first. Each sits
+  // Adds labels for groups beyond the top ones, biggest band first. Each sits
   // exactly beside its band, so it's only added if the band is at least a
-  // label tall, it doesn't touch a label already placed, and it fits in the
-  // right margin (which is sized for the top genera and shouldn't change
-  // mid-zoom).
+  // label tall and it doesn't touch a label already placed.
   const addExtraLabels = (
-    ctx: CanvasRenderingContext2D,
     p: Prepared,
     P: ReturnType<typeof plot>,
     year: number,
@@ -556,11 +579,10 @@ export default function GenusDominanceChart({
     first: number,
     last: number,
   ) => {
-    const room = rightRef.current - LABEL_OFFSET - 2;
     const taken = new Set(labels.map((l) => l.g));
     const extras: { g: number; at: number; size: number }[] = [];
     for (let i = p.yearOffset[year]; i < p.yearOffset[year + 1]; i++) {
-      const g = p.segGenus[i];
+      const g = p.segGroup[i];
       if (taken.has(g)) continue;
       const t = Math.max(P.top, P.sy(p.segY1[i]));
       const b = Math.min(P.bottom, P.sy(p.segY0[i]));
@@ -572,7 +594,6 @@ export default function GenusDominanceChart({
     for (const e of extras) {
       if (e.at < first || e.at > last) continue;
       if (labels.some((l) => Math.abs(l.y - e.at) < LABEL_HEIGHT)) continue;
-      if (ctx.measureText(genera[e.g].abbr).width > room) continue;
       labels.push({ g: e.g, at: e.at, y: e.at });
     }
   };
@@ -591,11 +612,11 @@ export default function GenusDominanceChart({
     const tip = tooltipRef.current;
     if (!hover && tip) tip.style.visibility = 'hidden';
 
-    // The selected genera stay bright, and so does the hovered one.
+    // The selected groups stay bright, and so does the hovered one.
     const lit = new Set(selected);
-    if (hover) lit.add(p.segGenus[hover.seg]);
+    if (hover) lit.add(p.segGroup[hover.seg]);
 
-    // Ease the wash and each genus's brightness toward their targets.
+    // Ease the wash and each group's brightness toward their targets.
     const fade = fadeRef.current;
     const now = performance.now();
     const reduce = window.matchMedia(
@@ -649,12 +670,12 @@ export default function GenusDominanceChart({
     ctx.clip();
 
     // Fade every band by drawing it over in its faded color, then redraw the lit
-    // genera on top at full strength, and outline the hovered bar.
+    // groups on top at full strength, and outline the hovered bar.
     ctx.globalAlpha = easeInOut(fade.wash);
     fillBars(ctx, p, P, faded);
     ctx.globalAlpha = 1;
 
-    const { offset, items } = p.byGenus;
+    const { offset, items } = p.byGroup;
     fade.levels.forEach((level, lg) => {
       ctx.globalAlpha = easeInOut(level);
       ctx.fillStyle = colorOf(lg);
@@ -679,8 +700,8 @@ export default function GenusDominanceChart({
     ctx.restore();
 
     if (!tip || !hover) return;
-    const g = p.segGenus[hover.seg];
-    const genus = genera[g];
+    const g = p.segGroup[hover.seg];
+    const group = groups[g];
     const yi = p.segYear[hover.seg];
     const count = p.segCount[hover.seg];
     const total = p.yearTotal[yi];
@@ -688,8 +709,8 @@ export default function GenusDominanceChart({
       const el = tip.querySelector(`[data-k="${key}"]`);
       if (el) el.textContent = text;
     };
-    set('name', genus.name);
-    set('abbr', genus.abbr !== genus.name ? genus.abbr : '');
+    set('name', group.name);
+    set('abbr', group.abbr !== group.name ? group.abbr : '');
     set('year', String(start + yi));
     set('count', fmt.format(count));
     set(
@@ -970,12 +991,12 @@ export default function GenusDominanceChart({
       const wasTap = pointers.size === 1 && !moved;
       pointers.delete(e.pointerId);
       if (stateRef.current.tour !== null) return;
-      // A click or tap on a bar selects (or deselects) its genus.
+      // A click or tap on a bar selects (or deselects) its group.
       if (wasTap) {
         const seg = segmentUnder(pt.x, pt.y);
         if (seg >= 0) {
-          const { prepared: p, toggleGenus } = stateRef.current;
-          toggleGenus(p.segGenus[seg]);
+          const { prepared: p, toggleGroup } = stateRef.current;
+          toggleGroup(p.segGroup[seg]);
         }
       }
       if (wasTap || e.pointerType === 'mouse') hoverAt(pt.x, pt.y);
@@ -1034,11 +1055,11 @@ export default function GenusDominanceChart({
     zoomAt(f, f, P.left + P.w / 2, P.top + P.h / 2);
   };
 
-  // Zooms to the selected genera: from the first year any of them was
+  // Zooms to the selected groups: from the first year any of them was
   // registered to the last, and the range of shares their bands cover then,
   // with a little room above and below.
   const zoomToSelected = () => {
-    const { offset, items } = prepared.byGenus;
+    const { offset, items } = prepared.byGroup;
     let x0 = Infinity;
     let x1 = -Infinity;
     let y0 = Infinity;
@@ -1066,8 +1087,8 @@ export default function GenusDominanceChart({
   // and zooming the chart. What was selected and in view before is put back
   // when it closes.
   const steps = React.useMemo(
-    () => buildTour(prepared, data),
-    [prepared, data],
+    () => buildTour(prepared, data, cfg),
+    [prepared, data, cfg],
   );
   const beforeTourRef = React.useRef<{ selected: number[]; view: View }>(null);
   const tourCardRef = React.useRef<HTMLDivElement>(null);
@@ -1126,7 +1147,7 @@ export default function GenusDominanceChart({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  if (!genera.length) {
+  if (!groups.length) {
     return (
       <div>
         <div className={style.pageHeader}>
@@ -1137,9 +1158,9 @@ export default function GenusDominanceChart({
     );
   }
 
-  // Which genera get a label at the right edge: the top ones all-time, or
+  // Which groups get a label at the right edge: the top ones all-time, or
   // in the latest year. Each option says exactly what it picks.
-  const allCount = Math.min(16, genera.length);
+  const allCount = Math.min(16, groups.length);
   const latestCount = Math.min(20, prepared.latestRanking.length);
   const yearWord = end === currentYear ? 'this year' : `in ${end}`;
   const labelOptions: {
@@ -1150,7 +1171,7 @@ export default function GenusDominanceChart({
     {
       value: 'all',
       label: 'All-time',
-      title: `The ${allCount} genera with the most registrations ever`,
+      title: `The ${allCount} ${many} with the most registrations ever, of those in the last year shown`,
     },
     {
       value: 'current',
@@ -1160,7 +1181,7 @@ export default function GenusDominanceChart({
           {end}
         </>
       ),
-      title: `The ${latestCount} genera with the most registrations ${yearWord}`,
+      title: `The ${latestCount} ${many} with the most registrations ${yearWord}`,
     },
   ];
 
@@ -1183,8 +1204,10 @@ export default function GenusDominanceChart({
       </div>
 
       <div className={style.controls}>
-        <GenusTokens
-          genera={genera}
+        <Tokens
+          items={groups}
+          noun={many}
+          italic={cfg.italic}
           selected={selected}
           colorOf={colorOf}
           onAdd={(g) => setSelected((s) => (s.includes(g) ? s : [...s, g]))}
@@ -1194,7 +1217,7 @@ export default function GenusDominanceChart({
 
         <div className={style.labelMode}>
           <span id='label-mode'>
-            <span className={style.long}>Label top genera</span>
+            <span className={style.long}>Label top {many}</span>
             <span className={style.short}>Labels</span>
           </span>
           <div
@@ -1221,8 +1244,8 @@ export default function GenusDominanceChart({
           <Button
             variant='outline'
             size='icon'
-            aria-label='Zoom to selected genera'
-            title='Zoom to selected genera'
+            aria-label={`Zoom to selected ${many}`}
+            title={`Zoom to selected ${many}`}
             disabled={!selected.length}
             onClick={zoomToSelected}
           >
@@ -1264,13 +1287,17 @@ export default function GenusDominanceChart({
           className={style.canvas}
           data-zoomed={zoomed}
           role='img'
-          aria-label={`Share of orchid hybrid registrations by genus each year, ${start} to ${end}`}
+          aria-label={`Share of orchid hybrid registrations by ${one} each year, ${start} to ${end}`}
         />
         <div ref={tooltipRef} className={style.tooltip} role='tooltip'>
           <div className={style.tooltipTitle}>
             <span data-k='swatch' className={style.swatch} />
-            <strong data-k='name' className={style.genus} />
-            <span data-k='abbr' className={`${style.muted} ${style.genus}`} />
+            <strong data-k='name' data-italic={cfg.italic} />
+            <span
+              data-k='abbr'
+              data-italic={cfg.italic}
+              className={style.muted}
+            />
           </div>
           <dl>
             <dt>Year</dt>

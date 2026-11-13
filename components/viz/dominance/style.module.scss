@@ -350,7 +350,7 @@
   }
 }
 
-// Genus names, italicized as scientific names are.
-.genus {
+// Genus names in the tooltip, italicized as scientific names are.
+.tooltipTitle [data-italic='true'] {
   font-style: italic;
 }
