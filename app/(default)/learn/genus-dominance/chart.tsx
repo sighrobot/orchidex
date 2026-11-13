@@ -9,6 +9,7 @@ import { DARK_COLORS } from 'lib/theme';
 
 import type { GenusDominanceData } from 'lib/fetchers/genus-dominance';
 
+import GenusTokens from './genus-tokens';
 import style from './style.module.scss';
 
 // The original chart's colours, in its order (royalblue appears twice there
@@ -45,6 +46,19 @@ const MIN_YEARS = 3;
 const SNAP_HYSTERESIS = 0.75;
 const SNAP_HYSTERESIS_PX = 6;
 const MIN_SHARE = 0.001;
+// How the bands not highlighted fade: losing this much of their saturation
+// (1 = a grey of the same brightness), then mixed this far towards the page
+// colour. On a dark page, mixing alone only darkens the colours, which look
+// muddy, so there they're partly greyed too.
+const FADE = {
+  light: { mix: 0.75, desaturate: 0 },
+  dark: { mix: 0.7, desaturate: 0.65 },
+};
+// How long the fade and each genus's highlight take to come in or go out, in
+// ms. Each moves at a steady rate and is drawn through an ease-in-out curve,
+// so it starts and ends gently, and a change of direction midway is smooth.
+const FADE_MS = 300;
+const easeInOut = (t: number) => t * t * (3 - 2 * t);
 
 type LabelMode = 'all' | 'current';
 type View = { x0: number; x1: number; y0: number; y1: number };
@@ -189,6 +203,24 @@ const barGap = (yearWidth: number, dpr: number) => {
 };
 
 const fmt = new Intl.NumberFormat('en-US');
+const colorOf = (g: number) => PALETTE[g % PALETTE.length];
+
+const rgbOf = (hex: string) =>
+  [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+
+// The palette faded towards `paper`; see FADE.
+function fadePalette(paper: string, { mix, desaturate }: typeof FADE.light) {
+  const bg = rgbOf(paper);
+  return PALETTE.map((hex) => {
+    const c = rgbOf(hex);
+    const grey = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+    const out = c.map((v, k) => {
+      const d = v + (grey - v) * desaturate;
+      return Math.round(d + (bg[k] - d) * mix);
+    });
+    return `rgb(${out.join(',')})`;
+  });
+}
 
 export default function GenusDominanceChart({
   data,
@@ -201,6 +233,10 @@ export default function GenusDominanceChart({
 
   const [labelMode, setLabelMode] = React.useState<LabelMode>('all');
   const [zoomed, setZoomed] = React.useState(false);
+  // Genera kept highlighted, in the order they were picked.
+  const [selected, setSelected] = React.useState<number[]>([]);
+  const toggleGenus = (g: number) =>
+    setSelected((s) => (s.includes(g) ? s.filter((x) => x !== g) : [...s, g]));
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const baseRef = React.useRef<HTMLCanvasElement>(null);
@@ -217,16 +253,43 @@ export default function GenusDominanceChart({
   const hoverRef = React.useRef<Hover>(null);
   const sizeRef = React.useRef({ width: 0, height: 0, dpr: 1 });
   const frameRef = React.useRef(0);
+  // The animated state of the highlight: how far the fade has come in, and
+  // how bright each genus is drawn over it (0 to 1).
+  const fadeRef = React.useRef({
+    wash: 0,
+    levels: new Map<number, number>(),
+    time: 0,
+  });
   const dirtyRef = React.useRef({ base: true, overlay: true });
   const rightRef = React.useRef(60);
 
   const ink = theme === 'dark' ? DARK_COLORS.fg : '#000000';
   const inkRgb = [1, 3, 5].map((i) => parseInt(ink.slice(i, i + 2), 16));
   const inkAlpha = (a: number) => `rgba(${inkRgb.join(',')},${a})`;
+  // The page background, which faded bands are mixed towards.
+  const paper = theme === 'dark' ? DARK_COLORS.bg : '#ffffff';
+  const faded = React.useMemo(
+    () => fadePalette(paper, theme === 'dark' ? FADE.dark : FADE.light),
+    [paper, theme],
+  );
 
   // Everything draw() reads, so the stable callbacks below see fresh values.
-  const stateRef = React.useRef({ prepared, labelMode, inkAlpha });
-  stateRef.current = { prepared, labelMode, inkAlpha };
+  const stateRef = React.useRef({
+    prepared,
+    labelMode,
+    inkAlpha,
+    faded,
+    selected,
+    toggleGenus,
+  });
+  stateRef.current = {
+    prepared,
+    labelMode,
+    inkAlpha,
+    faded,
+    selected,
+    toggleGenus,
+  };
 
   // viewRef moves smoothly as you zoom and pan; what's drawn snaps to whole
   // years, so the edges always fall between bars and none are cut off.
@@ -291,6 +354,55 @@ export default function GenusDominanceChart({
       ? getComputedStyle(containerRef.current).fontFamily
       : 'sans-serif';
 
+  // Fills every visible bar, each in `colors[its genus's palette index]`:
+  // one path and one fill per colour. Returns the visible years.
+  const fillBars = (
+    ctx: CanvasRenderingContext2D,
+    p: Prepared,
+    P: ReturnType<typeof plot>,
+    colors: string[],
+  ) => {
+    const { dpr } = sizeRef.current;
+    const snap = (n: number) => Math.round(n * dpr) / dpr;
+    const v = shownView();
+    // Visible years and their bar edges.
+    const ya = clamp(Math.floor(v.x0 - start), 0, p.nYears - 1);
+    const yb = clamp(Math.ceil(v.x1 - start) - 1, 0, p.nYears - 1);
+    const gap = barGap(P.kx, dpr);
+    const barX = new Float64Array(p.nYears);
+    const barW = new Float64Array(p.nYears);
+    for (let y = ya; y <= yb; y++) {
+      const x0 = snap(P.sx(start + y));
+      const x1 = snap(P.sx(start + y + 1)) - gap;
+      barX[y] = x0;
+      barW[y] = Math.max(1 / dpr, x1 - x0);
+    }
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(P.left, P.top, P.w, P.h);
+    ctx.clip();
+
+    // One path and one fill per colour.
+    const { offset, items } = p.byColor;
+    for (let c = 0; c < PALETTE.length; c++) {
+      ctx.fillStyle = colors[c];
+      ctx.beginPath();
+      for (let k = offset[c]; k < offset[c + 1]; k++) {
+        const i = items[k];
+        const y = p.segYear[i];
+        if (y < ya || y > yb) continue;
+        const t = snap(P.sy(p.segY1[i]));
+        const b = snap(P.sy(p.segY0[i]));
+        if (b <= t || b < P.top || t > P.bottom) continue;
+        ctx.rect(barX[y], t, barW[y], b - t);
+      }
+      ctx.fill();
+    }
+    ctx.restore();
+    return { ya, yb };
+  };
+
   const drawBase = () => {
     const canvas = baseRef.current;
     if (!canvas) return;
@@ -318,41 +430,7 @@ export default function GenusDominanceChart({
     rightRef.current = Math.ceil(LABEL_OFFSET + widest + 2);
     const P = plot();
 
-    // Visible years and their bar edges.
-    const ya = clamp(Math.floor(v.x0 - start), 0, p.nYears - 1);
-    const yb = clamp(Math.ceil(v.x1 - start) - 1, 0, p.nYears - 1);
-    const gap = barGap(P.kx, dpr);
-    const barX = new Float64Array(p.nYears);
-    const barW = new Float64Array(p.nYears);
-    for (let y = ya; y <= yb; y++) {
-      const x0 = snap(P.sx(start + y));
-      const x1 = snap(P.sx(start + y + 1)) - gap;
-      barX[y] = x0;
-      barW[y] = Math.max(1 / dpr, x1 - x0);
-    }
-
-    ctx.save();
-    ctx.beginPath();
-    ctx.rect(P.left, P.top, P.w, P.h);
-    ctx.clip();
-
-    // One path and one fill per colour.
-    const { offset, items } = p.byColor;
-    for (let c = 0; c < PALETTE.length; c++) {
-      ctx.fillStyle = PALETTE[c];
-      ctx.beginPath();
-      for (let k = offset[c]; k < offset[c + 1]; k++) {
-        const i = items[k];
-        const y = p.segYear[i];
-        if (y < ya || y > yb) continue;
-        const t = snap(P.sy(p.segY1[i]));
-        const b = snap(P.sy(p.segY0[i]));
-        if (b <= t || b < P.top || t > P.bottom) continue;
-        ctx.rect(barX[y], t, barW[y], b - t);
-      }
-      ctx.fill();
-    }
-    ctx.restore();
+    const { ya, yb } = fillBars(ctx, p, P, PALETTE);
 
     ctx.fillStyle = ia(0.75);
     ctx.strokeStyle = ia(0.5);
@@ -490,20 +568,48 @@ export default function GenusDominanceChart({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const { width, height, dpr } = sizeRef.current;
-    const { prepared: p, inkAlpha: ia } = stateRef.current;
+    const { prepared: p, inkAlpha: ia, faded, selected } = stateRef.current;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.clearRect(0, 0, width, height);
 
     const hover = hoverRef.current;
     const tip = tooltipRef.current;
-    if (!hover) {
-      if (tip) tip.style.visibility = 'hidden';
-      return;
+    if (!hover && tip) tip.style.visibility = 'hidden';
+
+    // The selected genera stay bright, and so does the hovered one.
+    const lit = new Set(selected);
+    if (hover) lit.add(p.segGenus[hover.seg]);
+
+    // Ease the wash and each genus's brightness towards their targets.
+    const fade = fadeRef.current;
+    const now = performance.now();
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    const dt = fade.time ? Math.min(now - fade.time, 50) : 16;
+    const k = reduce ? 1 : dt / FADE_MS;
+    const step = (from: number, to: number) =>
+      from < to ? Math.min(to, from + k) : Math.max(to, from - k);
+    let moving = false;
+    const target = lit.size ? 1 : 0;
+    fade.wash = step(fade.wash, target);
+    if (fade.wash !== target) moving = true;
+    for (const g of Array.from(lit)) {
+      if (!fade.levels.has(g)) fade.levels.set(g, 0);
     }
+    fade.levels.forEach((level, g) => {
+      const target = lit.has(g) ? 1 : 0;
+      const next = step(level, target);
+      if (next !== target) moving = true;
+      if (next === 0 && !target) fade.levels.delete(g);
+      else fade.levels.set(g, next);
+    });
+    fade.time = moving ? now : 0;
+    if (moving) requestOverlay();
+    if (!fade.wash && !fade.levels.size) return;
 
     const P = plot();
     const v = shownView();
-    const g = p.segGenus[hover.seg];
     const gap = barGap(P.kx, dpr);
     const snap = (n: number) => Math.round(n * dpr) / dpr;
     // The same edges as drawBase, so fills sit exactly over the bars. Thin
@@ -527,25 +633,38 @@ export default function GenusDominanceChart({
     ctx.rect(P.left, P.top, P.w, P.h);
     ctx.clip();
 
-    // Fill the genus in every visible year faintly, and the hovered bar solid.
-    ctx.fillStyle = ia(0.4);
-    ctx.beginPath();
-    const { offset, items } = p.byGenus;
-    for (let k = offset[g]; k < offset[g + 1]; k++) {
-      const i = items[k];
-      const year = start + p.segYear[i];
-      if (year + 1 < v.x0 || year > v.x1 || i === hover.seg) continue;
-      const r = box(i);
-      ctx.rect(r.x0, r.t, r.w, r.h);
-    }
-    ctx.fill();
+    // Fade every band by drawing it over in its faded colour, then redraw the lit
+    // genera on top at full strength, and outline the hovered bar.
+    ctx.globalAlpha = easeInOut(fade.wash);
+    fillBars(ctx, p, P, faded);
+    ctx.globalAlpha = 1;
 
-    const r = box(hover.seg);
-    ctx.fillStyle = ia(1);
-    ctx.fillRect(r.x0, r.t, r.w, r.h);
+    const { offset, items } = p.byGenus;
+    fade.levels.forEach((level, lg) => {
+      ctx.globalAlpha = easeInOut(level);
+      ctx.fillStyle = colorOf(lg);
+      ctx.beginPath();
+      for (let k = offset[lg]; k < offset[lg + 1]; k++) {
+        const i = items[k];
+        const year = start + p.segYear[i];
+        if (year + 1 < v.x0 || year > v.x1) continue;
+        const r = box(i);
+        ctx.rect(r.x0, r.t, r.w, r.h);
+      }
+      ctx.fill();
+    });
+    ctx.globalAlpha = 1;
+
+    if (hover) {
+      const r = box(hover.seg);
+      ctx.strokeStyle = ia(0.9);
+      ctx.lineWidth = 1;
+      ctx.strokeRect(r.x0 + 0.5, r.t + 0.5, r.w - 1, r.h - 1);
+    }
     ctx.restore();
 
-    if (!tip) return;
+    if (!tip || !hover) return;
+    const g = p.segGenus[hover.seg];
     const genus = genera[g];
     const yi = p.segYear[hover.seg];
     const count = p.segCount[hover.seg];
@@ -565,7 +684,7 @@ export default function GenusDominanceChart({
     set('total', fmt.format(total));
     set('swatch', '');
     const swatch = tip.querySelector<HTMLElement>('[data-k="swatch"]');
-    if (swatch) swatch.style.background = PALETTE[g % PALETTE.length];
+    if (swatch) swatch.style.background = colorOf(g);
 
     tip.style.visibility = 'visible';
     const tw = tip.offsetWidth;
@@ -582,11 +701,13 @@ export default function GenusDominanceChart({
     frameRef.current = requestAnimationFrame(() => {
       frameRef.current = 0;
       const dirty = dirtyRef.current;
+      // Cleared first, so a draw can ask for another frame (to animate).
+      dirtyRef.current = { base: false, overlay: false };
       if (dirty.base) drawBase();
       if (dirty.overlay) drawOverlay();
-      dirtyRef.current = { base: false, overlay: false };
     });
   };
+  const requestOverlay = () => schedule(false);
 
   const updateRange = () => {
     const v = shownView();
@@ -640,14 +761,17 @@ export default function GenusDominanceChart({
     setView({ x0: v.x0 - wx, x1: v.x1 - wx, y0: v.y0 + wy, y1: v.y1 + wy });
   };
 
-  const hoverAt = (px: number, py: number) => {
+  // The segment under a point in the plot, or -1.
+  const segmentUnder = (px: number, py: number) => {
     const P = plot();
     const p = stateRef.current.prepared;
-    let seg = -1;
-    if (px >= P.left && px <= P.right && py >= P.top && py <= P.bottom) {
-      const y = Math.floor(P.wx(px)) - start;
-      if (y >= 0 && y < p.nYears) seg = segmentAt(p, y, P.wy(py));
-    }
+    if (px < P.left || px > P.right || py < P.top || py > P.bottom) return -1;
+    const y = Math.floor(P.wx(px)) - start;
+    return y >= 0 && y < p.nYears ? segmentAt(p, y, P.wy(py)) : -1;
+  };
+
+  const hoverAt = (px: number, py: number) => {
+    const seg = segmentUnder(px, py);
     const prev = hoverRef.current;
     hoverRef.current = seg >= 0 ? { seg, x: px, y: py } : null;
     if (prev?.seg !== seg || seg >= 0) schedule(false);
@@ -692,6 +816,11 @@ export default function GenusDominanceChart({
     schedule(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prepared, labelMode, theme]);
+
+  React.useEffect(() => {
+    schedule(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
 
   // Pointer, wheel and touch handling.
   React.useEffect(() => {
@@ -783,8 +912,15 @@ export default function GenusDominanceChart({
       const pt = local(e);
       const wasTap = pointers.size === 1 && !moved;
       pointers.delete(e.pointerId);
-      if (wasTap) hoverAt(pt.x, pt.y);
-      else if (e.pointerType === 'mouse') hoverAt(pt.x, pt.y);
+      // A click or tap on a bar selects (or deselects) its genus.
+      if (wasTap) {
+        const seg = segmentUnder(pt.x, pt.y);
+        if (seg >= 0) {
+          const { prepared: p, toggleGenus } = stateRef.current;
+          toggleGenus(p.segGenus[seg]);
+        }
+      }
+      if (wasTap || e.pointerType === 'mouse') hoverAt(pt.x, pt.y);
     };
 
     const onCancel = (e: PointerEvent) => {
@@ -891,6 +1027,15 @@ export default function GenusDominanceChart({
         </div>
       </div>
 
+      <GenusTokens
+        genera={genera}
+        selected={selected}
+        colorOf={colorOf}
+        onAdd={(g) => setSelected((s) => (s.includes(g) ? s : [...s, g]))}
+        onRemove={(g) => setSelected((s) => s.filter((x) => x !== g))}
+        onClear={() => setSelected([])}
+      />
+
       <div ref={containerRef} className={style.chart}>
         <canvas ref={baseRef} className={style.canvas} aria-hidden />
         <canvas
@@ -926,9 +1071,10 @@ export default function GenusDominanceChart({
       </div>
 
       <p className={style.help}>
-        Hover or tap a bar for details. Pinch, or hold Ctrl/⌘ and scroll, to
-        zoom; scroll over the years to zoom just them. Drag to pan, double-click
-        to zoom in.
+        Hover or tap a bar for details; click a bar to highlight its genus, or
+        search for genera above. Pinch, or hold Ctrl/⌘ and scroll, to zoom;
+        scroll over the years to zoom just them. Drag to pan, double-click to
+        zoom in.
       </p>
     </div>
   );
