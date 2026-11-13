@@ -1,13 +1,31 @@
 .pageHeader {
   display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  padding: 10px 0 30px 0;
+  align-items: center;
+  // The title on the left, the guide's button on the right.
   justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0 16px 0;
+}
 
-  p {
-    margin-top: 10px;
-    max-width: 600px;
+// The guide and zoom buttons. (Disabled ones ignore the pointer entirely.)
+.pageHeader button,
+.zoom button {
+  cursor: pointer;
+}
+
+// Shorter wording for the label control on phones, so it fits on one line
+// with the zoom buttons.
+.short {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  .long {
+    display: none;
+  }
+
+  .short {
+    display: inline;
   }
 }
 
@@ -15,12 +33,59 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  // The search comes first; the label control and zoom buttons follow on
+  // the right, wrapping onto their own lines on narrow screens.
+  justify-content: flex-end;
   gap: 10px 20px;
   margin-bottom: 10px;
+}
 
-  select {
-    margin-left: 5px;
+@media (max-width: 520px) {
+  .controls {
+    column-gap: 12px;
+  }
+}
+
+.labelMode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+
+  > span {
+    opacity: 0.7;
+  }
+}
+
+.segmented {
+  display: inline-flex;
+  // As tall as the zoom buttons beside it.
+  height: 36px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+
+  button {
+    padding: 0 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &[aria-checked='true'] {
+      background: var(--hover);
+      opacity: 1;
+      font-weight: 500;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ring);
+      outline-offset: 1px;
+    }
   }
 }
 
@@ -28,13 +93,6 @@
   display: flex;
   align-items: center;
   gap: 6px;
-}
-
-.range {
-  margin-right: 6px;
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-  opacity: 0.7;
 }
 
 .chart {
@@ -131,12 +189,6 @@
   }
 }
 
-.help {
-  margin-top: 8px;
-  font-size: 13px;
-  opacity: 0.7;
-}
-
 .empty {
   padding: 40px 0;
   opacity: 0.7;
@@ -144,7 +196,9 @@
 
 .tokens {
   position: relative;
-  margin-bottom: 10px;
+  // Takes the room the other controls leave; when that's under 320px, the
+  // controls wrap onto their own line and the search spans the full width.
+  flex: 1 1 320px;
 }
 
 .tokenField {
@@ -201,13 +255,8 @@
 .clear {
   margin-left: auto;
   cursor: pointer;
-  padding: 2px 6px;
-  font-size: 13px;
-  opacity: 0.7;
-
-  &:hover {
-    opacity: 1;
-  }
+  // Fits inside the field without making it taller.
+  height: 28px;
 }
 
 .suggestions {
@@ -236,4 +285,72 @@
       background: var(--hover);
     }
   }
+}
+
+// The guide's caption card, over the bottom-left of the chart.
+.tour {
+  position: absolute;
+  left: 12px;
+  bottom: 40px;
+  z-index: 5;
+  width: min(340px, calc(100% - 24px));
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--popover, var(--bg));
+  color: var(--popover-foreground, var(--fg));
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  font-size: 14px;
+  line-height: 1.45;
+  outline: none;
+  animation: tourIn 0.2s ease-out;
+
+  p {
+    margin: 6px 0 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes tourIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.tourHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  opacity: 0.7;
+
+  button {
+    display: flex;
+    padding: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--hover);
+    }
+  }
+}
+
+.tourNav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  button {
+    cursor: pointer;
+  }
+}
+
+// Genus names, italicized as scientific names are.
+.genus {
+  font-style: italic;
 }

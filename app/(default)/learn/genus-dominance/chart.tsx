@@ -1,20 +1,22 @@
 'use client';
 
 import React from 'react';
-import { Minus, Plus, RotateCcw } from 'lucide-react';
+import { CircleHelp, Focus, Minus, Plus, RotateCcw, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import { H2 } from 'components/layout';
 import { useResolvedTheme } from 'lib/hooks/useResolvedTheme';
 import { DARK_COLORS } from 'lib/theme';
 
 import type { GenusDominanceData } from 'lib/fetchers/genus-dominance';
 
 import GenusTokens from './genus-tokens';
+import { buildTour } from './tour';
 import style from './style.module.scss';
 
-// The original chart's colours, in its order (royalblue appears twice there
-// too). Each genus takes the colour at its all-time rank, cycling, so it
-// keeps its colour however the chart is zoomed or labelled.
+// The original chart's colors, in its order (royalblue appears twice there
+// too). Each genus takes the color at its all-time rank, cycling, so it
+// keeps its color however the chart is zoomed or labeled.
 const PALETTE = [
   '#8a3ffc',
   '#33b1ff',
@@ -37,19 +39,25 @@ const PALETTE = [
 ];
 
 // The right margin is sized to fit the genus labels; see drawBase.
-const MARGIN = { top: 8, bottom: 26, left: 0 };
+// Year and genus labels. Genus labels are spaced a little more than a line
+// apart, and the bottom margin fits the year labels.
+// Genus labels are italic, as scientific names are; years aren't.
+const TICK_FONT_SIZE = 12;
+const MARGIN = { top: 8, bottom: 28, left: 0 };
 const LABEL_OFFSET = 17;
-const LABEL_HEIGHT = 13;
+const LABEL_HEIGHT = 14;
 const MIN_YEARS = 3;
+// How much each zoom button press zooms: two presses double or halve the view.
+const ZOOM_STEP = Math.SQRT2;
 // How far the smooth edge must pass a year before the drawn edge follows:
 // three quarters of a year, or this many pixels when years are thin.
 const SNAP_HYSTERESIS = 0.75;
 const SNAP_HYSTERESIS_PX = 6;
 const MIN_SHARE = 0.001;
 // How the bands not highlighted fade: losing this much of their saturation
-// (1 = a grey of the same brightness), then mixed this far towards the page
-// colour. On a dark page, mixing alone only darkens the colours, which look
-// muddy, so there they're partly greyed too.
+// (1 = a gray of the same brightness), then mixed this far toward the page
+// color. On a dark page, mixing alone only darkens the colors, which look
+// muddy, so there they're partly grayed too.
 const FADE = {
   light: { mix: 0.75, desaturate: 0 },
   dark: { mix: 0.7, desaturate: 0.65 },
@@ -59,13 +67,15 @@ const FADE = {
 // so it starts and ends gently, and a change of direction midway is smooth.
 const FADE_MS = 300;
 const easeInOut = (t: number) => t * t * (3 - 2 * t);
+// How long the guide's zooms take, in ms.
+const VIEW_MS = 700;
 
 type LabelMode = 'all' | 'current';
-type View = { x0: number; x1: number; y0: number; y1: number };
+export type View = { x0: number; x1: number; y0: number; y1: number };
 type Hover = { seg: number; x: number; y: number } | null;
 
 // Data laid out for drawing: one segment per genus per year, in typed arrays,
-// indexed by year (for hit testing) and by colour (to fill in few batches).
+// indexed by year (for hit testing) and by color (to fill in few batches).
 function prepare({ start, end, genera, cells }: GenusDominanceData) {
   const nYears = Math.max(0, end - start + 1);
   const n = cells.length / 3;
@@ -158,7 +168,7 @@ function prepare({ start, end, genera, cells }: GenusDominanceData) {
   };
 }
 
-type Prepared = ReturnType<typeof prepare>;
+export type Prepared = ReturnType<typeof prepare>;
 
 // The segment for genus `g` in year `y`, or -1. Segments within a year are
 // sorted by stack position.
@@ -208,14 +218,14 @@ const colorOf = (g: number) => PALETTE[g % PALETTE.length];
 const rgbOf = (hex: string) =>
   [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
 
-// The palette faded towards `paper`; see FADE.
+// The palette faded toward `paper`; see FADE.
 function fadePalette(paper: string, { mix, desaturate }: typeof FADE.light) {
   const bg = rgbOf(paper);
   return PALETTE.map((hex) => {
     const c = rgbOf(hex);
-    const grey = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+    const gray = 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
     const out = c.map((v, k) => {
-      const d = v + (grey - v) * desaturate;
+      const d = v + (gray - v) * desaturate;
       return Math.round(d + (bg[k] - d) * mix);
     });
     return `rgb(${out.join(',')})`;
@@ -224,8 +234,10 @@ function fadePalette(paper: string, { mix, desaturate }: typeof FADE.light) {
 
 export default function GenusDominanceChart({
   data,
+  title,
 }: {
   data: GenusDominanceData;
+  title: string;
 }) {
   const { start, end, currentYear, genera } = data;
   const prepared = React.useMemo(() => prepare(data), [data]);
@@ -235,6 +247,8 @@ export default function GenusDominanceChart({
   const [zoomed, setZoomed] = React.useState(false);
   // Genera kept highlighted, in the order they were picked.
   const [selected, setSelected] = React.useState<number[]>([]);
+  // The step of the guide being shown, or null when it's closed.
+  const [tour, setTour] = React.useState<number | null>(null);
   const toggleGenus = (g: number) =>
     setSelected((s) => (s.includes(g) ? s.filter((x) => x !== g) : [...s, g]));
 
@@ -242,7 +256,6 @@ export default function GenusDominanceChart({
   const baseRef = React.useRef<HTMLCanvasElement>(null);
   const overlayRef = React.useRef<HTMLCanvasElement>(null);
   const tooltipRef = React.useRef<HTMLDivElement>(null);
-  const rangeRef = React.useRef<HTMLSpanElement>(null);
   const hintRef = React.useRef<HTMLDivElement>(null);
 
   const full = React.useMemo<View>(
@@ -266,7 +279,7 @@ export default function GenusDominanceChart({
   const ink = theme === 'dark' ? DARK_COLORS.fg : '#000000';
   const inkRgb = [1, 3, 5].map((i) => parseInt(ink.slice(i, i + 2), 16));
   const inkAlpha = (a: number) => `rgba(${inkRgb.join(',')},${a})`;
-  // The page background, which faded bands are mixed towards.
+  // The page background, which faded bands are mixed toward.
   const paper = theme === 'dark' ? DARK_COLORS.bg : '#ffffff';
   const faded = React.useMemo(
     () => fadePalette(paper, theme === 'dark' ? FADE.dark : FADE.light),
@@ -275,6 +288,7 @@ export default function GenusDominanceChart({
 
   // Everything draw() reads, so the stable callbacks below see fresh values.
   const stateRef = React.useRef({
+    tour,
     prepared,
     labelMode,
     inkAlpha,
@@ -283,6 +297,7 @@ export default function GenusDominanceChart({
     toggleGenus,
   });
   stateRef.current = {
+    tour,
     prepared,
     labelMode,
     inkAlpha,
@@ -355,7 +370,7 @@ export default function GenusDominanceChart({
       : 'sans-serif';
 
   // Fills every visible bar, each in `colors[its genus's palette index]`:
-  // one path and one fill per colour. Returns the visible years.
+  // one path and one fill per color. Returns the visible years.
   const fillBars = (
     ctx: CanvasRenderingContext2D,
     p: Prepared,
@@ -383,7 +398,7 @@ export default function GenusDominanceChart({
     ctx.rect(P.left, P.top, P.w, P.h);
     ctx.clip();
 
-    // One path and one fill per colour.
+    // One path and one fill per color.
     const { offset, items } = p.byColor;
     for (let c = 0; c < PALETTE.length; c++) {
       ctx.fillStyle = colors[c];
@@ -420,7 +435,7 @@ export default function GenusDominanceChart({
 
     // Leave just enough room on the right for the widest label either label
     // mode could show, so switching modes doesn't resize the plot.
-    ctx.font = `300 11px ${font}`;
+    ctx.font = `italic 300 ${TICK_FONT_SIZE}px ${font}`;
     let widest = 0;
     for (const g of labelCandidates(p, 'all').concat(
       labelCandidates(p, 'current'),
@@ -435,7 +450,7 @@ export default function GenusDominanceChart({
     ctx.fillStyle = ia(0.75);
     ctx.strokeStyle = ia(0.5);
     ctx.lineWidth = 1;
-    ctx.font = `300 11px ${font}`;
+    ctx.font = `300 ${TICK_FONT_SIZE}px ${font}`;
 
     // X axis: years.
     const steps = [1, 2, 5, 10, 20, 25, 50, 100];
@@ -506,7 +521,7 @@ export default function GenusDominanceChart({
       labels[i].y = Math.min(labels[i].y, next);
     }
 
-    ctx.font = `300 11px ${font}`;
+    ctx.font = `italic 300 ${TICK_FONT_SIZE}px ${font}`;
     if (isZoomed) addExtraLabels(ctx, p, P, year, labels, first, last);
 
     const x = P.right;
@@ -580,7 +595,7 @@ export default function GenusDominanceChart({
     const lit = new Set(selected);
     if (hover) lit.add(p.segGenus[hover.seg]);
 
-    // Ease the wash and each genus's brightness towards their targets.
+    // Ease the wash and each genus's brightness toward their targets.
     const fade = fadeRef.current;
     const now = performance.now();
     const reduce = window.matchMedia(
@@ -633,7 +648,7 @@ export default function GenusDominanceChart({
     ctx.rect(P.left, P.top, P.w, P.h);
     ctx.clip();
 
-    // Fade every band by drawing it over in its faded colour, then redraw the lit
+    // Fade every band by drawing it over in its faded color, then redraw the lit
     // genera on top at full strength, and outline the hovered bar.
     ctx.globalAlpha = easeInOut(fade.wash);
     fillBars(ctx, p, P, faded);
@@ -709,19 +724,10 @@ export default function GenusDominanceChart({
   };
   const requestOverlay = () => schedule(false);
 
-  const updateRange = () => {
+  const updateZoomed = () => {
     const v = shownView();
     const isZoomed = v.x1 - v.x0 < full.x1 - full.x0 || v.y1 - v.y0 < 1 - 1e-9;
     setZoomed(isZoomed);
-    if (rangeRef.current) {
-      const a = v.x0;
-      const b = v.x1 - 1;
-      const shares =
-        v.y1 - v.y0 < 1 - 1e-9
-          ? ` · ${(v.y0 * 100).toFixed(1)}–${(v.y1 * 100).toFixed(1)}%`
-          : '';
-      rangeRef.current.textContent = `${a}–${b}${shares}`;
-    }
   };
 
   const setView = (next: View) => {
@@ -732,7 +738,7 @@ export default function GenusDominanceChart({
     const y0 = clamp(next.y0, 0, 1 - ys);
     viewRef.current = { x0, x1: x0 + xs, y0, y1: y0 + ys };
     hoverRef.current = null;
-    updateRange();
+    updateZoomed();
     schedule(true);
   };
 
@@ -740,6 +746,7 @@ export default function GenusDominanceChart({
   // Gestures work on the smooth view, not the snapped one, so a snap never
   // feeds back into the next step of a pinch or drag.
   const zoomAt = (fx: number, fy: number, px: number, py: number) => {
+    cancelAnimationFrame(animRef.current);
     const v = viewRef.current;
     const P = plot();
     const ax =
@@ -754,6 +761,7 @@ export default function GenusDominanceChart({
   };
 
   const panBy = (dx: number, dy: number) => {
+    cancelAnimationFrame(animRef.current);
     const v = viewRef.current;
     const P = plot();
     const wx = (dx / P.w) * (v.x1 - v.x0);
@@ -768,6 +776,52 @@ export default function GenusDominanceChart({
     if (px < P.left || px > P.right || py < P.top || py > P.bottom) return -1;
     const y = Math.floor(P.wx(px)) - start;
     return y >= 0 && y < p.nYears ? segmentAt(p, y, P.wy(py)) : -1;
+  };
+
+  // Moves the view smoothly to `to`, zooming at a steady rate (each edge's
+  // span eases in log space, so zooms don't rush at one end), then calls
+  // `done`.
+  const animRef = React.useRef(0);
+  const animateView = (to: View, done?: () => void) => {
+    cancelAnimationFrame(animRef.current);
+    const from = { ...viewRef.current };
+    const t0 = performance.now();
+    const reduce = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+    const along = (
+      a0: number,
+      a1: number,
+      b0: number,
+      b1: number,
+      e: number,
+    ) => {
+      const span = Math.exp(
+        Math.log(a1 - a0) + (Math.log(b1 - b0) - Math.log(a1 - a0)) * e,
+      );
+      const mid = (a0 + a1) / 2 + ((b0 + b1) / 2 - (a0 + a1) / 2) * e;
+      return [mid - span / 2, mid + span / 2];
+    };
+    const tick = (now: number) => {
+      const t = reduce ? 1 : Math.min(1, (now - t0) / VIEW_MS);
+      const e = easeInOut(t);
+      const [x0, x1] = along(from.x0, from.x1, to.x0, to.x1, e);
+      const [y0, y1] = along(from.y0, from.y1, to.y0, to.y1, e);
+      setView(t < 1 ? { x0, x1, y0, y1 } : to);
+      if (t < 1) animRef.current = requestAnimationFrame(tick);
+      else done?.();
+    };
+    animRef.current = requestAnimationFrame(tick);
+  };
+
+  // Points at segment `seg` as if hovered, with its tooltip.
+  const showHover = (seg: number) => {
+    const p = stateRef.current.prepared;
+    const P = plot();
+    const x = P.sx(start + p.segYear[seg] + 0.5);
+    const y = P.sy((p.segY0[seg] + p.segY1[seg]) / 2);
+    hoverRef.current = { seg, x, y };
+    schedule(false);
   };
 
   const hoverAt = (px: number, py: number) => {
@@ -807,7 +861,7 @@ export default function GenusDominanceChart({
 
   React.useEffect(() => {
     viewRef.current = full;
-    updateRange();
+    updateZoomed();
     schedule(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [full]);
@@ -877,7 +931,10 @@ export default function GenusDominanceChart({
       const pt = local(e);
       const prev = pointers.get(e.pointerId);
       if (!prev) {
-        if (e.pointerType === 'mouse') hoverAt(pt.x, pt.y);
+        // The guide points at bars itself; don't let the mouse take over.
+        if (e.pointerType === 'mouse' && stateRef.current.tour === null) {
+          hoverAt(pt.x, pt.y);
+        }
         return;
       }
 
@@ -912,6 +969,7 @@ export default function GenusDominanceChart({
       const pt = local(e);
       const wasTap = pointers.size === 1 && !moved;
       pointers.delete(e.pointerId);
+      if (stateRef.current.tour !== null) return;
       // A click or tap on a bar selects (or deselects) its genus.
       if (wasTap) {
         const seg = segmentUnder(pt.x, pt.y);
@@ -929,6 +987,7 @@ export default function GenusDominanceChart({
 
     const onLeave = (e: PointerEvent) => {
       if (e.pointerType !== 'mouse' || pointers.size) return;
+      if (stateRef.current.tour !== null) return;
       hoverRef.current = null;
       schedule(false);
     };
@@ -975,34 +1034,205 @@ export default function GenusDominanceChart({
     zoomAt(f, f, P.left + P.w / 2, P.top + P.h / 2);
   };
 
+  // Zooms to the selected genera: from the first year any of them was
+  // registered to the last, and the range of shares their bands cover then,
+  // with a little room above and below.
+  const zoomToSelected = () => {
+    const { offset, items } = prepared.byGenus;
+    let x0 = Infinity;
+    let x1 = -Infinity;
+    let y0 = Infinity;
+    let y1 = -Infinity;
+    for (const g of selected) {
+      for (let k = offset[g]; k < offset[g + 1]; k++) {
+        const i = items[k];
+        x0 = Math.min(x0, prepared.segYear[i]);
+        x1 = Math.max(x1, prepared.segYear[i]);
+        y0 = Math.min(y0, prepared.segY0[i]);
+        y1 = Math.max(y1, prepared.segY1[i]);
+      }
+    }
+    if (x0 > x1) return;
+    const pad = (y1 - y0) * 0.04;
+    setView({
+      x0: start + x0,
+      x1: start + x1 + 1,
+      y0: y0 - pad,
+      y1: y1 + pad,
+    });
+  };
+
+  // The guide: steps worked out from the data, each setting the selection
+  // and zooming the chart. What was selected and in view before is put back
+  // when it closes.
+  const steps = React.useMemo(
+    () => buildTour(prepared, data),
+    [prepared, data],
+  );
+  const beforeTourRef = React.useRef<{ selected: number[]; view: View }>(null);
+  const tourCardRef = React.useRef<HTMLDivElement>(null);
+
+  const startTour = () => {
+    if (!steps.length) return;
+    beforeTourRef.current = { selected, view: { ...viewRef.current } };
+    setTour(0);
+  };
+  const endTour = () => {
+    setTour(null);
+    hoverRef.current = null;
+    const before = beforeTourRef.current;
+    beforeTourRef.current = null;
+    if (before) {
+      setSelected(before.selected);
+      animateView(before.view);
+    }
+  };
+  const goTo = (step: number) => {
+    if (step < 0) return;
+    if (step >= steps.length) endTour();
+    else setTour(step);
+  };
+
+  React.useEffect(() => {
+    if (tour === null) return;
+    const step = steps[tour];
+    setSelected(step.select);
+    hoverRef.current = null;
+    schedule(false);
+    animateView(step.view, () => {
+      if (step.hover !== undefined) showHover(step.hover);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tour, steps]);
+
+  // Focus the guide when it opens, and let the arrow keys and Esc drive it.
+  const open = tour !== null;
+  React.useEffect(() => {
+    if (!open) return;
+    tourCardRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      const t = e.target as HTMLElement;
+      if (t.closest('input, textarea, select')) return;
+      const at = stateRef.current.tour;
+      if (at === null) return;
+      if (e.key === 'Escape') endTour();
+      else if (e.key === 'ArrowRight') goTo(at + 1);
+      else if (e.key === 'ArrowLeft') goTo(at - 1);
+      else return;
+      e.preventDefault();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
   if (!genera.length) {
-    return <p className={style.empty}>No registration data to show.</p>;
+    return (
+      <div>
+        <div className={style.pageHeader}>
+          <H2>{title}</H2>
+        </div>
+        <p className={style.empty}>No registration data to show.</p>
+      </div>
+    );
   }
 
-  const latestLabel =
-    end === currentYear ? `Current year (${end})` : `Latest year (${end})`;
+  // Which genera get a label at the right edge: the top ones all-time, or
+  // in the latest year. Each option says exactly what it picks.
+  const allCount = Math.min(16, genera.length);
+  const latestCount = Math.min(20, prepared.latestRanking.length);
+  const yearWord = end === currentYear ? 'this year' : `in ${end}`;
+  const labelOptions: {
+    value: LabelMode;
+    label: React.ReactNode;
+    title: string;
+  }[] = [
+    {
+      value: 'all',
+      label: 'All-time',
+      title: `The ${allCount} genera with the most registrations ever`,
+    },
+    {
+      value: 'current',
+      label: (
+        <>
+          <span className={style.long}>In </span>
+          {end}
+        </>
+      ),
+      title: `The ${latestCount} genera with the most registrations ${yearWord}`,
+    },
+  ];
 
   return (
     <div>
+      {/* The page title, with the button that opens the guide beside it. */}
+      <div className={style.pageHeader}>
+        <H2>{title}</H2>
+        <Button
+          // Filled while the guide is open.
+          variant={open ? 'default' : 'outline'}
+          size='icon'
+          aria-label='How to read this chart'
+          title='How to read this chart'
+          aria-pressed={open}
+          onClick={open ? endTour : startTour}
+        >
+          <CircleHelp />
+        </Button>
+      </div>
+
       <div className={style.controls}>
-        <label>
-          Show labels for
-          <select
-            value={labelMode}
-            onChange={(e) => setLabelMode(e.target.value as LabelMode)}
+        <GenusTokens
+          genera={genera}
+          selected={selected}
+          colorOf={colorOf}
+          onAdd={(g) => setSelected((s) => (s.includes(g) ? s : [...s, g]))}
+          onRemove={(g) => setSelected((s) => s.filter((x) => x !== g))}
+          onClear={() => setSelected([])}
+        />
+
+        <div className={style.labelMode}>
+          <span id='label-mode'>
+            <span className={style.long}>Label top genera</span>
+            <span className={style.short}>Labels</span>
+          </span>
+          <div
+            role='radiogroup'
+            aria-labelledby='label-mode'
+            className={style.segmented}
           >
-            <option value='all'>All-time</option>
-            <option value='current'>{latestLabel}</option>
-          </select>
-        </label>
+            {labelOptions.map((o) => (
+              <button
+                key={o.value}
+                type='button'
+                role='radio'
+                aria-checked={labelMode === o.value}
+                title={o.title}
+                onClick={() => setLabelMode(o.value)}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
         <div className={style.zoom}>
-          <span ref={rangeRef} className={style.range} aria-live='polite' />
+          <Button
+            variant='outline'
+            size='icon'
+            aria-label='Zoom to selected genera'
+            title='Zoom to selected genera'
+            disabled={!selected.length}
+            onClick={zoomToSelected}
+          >
+            <Focus />
+          </Button>
           <Button
             variant='outline'
             size='icon'
             aria-label='Zoom in'
-            onClick={() => zoomCenter(0.5)}
+            onClick={() => zoomCenter(1 / ZOOM_STEP)}
           >
             <Plus />
           </Button>
@@ -1011,7 +1241,7 @@ export default function GenusDominanceChart({
             size='icon'
             aria-label='Zoom out'
             disabled={!zoomed}
-            onClick={() => zoomCenter(2)}
+            onClick={() => zoomCenter(ZOOM_STEP)}
           >
             <Minus />
           </Button>
@@ -1027,15 +1257,6 @@ export default function GenusDominanceChart({
         </div>
       </div>
 
-      <GenusTokens
-        genera={genera}
-        selected={selected}
-        colorOf={colorOf}
-        onAdd={(g) => setSelected((s) => (s.includes(g) ? s : [...s, g]))}
-        onRemove={(g) => setSelected((s) => s.filter((x) => x !== g))}
-        onClear={() => setSelected([])}
-      />
-
       <div ref={containerRef} className={style.chart}>
         <canvas ref={baseRef} className={style.canvas} aria-hidden />
         <canvas
@@ -1048,8 +1269,8 @@ export default function GenusDominanceChart({
         <div ref={tooltipRef} className={style.tooltip} role='tooltip'>
           <div className={style.tooltipTitle}>
             <span data-k='swatch' className={style.swatch} />
-            <strong data-k='name' />
-            <span data-k='abbr' className={style.muted} />
+            <strong data-k='name' className={style.genus} />
+            <span data-k='abbr' className={`${style.muted} ${style.genus}`} />
           </div>
           <dl>
             <dt>Year</dt>
@@ -1065,17 +1286,42 @@ export default function GenusDominanceChart({
             </dd>
           </dl>
         </div>
+        {open && (
+          <div
+            ref={tourCardRef}
+            className={style.tour}
+            role='dialog'
+            aria-label='How to read this chart'
+            tabIndex={-1}
+          >
+            <div className={style.tourHead}>
+              <span>
+                {tour + 1} of {steps.length}
+              </span>
+              <button type='button' aria-label='Close guide' onClick={endTour}>
+                <X size={16} />
+              </button>
+            </div>
+            <p aria-live='polite'>{steps[tour].text}</p>
+            <div className={style.tourNav}>
+              <Button
+                variant='outline'
+                size='sm'
+                disabled={tour === 0}
+                onClick={() => goTo(tour - 1)}
+              >
+                Back
+              </Button>
+              <Button size='sm' onClick={() => goTo(tour + 1)}>
+                {tour === steps.length - 1 ? 'Done' : 'Next'}
+              </Button>
+            </div>
+          </div>
+        )}
         <div ref={hintRef} className={style.hint} data-show='false'>
           Hold Ctrl or ⌘ and scroll to zoom
         </div>
       </div>
-
-      <p className={style.help}>
-        Hover or tap a bar for details; click a bar to highlight its genus, or
-        search for genera above. Pinch, or hold Ctrl/⌘ and scroll, to zoom;
-        scroll over the years to zoom just them. Drag to pan, double-click to
-        zoom in.
-      </p>
     </div>
   );
 }

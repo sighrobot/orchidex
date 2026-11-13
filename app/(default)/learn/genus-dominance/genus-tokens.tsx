@@ -3,6 +3,8 @@
 import React from 'react';
 import { X } from 'lucide-react';
 
+import { Button } from '@/components/ui/button';
+
 import style from './style.module.scss';
 
 const MAX_SUGGESTIONS = 8;
@@ -87,7 +89,7 @@ export default function GenusTokens({
         {selected.map((g) => (
           <span key={g} className={style.token}>
             <span className={style.swatch} style={{ background: colorOf(g) }} />
-            {genera[g].name}
+            <i>{genera[g].name}</i>
             <button
               type='button'
               aria-label={`Remove ${genera[g].name}`}
@@ -103,9 +105,9 @@ export default function GenusTokens({
         <input
           ref={inputRef}
           value={query}
-          placeholder={selected.length ? 'Add genus…' : 'Highlight genera…'}
+          placeholder='Search genera'
           role='combobox'
-          aria-label='Highlight genera'
+          aria-label='Search genera'
           aria-expanded={showList}
           aria-controls={listId}
           aria-autocomplete='list'
@@ -122,17 +124,20 @@ export default function GenusTokens({
           onKeyDown={onKeyDown}
         />
         {selected.length > 0 && (
-          <button
+          <Button
             type='button'
+            variant='outline'
+            size='sm'
             className={style.clear}
-            aria-label='Clear highlighted genera'
             onClick={(e) => {
               e.stopPropagation();
               onClear();
+              inputRef.current?.focus();
             }}
           >
-            Clear
-          </button>
+            <X />
+            Clear all
+          </Button>
         )}
       </div>
 
@@ -154,9 +159,9 @@ export default function GenusTokens({
                 className={style.swatch}
                 style={{ background: colorOf(g) }}
               />
-              {genera[g].name}
+              <i>{genera[g].name}</i>
               {genera[g].abbr !== genera[g].name && (
-                <span className={style.muted}>{genera[g].abbr}</span>
+                <i className={style.muted}>{genera[g].abbr}</i>
               )}
             </li>
           ))}
