@@ -1,10 +1,11 @@
 import React from 'react';
 
-import type { GenusDominanceData } from 'lib/fetchers/genus-dominance';
+import type { DominanceData } from 'lib/fetchers/dominance';
 
 import type { Prepared, View } from './chart';
+import type { KindConfig } from './kinds';
 
-// One step of the guide: what it says, which genera it highlights, where the
+// One step of the guide: what it says, which groups it highlights, where the
 // chart zooms to, and optionally a bar to point at with its tooltip.
 export type TourStep = {
   text: React.ReactNode;
@@ -14,8 +15,8 @@ export type TourStep = {
 };
 
 // Years with fewer registrations than this are left out when picking the
-// genera and numbers the guide talks about, so a handful of early hybrids
-// can't make a genus look dominant.
+// groups and numbers the guide talks about, so a handful of early hybrids
+// can't make a group look dominant.
 const MIN_YEAR_TOTAL = 50;
 // The guide's zoomed-in step looks at this many recent years.
 const RECENT_YEARS = 30;
@@ -24,16 +25,18 @@ const COMPARE_YEAR = 1950;
 const pct = (share: number) =>
   `${(share * 100).toFixed(share > 0 && share < 0.1 ? 1 : 0)}%`;
 
-// The steps of the guide, worked out from the data: the genus that led
-// early on, the one that leads now, and a third that's big today.
+// The steps of the guide, worked out from the data: the group (genus or
+// registrant) that led early on, the one that leads now, and a third that's
+// big today.
 export function buildTour(
   p: Prepared,
-  { start, end, genera }: GenusDominanceData,
+  { start, end, groups }: DominanceData,
+  { one, many, italic, bars, gone, focus: focusName }: KindConfig,
 ): TourStep[] {
   if (!p.nYears) return [];
   const full: View = { x0: start, x1: end + 1, y0: 0, y1: 1 };
-  // Genus names are italicized, as scientific names are.
-  const name = (g: number) => <i>{genera[g].name}</i>;
+  const name = (g: number) =>
+    italic ? <i>{groups[g].name}</i> : <>{groups[g].name}</>;
 
   const busy: number[] = [];
   for (let y = 0; y < p.nYears; y++) {
@@ -43,18 +46,18 @@ export function buildTour(
 
   const shareIn = (y: number, g: number) => {
     for (let i = p.yearOffset[y]; i < p.yearOffset[y + 1]; i++) {
-      if (p.segGenus[i] === g) return p.segCount[i] / (p.yearTotal[y] || 1);
+      if (p.segGroup[i] === g) return p.segCount[i] / (p.yearTotal[y] || 1);
     }
     return 0;
   };
   const segIn = (y: number, g: number) => {
     for (let i = p.yearOffset[y]; i < p.yearOffset[y + 1]; i++) {
-      if (p.segGenus[i] === g) return i;
+      if (p.segGroup[i] === g) return i;
     }
     return -1;
   };
 
-  // The genus with the most registrations before COMPARE_YEAR (or in the
+  // The group with the most registrations before COMPARE_YEAR (or in the
   // first half of the data, if it starts later), and the year it peaked.
   const compare = COMPARE_YEAR - start;
   const early = Math.max(
@@ -63,10 +66,10 @@ export function buildTour(
   );
   const earlyTotals = new Map<number, number>();
   for (let i = 0; i < p.yearOffset[Math.min(early, p.nYears)]; i++) {
-    const g = p.segGenus[i];
+    const g = p.segGroup[i];
     earlyTotals.set(g, (earlyTotals.get(g) ?? 0) + p.segCount[i]);
   }
-  let leaderThen = p.segGenus[p.yearOffset[busy[0]]];
+  let leaderThen = p.segGroup[p.yearOffset[busy[0]]];
   earlyTotals.forEach((n, g) => {
     if (n > (earlyTotals.get(leaderThen) ?? 0)) leaderThen = g;
   });
@@ -83,15 +86,15 @@ export function buildTour(
     (g) => g !== leaderNow && g !== leaderThen,
   );
 
-  // Fits the view to genera `gs` from year index `from` on.
+  // Fits the view to groups `gs` from year index `from` on.
   const fit = (gs: number[], from = 0): View => {
     let x0 = Infinity;
     let x1 = -Infinity;
     let y0 = Infinity;
     let y1 = -Infinity;
     for (const g of gs) {
-      for (let k = p.byGenus.offset[g]; k < p.byGenus.offset[g + 1]; k++) {
-        const i = p.byGenus.items[k];
+      for (let k = p.byGroup.offset[g]; k < p.byGroup.offset[g + 1]; k++) {
+        const i = p.byGroup.items[k];
         if (p.segYear[i] < from) continue;
         x0 = Math.min(x0, p.segYear[i]);
         x1 = Math.max(x1, p.segYear[i]);
@@ -111,9 +114,9 @@ export function buildTour(
     text: (
       <>
         Each column is one year of orchid hybrids registered with the Royal
-        Horticultural Society, split into a bar per genus by its share of the
-        year. In {start + peakYear}, {name(leaderThen)} made up{' '}
-        {pct(shareIn(peakYear, leaderThen))} of registrations.
+        Horticultural Society, split into {bars}. In {start + peakYear},{' '}
+        {name(leaderThen)} made up {pct(shareIn(peakYear, leaderThen))} of
+        registrations.
       </>
     ),
     select: [],
@@ -123,22 +126,23 @@ export function buildTour(
 
   // 2. Rise and fall: the early leader against today's.
   const thenNow = shareIn(last, leaderThen);
-  const fell = thenNow ? `shrank to ${pct(thenNow)}` : 'all but vanished';
-  const since =
-    compare > 0 && compare < last
-      ? ` from ${pct(shareIn(compare, leaderNow))} in ${COMPARE_YEAR}`
-      : '';
+  // A share that would show as 0.0% reads as gone, not as shrinking to 0.
+  const fell = thenNow >= 0.0005 ? `shrank to ${pct(thenNow)}` : gone;
+  // Where today's leader grew from, unless it wasn't there yet.
+  const nowThen =
+    compare > 0 && compare < last ? shareIn(compare, leaderNow) : 0;
+  const since = nowThen ? ` from ${pct(nowThen)} in ${COMPARE_YEAR}` : '';
   steps.push({
     text:
       leaderThen === leaderNow ? (
         <>
-          Follow a color to see a genus rise and fall. {name(leaderThen)} led
+          Follow a color to see a {one} rise and fall. {name(leaderThen)} led
           early hybridizing and still leads, with {pct(thenNow)} of
           registrations in {end}.
         </>
       ) : (
         <>
-          Follow a color to see a genus rise and fall. {name(leaderThen)} led
+          Follow a color to see a {one} rise and fall. {name(leaderThen)} led
           early hybridizing but {fell} by {end}, while {name(leaderNow)} grew
           {since} to lead with {pct(shareIn(last, leaderNow))}.
         </>
@@ -147,18 +151,25 @@ export function buildTour(
     view: full,
   });
 
-  // 3. Exploring: highlighting and zooming, shown on a genus big today.
-  const focus = other ?? leaderNow;
+  // 3. Exploring: highlighting and zooming, shown on a group big today.
+  // A registrant may not go back as far as the years the view looks at.
+  const named = groups.findIndex((g) => g.name === focusName);
+  const focus = named >= 0 ? named : (other ?? leaderNow);
+  const from = Math.max(0, p.nYears - RECENT_YEARS);
+  const view = fit([focus], from);
+  const span =
+    view.x0 > start + from
+      ? `since ${view.x0}`
+      : `over the last ${RECENT_YEARS} years`;
   steps.push({
     text: (
       <>
-        Highlight any genera you&rsquo;re curious about, then zoom in to compare
-        them up close. Here&rsquo;s {name(focus)} over the last {RECENT_YEARS}{' '}
-        years.
+        Highlight any {many} you&rsquo;re curious about, then zoom in to compare
+        them up close. Here&rsquo;s {name(focus)} {span}.
       </>
     ),
     select: [focus],
-    view: fit([focus], Math.max(0, p.nYears - RECENT_YEARS)),
+    view,
   });
 
   return steps;

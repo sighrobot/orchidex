@@ -1,30 +1,40 @@
 import { GENUS_TO_ABBREVIATION } from 'lib/abbreviations';
 import { queryOrThrow } from 'lib/storage/pg';
 
-export type GenusDominanceGenus = {
+// What a dominance chart splits each year's registrations by.
+export type DominanceKind = 'genus' | 'registrant';
+
+export type DominanceGroup = {
   name: string;
+  // A short form for labels: the genus abbreviation, or the name itself.
   abbr: string;
   total: number;
 };
 
-export type GenusDominanceData = {
+export type DominanceData = {
   // First and last year with registrations (inclusive).
   start: number;
   end: number;
   // The calendar year when the data was fetched.
   currentYear: number;
   // Sorted by all-time registrations, most first.
-  genera: GenusDominanceGenus[];
-  // Flat [genus index, year - start, count] triples, sorted by year then genus.
+  groups: DominanceGroup[];
+  // Flat [group index, year - start, count] triples, sorted by year then group.
   cells: number[];
 };
 
 // The few registrations before this are a year or more apart, so each one
-// would draw as a full-height bar of a single genus.
+// would draw as a full-height bar of a single group.
 const FIRST_YEAR = 1857;
 
-const SQL = `
-  SELECT genus g, SUBSTRING(date_of_registration, 1, 4) y, COUNT(*)::int c
+// The column each kind groups by. Fixed here, never taken from input.
+const COLUMN: Record<DominanceKind, string> = {
+  genus: 'genus',
+  registrant: 'registrant_name',
+};
+
+const sql = (column: string) => `
+  SELECT ${column} g, SUBSTRING(date_of_registration, 1, 4) y, COUNT(*)::int c
   FROM rhs
   WHERE genus != 'na'
     AND epithet != ''
@@ -33,9 +43,12 @@ const SQL = `
   GROUP BY g, y
 `;
 
-export async function fetchGenusDominance(): Promise<GenusDominanceData> {
+// Registrations per group per year.
+export async function fetchDominance(
+  kind: DominanceKind,
+): Promise<DominanceData> {
   const currentYear = new Date().getFullYear();
-  const rows = (await queryOrThrow(SQL)) as unknown as {
+  const rows = (await queryOrThrow(sql(COLUMN[kind]))) as unknown as {
     g: string;
     y: string;
     c: number;
@@ -57,20 +70,20 @@ export async function fetchGenusDominance(): Promise<GenusDominanceData> {
   }
 
   if (!kept.length) {
-    return { start: 0, end: -1, currentYear, genera: [], cells: [] };
+    return { start: 0, end: -1, currentYear, groups: [], cells: [] };
   }
 
-  const genera = Array.from(totals, ([name, total]) => ({
+  const groups = Array.from(totals, ([name, total]) => ({
     name,
-    abbr: GENUS_TO_ABBREVIATION[name] || name,
+    abbr: (kind === 'genus' && GENUS_TO_ABBREVIATION[name]) || name,
     total,
   })).sort((a, b) => b.total - a.total || a.name.localeCompare(b.name));
 
-  const index = new Map(genera.map((g, i) => [g.name, i]));
+  const index = new Map(groups.map((g, i) => [g.name, i]));
   const cells = kept
     .map(({ g, y, c }) => [index.get(g) ?? 0, y - start, c])
     .sort((a, b) => a[1] - b[1] || a[0] - b[0])
     .flat();
 
-  return { start, end, currentYear, genera, cells };
+  return { start, end, currentYear, groups, cells };
 }
