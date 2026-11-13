@@ -74,6 +74,6 @@ export const KINDS: Record<DominanceKind, KindConfig> = {
     italic: false,
     bars: 'a bar per registrant, the person or organization who registered them, by their share of the year',
     gone: 'had all but stopped registering',
-    focus: 'D.S.Santoso',
+    focus: 'Taida',
   },
 };
