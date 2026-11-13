@@ -18,19 +18,11 @@ export const EXPLORE_TOOLS = [
     src: '/learn/hybridize.png',
   },
   {
-    title: 'Genus dominance',
-    tagline: 'Popular genera over time',
+    title: 'Dominance',
+    tagline: 'Top genera and registrants',
     description:
-      'How the genera used in hybridization have risen and fallen over the years.',
-    href: '/learn/genus-dominance',
+      'How the genera used in hybridization, and the people and organizations registering hybrids, have risen and fallen over the years.',
+    href: '/learn/dominance/genus',
     src: '/learn/genus-dominance.png',
-  },
-  {
-    title: 'Registrant dominance',
-    tagline: 'Top registrants over time',
-    description:
-      'How the people and organizations registering hybrids have changed over the years.',
-    href: '/learn/registrant-dominance',
-    src: '/learn/registrant-dominance.png',
   },
 ];

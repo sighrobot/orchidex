@@ -40,7 +40,8 @@
   border: 1px solid var(--border);
   border-radius: 6px;
 
-  button {
+  button,
+  a {
     padding: 0 12px;
     border-radius: 4px;
     font-size: 13px;
@@ -51,7 +52,8 @@
       opacity: 1;
     }
 
-    &[aria-checked='true'] {
+    &[aria-checked='true'],
+    &[aria-current='page'] {
       background: var(--hover);
       opacity: 1;
       font-weight: 500;
@@ -61,6 +63,14 @@
       outline: 2px solid var(--ring);
       outline-offset: 1px;
     }
+  }
+
+  // The genus and registrant switch's links read as the buttons do.
+  a {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    text-transform: capitalize;
   }
 }
 

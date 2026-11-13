@@ -4,6 +4,15 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: false,
 
+  // The genus and registrant dominance charts were once separate pages.
+  async redirects() {
+    return ['genus', 'registrant'].map((by) => ({
+      source: `/learn/${by}-dominance`,
+      destination: `/learn/dominance/${by}`,
+      permanent: true,
+    }));
+  },
+
   typescript: {
     ignoreBuildErrors: true,
   },

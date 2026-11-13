@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { CircleHelp, Focus, Minus, Plus, RotateCcw, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
@@ -12,9 +13,12 @@ import { DARK_COLORS } from 'lib/theme';
 import type { DominanceData, DominanceKind } from 'lib/fetchers/dominance';
 
 import { KINDS } from './kinds';
+import { useDominanceShared } from './shared';
 import Tokens from './tokens';
 import { buildTour } from './tour';
 import style from './style.module.scss';
+
+import type { LabelMode } from './shared';
 
 // The right margin is sized to fit the group labels; see drawBase.
 // Year and group labels. Group labels are spaced a little more than a line
@@ -49,7 +53,6 @@ const easeInOut = (t: number) => t * t * (3 - 2 * t);
 // How long the guide's zooms take, in ms.
 const VIEW_MS = 700;
 
-type LabelMode = 'all' | 'current';
 export type View = { x0: number; x1: number; y0: number; y1: number };
 type Hover = { seg: number; x: number; y: number } | null;
 
@@ -214,16 +217,17 @@ function fadePalette(
   });
 }
 
+const KIND_ORDER: DominanceKind[] = ['genus', 'registrant'];
+
 // A stacked bar chart of each year's registrations, split by genus or by
-// registrant, normalized to the year's total.
+// registrant, normalized to the year's total. A switch in the title moves
+// between the two, keeping the years in view and the label choice.
 export default function DominanceChart({
   data,
   kind,
-  title,
 }: {
   data: DominanceData;
   kind: DominanceKind;
-  title: string;
 }) {
   const { start, end, currentYear, groups } = data;
   const cfg = KINDS[kind];
@@ -235,7 +239,7 @@ export default function DominanceChart({
   );
   const theme = useResolvedTheme();
 
-  const [labelMode, setLabelMode] = React.useState<LabelMode>('all');
+  const { carried, labelMode, setLabelMode } = useDominanceShared();
   const [zoomed, setZoomed] = React.useState(false);
   // Groups kept highlighted, in the order they were picked.
   const [selected, setSelected] = React.useState<number[]>([]);
@@ -759,6 +763,9 @@ export default function DominanceChart({
     const x0 = clamp(next.x0, full.x0, full.x1 - xs);
     const y0 = clamp(next.y0, 0, 1 - ys);
     viewRef.current = { x0, x1: x0 + xs, y0, y1: y0 + ys };
+    // Remembered for the other chart; the full range is remembered as none.
+    carried.current.years =
+      xs < fw - 1e-6 ? { x0, x1: viewRef.current.x1 } : null;
     hoverRef.current = null;
     updateZoomed();
     schedule(true);
@@ -881,8 +888,12 @@ export default function DominanceChart({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Start at the full view, or at the years the other chart was showing.
   React.useEffect(() => {
-    viewRef.current = full;
+    const years = carried.current.years;
+    shownRef.current = { x0: full.x0, x1: full.x1 };
+    if (years) setView({ ...full, ...years });
+    else viewRef.current = full;
     updateZoomed();
     schedule(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1148,10 +1159,29 @@ export default function DominanceChart({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
+  // The section strip names the page, so the title is for screen readers.
+  const heading = <H2 className='sr-only'>Dominance by {one}</H2>;
+
+  // The switch between the kinds of chart, at the start of the toolbar.
+  const kindSwitch = (
+    <nav aria-label='Split registrations by' className={style.segmented}>
+      {KIND_ORDER.map((k) => (
+        <Link
+          key={k}
+          href={`/learn/dominance/${k}`}
+          scroll={false}
+          aria-current={k === kind ? 'page' : undefined}
+        >
+          {KINDS[k].one}
+        </Link>
+      ))}
+    </nav>
+  );
+
   if (!groups.length) {
     return (
       <div>
-        <H2 className='sr-only'>{title}</H2>
+        {heading}
         <p className={style.empty}>No registration data to show.</p>
       </div>
     );
@@ -1186,12 +1216,13 @@ export default function DominanceChart({
 
   return (
     <div>
-      {/* The section strip names the page; the heading stays for screen readers. */}
-      <H2 className='sr-only'>{title}</H2>
+      {heading}
 
       {/* The search on the left, the guide's button at the far end, and the
-          label and zoom controls between them, or on a line below. */}
+          label and zoom controls between them, or on a line below. The
+          switch between genus and registrant leads. */}
       <Toolbar
+        leading={kindSwitch}
         search={
           <Tokens
             items={groups}
