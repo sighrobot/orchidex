@@ -34,12 +34,6 @@
   margin-bottom: 10px;
 }
 
-@media (max-width: 520px) {
-  .controls {
-    column-gap: 12px;
-  }
-}
-
 .field,
 .threshold {
   display: flex;
@@ -104,9 +98,64 @@
   }
 }
 
+// On phones: one column. The genus picker, search and toggles span the
+// width, with each toggle's options sharing it evenly; the slider fills its
+// row beside the reset button.
 @media (max-width: 520px) {
-  .segmented button {
-    padding: 0 9px;
+  .pageHeader {
+    row-gap: 10px;
+  }
+
+  .headerTools {
+    width: 100%;
+
+    > button:first-child {
+      flex: 1;
+    }
+  }
+
+  .controls {
+    gap: 10px;
+    justify-content: stretch;
+
+    > * {
+      flex: 1 1 100%;
+    }
+  }
+
+  .field {
+    > span {
+      min-width: 3.25rem;
+    }
+  }
+
+  .segmented {
+    flex: 1;
+
+    button {
+      flex: 1;
+      padding: 0 6px;
+    }
+  }
+
+  .controls > .threshold {
+    flex: 1 1 0;
+    min-width: 0;
+
+    > span {
+      min-width: 0;
+      text-align: left;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+    }
+  }
+
+  .controls > .resetButton {
+    flex: none;
   }
 }
 

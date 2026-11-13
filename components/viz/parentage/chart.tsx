@@ -1015,12 +1015,13 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
 
         <Segmented<TypeFilter>
           label='Show'
+          hideLabel
           options={typeOptions}
           value={type}
           onChange={setType}
         />
         <Segmented<ParentFilter>
-          label='As parent'
+          label='Parent'
           options={parentOptions}
           value={parent}
           onChange={setParent}
@@ -1202,11 +1203,15 @@ function firstFit(
 
 function Segmented<T extends string>({
   label,
+  hideLabel = false,
   options,
   value,
   onChange,
 }: {
   label: string;
+  // Name the group for screen readers only, when its options speak for
+  // themselves.
+  hideLabel?: boolean;
   options: { value: T; label: string; title?: string }[];
   value: T;
   onChange: (v: T) => void;
@@ -1214,8 +1219,13 @@ function Segmented<T extends string>({
   const id = React.useId();
   return (
     <div className={style.field}>
-      <span id={id}>{label}</span>
-      <div role='radiogroup' aria-labelledby={id} className={style.segmented}>
+      {!hideLabel && <span id={id}>{label}</span>}
+      <div
+        role='radiogroup'
+        aria-labelledby={hideLabel ? undefined : id}
+        aria-label={hideLabel ? label : undefined}
+        className={style.segmented}
+      >
         {options.map((o) => (
           <button
             key={o.value}
