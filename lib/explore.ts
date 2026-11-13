@@ -3,10 +3,10 @@
 export const EXPLORE_TOOLS = [
   {
     title: 'Genus parentage',
-    tagline: 'Most-used parents in a genus',
+    tagline: 'Most-used parents, by genus',
     description:
-      'See how often each orchid in a genus has been used as a parent of new hybrids.',
-    href: '/learn/parentage/vanda',
+      'See how often each genus, and each orchid within it, has been used as a parent of new hybrids.',
+    href: '/learn/parentage',
     src: '/learn/parentage.png',
   },
   {

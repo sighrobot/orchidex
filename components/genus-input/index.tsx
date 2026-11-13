@@ -133,11 +133,17 @@ export default function GenusInput({
           aria-expanded={open}
           aria-controls={listId}
           aria-busy={pending}
-          aria-label={`Genus: ${shown}. Change genus`}
+          aria-label={
+            shown ? `Genus: ${shown}. Change genus` : 'Choose a genus'
+          }
           className={style.trigger}
         >
           <span className={style.label}>Genus</span>
-          <i className={style.value}>{shown}</i>
+          {shown ? (
+            <i className={style.value}>{shown}</i>
+          ) : (
+            <span className={style.value}>Choose…</span>
+          )}
           {pending ? (
             <Loader2 className={style.spinner} />
           ) : (
