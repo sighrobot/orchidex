@@ -23,3 +23,43 @@
 }
 
 $hover: var(--hover);
+
+// Small toggle button for list toolbars (the progeny list's generations, a
+// person's roles). Pressed state is `aria-pressed='true'`.
+@mixin chip {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid fg(0.2);
+  border-radius: 5px;
+  background: bg();
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: background 150ms ease, border-color 150ms ease;
+
+  &:hover {
+    border-color: fg();
+  }
+
+  &[aria-pressed='true'] {
+    border-color: fg();
+    background: fg();
+    color: bg();
+  }
+}
+
+// A native <select> to match the chips. Put it in a relatively positioned
+// wrapper with an absolutely positioned chevron icon.
+@mixin select {
+  height: 28px;
+  padding: 0 26px 0 10px;
+  border: 1px solid fg(0.2);
+  border-radius: 5px;
+  background: bg();
+  font-size: 13px;
+  appearance: none;
+  cursor: pointer;
+}

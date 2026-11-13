@@ -42,28 +42,7 @@ $gen-text: color-mix(in srgb, $gen 70%, var(--fg));
 
 // Toggle buttons, styled like the search page's controls.
 .chip {
-  display: inline-grid;
-  place-items: center;
-  min-width: 28px;
-  height: 28px;
-  padding: 0 8px;
-  border: 1px solid t.fg(0.2);
-  border-radius: 5px;
-  background: t.bg();
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-  cursor: pointer;
-  transition: background 150ms ease, border-color 150ms ease;
-
-  &:hover {
-    border-color: t.fg();
-  }
-
-  &[aria-pressed='true'] {
-    border-color: t.fg();
-    background: t.fg();
-    color: t.bg();
-  }
+  @include t.chip;
 }
 
 // Generation buttons: tinted outline when off, filled with the generation's
@@ -99,14 +78,7 @@ $gen-text: color-mix(in srgb, $gen 70%, var(--fg));
   display: inline-flex;
 
   select {
-    height: 28px;
-    padding: 0 26px 0 10px;
-    border: 1px solid t.fg(0.2);
-    border-radius: 5px;
-    background: t.bg();
-    font-size: 13px;
-    appearance: none;
-    cursor: pointer;
+    @include t.select;
   }
 }
 

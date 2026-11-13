@@ -1,20 +1,11 @@
-import React from 'react';
-import { Grex } from 'lib/types';
-import { fetchRegistrant, RegistrantPageParams } from './layout';
-import RegistrantView from './view';
+import { permanentRedirect } from 'next/navigation';
 
-export default async function RegistrantPage({
+// Retired URL: registrants and originators share one page under /people.
+export default async function LegacyRegistrantPage({
   params,
 }: {
-  params: RegistrantPageParams;
+  params: Promise<{ r: string }>;
 }) {
   const { r } = await params;
-  const name = decodeURIComponent(r);
-  const rawData = (await fetchRegistrant(name)) as Grex[];
-
-  return (
-    <>
-      <RegistrantView name={name} rawData={rawData} />
-    </>
-  );
+  permanentRedirect(`/people/${encodeURIComponent(decodeURIComponent(r))}`);
 }

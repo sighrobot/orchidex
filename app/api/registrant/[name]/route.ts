@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { queryRegistrant } from 'lib/queries/registrant';
+import { queryPerson } from 'lib/queries/people';
 
 type Params = Promise<{ name: string }>;
 
 export async function GET(req: NextRequest, { params }: { params: Params }) {
   const { name } = await params;
 
-  const json = await queryRegistrant(name);
+  const json = await queryPerson(name);
 
   return NextResponse.json(json, { status: 200 });
 }

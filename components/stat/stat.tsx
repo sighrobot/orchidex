@@ -23,6 +23,48 @@ export const StatPercentage = ({ description, value }) => {
   );
 };
 
+// People with a count each, e.g. who a person works with most. An empty name
+// shows as N/A; the active person is bold rather than linked.
+export const PeopleList = ({
+  data,
+  activeId,
+  isLoading,
+  limit = 5,
+}: {
+  data: { name: string | null; count: number }[];
+  activeId?: string;
+  isLoading?: boolean;
+  limit?: number;
+}) => (
+  <List
+    numItemsToLoad={2}
+    className={style.statList}
+    isLoading={isLoading}
+    data={data.map((d) => ({
+      score: d.count,
+      grex: {
+        genus: '',
+        epithet: '',
+        registrant_name: d.name || '__species',
+      },
+      id: d.name || '__species',
+    }))}
+    renderField={({ grex: g }) =>
+      g.registrant_name === '__species' ? (
+        <em>N/A</em>
+      ) : activeId && activeId === g.registrant_name ? (
+        <strong>{g.registrant_name}</strong>
+      ) : g.registrant_name !== 'O/U' ? (
+        <LinkPeople grex={g} kind='registrant' />
+      ) : (
+        g.registrant_name
+      )
+    }
+    getCount={(d) => d.score}
+    limit={limit}
+  />
+);
+
 export const StatContent = ({
   stat,
   grex,
@@ -52,44 +94,13 @@ export const StatContent = ({
     case 'pollen_parent_registrants':
     case 'seed_parent_originators':
     case 'pollen_parent_originators': {
-      // const sum = data.reduce((acc, { c }) => acc + c, 0);
       return (
-        <List
-          numItemsToLoad={2}
-          className={style.statList}
+        <PeopleList
+          activeId={activeId}
+          data={data.map((d) => ({ name: d.r2, count: d.c }))}
           isLoading={isLoading}
-          data={data.map((d) => {
-            return {
-              score: d.c,
-              grex: {
-                genus: '',
-                epithet: '',
-                registrant_name: d.r2 || '__species',
-              },
-              id: d.r2 || '__species',
-            };
-          })}
-          renderField={({ grex: g }) =>
-            g.registrant_name === '__species' ? (
-              <em>N/A</em>
-            ) : activeId && activeId === g.registrant_name ? (
-              <strong>{g.registrant_name}</strong>
-            ) : g.registrant_name !== 'O/U' ? (
-              <LinkPeople grex={g} kind='registrant' />
-            ) : (
-              g.registrant_name
-            )
-          }
-          getCount={(d) => d.score}
-          limit={5}
         />
       );
-      // ) : (
-      //   <em>
-      //     The {stat.split('_')[0]} parents of hybrids registered by {activeId}{' '}
-      //     have no recorded registrants.
-      //   </em>
-      // );
     }
     default:
       return null;

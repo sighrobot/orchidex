@@ -1,0 +1,129 @@
+@use 'theme' as t;
+
+$muted: t.fg(0.6);
+// Matches the table's compact breakpoint in components/grex/table.
+$narrow: 720px;
+
+.header {
+  padding-bottom: 0;
+}
+
+.summary {
+  margin-top: 6px;
+}
+
+.genera {
+  margin-top: 4px;
+  color: t.fg(0.8);
+  font-size: 14px;
+}
+
+.muted {
+  color: $muted;
+}
+
+.columns {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+
+  @media (max-width: 850px) {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+}
+
+.list {
+  flex-grow: 1;
+  min-width: 0;
+  container: person-list / inline-size;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 24px;
+  margin-bottom: 16px;
+}
+
+.count {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.roles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.chip {
+  @include t.chip;
+  display: inline-flex;
+  gap: 6px;
+}
+
+.chipCount {
+  opacity: 0.6;
+}
+
+.searchLink {
+  margin-left: auto;
+  color: $muted;
+  font-size: 13px;
+
+  &:hover {
+    color: t.fg();
+  }
+}
+
+.mobileSort {
+  display: none;
+  align-items: center;
+  gap: 4px;
+
+  @container person-list (max-width: #{$narrow}) {
+    display: flex;
+  }
+}
+
+.selectWrap {
+  position: relative;
+  display: inline-flex;
+
+  select {
+    @include t.select;
+  }
+}
+
+.selectIcon {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.more {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.sidebar {
+  flex-shrink: 0;
+  width: 260px;
+  background: t.bg(0.5);
+
+  @media (max-width: 850px) {
+    width: 100%;
+  }
+}
+
+.statNote {
+  margin-bottom: 8px;
+  color: $muted;
+  font-size: 12px;
+}

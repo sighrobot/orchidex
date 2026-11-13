@@ -5,7 +5,7 @@ type PeopleKind = 'registrant' | 'originator';
 type MinGrex = Pick<Grex, 'registrant_name'>;
 
 export const makeHrefPeople = (grex: MinGrex, kind: PeopleKind) => {
-  return `/registrant/${encodeURIComponent(grex[`${kind}_name`])}`;
+  return `/people/${encodeURIComponent(grex[`${kind}_name`])}`;
 };
 
 export const LinkPeople = ({

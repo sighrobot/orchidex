@@ -29,3 +29,6 @@ export type Stat =
   | 'seed_parent_originators'
   | 'pollen_parent_originators'
   | 'year_genus_pct';
+
+// A person and how many records they count for in some context.
+export type PersonCount = { name: string; count: number };
