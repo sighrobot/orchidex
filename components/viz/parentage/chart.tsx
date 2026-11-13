@@ -1,9 +1,8 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, CircleHelp, RotateCcw, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { H2 } from 'components/layout';
@@ -24,6 +23,7 @@ import {
   type Layout,
 } from './layout';
 import style from './style.module.scss';
+import { buildTour } from './tour';
 
 type TypeFilter = 'all' | 'species' | 'hybrid';
 type ParentFilter = 'any' | 'seed' | 'pollen';
@@ -121,6 +121,11 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
   const [selected, setSelected] = React.useState<number[]>([]);
   // The progeny count whose group is opened up, or null.
   const [drill, setDrill] = React.useState<number | null>(null);
+  // The step of the guide being shown, or null when it's closed.
+  const [tour, setTour] = React.useState<number | null>(null);
+  // Which side of the chart the guide's card sits on: away from what it's
+  // pointing at.
+  const [cardSide, setCardSide] = React.useState<'left' | 'right'>('left');
   // How many cells fit when a group is opened. Bigger groups can't be
   // opened: their orchids would be too small to read or tell apart.
   const [slots, setSlots] = React.useState<GridSlots>({ cols: 1, rows: 1 });
@@ -198,17 +203,6 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
   const shown = openGroup !== null && drilled ? drilled : filtered;
   const capacity = slots.cols * slots.rows;
 
-  const counts = React.useMemo(() => {
-    const total = { species: 0, hybrids: 0 };
-    const visible = { species: 0, hybrids: 0 };
-    for (let i = 0; i < names.length; i++) {
-      const key = species[i] ? 'species' : 'hybrids';
-      total[key]++;
-      if (matches(i)) visible[key]++;
-    }
-    return { total, visible };
-  }, [names, species, matches]);
-
   // Colors, for this theme.
   const paper = theme === 'dark' ? DARK_COLORS.bg : '#ffffff';
   const ink = theme === 'dark' ? DARK_COLORS.fg : '#000000';
@@ -273,6 +267,10 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
     value: number;
     members: number[];
   }>({ layout: null, value: -1, members: [] });
+  // What the open guide step points at, found again after every layout.
+  const tourPointRef = React.useRef<{ item: number } | { zero: true } | null>(
+    null,
+  );
   const frameRef = React.useRef(0);
   const dirtyRef = React.useRef({ layout: true, base: true });
 
@@ -284,6 +282,7 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
   // see fresh values.
   const stateRef = React.useRef(null as any);
   stateRef.current = {
+    tour,
     noun,
     type,
     capacity,
@@ -380,6 +379,34 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
     return p;
   };
 
+  // Points the tooltip at the open guide step's target, as if hovered, and
+  // moves the guide's card to the other side of the chart.
+  const pointAtTourTarget = () => {
+    const target = tourPointRef.current;
+    if (!target) return;
+    const L = layoutRef.current;
+    let k = -1;
+    for (let j = 0; j < L.item.length && k < 0; j++) {
+      if (
+        'item' in target
+          ? L.item[j] === target.item
+          : L.item[j] < 0 && L.value[j] === 0
+      ) {
+        k = j;
+      }
+    }
+    if (k < 0) {
+      hoverRef.current = null;
+      return;
+    }
+    const x = L.x[k] + Math.min(L.w[k] / 2, 60);
+    const y = L.y[k] + Math.min(L.h[k] / 2, 40);
+    hoverRef.current = { node: k, x, y };
+    setCardSide(
+      L.x[k] + L.w[k] / 2 < sizeRef.current.width / 2 ? 'right' : 'left',
+    );
+  };
+
   const drawBase = () => {
     const canvas = baseRef.current;
     const ctx = canvas?.getContext('2d');
@@ -395,6 +422,7 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
         s.openGroup === null,
       );
       dirtyRef.current.layout = false;
+      pointAtTourTarget();
     }
     const L = layoutRef.current;
     const pal = s.palette;
@@ -791,16 +819,17 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
 
     let touchNode = -1;
     const onMove = (e: PointerEvent) => {
-      if (e.pointerType !== 'mouse') return;
+      if (e.pointerType !== 'mouse' || stateRef.current.tour !== null) return;
       const { x, y } = local(e);
       hoverAt(x, y);
     };
     const onLeave = (e: PointerEvent) => {
-      if (e.pointerType !== 'mouse') return;
+      if (e.pointerType !== 'mouse' || stateRef.current.tour !== null) return;
       hoverRef.current = null;
       schedule(false);
     };
     const onClick = (e: MouseEvent) => {
+      if (stateRef.current.tour !== null) return;
       const { x, y } = local(e);
       const k = nodeAt(x, y);
       if (k < 0) return;
@@ -824,6 +853,84 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router]);
+
+  // The guide: steps worked out from the data, each setting the filters and
+  // highlight and pointing at a box. What was set before is put back when it
+  // closes.
+  const steps = React.useMemo(
+    () => buildTour({ genus, names, seed, pollen, species }),
+    [genus, names, seed, pollen, species],
+  );
+  const beforeTourRef = React.useRef<{
+    type: TypeFilter;
+    parent: ParentFilter;
+    minProgeny: number;
+    selected: number[];
+    drill: number | null;
+  }>(null);
+  const tourCardRef = React.useRef<HTMLDivElement>(null);
+
+  const startTour = () => {
+    if (!steps.length) return;
+    beforeTourRef.current = { type, parent, minProgeny, selected, drill };
+    setTour(0);
+  };
+  const endTour = () => {
+    setTour(null);
+    tourPointRef.current = null;
+    hoverRef.current = null;
+    const before = beforeTourRef.current;
+    beforeTourRef.current = null;
+    if (before) {
+      setType(before.type);
+      setParent(before.parent);
+      setMinProgeny(before.minProgeny);
+      setSelected(before.selected);
+      setDrill(before.drill);
+    }
+    schedule(false);
+  };
+  const goTo = (step: number) => {
+    if (step < 0) return;
+    if (step >= steps.length) endTour();
+    else setTour(step);
+  };
+
+  React.useEffect(() => {
+    if (tour === null) return;
+    const step = steps[tour];
+    setType(step.type);
+    setParent('any');
+    setMinProgeny(0);
+    setDrill(null);
+    setSelected(step.select);
+    tourPointRef.current = step.point ?? null;
+    if (!step.point) setCardSide('left');
+    // Point now if the layout is unchanged; a new one points again.
+    pointAtTourTarget();
+    schedule(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tour, steps]);
+
+  // Focus the guide when it opens, and let the arrow keys and Esc drive it.
+  const tourOpen = tour !== null;
+  React.useEffect(() => {
+    if (!tourOpen) return;
+    tourCardRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.target as HTMLElement).closest('input, textarea, select')) return;
+      const at = stateRef.current.tour;
+      if (at === null) return;
+      if (e.key === 'Escape') endTour();
+      else if (e.key === 'ArrowRight') goTo(at + 1);
+      else if (e.key === 'ArrowLeft') goTo(at - 1);
+      else return;
+      e.preventDefault();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tourOpen]);
 
   const reset = () => {
     setType('all');
@@ -861,19 +968,22 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
 
   const header = (
     <div className={style.pageHeader}>
-      <div className={style.titleBlock}>
-        <H2>{genusEl} parentage</H2>
-        <p>
-          Every{' '}
-          <Link href={`/${genus.toLowerCase()}`}>
-            <em>{genus}</em>
-          </Link>{' '}
-          species and hybrid, sized by how many registered hybrids name it as a
-          parent.
-        </p>
-      </div>
-      <div className={style.genusPicker}>
+      <H2>{genusEl} parentage</H2>
+      <div className={style.headerTools}>
         <GenusInput value={genus.toLowerCase()} basePath='/learn/parentage' />
+        {names.length > 0 && (
+          <Button
+            // Filled while the guide is open.
+            variant={tourOpen ? 'default' : 'outline'}
+            size='icon'
+            aria-label='How to read this chart'
+            title='How to read this chart'
+            aria-pressed={tourOpen}
+            onClick={tourOpen ? endTour : startTour}
+          >
+            <CircleHelp />
+          </Button>
+        )}
       </div>
     </div>
   );
@@ -932,11 +1042,23 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
             }
           />
         </label>
+
+        <Button
+          variant='outline'
+          size='icon'
+          className={style.resetButton}
+          aria-label='Reset filters'
+          title='Reset filters'
+          disabled={isNeutral}
+          onClick={reset}
+        >
+          <RotateCcw />
+        </Button>
       </div>
 
-      <div className={style.status}>
-        <div className={style.summary}>
-          {openGroup !== null ? (
+      {openGroup !== null && (
+        <div className={style.status}>
+          <div className={style.summary}>
             <>
               <Button
                 variant='outline'
@@ -957,36 +1079,9 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
                 , A to Z
               </span>
             </>
-          ) : (
-            <span>
-              {isFiltered ? (
-                <>
-                  Showing <strong>{fmt.format(counts.visible.species)}</strong>{' '}
-                  of {plural(counts.total.species, 'species', 'species')} and{' '}
-                  <strong>{fmt.format(counts.visible.hybrids)}</strong> of{' '}
-                  {plural(counts.total.hybrids, 'hybrid', 'hybrids')}
-                </>
-              ) : (
-                <>
-                  Showing all{' '}
-                  <strong>
-                    {plural(counts.total.species, 'species', 'species')}
-                  </strong>{' '}
-                  and{' '}
-                  <strong>
-                    {plural(counts.total.hybrids, 'hybrid', 'hybrids')}
-                  </strong>
-                </>
-              )}
-            </span>
-          )}
-          {!isNeutral && (
-            <button type='button' className={style.reset} onClick={reset}>
-              Reset
-            </button>
-          )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div ref={containerRef} className={style.chart}>
         <canvas ref={baseRef} className={style.canvas} aria-hidden />
@@ -1032,6 +1127,39 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
           />
           <div className={style.action} data-k='action' />
         </div>
+        {tourOpen && (
+          <div
+            ref={tourCardRef}
+            className={style.tour}
+            data-side={cardSide}
+            role='dialog'
+            aria-label='How to read this chart'
+            tabIndex={-1}
+          >
+            <div className={style.tourHead}>
+              <span>
+                {tour + 1} of {steps.length}
+              </span>
+              <button type='button' aria-label='Close guide' onClick={endTour}>
+                <X size={16} />
+              </button>
+            </div>
+            <p aria-live='polite'>{steps[tour].text}</p>
+            <div className={style.tourNav}>
+              <Button
+                variant='outline'
+                size='sm'
+                disabled={tour === 0}
+                onClick={() => goTo(tour - 1)}
+              >
+                Back
+              </Button>
+              <Button size='sm' onClick={() => goTo(tour + 1)}>
+                {tour === steps.length - 1 ? 'Done' : 'Next'}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
