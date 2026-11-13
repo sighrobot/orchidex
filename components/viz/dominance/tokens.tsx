@@ -28,8 +28,9 @@ export default function Tokens({
   items: Item[];
   // What the items are called, plural, for the placeholder.
   noun: string;
-  // Whether names are italicized, as scientific names are.
-  italic: boolean;
+  // Whether names are italicized, as scientific names are: for every item,
+  // or item by item.
+  italic: boolean | ((g: number) => boolean);
   selected: number[];
   colorOf: (g: number) => string;
   onAdd: (g: number) => void;
@@ -41,7 +42,17 @@ export default function Tokens({
   const [active, setActive] = React.useState(0);
   const inputRef = React.useRef<HTMLInputElement>(null);
   const listId = React.useId();
-  const Name = italic ? 'i' : 'span';
+  // An item's name or abbreviation, italicized if it should be.
+  const nameOf = (g: number, abbr = false) => {
+    const Tag = (typeof italic === 'function' ? italic(g) : italic)
+      ? 'i'
+      : 'span';
+    return abbr ? (
+      <Tag className={style.muted}>{items[g].abbr}</Tag>
+    ) : (
+      <Tag>{items[g].name}</Tag>
+    );
+  };
 
   const suggestions = React.useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -97,7 +108,7 @@ export default function Tokens({
         {selected.map((g) => (
           <span key={g} className={style.token}>
             <span className={style.swatch} style={{ background: colorOf(g) }} />
-            <Name>{items[g].name}</Name>
+            {nameOf(g)}
             <button
               type='button'
               aria-label={`Remove ${items[g].name}`}
@@ -167,10 +178,8 @@ export default function Tokens({
                 className={style.swatch}
                 style={{ background: colorOf(g) }}
               />
-              <Name>{items[g].name}</Name>
-              {items[g].abbr !== items[g].name && (
-                <Name className={style.muted}>{items[g].abbr}</Name>
-              )}
+              {nameOf(g)}
+              {items[g].abbr !== items[g].name && nameOf(g, true)}
             </li>
           ))}
         </ul>
