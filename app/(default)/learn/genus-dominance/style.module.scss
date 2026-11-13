@@ -1,20 +1,356 @@
 .pageHeader {
   display: flex;
-  flex-wrap: wrap;
-  gap: 40px;
-  padding: 10px 0 30px 0;
+  align-items: center;
+  // The title on the left, the guide's button on the right.
   justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0 16px 0;
+}
 
-  p {
-    margin-top: 10px;
-    max-width: 600px;
+// The guide and zoom buttons. (Disabled ones ignore the pointer entirely.)
+.pageHeader button,
+.zoom button {
+  cursor: pointer;
+}
+
+// Shorter wording for the label control on phones, so it fits on one line
+// with the zoom buttons.
+.short {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  .long {
+    display: none;
+  }
+
+  .short {
+    display: inline;
   }
 }
 
-.labelControl {
-  text-align: right;
-  padding-right: 52px;
-  select {
-    margin-left: 5px;
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  // The search comes first; the label control and zoom buttons follow on
+  // the right, wrapping onto their own lines on narrow screens.
+  justify-content: flex-end;
+  gap: 10px 20px;
+  margin-bottom: 10px;
+}
+
+@media (max-width: 520px) {
+  .controls {
+    column-gap: 12px;
   }
+}
+
+.labelMode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+
+  > span {
+    opacity: 0.7;
+  }
+}
+
+.segmented {
+  display: inline-flex;
+  // As tall as the zoom buttons beside it.
+  height: 36px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+
+  button {
+    padding: 0 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &[aria-checked='true'] {
+      background: var(--hover);
+      opacity: 1;
+      font-weight: 500;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ring);
+      outline-offset: 1px;
+    }
+  }
+}
+
+.zoom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chart {
+  position: relative;
+  width: 100%;
+  height: clamp(420px, 75vh, 800px);
+  user-select: none;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  // At the full view, let the page scroll vertically on touch; we handle
+  // sideways drags and pinches. Once zoomed, every drag pans the chart.
+  touch-action: pan-y;
+  cursor: grab;
+
+  &[data-zoomed='true'] {
+    touch-action: none;
+  }
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  pointer-events: none;
+  min-width: 180px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--popover, var(--bg));
+  color: var(--popover-foreground, var(--fg));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  font-size: 13px;
+  line-height: 1.4;
+  white-space: nowrap;
+
+  dl {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 2px 14px;
+    margin-top: 6px;
+  }
+
+  dt {
+    opacity: 0.7;
+  }
+
+  dd {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.tooltipTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: none;
+}
+
+.muted {
+  opacity: 0.7;
+}
+
+.hint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 8px 14px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 14px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+
+  &[data-show='true'] {
+    opacity: 1;
+  }
+}
+
+.empty {
+  padding: 40px 0;
+  opacity: 0.7;
+}
+
+.tokens {
+  position: relative;
+  // Takes the room the other controls leave; when that's under 320px, the
+  // controls wrap onto their own line and the search spans the full width.
+  flex: 1 1 320px;
+}
+
+.tokenField {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 4px 6px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  cursor: text;
+
+  &:focus-within {
+    outline: 2px solid var(--ring);
+    outline-offset: -1px;
+  }
+
+  input {
+    flex: 1;
+    min-width: 120px;
+    padding: 2px 4px;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+  }
+}
+
+.token {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 4px 2px 7px;
+  border-radius: 4px;
+  background: var(--hover);
+  font-size: 13px;
+  white-space: nowrap;
+
+  button {
+    display: flex;
+    padding: 2px;
+    cursor: pointer;
+    border-radius: 3px;
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+      background: var(--border);
+    }
+  }
+}
+
+.clear {
+  margin-left: auto;
+  cursor: pointer;
+  // Fits inside the field without making it taller.
+  height: 28px;
+}
+
+.suggestions {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 240px;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--popover, var(--bg));
+  color: var(--popover-foreground, var(--fg));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &[data-active='true'] {
+      background: var(--hover);
+    }
+  }
+}
+
+// The guide's caption card, over the bottom-left of the chart.
+.tour {
+  position: absolute;
+  left: 12px;
+  bottom: 40px;
+  z-index: 5;
+  width: min(340px, calc(100% - 24px));
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--popover, var(--bg));
+  color: var(--popover-foreground, var(--fg));
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  font-size: 14px;
+  line-height: 1.45;
+  outline: none;
+  animation: tourIn 0.2s ease-out;
+
+  p {
+    margin: 6px 0 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes tourIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.tourHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  opacity: 0.7;
+
+  button {
+    display: flex;
+    padding: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--hover);
+    }
+  }
+}
+
+.tourNav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  button {
+    cursor: pointer;
+  }
+}
+
+// Genus names, italicized as scientific names are.
+.genus {
+  font-style: italic;
 }
