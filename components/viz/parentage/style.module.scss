@@ -1,0 +1,368 @@
+.parentage {
+  // Genus names and species epithets are italicized, as scientific names are.
+  [data-italic='true'] {
+    font-style: italic;
+  }
+}
+
+// The title and description on the left, the genus picker on the right.
+.pageHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding: 10px 0 16px 0;
+}
+
+.headerTools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  button {
+    cursor: pointer;
+  }
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px 20px;
+  margin-bottom: 10px;
+}
+
+.field,
+.threshold {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+
+  > span {
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+
+  strong {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.threshold {
+  input {
+    width: 140px;
+    cursor: pointer;
+    accent-color: rgb(218, 112, 214);
+  }
+
+  // Wide enough for the biggest threshold, so the slider doesn't shift.
+  > span {
+    min-width: 13ch;
+    text-align: right;
+  }
+}
+
+.segmented {
+  display: inline-flex;
+  // As tall as the search field beside it.
+  height: 36px;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+
+  button {
+    padding: 0 12px;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    opacity: 0.7;
+
+    &:hover {
+      opacity: 1;
+    }
+
+    &[aria-checked='true'] {
+      background: var(--hover);
+      opacity: 1;
+      font-weight: 500;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ring);
+      outline-offset: 1px;
+    }
+  }
+}
+
+// On phones: one column. The genus picker, search and toggles span the
+// width, with each toggle's options sharing it evenly; the slider fills its
+// row beside the reset button.
+@media (max-width: 520px) {
+  .pageHeader {
+    row-gap: 10px;
+  }
+
+  .headerTools {
+    width: 100%;
+
+    > button:first-child {
+      flex: 1;
+    }
+  }
+
+  .controls {
+    gap: 10px;
+    justify-content: stretch;
+
+    > * {
+      flex: 1 1 100%;
+    }
+  }
+
+  .field {
+    > span {
+      min-width: 3.25rem;
+    }
+  }
+
+  .segmented {
+    flex: 1;
+
+    button {
+      flex: 1;
+      padding: 0 6px;
+    }
+  }
+
+  .controls > .threshold {
+    flex: 1 1 0;
+    min-width: 0;
+
+    > span {
+      min-width: 0;
+      text-align: left;
+    }
+
+    input {
+      flex: 1;
+      min-width: 0;
+      width: auto;
+    }
+  }
+
+  .controls > .resetButton {
+    flex: none;
+  }
+}
+
+// The open group: its back button and what it holds.
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 20px;
+  min-height: 32px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+
+  > span {
+    opacity: 0.75;
+  }
+
+  strong {
+    font-weight: 500;
+  }
+}
+
+.back {
+  cursor: pointer;
+}
+
+.resetButton {
+  cursor: pointer;
+}
+
+.chart {
+  position: relative;
+  width: 100%;
+  height: clamp(420px, 75vh, 800px);
+  user-select: none;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.noMatch {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+}
+
+.empty {
+  padding: 40px 0;
+  opacity: 0.7;
+}
+
+.tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  pointer-events: none;
+  min-width: 200px;
+  max-width: 320px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--popover, var(--bg));
+  color: var(--popover-foreground, var(--fg));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  font-size: 13px;
+  line-height: 1.4;
+
+  dl {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 2px 14px;
+    margin-top: 6px;
+  }
+
+  dt {
+    opacity: 0.7;
+  }
+
+  dd {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.tooltipTitle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: none;
+}
+
+.badge {
+  margin-left: auto;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--hover);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.muted {
+  opacity: 0.7;
+}
+
+.sample {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.7;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.action {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+// The guide's caption card, over a bottom corner of the chart, on the side
+// away from what it points at.
+.tour {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 5;
+  width: min(340px, calc(100% - 24px));
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--popover, var(--bg));
+  color: var(--popover-foreground, var(--fg));
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  font-size: 14px;
+  line-height: 1.45;
+  outline: none;
+  animation: tourIn 0.2s ease-out;
+
+  &[data-side='right'] {
+    left: auto;
+    right: 12px;
+  }
+
+  p {
+    margin: 6px 0 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes tourIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.tourHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  opacity: 0.7;
+
+  button {
+    display: flex;
+    padding: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+
+    &:hover {
+      background: var(--hover);
+    }
+  }
+}
+
+.tourNav {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+
+  button {
+    cursor: pointer;
+  }
+}
