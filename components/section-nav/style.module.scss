@@ -1,0 +1,74 @@
+@use 'theme' as t;
+
+.sectionNav {
+  width: 100%;
+}
+
+// Same width and faint divider as the header above it.
+.inner {
+  display: flex;
+  align-items: stretch;
+  height: 36px;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 10px;
+  border-bottom: 1px solid t.fg(0.08);
+  font-size: 13px;
+}
+
+.section {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding-right: 12px;
+  margin-right: 4px;
+  color: t.fg();
+  border-right: 1px solid t.fg(0.12);
+  margin-block: 9px;
+}
+
+.pages {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  list-style: none;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  white-space: nowrap;
+
+  // Fades the cut-off edge when the list scrolls on phones.
+  mask-image: linear-gradient(to right, black calc(100% - 24px), transparent);
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  li {
+    display: flex;
+  }
+
+  li:last-child {
+    padding-right: 24px;
+  }
+}
+
+.page {
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  color: t.fg(0.55);
+  // Sits on the strip's divider, so the current page reads as a tab.
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+
+  &:hover {
+    color: t.fg();
+    text-decoration: none;
+  }
+
+  &.current {
+    color: t.fg();
+    border-bottom-color: t.fg();
+  }
+}
