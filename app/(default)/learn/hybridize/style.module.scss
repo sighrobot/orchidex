@@ -10,6 +10,11 @@
   p {
     margin-top: 10px;
   }
+
+  // The heading above is visually hidden, so the intro leads.
+  > h2 + p {
+    margin-top: 0;
+  }
 }
 
 .controls {

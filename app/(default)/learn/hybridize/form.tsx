@@ -75,7 +75,8 @@ export default function Form() {
   return (
     <>
       <aside className={style.hybridize}>
-        <H2>Hybridizer tool</H2>
+        {/* The section strip names the page; the heading stays for screen readers. */}
+        <H2 className='sr-only'>Hybridizer tool</H2>
 
         <p>
           Explore the ancestry of a hypothetical hybrid formed from any two

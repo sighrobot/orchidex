@@ -1,14 +1,6 @@
-.pageHeader {
-  display: flex;
-  align-items: center;
-  // The title on the left, the guide's button on the right.
-  justify-content: space-between;
-  gap: 12px;
-  padding: 10px 0 16px 0;
-}
+@use 'theme' as t;
 
-// The guide and zoom buttons. (Disabled ones ignore the pointer entirely.)
-.pageHeader button,
+// The zoom buttons. (Disabled ones ignore the pointer entirely.)
 .zoom button {
   cursor: pointer;
 }
@@ -26,23 +18,6 @@
 
   .short {
     display: inline;
-  }
-}
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  // The search comes first; the label control and zoom buttons follow on
-  // the right, wrapping onto their own lines on narrow screens.
-  justify-content: flex-end;
-  gap: 10px 20px;
-  margin-bottom: 10px;
-}
-
-@media (max-width: 520px) {
-  .controls {
-    column-gap: 12px;
   }
 }
 
@@ -196,8 +171,8 @@
 
 .tokens {
   position: relative;
-  // Takes the room the other controls leave; when that's under 320px, the
-  // controls wrap onto their own line and the search spans the full width.
+  // Fills the toolbar's search slot (components/toolbar), or a row of its
+  // own elsewhere.
   flex: 1 1 320px;
 }
 
@@ -353,4 +328,8 @@
 // Genus names in the tooltip, italicized as scientific names are.
 .tooltipTitle [data-italic='true'] {
   font-style: italic;
+}
+
+.helpButton {
+  @include t.help-button;
 }

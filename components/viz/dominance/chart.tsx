@@ -5,6 +5,7 @@ import { CircleHelp, Focus, Minus, Plus, RotateCcw, X } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { H2 } from 'components/layout';
+import Toolbar from 'components/toolbar/toolbar';
 import { useResolvedTheme } from 'lib/hooks/useResolvedTheme';
 import { DARK_COLORS } from 'lib/theme';
 
@@ -1150,9 +1151,7 @@ export default function DominanceChart({
   if (!groups.length) {
     return (
       <div>
-        <div className={style.pageHeader}>
-          <H2>{title}</H2>
-        </div>
+        <H2 className='sr-only'>{title}</H2>
         <p className={style.empty}>No registration data to show.</p>
       </div>
     );
@@ -1187,98 +1186,106 @@ export default function DominanceChart({
 
   return (
     <div>
-      {/* The page title, with the button that opens the guide beside it. */}
-      <div className={style.pageHeader}>
-        <H2>{title}</H2>
-        <Button
-          // Filled while the guide is open.
-          variant={open ? 'default' : 'outline'}
-          size='icon'
-          aria-label='How to read this chart'
-          title='How to read this chart'
-          aria-pressed={open}
-          onClick={open ? endTour : startTour}
-        >
-          <CircleHelp />
-        </Button>
-      </div>
+      {/* The section strip names the page; the heading stays for screen readers. */}
+      <H2 className='sr-only'>{title}</H2>
 
-      <div className={style.controls}>
-        <Tokens
-          items={groups}
-          noun={many}
-          italic={cfg.italic}
-          selected={selected}
-          colorOf={colorOf}
-          onAdd={(g) => setSelected((s) => (s.includes(g) ? s : [...s, g]))}
-          onRemove={(g) => setSelected((s) => s.filter((x) => x !== g))}
-          onClear={() => setSelected([])}
-        />
-
-        <div className={style.labelMode}>
-          <span id='label-mode'>
-            <span className={style.long}>Label top {many}</span>
-            <span className={style.short}>Labels</span>
-          </span>
-          <div
-            role='radiogroup'
-            aria-labelledby='label-mode'
-            className={style.segmented}
-          >
-            {labelOptions.map((o) => (
-              <button
-                key={o.value}
-                type='button'
-                role='radio'
-                aria-checked={labelMode === o.value}
-                title={o.title}
-                onClick={() => setLabelMode(o.value)}
+      {/* The search on the left, the guide's button at the far end, and the
+          label and zoom controls between them, or on a line below. */}
+      <Toolbar
+        search={
+          <Tokens
+            items={groups}
+            noun={many}
+            italic={cfg.italic}
+            selected={selected}
+            colorOf={colorOf}
+            onAdd={(g) => setSelected((s) => (s.includes(g) ? s : [...s, g]))}
+            onRemove={(g) => setSelected((s) => s.filter((x) => x !== g))}
+            onClear={() => setSelected([])}
+          />
+        }
+        secondary={
+          <>
+            <div className={style.labelMode}>
+              <span id='label-mode'>
+                <span className={style.long}>Label top {many}</span>
+                <span className={style.short}>Labels</span>
+              </span>
+              <div
+                role='radiogroup'
+                aria-labelledby='label-mode'
+                className={style.segmented}
               >
-                {o.label}
-              </button>
-            ))}
-          </div>
-        </div>
+                {labelOptions.map((o) => (
+                  <button
+                    key={o.value}
+                    type='button'
+                    role='radio'
+                    aria-checked={labelMode === o.value}
+                    title={o.title}
+                    onClick={() => setLabelMode(o.value)}
+                  >
+                    {o.label}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-        <div className={style.zoom}>
+            <div className={style.zoom}>
+              <Button
+                variant='outline'
+                size='icon'
+                aria-label={`Zoom to selected ${many}`}
+                title={`Zoom to selected ${many}`}
+                disabled={!selected.length}
+                onClick={zoomToSelected}
+              >
+                <Focus />
+              </Button>
+              <Button
+                variant='outline'
+                size='icon'
+                aria-label='Zoom in'
+                onClick={() => zoomCenter(1 / ZOOM_STEP)}
+              >
+                <Plus />
+              </Button>
+              <Button
+                variant='outline'
+                size='icon'
+                aria-label='Zoom out'
+                disabled={!zoomed}
+                onClick={() => zoomCenter(ZOOM_STEP)}
+              >
+                <Minus />
+              </Button>
+              <Button
+                variant='outline'
+                size='icon'
+                aria-label='Reset zoom'
+                disabled={!zoomed}
+                onClick={() => setView(full)}
+              >
+                <RotateCcw />
+              </Button>
+            </div>
+          </>
+        }
+        end={
           <Button
-            variant='outline'
+            // Filled while the guide is open.
+            variant={open ? 'default' : 'outline'}
             size='icon'
-            aria-label={`Zoom to selected ${many}`}
-            title={`Zoom to selected ${many}`}
-            disabled={!selected.length}
-            onClick={zoomToSelected}
+            className={style.helpButton}
+            aria-label='How to read this chart'
+            title='How to read this chart'
+            aria-pressed={open}
+            onClick={open ? endTour : startTour}
           >
-            <Focus />
+            <CircleHelp />
           </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            aria-label='Zoom in'
-            onClick={() => zoomCenter(1 / ZOOM_STEP)}
-          >
-            <Plus />
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            aria-label='Zoom out'
-            disabled={!zoomed}
-            onClick={() => zoomCenter(ZOOM_STEP)}
-          >
-            <Minus />
-          </Button>
-          <Button
-            variant='outline'
-            size='icon'
-            aria-label='Reset zoom'
-            disabled={!zoomed}
-            onClick={() => setView(full)}
-          >
-            <RotateCcw />
-          </Button>
-        </div>
-      </div>
+        }
+      />
 
       <div ref={containerRef} className={style.chart}>
         <canvas ref={baseRef} className={style.canvas} aria-hidden />
