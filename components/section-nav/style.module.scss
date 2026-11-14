@@ -8,7 +8,7 @@
 .inner {
   display: flex;
   align-items: stretch;
-  height: 36px;
+  height: 30px;
   max-width: 1500px;
   margin: 0 auto;
   padding: 0 10px;
@@ -24,7 +24,7 @@
   margin-right: 4px;
   color: t.fg();
   border-right: 1px solid t.fg(0.12);
-  margin-block: 9px;
+  margin-block: 6px;
 }
 
 .pages {
@@ -57,9 +57,11 @@
   display: flex;
   align-items: center;
   padding: 0 8px;
-  color: t.fg(0.55);
+  flex-direction: column;
+  justify-content: center;
+  color: t.fg(0.5);
   // Sits on the strip's divider, so the current page reads as a tab.
-  border-bottom: 2px solid transparent;
+  border-block: 3px solid transparent;
   margin-bottom: -1px;
 
   &:hover {
@@ -67,8 +69,22 @@
     text-decoration: none;
   }
 
+  // The orchid accent, as on the genus picker's selected row.
   &.current {
     color: t.fg();
-    border-bottom-color: t.fg();
+    font-weight: 600;
+    background: rgba(218, 112, 214, 0.14);
+    border-bottom-color: rgb(218, 112, 214);
+  }
+
+  // Reserves the bold width so tabs don't shift when the current one changes.
+  &::after {
+    content: attr(data-label);
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    font-weight: 600;
+    user-select: none;
+    pointer-events: none;
   }
 }

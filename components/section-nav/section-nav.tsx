@@ -5,15 +5,21 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import cn from 'classnames';
 
-import { findSection } from 'lib/sections';
+import { findSection, matchSection, Section } from 'lib/sections';
 
 import style from './style.module.scss';
 
 // A thin strip under the header on pages that belong to a group (Explore,
-// About): where you are, and what else sits alongside it.
-export const SectionNav = () => {
-  const pathname = usePathname();
-  const found = findSection(pathname ?? '');
+// About, a genus): where you are, and what else sits alongside it.
+export const SectionStrip = ({
+  section,
+  className,
+}: {
+  section: Section;
+  className?: string;
+}) => {
+  const pathname = usePathname() ?? '';
+  const { current, isBase } = matchSection(section, pathname);
   const activeRef = useRef<HTMLAnchorElement>(null);
 
   // On narrow screens the list scrolls sideways; keep the current page in view.
@@ -21,16 +27,14 @@ export const SectionNav = () => {
     activeRef.current?.scrollIntoView({ block: 'nearest', inline: 'center' });
   }, [pathname]);
 
-  if (!found) {
-    return null;
-  }
-
-  const { section, current } = found;
-
   return (
-    <nav aria-label={section.label} className={style.sectionNav}>
+    <nav aria-label={section.label} className={cn(style.sectionNav, className)}>
       <div className={style.inner}>
-        <Link className={style.section} href={section.base}>
+        <Link
+          aria-current={isBase ? 'page' : undefined}
+          className={style.section}
+          href={section.base}
+        >
           {section.label}
         </Link>
 
@@ -42,6 +46,7 @@ export const SectionNav = () => {
                 <Link
                   aria-current={isCurrent ? 'page' : undefined}
                   className={cn(style.page, isCurrent && style.current)}
+                  data-label={page.label}
                   href={page.href}
                   ref={isCurrent ? activeRef : undefined}
                 >
@@ -54,6 +59,12 @@ export const SectionNav = () => {
       </div>
     </nav>
   );
+};
+
+// The strip for the fixed sections in lib/sections.ts, picked by path.
+export const SectionNav = () => {
+  const section = findSection(usePathname() ?? '');
+  return section ? <SectionStrip section={section} /> : null;
 };
 
 export default SectionNav;
