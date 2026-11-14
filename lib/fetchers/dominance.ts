@@ -33,13 +33,22 @@ const COLUMN: Record<DominanceKind, string> = {
   registrant: 'registrant_name',
 };
 
-const sql = (column: string) => `
-  SELECT ${column} g, SUBSTRING(date_of_registration, 1, 4) y, COUNT(*)::int c
+// Rows each kind leaves out, beyond those every kind does. "O/U" is the
+// registry's mark for an unknown registrant, so it isn't anyone's share of
+// registrations; those orchids still count toward their genus.
+const EXCLUDE: Record<DominanceKind, string> = {
+  genus: '',
+  registrant: `AND registrant_name != 'O/U'`,
+};
+
+const sql = (kind: DominanceKind) => `
+  SELECT ${COLUMN[kind]} g, SUBSTRING(date_of_registration, 1, 4) y, COUNT(*)::int c
   FROM rhs
   WHERE genus != 'na'
     AND epithet != ''
     AND registrant_name != ''
     AND date_of_registration ~ '^[0-9]{4}'
+    ${EXCLUDE[kind]}
   GROUP BY g, y
 `;
 
@@ -48,7 +57,7 @@ export async function fetchDominance(
   kind: DominanceKind,
 ): Promise<DominanceData> {
   const currentYear = new Date().getFullYear();
-  const rows = (await queryOrThrow(sql(COLUMN[kind]))) as unknown as {
+  const rows = (await queryOrThrow(sql(kind))) as unknown as {
     g: string;
     y: string;
     c: number;

@@ -2,108 +2,125 @@
 
 import React from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Padded } from 'components/container/container';
-import GrexAutocomplete from 'components/search/grex-autocomplete';
-import { Grex } from 'lib/types';
-import { useGrex } from 'lib/hooks/useGrex';
-import { H2 } from 'components/layout';
+import { ArrowLeftRight, X } from 'lucide-react';
 
-import style from './style.module.scss';
 import { Button } from '@/components/ui/button';
+import { H2 } from 'components/layout';
+import GrexPicker from 'components/grex-picker';
+import { useGrex } from 'lib/hooks/useGrex';
+import { Grex } from 'lib/types';
+
+import { usePendingNav } from './pending';
+import style from './style.module.scss';
 
 const PARAM_SEED = 's';
 const PARAM_POLLEN = 'p';
 
+type Slot = typeof PARAM_SEED | typeof PARAM_POLLEN;
+
+// The two parent pickers, with a swap button between them and a clear button
+// at the far end. The cross lives in the URL (?s=<seed id>&p=<pollen id>).
 export default function Form() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const seedParentId = searchParams?.get(PARAM_SEED);
-  const pollenParentId = searchParams?.get(PARAM_POLLEN);
-  const [seedParent] = useGrex({ id: seedParentId });
-  const [pollenParent] = useGrex({ id: pollenParentId });
+  const { pending, start } = usePendingNav();
+  const seedId = searchParams?.get(PARAM_SEED) || undefined;
+  const pollenId = searchParams?.get(PARAM_POLLEN) || undefined;
+  const [seedParent] = useGrex({ id: seedId });
+  const [pollenParent] = useGrex({ id: pollenId });
 
-  const handleParams = (
-    params: URLSearchParams,
-    action: 'push' | 'replace'
-  ) => {
-    params.sort();
-    return router[action](
-      `${window.location.origin}${window.location.pathname}?${params
-        .toString()
-        .split('&')
-        .reverse() // reverse the sort so `s` comes before `p`
-        .join('&')}`
+  // Picks (or clears, as null) shown straight away, while the page catches up
+  // with the URL. Once it has, they agree with the URL; if the URL moves on
+  // some other way (Back), it wins.
+  const [picked, setPicked] = React.useState<
+    Partial<Record<Slot, Grex | null>>
+  >({});
+  // Which picker shows the spinner.
+  const [changing, setChanging] = React.useState<Slot | 'both' | null>(null);
+
+  const shown = (slot: Slot, id: string | undefined, fetched?: Grex) =>
+    slot in picked && (pending || picked[slot]?.id === id)
+      ? (picked[slot] ?? undefined)
+      : fetched;
+  const seed = shown(PARAM_SEED, seedId, seedParent);
+  const pollen = shown(PARAM_POLLEN, pollenId, pollenParent);
+
+  const go = (ids: Partial<Record<Slot, string>>, slot: Slot | 'both') => {
+    const params = new URLSearchParams();
+    // `s` before `p`, so links read seed first.
+    if (ids.s) params.set(PARAM_SEED, ids.s);
+    if (ids.p) params.set(PARAM_POLLEN, ids.p);
+    const qs = params.toString();
+    setChanging(slot);
+    start(() =>
+      router.push(`/learn/hybridize${qs ? `?${qs}` : ''}`, { scroll: false }),
     );
   };
 
-  const replaceParams = (params: URLSearchParams) =>
-    handleParams(params, 'replace');
-  const pushParams = (params: URLSearchParams) => handleParams(params, 'push');
-
-  const handleParentChange = (grexId: string, param: string) => {
-    const newParams = new URLSearchParams(searchParams ?? undefined);
-    newParams.set(param, grexId);
-
-    if (seedParent && pollenParent) {
-      pushParams(newParams);
-    } else {
-      replaceParams(newParams);
-    }
+  const pick = (slot: Slot) => (g: Grex) => {
+    setPicked((prev) => ({ ...prev, [slot]: g }));
+    go({ s: seed?.id, p: pollen?.id, [slot]: g.id }, slot);
   };
 
-  const handleSeedParentChange = (g: Grex) =>
-    handleParentChange(g.id, PARAM_SEED);
-  const handlePollenParentChange = (g: Grex) =>
-    handleParentChange(g.id, PARAM_POLLEN);
-
-  const handleSwap = () => {
-    const newParams = new URLSearchParams(searchParams ?? undefined);
-
-    newParams.set(PARAM_SEED, searchParams?.get(PARAM_POLLEN) ?? '');
-    newParams.set(PARAM_POLLEN, searchParams?.get(PARAM_SEED) ?? '');
-
-    if (!newParams.get(PARAM_SEED)) {
-      newParams.delete(PARAM_SEED);
-    }
-    if (!newParams.get(PARAM_POLLEN)) {
-      newParams.delete(PARAM_POLLEN);
-    }
-
-    replaceParams(newParams);
+  const swap = () => {
+    setPicked({ s: pollen ?? null, p: seed ?? null });
+    go({ s: pollen?.id, p: seed?.id }, 'both');
   };
+
+  const clear = () => {
+    setPicked({ s: null, p: null });
+    go({}, 'both');
+  };
+
+  const busy = (slot: Slot) =>
+    pending && (changing === slot || changing === 'both');
 
   return (
     <>
-      <aside className={style.hybridize}>
-        <H2>Hybridizer tool</H2>
+      {/* The section strip names the page; the heading stays for screen readers. */}
+      <H2 className='sr-only'>Hybridizer tool</H2>
 
-        <p>
-          Explore the ancestry of a hypothetical hybrid formed from any two
-          orchids by selecting its parents below.
-        </p>
+      <div className={style.pickers}>
+        <div className={style.slot}>
+          <GrexPicker
+            label='Seed parent'
+            grex={seed}
+            pending={busy(PARAM_SEED)}
+            onPick={pick(PARAM_SEED)}
+          />
+        </div>
 
-        <Padded className={style.controls}>
-          <article className={style.input}>
-            <GrexAutocomplete
-              grex={seedParent}
-              name='Seed Parent'
-              onChange={handleSeedParentChange}
-            />
-          </article>
+        <Button
+          variant='outline'
+          size='icon'
+          className={style.swap}
+          aria-label='Swap seed and pollen parents'
+          title='Swap seed and pollen parents'
+          disabled={!seed && !pollen}
+          onClick={swap}
+        >
+          <ArrowLeftRight />
+        </Button>
 
-          <Button size='sm' disabled={!seedParent && !pollenParent}>
-            &#8651; Swap
-          </Button>
+        <div className={style.slot}>
+          <GrexPicker
+            label='Pollen parent'
+            grex={pollen}
+            pending={busy(PARAM_POLLEN)}
+            onPick={pick(PARAM_POLLEN)}
+          />
+        </div>
 
-          <article className={style.input}>
-            <GrexAutocomplete
-              grex={pollenParent}
-              name='Pollen Parent'
-              onChange={handlePollenParentChange}
-            />
-          </article>
-        </Padded>
-      </aside>
+        <Button
+          variant='outline'
+          className={style.clear}
+          disabled={!seed && !pollen}
+          onClick={clear}
+        >
+          <X />
+          Clear
+        </Button>
+      </div>
     </>
   );
 }

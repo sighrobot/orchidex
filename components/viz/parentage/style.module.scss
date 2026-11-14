@@ -1,3 +1,5 @@
+@use 'theme' as t;
+
 .parentage {
   // Genus names and species epithets are italicized, as scientific names are.
   [data-italic='true'] {
@@ -5,33 +7,8 @@
   }
 }
 
-// The title and description on the left, the genus picker on the right.
-.pageHeader {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px 24px;
-  padding: 10px 0 16px 0;
-}
-
-.headerTools {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-
-  button {
-    cursor: pointer;
-  }
-}
-
-.controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 10px 20px;
-  margin-bottom: 10px;
+.helpButton {
+  @include t.help-button;
 }
 
 .field,
@@ -63,6 +40,54 @@
   > span {
     min-width: 13ch;
     text-align: right;
+  }
+}
+
+// The Filters button and its popover: the parent toggle above the slider.
+.filtersButton {
+  cursor: pointer;
+}
+
+.filterCount {
+  min-width: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  font-size: 11px;
+  line-height: 18px;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  background: rgb(218, 112, 214);
+}
+
+.chevron {
+  opacity: 0.5;
+}
+
+.filtersPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: min(300px, calc(100vw - 32px));
+
+  .field,
+  .threshold {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .segmented button {
+    flex: 1;
+  }
+
+  .threshold {
+    > span {
+      min-width: 0;
+      text-align: left;
+    }
+
+    input {
+      width: 100%;
+    }
   }
 }
 
@@ -98,35 +123,12 @@
   }
 }
 
-// On phones: one column. The genus picker, search and toggles span the
-// width, with each toggle's options sharing it evenly; the slider fills its
-// row beside the reset button.
+// On phones the toolbar puts the Show toggle and Filters button on a line of
+// their own; the toggle takes the room, its options sharing it evenly.
 @media (max-width: 520px) {
-  .pageHeader {
-    row-gap: 10px;
-  }
-
-  .headerTools {
-    width: 100%;
-
-    > button:first-child {
-      flex: 1;
-    }
-  }
-
-  .controls {
-    gap: 10px;
-    justify-content: stretch;
-
-    > * {
-      flex: 1 1 100%;
-    }
-  }
-
   .field {
-    > span {
-      min-width: 3.25rem;
-    }
+    flex: 1;
+    min-width: 0;
   }
 
   .segmented {
@@ -136,26 +138,6 @@
       flex: 1;
       padding: 0 6px;
     }
-  }
-
-  .controls > .threshold {
-    flex: 1 1 0;
-    min-width: 0;
-
-    > span {
-      min-width: 0;
-      text-align: left;
-    }
-
-    input {
-      flex: 1;
-      min-width: 0;
-      width: auto;
-    }
-  }
-
-  .controls > .resetButton {
-    flex: none;
   }
 }
 

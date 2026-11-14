@@ -1,0 +1,86 @@
+// See toolbar.tsx for the layout.
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px 12px;
+  padding: 10px 0 12px;
+
+  // Only the search gives up width; everything else keeps its own.
+  > * {
+    flex-shrink: 0;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+.leading,
+.end {
+  display: flex;
+}
+
+// Takes the room the other parts leave, up to a comfortable width. The
+// basis is SEARCH_MIN_WIDTH in toolbar.tsx.
+.search {
+  display: flex;
+  flex: 1 1 160px;
+  min-width: 0;
+  max-width: 420px;
+
+  // The search field itself; its own basis would make it wrap, not shrink.
+  > * {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+.secondary {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.end {
+  margin-left: auto;
+}
+
+.stacked {
+  flex-wrap: wrap;
+
+  > .secondary {
+    flex-basis: 100%;
+    order: 1;
+  }
+}
+
+// On phones (always stacked): `end` beside the leading part, then the search,
+// then the secondary controls, each spanning the width. With no leading part,
+// `end` sits beside the search instead.
+@media (max-width: 520px) {
+  .leading {
+    flex: 1;
+    flex-shrink: 1;
+    min-width: 0;
+
+    > * {
+      flex: 1;
+    }
+  }
+
+  .hasLeading > .search {
+    flex-basis: 100%;
+    max-width: none;
+    order: 1;
+  }
+
+  .toolbar:not(.hasLeading) > .search {
+    max-width: none;
+  }
+
+  .stacked > .secondary {
+    order: 2;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}

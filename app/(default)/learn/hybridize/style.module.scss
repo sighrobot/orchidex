@@ -1,45 +1,195 @@
 @use 'theme' as t;
 
-.hybridize {
-  background: rgba(0, 128, 0, 0.025);
-  border: 1px solid t.fg(0.13);
-  margin-bottom: 10px;
-  padding: 20px;
-  padding-top: 15px;
+// The two pickers with the swap button between them on one line; Clear at
+// the far end. On phones the pickers stack, the swap button between them.
+.pickers {
+  display: flex;
+  align-items: center;
+  gap: 10px 12px;
+  padding: 10px 0 12px;
 
-  p {
-    margin-top: 10px;
+  button {
+    cursor: pointer;
   }
 }
 
-.controls {
-  align-items: flex-start;
+.slot {
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-top: 20px;
+  flex: 1 1 240px;
+  min-width: 0;
+  max-width: 380px;
+}
 
-  .input {
-    max-width: 450px;
-    flex-grow: 1;
+.swap {
+  flex: none;
+}
+
+.clear {
+  flex: none;
+  margin-left: auto;
+}
+
+@media (max-width: 640px) {
+  .pickers {
+    flex-wrap: wrap;
   }
 
-  @media (max-width: 800px) {
-    .input {
-      max-width: unset;
-      width: 100%;
+  .slot {
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  // Between the stacked pickers, turned to point up and down.
+  .swap {
+    order: 0;
+    margin: -4px auto;
+
+    svg {
+      transform: rotate(90deg);
+    }
+  }
+
+  .clear {
+    order: 1;
+    margin-left: 0;
+  }
+}
+
+// Everything under the pickers; dims while a new cross loads.
+.results {
+  transition: opacity 150ms ease;
+}
+
+.pending {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+// "Already registered" / "Not registered".
+.status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 500;
+
+  svg {
+    width: 15px;
+    height: 15px;
+    flex: none;
+  }
+
+  &[data-kind='registered'] {
+    color: rgb(196, 72, 192);
+
+    :global(.dark) & {
+      color: rgb(230, 150, 226);
+    }
+  }
+
+  &[data-kind='hypothetical'] {
+    color: rgb(37, 99, 235);
+    margin-bottom: 6px;
+
+    :global(.dark) & {
+      color: rgb(147, 197, 253);
     }
   }
 }
 
+// The heading for a cross no one has registered, in the same shape as the
+// tinted header a registered one gets (components/grex/header).
+.hypothetical {
+  margin-bottom: 16px;
+  padding: 16px 20px;
+  border-radius: 6px;
+  background: rgba(59, 130, 246, 0.06);
+
+  h1 {
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  > p:last-child {
+    margin-top: 6px;
+    font-size: 14px;
+    color: t.fg(0.65);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+    text-decoration-color: t.fg(0.3);
+  }
+}
+
+.cross {
+  margin: 0 2px;
+  opacity: 0.5;
+}
+
 .empty {
-  align-items: center;
-  background: rgba(128, 255, 255, 0.1);
-  border: 1px solid t.fg();
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  font-weight: 400;
-  margin-top: 20px;
-  padding: 0 40px;
-  height: 400px;
+  gap: 10px;
+  min-height: 320px;
+  padding: 40px 24px;
+  border: 1px dashed t.fg(0.2);
+  border-radius: 8px;
+  text-align: center;
+
+  h3 {
+    font-size: 20px;
+    font-weight: 400;
+  }
+
+  > p {
+    max-width: 46ch;
+    color: t.fg(0.65);
+  }
+}
+
+.examples {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 13px;
+
+  > span {
+    color: t.fg(0.55);
+  }
+
+  ul {
+    display: contents;
+  }
+
+  a {
+    display: inline-block;
+    padding: 5px 12px;
+    border: 1px solid t.fg(0.15);
+    border-radius: 999px;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 150ms ease, background 150ms ease;
+
+    &:hover {
+      border-color: rgb(218, 112, 214);
+      background: rgba(218, 112, 214, 0.08);
+    }
+  }
+}
+
+// What kind of cross an example is, ahead of its parents.
+.kind {
+  margin-right: 8px;
+  padding-right: 8px;
+  border-right: 1px solid t.fg(0.15);
+  color: t.fg(0.55);
 }

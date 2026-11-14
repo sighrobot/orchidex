@@ -23,3 +23,39 @@
 }
 
 $hover: var(--hover);
+
+// The guide's help button on the charts: a tinge of blue, filled while the
+// guide is open.
+@mixin help-button {
+  color: rgb(37, 99, 235);
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.4);
+
+  &:hover {
+    color: rgb(29, 78, 216);
+    background: rgba(59, 130, 246, 0.16);
+  }
+
+  &[aria-pressed='true'] {
+    color: #fff;
+    background: rgb(59, 130, 246);
+    border-color: rgb(59, 130, 246);
+  }
+
+  :global(.dark) & {
+    color: rgb(147, 197, 253);
+    background: rgba(59, 130, 246, 0.14);
+    border-color: rgba(96, 165, 250, 0.45);
+
+    &:hover {
+      color: rgb(191, 219, 254);
+      background: rgba(59, 130, 246, 0.24);
+    }
+
+    &[aria-pressed='true'] {
+      color: #fff;
+      background: rgb(59, 130, 246);
+      border-color: rgb(59, 130, 246);
+    }
+  }
+}

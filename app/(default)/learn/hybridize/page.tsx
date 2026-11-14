@@ -1,102 +1,210 @@
 import { Suspense } from 'react';
 import { Metadata } from 'next';
-import { queryGrexById, queryGrexChild } from 'lib/queries/grex';
-import { Grex, Grex as GrexType } from 'lib/types';
-import GrexView from 'app/(default)/[genus]/[...genusRouteParams]/view';
-import { formatName } from 'lib/string';
-import Form from './form';
+import Link from 'next/link';
+import { Check, Sparkles } from 'lucide-react';
 
+import GrexView from 'app/(default)/[genus]/[...genusRouteParams]/view';
+import { Padded } from 'components/container/container';
+import { Name } from 'components/grex/name';
+import { queryGrexById, queryGrexChild } from 'lib/queries/grex';
+import { formatName } from 'lib/string';
+import { Grex } from 'lib/types';
+
+import Form from './form';
+import { PendingProvider, Results } from './pending';
 import style from './style.module.scss';
 
-type SearchParams = Promise<{ s: string; p: string }>;
+type SearchParams = Promise<{ s?: string; p?: string }>;
+
+// Only plain numeric ids get as far as a query.
+const toId = (v?: string) => (v && /^\d+$/.test(v) ? v : undefined);
+
+// Crosses to start from, one of each kind, each within one genus and never
+// registered in either direction.
+const EXAMPLES: {
+  s: string;
+  p: string;
+  kind: string;
+  label: React.ReactNode;
+}[] = [
+  {
+    s: '99694',
+    p: '1043',
+    kind: 'Primary',
+    label: (
+      <>
+        <i>Den. cuthbertsonii</i> × <i>Den. kingianum</i>
+      </>
+    ),
+  },
+  {
+    s: '1442',
+    p: '30326',
+    kind: 'Species × hybrid',
+    label: (
+      <>
+        <i>Phal. gigantea</i> × <i>Phal.</i> Artemis
+      </>
+    ),
+  },
+  {
+    s: '121544',
+    p: '1039467',
+    kind: 'Complex',
+    label: (
+      <>
+        <i>Dlax.</i> Gripp’s Ghost × <i>Dlax.</i> Little Ghost
+      </>
+    ),
+  },
+];
+
+const fetchCross = async (s?: string, p?: string) => {
+  const ids = [s, p].filter(Boolean);
+  const parents = ids.length ? await queryGrexById(ids.join(',')) : [];
+  const seed = parents.find((g) => g.id === s);
+  const pollen = parents.find((g) => g.id === p);
+  const [registered] =
+    seed && pollen ? await queryGrexChild(seed.id, pollen.id) : [];
+  return { seed, pollen, registered };
+};
 
 export async function generateMetadata({
   searchParams,
 }: {
   searchParams: SearchParams;
 }): Promise<Metadata> {
-  const { s, p } = await searchParams;
-  if (!s || !p) {
+  const params = await searchParams;
+  const { seed, pollen } = await fetchCross(toId(params.s), toId(params.p));
+
+  if (!seed || !pollen) {
     return {
-      title: 'Explore ancestry of any two orchids - Orchidex',
+      title: 'Hybridizer tool - Learn | Orchidex',
       description:
-        'Explore the ancestry of any two orchids using the Hybridize feature, only on Orchidex.',
+        'Pick any two orchids and explore the combined ancestry of a cross between them.',
     };
   }
 
-  const [sGrex, pGrex] = await queryGrexById(`${s},${p}`);
-
-  const sName = formatName(sGrex).short.full;
-  const pName = formatName(pGrex).short.full;
+  const sName = formatName(seed).short.full;
+  const pName = formatName(pollen).short.full;
 
   return {
-    title: `Explore ancestry of ${sName} and ${pName} - Orchidex`,
-    description: `Explore the ancestry of ${sName} and ${pName} using the Hybridize feature, only on Orchidex.`,
+    title: `${sName} × ${pName} - Hybridizer tool | Orchidex`,
+    description: `Explore the combined ancestry of ${sName} × ${pName}, and whether the cross has been registered.`,
   };
 }
+
+// Shown until both parents are picked.
+const EmptyState = ({ seed, pollen }: { seed?: Grex; pollen?: Grex }) => {
+  const missing = seed ? 'pollen' : pollen ? 'seed' : null;
+  return (
+    <section className={style.empty}>
+      <h3>
+        {missing ? `Now pick a ${missing} parent` : 'Cross any two orchids'}
+      </h3>
+      <p>
+        {missing
+          ? `Once both parents are set you’ll see the ancestry their hybrid would have, and whether anyone has registered it.`
+          : `Pick a seed parent and a pollen parent above to see the ancestry their hybrid would have, and whether anyone has registered it.`}
+      </p>
+
+      {!missing && (
+        <div className={style.examples}>
+          <span>Try</span>
+          <ul>
+            {EXAMPLES.map((e) => (
+              <li key={`${e.s}-${e.p}`}>
+                <Link
+                  href={`/learn/hybridize?s=${e.s}&p=${e.p}`}
+                  scroll={false}
+                >
+                  <span className={style.kind}>{e.kind}</span>
+                  {e.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </section>
+  );
+};
 
 export default async function Hybridize({
   searchParams,
 }: {
   searchParams: SearchParams;
 }) {
-  const { s, p } = await searchParams;
-  let selectedSeedParent: GrexType | undefined = undefined;
-  let selectedPollenParent: GrexType | undefined = undefined;
-  let existingGrex: GrexType | undefined = undefined;
+  const params = await searchParams;
+  const { seed, pollen, registered } = await fetchCross(
+    toId(params.s),
+    toId(params.p),
+  );
 
-  const sId = parseInt(s as string, 10);
-  const pId = parseInt(p as string, 10);
-
-  if (sId && pId) {
-    const parents = await queryGrexById(`${sId},${pId}`);
-    selectedSeedParent = parents.find((parent) => parent.id === s);
-    selectedPollenParent = parents.find((parent) => parent.id === p);
-  } else if (sId) {
-    [selectedSeedParent] = await queryGrexById(s);
-  } else if (pId) {
-    [selectedPollenParent] = await queryGrexById(p);
-  }
-
-  if (s && p) {
-    [existingGrex] = await queryGrexChild(s as string, p as string);
-  }
-
-  // useSearchParams needs <Suspense />
   return (
-    <>
+    <PendingProvider>
+      {/* useSearchParams needs <Suspense /> */}
       <Suspense>
         <Form />
       </Suspense>
 
-      {selectedSeedParent && selectedPollenParent ? (
-        <GrexView
-          hybridizer
-          shouldRedirect={false}
-          grex={
-            existingGrex ??
-            ({
-              id: `${selectedSeedParent.id}-${selectedPollenParent.id}`,
-              hypothetical: true,
-              genus: ' ',
-              epithet: 'Your Hybrid',
-              seed_parent_id: s as string,
-              seed_parent_genus: selectedSeedParent.genus,
-              seed_parent_epithet: selectedSeedParent.epithet,
-              pollen_parent_id: p as string,
-              pollen_parent_genus: selectedPollenParent.genus,
-              pollen_parent_epithet: selectedPollenParent.epithet,
-            } as Grex)
-          }
-          seedParent={existingGrex ? undefined : selectedSeedParent}
-          pollenParent={existingGrex ? undefined : selectedPollenParent}
-        />
-      ) : (
-        <aside className={style.empty}>
-          Ancestry information will be displayed here after selecting seed and
-          pollen parents.
-        </aside>
-      )}
-    </>
+      <Results>
+        {seed && pollen ? (
+          <>
+            {registered ? (
+              <p className={style.status} data-kind='registered'>
+                <Check />
+                This cross has already been registered
+                {registered.seed_parent_id !== seed.id &&
+                  ' with the parents reversed'}
+                .
+              </p>
+            ) : (
+              <Padded>
+                <header className={style.hypothetical}>
+                  <p className={style.status} data-kind='hypothetical'>
+                    <Sparkles />
+                    Not registered
+                  </p>
+                  <h1>
+                    <Name grex={seed} /> <span className={style.cross}>×</span>{' '}
+                    <Name grex={pollen} />
+                  </h1>
+                  <p>
+                    No one has registered this cross with the RHS. Below is the
+                    ancestry its hybrid would have, drawn from both parents’
+                    registrations.
+                  </p>
+                </header>
+              </Padded>
+            )}
+
+            <GrexView
+              hybridizer
+              shouldRedirect={false}
+              grex={
+                registered ??
+                ({
+                  id: `${seed.id}-${pollen.id}`,
+                  hypothetical: true,
+                  genus: ' ',
+                  epithet: 'Your Hybrid',
+                  seed_parent_id: seed.id,
+                  seed_parent_genus: seed.genus,
+                  seed_parent_epithet: seed.epithet,
+                  pollen_parent_id: pollen.id,
+                  pollen_parent_genus: pollen.genus,
+                  pollen_parent_epithet: pollen.epithet,
+                } as Grex)
+              }
+              seedParent={registered ? undefined : seed}
+              pollenParent={registered ? undefined : pollen}
+            />
+          </>
+        ) : (
+          <EmptyState seed={seed} pollen={pollen} />
+        )}
+      </Results>
+    </PendingProvider>
   );
 }

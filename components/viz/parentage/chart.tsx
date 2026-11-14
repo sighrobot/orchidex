@@ -2,11 +2,24 @@
 
 import React from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, CircleHelp, RotateCcw, X } from 'lucide-react';
+import {
+  ArrowLeft,
+  ChevronDown,
+  CircleHelp,
+  RotateCcw,
+  SlidersHorizontal,
+  X,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 import { H2 } from 'components/layout';
 import GenusInput from 'components/genus-input';
+import Toolbar from 'components/toolbar/toolbar';
 import { makeHrefGrex } from 'components/link/grex';
 import Tokens from 'components/viz/dominance/tokens';
 import { useResolvedTheme } from 'lib/hooks/useResolvedTheme';
@@ -940,6 +953,8 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
   };
   const isFiltered = type !== 'all' || minProgeny > 0;
   const isNeutral = !isFiltered && parent === 'any' && openGroup === null;
+  // How many of the filters in the Filters popover are set.
+  const filterCount = (parent !== 'any' ? 1 : 0) + (minProgeny > 0 ? 1 : 0);
   const genusEl = <em>{genus}</em>;
 
   const typeOptions: { value: TypeFilter; label: string }[] = [
@@ -966,16 +981,95 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
       },
     ];
 
-  const header = (
-    <div className={style.pageHeader}>
-      <H2>{genusEl} parentage</H2>
-      <div className={style.headerTools}>
+  const toolbar = (
+    <Toolbar
+      leading={
         <GenusInput value={genus.toLowerCase()} basePath='/learn/parentage' />
-        {names.length > 0 && (
+      }
+      search={
+        names.length > 0 && (
+          <Tokens
+            items={tokenItems}
+            noun={`${genus} orchids`}
+            italic={(i) => !!species[i]}
+            selected={selected}
+            colorOf={colorOf}
+            onAdd={(i) => setSelected((s) => (s.includes(i) ? s : [...s, i]))}
+            onRemove={(i) => setSelected((s) => s.filter((x) => x !== i))}
+            onClear={() => setSelected([])}
+          />
+        )
+      }
+      secondary={
+        names.length > 0 && (
+          <>
+            <Segmented<TypeFilter>
+              label='Show'
+              hideLabel
+              options={typeOptions}
+              value={type}
+              onChange={setType}
+            />
+            {/* Which parent counts, and the progeny cutoff, tucked away. */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant='outline' className={style.filtersButton}>
+                  <SlidersHorizontal />
+                  Filters
+                  {filterCount > 0 && (
+                    <span className={style.filterCount}>{filterCount}</span>
+                  )}
+                  <ChevronDown className={style.chevron} />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent align='end' className={style.filtersPanel}>
+                <Segmented<ParentFilter>
+                  label='Parent'
+                  options={parentOptions}
+                  value={parent}
+                  onChange={setParent}
+                />
+
+                <label className={style.threshold}>
+                  <span>
+                    At least <strong>{fmt.format(minProgeny)}</strong> progeny
+                  </span>
+                  <input
+                    type='range'
+                    min={0}
+                    max={SLIDER_STEPS}
+                    step={1}
+                    value={valueToSlider(minProgeny, max)}
+                    aria-valuetext={`At least ${minProgeny} progeny`}
+                    onChange={(e) =>
+                      setMinProgeny(sliderToValue(Number(e.target.value), max))
+                    }
+                  />
+                </label>
+
+                {/* Clears every filter, including Show outside the panel. */}
+                <Button
+                  variant='outline'
+                  size='sm'
+                  className={style.resetButton}
+                  disabled={isNeutral}
+                  onClick={reset}
+                >
+                  <RotateCcw />
+                  Reset filters
+                </Button>
+              </PopoverContent>
+            </Popover>
+          </>
+        )
+      }
+      end={
+        names.length > 0 && (
           <Button
             // Filled while the guide is open.
             variant={tourOpen ? 'default' : 'outline'}
             size='icon'
+            className={style.helpButton}
             aria-label='How to read this chart'
             title='How to read this chart'
             aria-pressed={tourOpen}
@@ -983,9 +1077,18 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
           >
             <CircleHelp />
           </Button>
-        )}
-      </div>
-    </div>
+        )
+      }
+    />
+  );
+
+  const header = (
+    <>
+      {/* The section strip names the page and the picker the genus; the
+          heading stays for screen readers. */}
+      <H2 className='sr-only'>{genusEl} parentage</H2>
+      {toolbar}
+    </>
   );
 
   if (!names.length) {
@@ -1000,62 +1103,6 @@ export default function ParentageChart({ data }: { data: ParentageData }) {
   return (
     <div className={style.parentage}>
       {header}
-
-      <div className={style.controls}>
-        <Tokens
-          items={tokenItems}
-          noun={`${genus} orchids`}
-          italic={(i) => !!species[i]}
-          selected={selected}
-          colorOf={colorOf}
-          onAdd={(i) => setSelected((s) => (s.includes(i) ? s : [...s, i]))}
-          onRemove={(i) => setSelected((s) => s.filter((x) => x !== i))}
-          onClear={() => setSelected([])}
-        />
-
-        <Segmented<TypeFilter>
-          label='Show'
-          hideLabel
-          options={typeOptions}
-          value={type}
-          onChange={setType}
-        />
-        <Segmented<ParentFilter>
-          label='Parent'
-          options={parentOptions}
-          value={parent}
-          onChange={setParent}
-        />
-
-        <label className={style.threshold}>
-          <span>
-            At least <strong>{fmt.format(minProgeny)}</strong> progeny
-          </span>
-          <input
-            type='range'
-            min={0}
-            max={SLIDER_STEPS}
-            step={1}
-            value={valueToSlider(minProgeny, max)}
-            aria-valuetext={`At least ${minProgeny} progeny`}
-            onChange={(e) =>
-              setMinProgeny(sliderToValue(Number(e.target.value), max))
-            }
-          />
-        </label>
-
-        <Button
-          variant='outline'
-          size='icon'
-          className={style.resetButton}
-          aria-label='Reset filters'
-          title='Reset filters'
-          disabled={isNeutral}
-          onClick={reset}
-        >
-          <RotateCcw />
-        </Button>
-      </div>
 
       {openGroup !== null && (
         <div className={style.status}>
