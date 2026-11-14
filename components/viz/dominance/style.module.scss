@@ -138,6 +138,57 @@
   }
 }
 
+// How to get from the tooltip to the card.
+.tipHint {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+// A picked group's card, pinned where it was clicked.
+.card {
+  position: absolute;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--popover, var(--bg));
+  color: var(--popover-foreground, var(--fg));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  font-size: 13px;
+  line-height: 1.4;
+
+  strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+.cardClose {
+  display: flex;
+  margin-left: auto;
+  padding: 2px;
+  border-radius: 3px;
+  cursor: pointer;
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+    background: var(--hover);
+  }
+}
+
+.cardAction {
+  justify-content: space-between;
+  text-decoration: none;
+}
+
 .tooltipTitle {
   display: flex;
   align-items: center;
@@ -336,10 +387,53 @@
 }
 
 // Genus names in the tooltip, italicized as scientific names are.
-.tooltipTitle [data-italic='true'] {
+.tooltipTitle [data-italic='true'],
+.card [data-italic='true'] {
   font-style: italic;
 }
 
 .helpButton {
   @include t.help-button;
+}
+
+// Inside one genus or registrant: the way back to all of them, then which
+// one this is.
+.crumbs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 36px;
+  font-size: 14px;
+  white-space: nowrap;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 0 8px 0 4px;
+    height: 100%;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 13px;
+    text-decoration: none;
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 1;
+      background: var(--hover);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--ring);
+      outline-offset: 1px;
+    }
+  }
+
+  strong {
+    font-weight: 500;
+    // Long registrant names are cut short; the page title has them whole.
+    max-width: 240px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }

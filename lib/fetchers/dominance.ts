@@ -4,6 +4,16 @@ import { queryOrThrow } from 'lib/storage/pg';
 // What a dominance chart splits each year's registrations by.
 export type DominanceKind = 'genus' | 'registrant';
 
+// Each kind's counterpart: a genus's registrations split by registrant, and a
+// registrant's split by genus.
+export const OTHER_KIND: Record<DominanceKind, DominanceKind> = {
+  genus: 'registrant',
+  registrant: 'genus',
+};
+
+// One genus or registrant whose registrations a chart is limited to.
+export type DominanceWithin = { kind: DominanceKind; name: string };
+
 export type DominanceGroup = {
   name: string;
   // A short form for labels: the genus abbreviation, or the name itself.
@@ -41,7 +51,7 @@ const EXCLUDE: Record<DominanceKind, string> = {
   registrant: `AND registrant_name != 'O/U'`,
 };
 
-const sql = (kind: DominanceKind) => `
+const sql = (kind: DominanceKind, within?: DominanceWithin) => `
   SELECT ${COLUMN[kind]} g, SUBSTRING(date_of_registration, 1, 4) y, COUNT(*)::int c
   FROM rhs
   WHERE genus != 'na'
@@ -49,15 +59,21 @@ const sql = (kind: DominanceKind) => `
     AND registrant_name != ''
     AND date_of_registration ~ '^[0-9]{4}'
     ${EXCLUDE[kind]}
+    ${within ? `AND ${COLUMN[within.kind]} = $1` : ''}
   GROUP BY g, y
 `;
 
-// Registrations per group per year.
+// Registrations per group per year, of all registrations or only those of
+// one genus or registrant (`within`, which must be of the other kind).
 export async function fetchDominance(
   kind: DominanceKind,
+  within?: DominanceWithin,
 ): Promise<DominanceData> {
   const currentYear = new Date().getFullYear();
-  const rows = (await queryOrThrow(sql(kind))) as unknown as {
+  const rows = (await queryOrThrow(
+    sql(kind, within),
+    within ? [within.name] : undefined,
+  )) as unknown as {
     g: string;
     y: string;
     c: number;

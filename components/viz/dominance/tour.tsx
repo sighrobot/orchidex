@@ -32,6 +32,9 @@ export function buildTour(
   p: Prepared,
   { start, end, groups }: DominanceData,
   { one, many, italic, bars, gone, focus: focusName }: KindConfig,
+  // What the registrations are: all orchid hybrids, or one genus's or one
+  // registrant's.
+  scope: React.ReactNode = 'orchid hybrids',
 ): TourStep[] {
   if (!p.nYears) return [];
   const full: View = { x0: start, x1: end + 1, y0: 0, y1: 1 };
@@ -113,7 +116,7 @@ export function buildTour(
   steps.push({
     text: (
       <>
-        Each column is one year of orchid hybrids registered with the Royal
+        Each column is one year of {scope} registered with the Royal
         Horticultural Society, split into {bars}. In {start + peakYear},{' '}
         {name(leaderThen)} made up {pct(shareIn(peakYear, leaderThen))} of
         registrations.

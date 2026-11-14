@@ -2,7 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { CircleHelp, Focus, Minus, Plus, RotateCcw, X } from 'lucide-react';
+import {
+  ArrowRight,
+  ChevronLeft,
+  CircleHelp,
+  Focus,
+  Minus,
+  Plus,
+  RotateCcw,
+  X,
+} from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { H2 } from 'components/layout';
@@ -10,7 +19,11 @@ import Toolbar from 'components/toolbar/toolbar';
 import { useResolvedTheme } from 'lib/hooks/useResolvedTheme';
 import { DARK_COLORS } from 'lib/theme';
 
-import type { DominanceData, DominanceKind } from 'lib/fetchers/dominance';
+import type {
+  DominanceData,
+  DominanceKind,
+  DominanceWithin,
+} from 'lib/fetchers/dominance';
 
 import { KINDS } from './kinds';
 import { useDominanceShared } from './shared';
@@ -220,18 +233,37 @@ function fadePalette(
 const KIND_ORDER: DominanceKind[] = ['genus', 'registrant'];
 
 // A stacked bar chart of each year's registrations, split by genus or by
-// registrant, normalized to the year's total. A switch in the title moves
+// registrant, normalized to the year's total. A switch in the toolbar moves
 // between the two, keeping the years in view and the label choice.
+//
+// With `within`, only one genus's or registrant's registrations are shown,
+// split the other way, and normalized to that genus's or registrant's total
+// for the year. A picked group's card links to its own breakdown, so you can go
+// from a genus to its registrants, to one registrant's genera, and so on.
 export default function DominanceChart({
   data,
   kind,
+  within,
 }: {
   data: DominanceData;
   kind: DominanceKind;
+  within?: DominanceWithin;
 }) {
   const { start, end, currentYear, groups } = data;
   const cfg = KINDS[kind];
   const { palette, one, many } = cfg;
+  // The genus or registrant this chart is within, as it reads in text.
+  const withinName =
+    within &&
+    (KINDS[within.kind].italic ? <i>{within.name}</i> : <>{within.name}</>);
+  // A picked group's registrations, split the other way.
+  const breakdown = (g: number) => {
+    const name = groups[g].name;
+    return {
+      href: `/learn/dominance/${kind}/${encodeURIComponent(name)}`,
+      label: kind === 'genus' ? 'See its registrants' : 'See their genera',
+    };
+  };
   const colorOf = (g: number) => palette[g % palette.length];
   const prepared = React.useMemo(
     () => prepare(data, palette.length),
@@ -245,6 +277,14 @@ export default function DominanceChart({
   const [selected, setSelected] = React.useState<number[]>([]);
   // The step of the guide being shown, or null when it's closed.
   const [tour, setTour] = React.useState<number | null>(null);
+  // The group whose card is open, and the point in the chart it's pinned to.
+  // The card is where you go from a group to its registrations split the
+  // other way.
+  const [pin, setPin] = React.useState<{
+    g: number;
+    x: number;
+    y: number;
+  } | null>(null);
   const toggleGroup = (g: number) =>
     setSelected((s) => (s.includes(g) ? s.filter((x) => x !== g) : [...s, g]));
 
@@ -292,6 +332,7 @@ export default function DominanceChart({
     faded,
     selected,
     toggleGroup,
+    pin,
   });
   stateRef.current = {
     tour,
@@ -301,6 +342,7 @@ export default function DominanceChart({
     faded,
     selected,
     toggleGroup,
+    pin,
   };
 
   // viewRef moves smoothly as you zoom and pan; what's drawn snaps to whole
@@ -704,7 +746,9 @@ export default function DominanceChart({
     }
     ctx.restore();
 
-    if (!tip || !hover) return;
+    // An open card stands in for the tooltip.
+    if (tip && stateRef.current.pin) tip.style.visibility = 'hidden';
+    if (!tip || !hover || stateRef.current.pin) return;
     const g = p.segGroup[hover.seg];
     const group = groups[g];
     const yi = p.segYear[hover.seg];
@@ -776,6 +820,8 @@ export default function DominanceChart({
   // feeds back into the next step of a pinch or drag.
   const zoomAt = (fx: number, fy: number, px: number, py: number) => {
     cancelAnimationFrame(animRef.current);
+    // The card would no longer sit on its bar.
+    setPin(null);
     const v = viewRef.current;
     const P = plot();
     const ax =
@@ -791,6 +837,8 @@ export default function DominanceChart({
 
   const panBy = (dx: number, dy: number) => {
     cancelAnimationFrame(animRef.current);
+    // The card would no longer sit on its bar.
+    setPin(null);
     const v = viewRef.current;
     const P = plot();
     const wx = (dx / P.w) * (v.x1 - v.x0);
@@ -907,7 +955,38 @@ export default function DominanceChart({
   React.useEffect(() => {
     schedule(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selected]);
+  }, [selected, pin]);
+
+  // A card closes with its group's highlight, and on Esc.
+  React.useEffect(() => {
+    if (pin && !selected.includes(pin.g)) setPin(null);
+  }, [pin, selected]);
+  React.useEffect(() => {
+    if (!pin) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setPin(null);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [pin]);
+
+  // Opens group g's card on its bar in the latest year in view, if it has
+  // one there, as when it's picked from the search.
+  const pinGroup = (g: number) => {
+    const p = prepared;
+    const v = shownView();
+    const P = plot();
+    const last = Math.min(p.nYears, Math.ceil(v.x1) - start) - 1;
+    const first = Math.max(0, Math.floor(v.x0) - start);
+    for (let y = last; y >= first; y--) {
+      const seg = findSegment(p, y, g);
+      if (seg < 0) continue;
+      const mid = (p.segY0[seg] + p.segY1[seg]) / 2;
+      if (mid < v.y0 || mid > v.y1) continue;
+      setPin({ g, x: P.sx(start + y + 0.5), y: P.sy(mid) });
+      return;
+    }
+  };
 
   // Pointer, wheel and touch handling.
   React.useEffect(() => {
@@ -1007,8 +1086,18 @@ export default function DominanceChart({
       if (wasTap) {
         const seg = segmentUnder(pt.x, pt.y);
         if (seg >= 0) {
-          const { prepared: p, toggleGroup } = stateRef.current;
-          toggleGroup(p.segGroup[seg]);
+          const {
+            prepared: p,
+            toggleGroup,
+            selected: picked,
+          } = stateRef.current;
+          const g = p.segGroup[seg];
+          toggleGroup(g);
+          // Picking a group opens its card where you clicked; unpicking it
+          // closes the card.
+          setPin(picked.includes(g) ? null : { g, x: pt.x, y: pt.y });
+        } else {
+          setPin(null);
         }
       }
       if (wasTap || e.pointerType === 'mouse') hoverAt(pt.x, pt.y);
@@ -1099,14 +1188,28 @@ export default function DominanceChart({
   // and zooming the chart. What was selected and in view before is put back
   // when it closes.
   const steps = React.useMemo(
-    () => buildTour(prepared, data, cfg),
-    [prepared, data, cfg],
+    () =>
+      buildTour(
+        prepared,
+        data,
+        cfg,
+        within ? (
+          within.kind === 'genus' ? (
+            <>{withinName} hybrids</>
+          ) : (
+            <>hybrids from {withinName}</>
+          )
+        ) : undefined,
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [prepared, data, cfg, within?.kind, within?.name],
   );
   const beforeTourRef = React.useRef<{ selected: number[]; view: View }>(null);
   const tourCardRef = React.useRef<HTMLDivElement>(null);
 
   const startTour = () => {
     if (!steps.length) return;
+    setPin(null);
     beforeTourRef.current = { selected, view: { ...viewRef.current } };
     setTour(0);
   };
@@ -1160,10 +1263,29 @@ export default function DominanceChart({
   }, [open]);
 
   // The section strip names the page, so the title is for screen readers.
-  const heading = <H2 className='sr-only'>Dominance by {one}</H2>;
+  const heading = (
+    <H2 className='sr-only'>
+      {within ? (
+        <>
+          {withinName} by {one}
+        </>
+      ) : (
+        <>Dominance by {one}</>
+      )}
+    </H2>
+  );
 
-  // The switch between the kinds of chart, at the start of the toolbar.
-  const kindSwitch = (
+  // At the start of the toolbar: the switch between the kinds of chart, or,
+  // within one genus or registrant, the way back to all of them.
+  const leading = within ? (
+    <nav aria-label='Breakdown' className={style.crumbs}>
+      <Link href={`/learn/dominance/${within.kind}`} scroll={false}>
+        <ChevronLeft size={16} />
+        All {KINDS[within.kind].many}
+      </Link>
+      <strong title={within.name}>{withinName}</strong>
+    </nav>
+  ) : (
     <nav aria-label='Split registrations by' className={style.segmented}>
       {KIND_ORDER.map((k) => (
         <Link
@@ -1177,6 +1299,55 @@ export default function DominanceChart({
       ))}
     </nav>
   );
+
+  // The open card, beside the point it's pinned to (or on the other side, if
+  // it would run off the chart).
+  const CARD_WIDTH = 220;
+  const pinCard =
+    pin &&
+    groups[pin.g] &&
+    (() => {
+      const { width, height } = sizeRef.current;
+      const g = groups[pin.g];
+      const left =
+        pin.x + 12 + CARD_WIDTH > width ? pin.x - 12 - CARD_WIDTH : pin.x + 12;
+      const top = clamp(pin.y - 28, 0, Math.max(0, height - 120));
+      const { href, label } = breakdown(pin.g);
+      return (
+        <div
+          className={style.card}
+          style={{ left: Math.max(0, left), top, width: CARD_WIDTH }}
+          role='group'
+          aria-label={g.name}
+        >
+          <div className={style.tooltipTitle}>
+            <span
+              className={style.swatch}
+              style={{ background: colorOf(pin.g) }}
+            />
+            <strong data-italic={cfg.italic}>{g.name}</strong>
+            <button
+              type='button'
+              className={style.cardClose}
+              aria-label='Close'
+              onClick={() => setPin(null)}
+            >
+              <X size={14} />
+            </button>
+          </div>
+          <p className={style.muted}>
+            {fmt.format(g.total)} registrations
+            {within && <> of {withinName}</>}
+          </p>
+          <Button asChild size='sm' className={style.cardAction}>
+            <Link href={href} scroll={false}>
+              {label}
+              <ArrowRight />
+            </Link>
+          </Button>
+        </div>
+      );
+    })();
 
   if (!groups.length) {
     return (
@@ -1222,7 +1393,7 @@ export default function DominanceChart({
           label and zoom controls between them, or on a line below. The
           switch between genus and registrant leads. */}
       <Toolbar
-        leading={kindSwitch}
+        leading={leading}
         search={
           <Tokens
             items={groups}
@@ -1230,7 +1401,10 @@ export default function DominanceChart({
             italic={cfg.italic}
             selected={selected}
             colorOf={colorOf}
-            onAdd={(g) => setSelected((s) => (s.includes(g) ? s : [...s, g]))}
+            onAdd={(g) => {
+              setSelected((s) => (s.includes(g) ? s : [...s, g]));
+              pinGroup(g);
+            }}
             onRemove={(g) => setSelected((s) => s.filter((x) => x !== g))}
             onClear={() => setSelected([])}
           />
@@ -1325,7 +1499,7 @@ export default function DominanceChart({
           className={style.canvas}
           data-zoomed={zoomed}
           role='img'
-          aria-label={`Share of orchid hybrid registrations by ${one} each year, ${start} to ${end}`}
+          aria-label={`Share of ${within ? `${within.name} ` : 'orchid hybrid '}registrations by ${one} each year, ${start} to ${end}`}
         />
         <div ref={tooltipRef} className={style.tooltip} role='tooltip'>
           <div className={style.tooltipTitle}>
@@ -1342,7 +1516,7 @@ export default function DominanceChart({
             <dd data-k='year' />
             <dt>Registrations</dt>
             <dd data-k='count' />
-            <dt>Share of year</dt>
+            <dt>{within ? <>Share of {withinName}</> : 'Share of year'}</dt>
             <dd>
               <span data-k='share' />{' '}
               <span className={style.muted}>
@@ -1350,7 +1524,13 @@ export default function DominanceChart({
               </span>
             </dd>
           </dl>
+          <p className={style.tipHint}>
+            {kind === 'genus'
+              ? 'Click to highlight it and see its registrants'
+              : 'Click to highlight them and see their genera'}
+          </p>
         </div>
+        {pinCard}
         {open && (
           <div
             ref={tourCardRef}
