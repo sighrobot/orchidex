@@ -15,14 +15,17 @@ import { capitalize } from 'lib/utils';
 
 import style from './style.module.scss';
 
-type Genus = {
+export type GenusOption = {
   // Name, as registered.
   g: string;
-  // Registered orchids.
+  // Registered orchids, or whatever `countLabel` says is counted.
   c: number;
   // RHS abbreviation, if it has one.
   a: string | null;
+  // Shown in place of the count, when there is one.
+  note?: string;
 };
+type Genus = GenusOption;
 
 // Results shown at once; type to narrow the rest.
 const MAX_RESULTS = 60;
@@ -54,14 +57,27 @@ function search(genera: Genus[], q: string, current: string) {
   return starts.concat(contains).slice(0, MAX_RESULTS);
 }
 
-// A button showing the current genus that opens a search of every genus;
-// picking one goes to `${basePath}/${genus}`.
+// A button showing the current genus that opens a search of every genus (or
+// of `options`); picking one goes to `${basePath}/${genus}`, or `hrefOf`.
 export default function GenusInput({
   basePath,
   value,
+  hrefOf: hrefOfProp,
+  options,
+  label = 'Genus',
+  heading = 'Most registered',
+  countLabel = 'Orchids',
 }: {
-  basePath: string;
+  basePath?: string;
   value: string;
+  hrefOf?: (genus: string) => string;
+  // The genera to offer, in order, instead of every registered genus.
+  options?: GenusOption[];
+  label?: string;
+  // Above the list before anything is typed.
+  heading?: string;
+  // What the counts count.
+  countLabel?: string;
 }) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
@@ -73,9 +89,12 @@ export default function GenusInput({
   const listRef = React.useRef<HTMLUListElement>(null);
   const listId = React.useId();
 
-  const { data: genera = [], isLoading } = useSWR('/api/genera', fetchGenera, {
-    revalidateOnFocus: false,
-  });
+  const { data: fetched = [], isLoading } = useSWR(
+    options ? null : '/api/genera',
+    fetchGenera,
+    { revalidateOnFocus: false },
+  );
+  const genera = options ?? fetched;
   const current = value.toLowerCase();
   const results = React.useMemo(
     () => search(genera, query, current),
@@ -83,7 +102,8 @@ export default function GenusInput({
   );
   const at = Math.min(active, results.length - 1);
 
-  const hrefOf = (genus: string) => `${basePath}/${genus.toLowerCase()}`;
+  const hrefOf = (genus: string) =>
+    hrefOfProp ? hrefOfProp(genus) : `${basePath}/${genus.toLowerCase()}`;
 
   const pick = (genus: string) => {
     setOpen(false);
@@ -133,10 +153,10 @@ export default function GenusInput({
           aria-expanded={open}
           aria-controls={listId}
           aria-busy={pending}
-          aria-label={`Genus: ${shown}. Change genus`}
+          aria-label={`${label}: ${shown}. Change genus`}
           className={style.trigger}
         >
-          <span className={style.label}>Genus</span>
+          <span className={style.label}>{label}</span>
           <i className={style.value}>{shown}</i>
           {pending ? (
             <Loader2 className={style.spinner} />
@@ -169,8 +189,8 @@ export default function GenusInput({
         <div className={style.heading}>
           {query.trim()
             ? `${results.length === MAX_RESULTS ? `Top ${MAX_RESULTS}` : results.length} ${results.length === 1 ? 'match' : 'matches'}`
-            : 'Most registered'}
-          <span>Orchids</span>
+            : heading}
+          <span>{countLabel}</span>
         </div>
 
         <ul ref={listRef} id={listId} role='listbox' className={style.list}>
@@ -202,7 +222,9 @@ export default function GenusInput({
                 {selected && (
                   <Check className={style.check} aria-label='Current genus' />
                 )}
-                <span className={style.count}>{fmt.format(genus.c)}</span>
+                <span className={style.count}>
+                  {genus.note ?? fmt.format(genus.c)}
+                </span>
               </li>
             );
           })}

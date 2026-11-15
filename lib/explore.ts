@@ -10,6 +10,14 @@ export const EXPLORE_TOOLS = [
     src: '/learn/parentage.png',
   },
   {
+    title: 'Primary hybrids',
+    tagline: 'Species crosses, made and not',
+    description:
+      'See which crosses between species in a genus, or across two genera, have been registered, and which have not.',
+    href: '/learn/primary-hybrids/phalaenopsis',
+    src: '/learn/primary-hybrids.png',
+  },
+  {
     title: 'Hybridizer tool',
     tagline: 'Cross any two orchids',
     description:
