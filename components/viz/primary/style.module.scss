@@ -1,0 +1,185 @@
+@use 'theme' as t;
+
+.primary {
+  // Genus names and species epithets are italicized, as scientific names are.
+  [data-italic='true'] {
+    font-style: italic;
+  }
+}
+
+// The two genus pickers, side by side, wrapping on narrow screens.
+.pickers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zoom {
+  display: flex;
+  gap: 6px;
+}
+
+// What's registered, and the legend.
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 20px;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.summary {
+  opacity: 0.75;
+
+  strong {
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.legend {
+  display: flex;
+  gap: 14px;
+  padding: 0;
+  list-style: none;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.75;
+  }
+}
+
+.evidence {
+  margin-bottom: 8px;
+  font-size: 13px;
+  opacity: 0.6;
+}
+
+.chart {
+  position: relative;
+  width: 100%;
+  height: clamp(420px, 75vh, 800px);
+  margin-top: 8px;
+  user-select: none;
+  // Drags pan and pinches zoom the matrix, not the page.
+  touch-action: none;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+}
+
+.hint {
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.55;
+}
+
+.empty {
+  padding: 40px 0;
+
+  p {
+    opacity: 0.7;
+  }
+
+  p + p {
+    margin-top: 8px;
+    opacity: 1;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+.tooltip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  visibility: hidden;
+  pointer-events: none;
+  min-width: 220px;
+  max-width: 320px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--popover, var(--bg));
+  color: var(--popover-foreground, var(--fg));
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  font-size: 13px;
+  line-height: 1.4;
+
+  dl {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 2px 14px;
+    margin-top: 2px;
+  }
+
+  dt {
+    opacity: 0.7;
+    font-style: italic;
+  }
+
+  dd {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.tooltipTitle {
+  font-weight: 500;
+}
+
+.statusLine {
+  margin-top: 4px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--hover);
+  font-size: 11px;
+
+  &[data-registered='true'] {
+    color: #fff;
+    background: rgb(218, 112, 214);
+  }
+}
+
+.hybrid {
+  margin-top: 6px;
+}
+
+.degreesTitle {
+  margin-top: 6px;
+  font-size: 12px;
+  opacity: 0.6;
+}
+
+.muted {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.swatch {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  flex: none;
+}
+
+.action {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  opacity: 0.6;
+}

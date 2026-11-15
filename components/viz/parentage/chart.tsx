@@ -1248,7 +1248,7 @@ function firstFit(
   return options.find((t) => ctx.measureText(t).width <= room) ?? '';
 }
 
-function Segmented<T extends string>({
+export function Segmented<T extends string>({
   label,
   hideLabel = false,
   options,
