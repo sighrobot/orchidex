@@ -93,7 +93,18 @@ function typeCondition(type: SearchType | SearchOrigin | 'natural') {
   const species = `(NOT ${hasParents} AND ${lowerEpithet} AND ${first(
     'epithet'
   )} <> '×')`;
-  const speciesParents = `(${hasParents} AND NOT ${parentIsNatural} AND ${startsLower(
+  // RHS placeholder codes for unknown parents ("na na", "na uk").
+  const isCode = (col: string) =>
+    `lower(coalesce(rhs.${col}, '')) IN ('na', 'uk')`;
+  const parentIsCode = `(${[
+    'seed_parent_genus',
+    'seed_parent_epithet',
+    'pollen_parent_genus',
+    'pollen_parent_epithet',
+  ]
+    .map(isCode)
+    .join(' OR ')})`;
+  const speciesParents = `(${hasParents} AND NOT ${parentIsNatural} AND NOT ${parentIsCode} AND ${startsLower(
     'seed_parent_epithet'
   )} AND ${startsLower('pollen_parent_epithet')})`;
   const primary = `(${natural} OR ${speciesParents})`;

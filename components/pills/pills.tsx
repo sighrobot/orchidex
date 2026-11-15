@@ -26,8 +26,22 @@ export const isSpecies = (grex: Grex): boolean =>
   !Number.isInteger(parseInt(grex.epithet[0], 10)) &&
   grex.epithet[0] === grex.epithet[0].toLowerCase();
 
+// The RHS records unknown or unavailable parents with placeholder codes
+// ("na na", "na uk") rather than real names. Being lowercase, they would
+// otherwise pass the species-parent check below.
+const PLACEHOLDER_CODES = ['na', 'uk'];
+const isPlaceholder = (value?: string) =>
+  !!value && PLACEHOLDER_CODES.includes(value.trim().toLowerCase());
+
+const hasPlaceholderParent = (grex: Grex) =>
+  isPlaceholder(grex.seed_parent_genus) ||
+  isPlaceholder(grex.seed_parent_epithet) ||
+  isPlaceholder(grex.pollen_parent_genus) ||
+  isPlaceholder(grex.pollen_parent_epithet);
+
 export const isPrimary = (grex) =>
   !isParentNaturalHybrid(grex) &&
+  !hasPlaceholderParent(grex) &&
   !isNaturalHybrid(grex) &&
   grex.seed_parent_epithet &&
   grex.seed_parent_epithet[0] === grex.seed_parent_epithet[0].toLowerCase() &&
