@@ -1,4 +1,4 @@
-import { getDescriptor } from 'components/pills/pills';
+import { getDescriptor } from 'lib/classify';
 import { GENUS_TO_ABBREVIATION } from './abbreviations';
 import type { Grex } from './types';
 

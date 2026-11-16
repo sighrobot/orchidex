@@ -36,6 +36,7 @@ app/                          # Next.js App Router
     (index)/                  # Home page
     search/                   # Search interfaces
   api/                        # REST API routes (GET-only, direct SQL)
+    mcp/                      # MCP server endpoint (POST /api/mcp)
 components/                   # React components
   grex/                       # Hybrid display (card, name, parentage, etc.)
   search/                     # Search UI (autocomplete)
@@ -43,7 +44,10 @@ components/                   # React components
   vega-lite/                  # Vega-Lite chart wrappers
   components/ui/              # shadcn/ui primitives
 lib/
+  classify.ts                 # Species/hybrid classification rules (UI and server)
   fetchers/                   # Server-side data fetching functions
+  mcp/                        # MCP server: protocol, tool framework, tools/
+  queries/                    # Parameterized SQL (search, grex, lineage, genera, people, registry)
   hooks/                      # Client-side SWR hooks (useGrex, useProgeny, etc.)
   storage/                    # DB connection pool and query execution
   supabase/                   # Supabase client/server setup
@@ -66,6 +70,10 @@ lib/
 - **SWR hooks** (`useGrex`, `useDate`, `useProgeny`, etc.) wrap client-side fetches to `/api/` routes
 - **SCSS modules** (`*.module.scss`) for component-scoped styles alongside Tailwind utilities
 - **Dynamic route params** are typed as Promises in Next.js 15 (e.g., `params: Promise<{ genus: string }>`)
+
+## MCP Server
+
+`/api/mcp` is a stateless Model Context Protocol server (Streamable HTTP, JSON responses, no SDK dependency). `app/api/mcp/route.ts` is the transport; `lib/mcp/server.ts` handles JSON-RPC and lists the tools; each file in `lib/mcp/tools/` defines a domain's tools with `defineTool` (JSON Schema input, validated before the handler runs). Tools are read-only, take orchids as an id or a "Genus epithet" name (`lib/mcp/resolve.ts`), and return shapes from `lib/mcp/format.ts` with links back to the site. Throw `ToolError` for messages the model should see. SQL lives in `lib/queries/` and always uses `$n` parameters.
 
 ## Database
 

@@ -69,7 +69,7 @@ function parentCondition(p: SearchParams, add: AddParam) {
   return `((${asListed.join(' AND ')}) OR (${reversed.join(' AND ')}))`;
 }
 
-// SQL versions of the badge rules in components/pills/pills.tsx. One
+// SQL versions of the badge rules in lib/classify.ts. One
 // difference: natural hybrids also count as primary here, since every natural
 // hybrid is a cross of two species.
 function typeCondition(type: SearchType | SearchOrigin | 'natural') {
